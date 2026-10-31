@@ -1,0 +1,12 @@
+{
+  "project": "SourceLore",
+  "schema_version": 1,
+  "active_milestone": "M0",
+  "active_task": "M0-01",
+  "status": "DONE",
+  "last_verified_commit": null,
+  "last_test_summary": "NOT_RUN",
+  "blockers": [],
+  "notes": "M0 环境审计完成，三项 Gate 条件全部 PASS。尚未提交首个 Git commit。",
+  "updated_at": "2026-10-31T09:55:00+08:00"
+}

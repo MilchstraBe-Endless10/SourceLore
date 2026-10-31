@@ -1,0 +1,144 @@
+{
+  "schema_version": 1,
+  "project": "SourceLore",
+  "updated_at": "2026-10-31T09:57:00+08:00",
+  "tasks": [
+    {
+      "id": "M0-01",
+      "milestone": "M0",
+      "goal": "只读环境诊断：确认路径、权限、工具链、DSH Skill 发现机制、Tobs Grant、模型路由，并写入审计文档",
+      "inputs": [
+        "总控提示词 §G M0 / §J 只读诊断命令",
+        "分阶段手册 §0 §1",
+        "用户指定的项目根路径"
+      ],
+      "expected_outputs": [
+        "docs/environment-audit.md",
+        "docs/platform-compatibility.md",
+        "progress/ 三件套"
+      ],
+      "status": "DONE",
+      "verification_commands": [
+        "realpath '/mnt/Server_Data_Center/Team_Flie(团队文件)/GitHub_Knowledge_Base(Gihub知识库)'",
+        "df -T '/mnt/Server_Data_Center/Team_Flie(团队文件)/GitHub_Knowledge_Base(Gihub知识库)'",
+        "test -w '/mnt/Server_Data_Center/Team_Flie(团队文件)/GitHub_Knowledge_Base(Gihub知识库)' && echo BASE_WRITABLE=YES",
+        "python3 -c \"import sqlite3;c=sqlite3.connect(':memory:');c.execute('create virtual table t using fts5(x)');print('FTS5_OK')\"",
+        "gh auth status"
+      ],
+      "evidence_paths": [
+        "docs/environment-audit.md",
+        "docs/platform-compatibility.md"
+      ],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": []
+    },
+    {
+      "id": "M0-02",
+      "milestone": "M0",
+      "goal": "项目骨架与 Git 初始化，首个基线提交",
+      "inputs": ["总控提示词 §E 交付布局"],
+      "expected_outputs": [
+        ".gitignore",
+        ".gitattributes",
+        "目录骨架",
+        "首个 Git commit"
+      ],
+      "status": "IN_PROGRESS",
+      "verification_commands": [
+        "git -C \"$ROOT\" status --short",
+        "git -C \"$ROOT\" log --oneline -1"
+      ],
+      "evidence_paths": ["progress/HANDOFF.md"],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": ["M0-01"]
+    },
+    {
+      "id": "UPSTREAM-01",
+      "milestone": "M1",
+      "goal": "审计 repo-analyzer-skill：URL、Commit、入口文件、脚本依赖、可复用设计、许可证证据、冲突缺陷、吸收策略",
+      "inputs": [
+        "https://github.com/BillLui/repo-analyzer-skill（待核实真实 URL）"
+      ],
+      "expected_outputs": [
+        "upstreams/ 只读快照",
+        "docs/upstream-manifest.json 条目",
+        "docs/fusion-matrix.md 条目"
+      ],
+      "status": "PENDING",
+      "verification_commands": [],
+      "evidence_paths": [],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": ["M0-02"]
+    },
+    {
+      "id": "UPSTREAM-02",
+      "milestone": "M1",
+      "goal": "审计 deer-flow",
+      "inputs": ["https://github.com/bytedance/deer-flow"],
+      "expected_outputs": ["docs/upstream-manifest.json 条目"],
+      "status": "PENDING",
+      "verification_commands": [],
+      "evidence_paths": [],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": ["M0-02"]
+    },
+    {
+      "id": "UPSTREAM-03",
+      "milestone": "M1",
+      "goal": "审计 repository-discovery",
+      "inputs": ["https://github.com/obra/superpowers（repository-discovery 技能）"],
+      "expected_outputs": ["docs/upstream-manifest.json 条目"],
+      "status": "PENDING",
+      "verification_commands": [],
+      "evidence_paths": [],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": ["M0-02"]
+    },
+    {
+      "id": "UPSTREAM-04",
+      "milestone": "M1",
+      "goal": "审计 SNIKO agent-skills",
+      "inputs": ["https://github.com/SNIKO/agent-skills（待核实）"],
+      "expected_outputs": ["docs/upstream-manifest.json 条目"],
+      "status": "PENDING",
+      "verification_commands": [],
+      "evidence_paths": [],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": ["M0-02"]
+    },
+    {
+      "id": "UPSTREAM-05",
+      "milestone": "M1",
+      "goal": "审计 project-knowledge-base（walterfan/lazy-rabbit-skills）",
+      "inputs": [
+        "https://github.com/walterfan/lazy-rabbit-skills/blob/master/skills/project-knowledge-base/SKILL.md"
+      ],
+      "expected_outputs": ["docs/upstream-manifest.json 条目"],
+      "status": "PENDING",
+      "verification_commands": [],
+      "evidence_paths": [],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": ["M0-02"]
+    },
+    {
+      "id": "UPSTREAM-06",
+      "milestone": "M1",
+      "goal": "审计 repo-security-review（Consensys，无根 LICENSE，仅方法论参考）",
+      "inputs": ["https://github.com/Consensys/repo-security-review"],
+      "expected_outputs": ["docs/upstream-manifest.json 条目", "THIRD_PARTY_NOTICES.md"],
+      "status": "PENDING",
+      "verification_commands": [],
+      "evidence_paths": [],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": ["M0-02"]
+    }
+  ]
+}
