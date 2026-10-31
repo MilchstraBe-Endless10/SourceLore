@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-10-31T14:00:00+08:00",
+  "updated_at": "2026-10-31T14:13:00+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -114,7 +114,7 @@
         "upstreams/UPSTREAM-02-deer-flow/tree",
         "upstreams/UPSTREAM-02-deer-flow/files.tsv"
       ],
-      "git_commit": null,
+      "git_commit": "47ac88e2c193c107ab44e79f95da17cc4658fb6b",
       "blocked_reason": null,
       "depends_on": [
         "M0-02"
