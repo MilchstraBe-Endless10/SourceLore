@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-10-31T09:57:00+08:00",
+  "updated_at": "2026-10-31T10:32:57+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -37,108 +37,133 @@
       "id": "M0-02",
       "milestone": "M0",
       "goal": "项目骨架与 Git 初始化，首个基线提交",
-      "inputs": ["总控提示词 §E 交付布局"],
+      "inputs": [
+        "总控提示词 §E 交付布局"
+      ],
       "expected_outputs": [
         ".gitignore",
         ".gitattributes",
         "目录骨架",
         "首个 Git commit"
       ],
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "verification_commands": [
         "git -C \"$ROOT\" status --short",
         "git -C \"$ROOT\" log --oneline -1"
       ],
-      "evidence_paths": ["progress/HANDOFF.md"],
-      "git_commit": null,
+      "evidence_paths": [
+        "progress/HANDOFF.md"
+      ],
+      "git_commit": "ee8550682692fc30e47856ec826d788cec21c135",
       "blocked_reason": null,
-      "depends_on": ["M0-01"]
+      "depends_on": [
+        "M0-01"
+      ]
     },
     {
       "id": "UPSTREAM-01",
       "milestone": "M1",
       "goal": "审计 repo-analyzer-skill：URL、Commit、入口文件、脚本依赖、可复用设计、许可证证据、冲突缺陷、吸收策略",
-      "inputs": [
-        "https://github.com/BillLui/repo-analyzer-skill（待核实真实 URL）"
-      ],
+      "inputs": "上游地址（已核实，来自总控提示词 §C 原文）：https://github.com/jeannie-jy/repo-analyzer-skill",
       "expected_outputs": [
         "upstreams/ 只读快照",
         "docs/upstream-manifest.json 条目",
         "docs/fusion-matrix.md 条目"
       ],
-      "status": "PENDING",
+      "status": "READY",
       "verification_commands": [],
       "evidence_paths": [],
       "git_commit": null,
       "blocked_reason": null,
-      "depends_on": ["M0-02"]
+      "depends_on": [
+        "M0-02"
+      ]
     },
     {
       "id": "UPSTREAM-02",
       "milestone": "M1",
       "goal": "审计 deer-flow",
-      "inputs": ["https://github.com/bytedance/deer-flow"],
-      "expected_outputs": ["docs/upstream-manifest.json 条目"],
+      "inputs": "上游地址（已核实，来自总控提示词 §C 原文）：https://github.com/bytedance/deer-flow/tree/main/skills/public/github-deep-research",
+      "expected_outputs": [
+        "docs/upstream-manifest.json 条目"
+      ],
       "status": "PENDING",
       "verification_commands": [],
       "evidence_paths": [],
       "git_commit": null,
       "blocked_reason": null,
-      "depends_on": ["M0-02"]
+      "depends_on": [
+        "M0-02"
+      ]
     },
     {
       "id": "UPSTREAM-03",
       "milestone": "M1",
       "goal": "审计 repository-discovery",
-      "inputs": ["https://github.com/obra/superpowers（repository-discovery 技能）"],
-      "expected_outputs": ["docs/upstream-manifest.json 条目"],
+      "inputs": "上游地址（已核实，来自总控提示词 §C 原文）：https://github.com/maboasoft/repository-discovery",
+      "expected_outputs": [
+        "docs/upstream-manifest.json 条目"
+      ],
       "status": "PENDING",
       "verification_commands": [],
       "evidence_paths": [],
       "git_commit": null,
       "blocked_reason": null,
-      "depends_on": ["M0-02"]
+      "depends_on": [
+        "M0-02"
+      ]
     },
     {
       "id": "UPSTREAM-04",
       "milestone": "M1",
       "goal": "审计 SNIKO agent-skills",
-      "inputs": ["https://github.com/SNIKO/agent-skills（待核实）"],
-      "expected_outputs": ["docs/upstream-manifest.json 条目"],
+      "inputs": "上游地址（已核实，来自总控提示词 §C 原文）：https://github.com/SNIKO/agent-skills/blob/master/skills/swe-research/SKILL.md",
+      "expected_outputs": [
+        "docs/upstream-manifest.json 条目"
+      ],
       "status": "PENDING",
       "verification_commands": [],
       "evidence_paths": [],
       "git_commit": null,
       "blocked_reason": null,
-      "depends_on": ["M0-02"]
+      "depends_on": [
+        "M0-02"
+      ]
     },
     {
       "id": "UPSTREAM-05",
       "milestone": "M1",
       "goal": "审计 project-knowledge-base（walterfan/lazy-rabbit-skills）",
-      "inputs": [
-        "https://github.com/walterfan/lazy-rabbit-skills/blob/master/skills/project-knowledge-base/SKILL.md"
+      "inputs": "上游地址（已核实，来自总控提示词 §C 原文）：https://github.com/walterfan/lazy-rabbit-skills/blob/master/skills/project-knowledge-base/SKILL.md",
+      "expected_outputs": [
+        "docs/upstream-manifest.json 条目"
       ],
-      "expected_outputs": ["docs/upstream-manifest.json 条目"],
       "status": "PENDING",
       "verification_commands": [],
       "evidence_paths": [],
       "git_commit": null,
       "blocked_reason": null,
-      "depends_on": ["M0-02"]
+      "depends_on": [
+        "M0-02"
+      ]
     },
     {
       "id": "UPSTREAM-06",
       "milestone": "M1",
       "goal": "审计 repo-security-review（Consensys，无根 LICENSE，仅方法论参考）",
-      "inputs": ["https://github.com/Consensys/repo-security-review"],
-      "expected_outputs": ["docs/upstream-manifest.json 条目", "THIRD_PARTY_NOTICES.md"],
+      "inputs": "上游地址（已核实，来自总控提示词 §C 原文）：https://github.com/Consensys/repo-security-review",
+      "expected_outputs": [
+        "docs/upstream-manifest.json 条目",
+        "THIRD_PARTY_NOTICES.md"
+      ],
       "status": "PENDING",
       "verification_commands": [],
       "evidence_paths": [],
       "git_commit": null,
       "blocked_reason": null,
-      "depends_on": ["M0-02"]
+      "depends_on": [
+        "M0-02"
+      ]
     }
   ]
 }

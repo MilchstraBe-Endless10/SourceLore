@@ -1,12 +1,12 @@
 {
   "project": "SourceLore",
   "schema_version": 1,
-  "active_milestone": "M0",
-  "active_task": "M0-01",
-  "status": "DONE",
-  "last_verified_commit": null,
+  "active_milestone": "M1",
+  "active_task": "UPSTREAM-01",
+  "status": "READY",
+  "last_verified_commit": "ee8550682692fc30e47856ec826d788cec21c135",
   "last_test_summary": "NOT_RUN",
   "blockers": [],
-  "notes": "M0 环境审计完成，三项 Gate 条件全部 PASS。尚未提交首个 Git commit。",
-  "updated_at": "2026-10-31T09:55:00+08:00"
+  "notes": "M0 Gate 通过；基线 commit 已建立。进入 M1，先核实六个上游的真实 URL 与 Commit。",
+  "updated_at": "2026-10-31T10:05:48+08:00"
 }
