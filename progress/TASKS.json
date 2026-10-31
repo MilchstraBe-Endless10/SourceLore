@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-10-31T15:20:00+08:00",
+  "updated_at": "2026-10-31T15:25:00+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -143,7 +143,7 @@
         "upstreams/UPSTREAM-03-repository-discovery/files.tsv",
         "upstreams/UPSTREAM-03-repository-discovery/tree.json"
       ],
-      "git_commit": null,
+      "git_commit": "d19f63277",
       "blocked_reason": null,
       "depends_on": [
         "M0-02"
