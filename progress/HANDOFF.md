@@ -158,3 +158,90 @@ blocker 3 条（D1 单页取数、D2 树静默截断、D7 吞异常）。最值�
 测试：上游子树没有任何测试文件，状态记 `NOT_RUN`，不能据此断言任何功能可用。
 
 下一步：`UPSTREAM-03..06` 仍为 PENDING，逐个钉 SHA 后按同样流程审计。
+
+## UPSTREAM-03 完成（2026-10-31 15:20 +08:00）
+
+**任务**：审计 `maboasoft/repository-discovery`（M1 第三源）。
+**Commit**：`557703fffe69c9ab97eff67acabea6b346afd89c`（单根提交，`parents: []`，全仓仅 1 次提交）。
+**快照**：`upstreams/UPSTREAM-03-repository-discovery/`，4 blob + 1 tree，`truncated: false`，Git 忽略已复核。
+
+### 上游形态
+
+纯文档仓库，1820 行 / 68 KB，零行可执行代码：
+
+| 文件 | 行数 | 字节 |
+|---|---|---|
+| `LICENSE` | 16 | 707 |
+| `README.md` | 243 | 7977 |
+| `SKILL.md` | 1452 | 56537 |
+| `examples/knowledge-base-structure.md` | 109 | 2829 |
+
+无脚本、无依赖清单、无测试、无 CI、无构建配置，`language: null`。**测试状态 `NOT_RUN`——不是没找到，是枚举全部 4 个 blob 后确认不存在可运行物。**
+
+### 许可证
+
+实测 CC BY 4.0（`LICENSE` L1/L3 原文 + L16 指向官方 legalcode）。GitHub API 报 `NOASSERTION`/`Other`/`path: null`，原因是 licensee 无法归类手写摘要文本，非许可证缺失。
+
+**关键差异：LICENSE 没有任何版权持有人声明行。** 署名义务只能由「仓库 URL + repo_id `1290761659` + commit SHA + 作者 `Vladimir <kuzmenko.dn@gmail.com>`」四者合成。CC BY 还要求**标明是否作了修改**，这是 MIT 没有的义务。
+
+### 能力判定：27 项
+
+`REUSE 3 / ADAPT 12 / REIMPLEMENT 7 / REJECT 5`
+
+对比：01 是 `4/8/0/3`（15 项），02 是 `4/8/1/5`（18 项）。本源 ADAPT 占比 44% 为三源最高、REUSE 占比 11% 为最低。原因不是写得差，是**方法论密度最高但可执行程度最低**——1820 行里没有一行代码，所以绝大多数能力只能「照思想、重做实现」。
+
+三个 REUSE：边界三分类（§5.6）、集成指示符正则（§9.5，全文唯一实质代码块）、显式未知优于猜测（§4.4/§4.3）。
+
+五个 REJECT：五档证据优先级（§12.2，无权重且自我消解）、D2 强制（§11）、禁 AST/图数据库/索引（§2，与确定性 CLI 架构正面冲突）、每术语必成页（§7.2）、百分比置信度豁免（§13.1 L1201）。
+
+### 缺陷：18 项，其中 3 个 blocker
+
+- `D1` 九类页面 section 集合各不相同（9/8/11/14/13/9/8/8），§8 L738 却要求「all required sections defined by this methodology」→ 无法判定页面是否写完
+- `D3` 声明支持 monorepo 却零 token 预算、零每轮读仓上限、零采样规则 → 14 步顺序假设每阶段回看全仓，monorepo 上成本失控
+- `D6` §8 自称「a required quality gate, not a style preference」却无 schema、无 linter、无失败处置 → 18 项检查全靠人工判读
+
+另有 5 项 high：`D2` Unknown 页缺 Confidence 且 examples 给出第三套模板；`D4` 要求建模业务实体却无产物位置；`D7` 百分比豁免；`D8` 置信度有标签无聚合；`D9` §15.4 的一致性规则因 evidence strength 未定义而不可执行；`D11` 终止条件全 SHOULD 且不可度量。
+
+### 融合设计要点
+
+**四层数据模型**（这是本源唯一的架构贡献）：
+
+```
+repo_facts.json   → 事实层（存在什么；渲染时不注入模型句子）
+Product Model     → 语义草稿层（这可能意味着什么；每字段带 claim_type + evidence_refs）
+claims.json       → 主张层（我们断定什么以及凭什么；Registry 在此实现）
+evidence.json     → 证据层（凭什么；source_type 四值）
+```
+
+关键判据：**Product Model 不是第四套数据，是 `claims.json` 的草稿态。** 无法给出 `evidence_refs` 的字段只能以 `claim_type: insufficient` 进入并强制渲染为 Unknown 页。
+
+**单采集器约束自动满足**——本源不提任何 GitHub API，唯一采集动作是扫本地已克隆仓库，所以无采集器可建。§9.5 的 8 组正则作为 UPSTREAM-01 CLI 的新子命令读快照，零网络请求。
+
+**18 条 linter 规则**（`KB001`–`KB018`）从 §8 十八项检查、§10.4 链接校验、§13.4 措辞规则、§14.2 五字段、§12.5 密钥扫描推导而来，17 条可完全机器判定。
+
+**token 预算对接**：把 §6.5 十四步压进 UPSTREAM-01 已有的 R0–R4 五轮，token 成本从 O(仓库大小 × 14) 降为 O(仓库大小 × 1 + 定点读取)。这是解决 D3 的唯一办法。
+
+### 四处形式冲突及处置
+
+| 冲突 | 处置 |
+|---|---|
+| §12.2 五档证据优先级 vs 既有 `source_type` 四值 | 拒绝五档，映射到四值 |
+| §13.1 L1201 允许百分比 vs 禁止未校准百分比 | 拒绝百分比，只留三档序数 |
+| §2 L52–L53 禁确定性工具 vs 确定性 CLI 架构 | 拒绝禁令 |
+| §14.2 五字段 + §10.2 六段 vs `claims.json`/`evidence.json` | 五字段落为 claims 子字段，六段由 schema 定义 |
+
+### 主要风险（三条）
+
+1. **祈使句污染。** `SKILL.md` 1452 行大量 MUST/SHOULD，整篇进 prompt 会与 SourceLore 规则竞争，至少两条（禁确定性工具、允许百分比）直接顶撞。融合只允许注入改写后的规则集，禁止注入原文。
+2. **实体页悬空。** 上游要建模业务实体却不给产物位置。不先定义实体页类型就照搬 §5.3，会产出一批无处安放的语义。
+3. **低 token 与全仓扫描的结构性矛盾。** 不按上面那条预算映射压进去，在 monorepo 上必然失控——而 DeepSeek-V4.1 Flash 最承受不起这个。
+
+### 产出
+
+- `docs/upstream-audit-03-repository-discovery.md`（528 行）
+- `progress/UPSTREAM-03-audit.json`（27 项能力 + 18 项缺陷 + 18 条 linter 规则 + 9 个重跑点）
+- 账本更新：`progress/TASKS.json`、`progress/STATE.json`、`docs/upstream-manifest.json`
+
+### 下一步
+
+`UPSTREAM-04`（`SNIKO/agent-skills` swe-research）、`UPSTREAM-05`（`walterfan/lazy-rabbit-skills` project-knowledge-base）、`UPSTREAM-06`（`Consensys/repo-security-review`）仍为 PENDING，各自先钉 SHA 再审。

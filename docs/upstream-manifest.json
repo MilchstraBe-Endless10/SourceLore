@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-31T13:58:00+08:00",
+  "generated_at": "2026-10-31T15:20:00+08:00",
   "note": "M1 源核实结果。UPSTREAM-01 / UPSTREAM-02 已补齐 commit 与许可证证据并完成逐源审计；其余源待审计时补齐。",
   "upstreams": [
     {
@@ -63,9 +63,27 @@
       "fork": false,
       "pushed_at": "2026-07-06T08:15:43Z",
       "description": null,
-      "commit": null,
-      "license_evidence_paths": [],
-      "audit_status": "NOT_RUN"
+      "commit": "557703fffe69c9ab97eff67acabea6b346afd89c",
+      "license_evidence_paths": [
+        "upstreams/UPSTREAM-03-repository-discovery/tree/LICENSE",
+        "docs/upstream-audit-03-repository-discovery.md"
+      ],
+      "audit_status": "DONE",
+      "license_verified_spdx": "CC-BY-4.0",
+      "license_verified_note": "LICENSE 全文 16 行实测为 CC BY 4.0 摘要，无版权行；API 值 NOASSERTION/Other 为 GitHub 无法归类手写摘要所致",
+      "subtree": null,
+      "audit_record": "docs/upstream-audit-03-repository-discovery.md",
+      "audit_json": "progress/UPSTREAM-03-audit.json",
+      "audited_at": "2026-10-31T15:20:00+08:00",
+      "snapshot_path": "upstreams/UPSTREAM-03-repository-discovery/",
+      "blob_count": 4,
+      "test_status": "NOT_RUN",
+      "disposition_counts": {
+        "REUSE": 3,
+        "ADAPT": 12,
+        "REIMPLEMENT": 7,
+        "REJECT": 5
+      }
     },
     {
       "id": "UPSTREAM-04",

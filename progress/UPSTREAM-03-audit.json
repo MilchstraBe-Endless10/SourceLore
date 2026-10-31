@@ -1,0 +1,711 @@
+{
+  "task": "UPSTREAM-03",
+  "milestone": "M1",
+  "auditor": "DSH (DeepSeek-V4.1 Flash / workbuddy)",
+  "audited_at": "2026-10-31T15:20:00+08:00",
+  "upstream": {
+    "url": "https://github.com/maboasoft/repository-discovery",
+    "subtree": null,
+    "subtree_note": "仓库根即全部内容，无子树可切分",
+    "repo_id": 1290761659,
+    "default_branch": "main",
+    "commit_sha": "557703fffe69c9ab97eff67acabea6b346afd89c",
+    "commit_date": "2026-07-06T08:15:40Z",
+    "commit_subject": "Add LICENSE and initial documentation for Repository Discovery methodology",
+    "commit_parents": [],
+    "commit_count": 1,
+    "author": "Vladimir <kuzmenko.dn@gmail.com>",
+    "visibility": "public",
+    "archived": false,
+    "fork": false,
+    "size_kb": 22,
+    "language": null,
+    "stars": 1,
+    "forks": 0,
+    "open_issues": 0,
+    "created_at": "2026-07-06T08:07:39Z",
+    "pushed_at": "2026-07-06T08:15:43Z",
+    "updated_at": "2026-07-31T16:59:50Z",
+    "retrieved_at": "2026-10-31T15:01:52+08:00",
+    "license": {
+      "spdx_id_api": "NOASSERTION",
+      "name_api": "Other",
+      "path_api": null,
+      "spdx_id_verified": "CC-BY-4.0",
+      "license_name_verified": "Creative Commons Attribution 4.0 International",
+      "path": "LICENSE",
+      "copyright": [],
+      "copyright_note": "LICENSE 全文 16 行不含任何版权持有人声明；署名只能由 仓库URL + repo_id + commit SHA + 作者邮箱 四者合成",
+      "reuse_obligation": "CC BY 4.0：① 给予适当署名 ② 提供许可证链接 ③ 标明是否作了修改 ④ 不得附加法律或技术措施限制他人行使许可证允许的权利",
+      "api_discrepancy_note": "GitHub licensee 无法自动归类手写摘要文本，返回 Other/NOASSERTION 且 path 为 null；实测 LICENSE 前 13 行逐句对应 CC BY 4.0 标准摘要结构，L16 指向官方 legalcode，判定为真正的 CC BY 4.0"
+    },
+    "snapshot": {
+      "path": "upstreams/UPSTREAM-03-repository-discovery/",
+      "blob_count": 4,
+      "tree_count": 1,
+      "truncated": false,
+      "files": [
+        {
+          "path": "LICENSE",
+          "lines": 16,
+          "bytes": 707,
+          "git_blob_sha": "f5b94100c84f371d5ad881ba198cc425a07298d3",
+          "sha256": "c169bd63777bc6301c35d819014446ca7373edc40ee6f80edc9a070ba28d3239"
+        },
+        {
+          "path": "README.md",
+          "lines": 243,
+          "bytes": 7977,
+          "git_blob_sha": "51d17b450a5489cd2deac9578c71fc8f6b2fabb6",
+          "sha256": "13987a1b2bc0a6a2268d41298de789a31f52d7b260c9583c7a6b3915d390c609"
+        },
+        {
+          "path": "SKILL.md",
+          "lines": 1452,
+          "bytes": 56537,
+          "git_blob_sha": "aa16932bab77ddeb58fae49280592af6976275d4",
+          "sha256": "8ffcd4f5e8865d857e70f7eeb479cc40c4632ae3bf5973d7128818642abfaaad"
+        },
+        {
+          "path": "examples/knowledge-base-structure.md",
+          "lines": 109,
+          "bytes": 2829,
+          "git_blob_sha": "806982cd3f266a829d2d1d93b80d9e728b4e71ec",
+          "sha256": "d5dfd491511cac0a0191cfd40297afa68d43bb3ce0b7c02bcfc6120d43788dfc"
+        }
+      ],
+      "total_lines": 1820,
+      "total_bytes": 68050,
+      "integrity_check": "4/4 通过 git hash-object 与 API blob SHA 比对，另以 sha256sum 作第二道指纹",
+      "git_ignored": true,
+      "git_ignore_rule": ".gitignore:4:upstreams/"
+    }
+  },
+  "execution_isolation": {
+    "upstream_code_executed": false,
+    "upstream_code_executable": false,
+    "upstream_code_executable_note": "仓库内不存在任何可执行物：无脚本、无依赖清单、无构建配置、无 CI",
+    "dependencies_installed": false,
+    "upstream_instructions_followed": false,
+    "upstream_modified": false,
+    "external_urls_fetched": false,
+    "external_urls_note": "LICENSE L16 的 CC legalcode 地址未访问，判断依据为 LICENSE 自身 16 行文本",
+    "network_requests": 0,
+    "mode": "只读冻结快照，全量人工通读"
+  },
+  "reviewed": {
+    "files_read_in_full": [
+      "LICENSE",
+      "README.md",
+      "SKILL.md",
+      "examples/knowledge-base-structure.md"
+    ],
+    "files_partial": [],
+    "files_skipped": [],
+    "read_note": "4 个 blob 全部逐行读完，SKILL.md 1452 行分窗口读取并逐节核对，未遗漏。第 4 节记录 SKILL.md 的 18 个一级章节 / 54 个二级小节行号表",
+    "enumeration_proof": "tree.json truncated=false；files.tsv 仅 4 行；不存在第 5 个文件"
+  },
+  "ten_questions": {
+    "q1_what_it_does": "方法论规约，不是工具、不是提示词、不是代码库。目标是从仓库证据反推产品模型（README L7），产出面向业务的知识库（README L42），而非实现参考",
+    "q2_input_output": "输入一个陌生代码仓库（任意语言，含 monorepo，§3 L88）；输出 Inventory.md / Glossary.md / Unknowns.md / Review.md 及 Role / Feature / Flow / Integration / Constraint / Decision / Risk / Unknown 各类 canonical 页（§6.5 L388–L411）",
+    "q3_core_mechanism": "八个咬合机制：观察/推理硬隔离（§6.1）、产品模型先于文档（§4.2 L117）、规范名注册表（§6.4）、依赖序构建（§6.5）、证据优先于确定性（§4.3 L127）、未知项一等公民（§14）、置信度跟证据走（§13）、增量而非一次成型（§4.7 L162）",
+    "q4_quality_control": "四层全部为人工或模型自查，无一可执行：20 条反模式（§16）、55 问自检（§17）、18 项结构检查（§8）、5 条一致性规则（§15）。§8 L712 自称必需质量门却无 schema 无 linter 无失败处置",
+    "q5_failure_modes": "七个，按损害排序：全仓通读空转（token 失控）、页面结构无法判定完备、业务实体知识无处落地、置信度退化为装饰、终止条件永不满足、D2 规范悬空、百分比豁免口子",
+    "q6_dependencies": "零外部依赖零运行时。唯一外部引用是 CC legalcode URL。隐含依赖是一个能读代码跨文件对照写长文档的 LLM，§2 L52 显式要求 LLM-first",
+    "q7_security": "上游三层规则：不抄录密钥值（§12.5 L1176–L1178）、匹配到的 provider 产物不得静默省略、噪声目录排除须记录在 Review.md。本次审计零网络请求、零执行、零安装",
+    "q8_relation_to_sourcelore": "是 SourceLore 缺失的那一层的说明书，但不能当实现用。01 管确定性事实，02 管外部生态，03 管产品语义与知识实体。它不提任何 GitHub API，故单一 Collector 约束自动满足",
+    "q9_new_capability": "五样：产品模型八要素、Canonical Knowledge Registry 实体消解、未知项一等公民、观察/推理硬隔离、依赖序构建与增量重跑契约。十项独有能力逐项核对确认 01/02 均无",
+    "q10_best_single_thing": "§6.1 观察/推理硬隔离及其好例坏例对照。不需要 D2、不需要百分比、不需要工具链，落成代码就是 repo_facts.json 渲染层禁止注入模型句子。成本最低收益最直接，与架构零冲突"
+  },
+  "capability_matrix": [
+    {
+      "id": "C01",
+      "capability": "边界三分类（confirmed runtime integration / configured external boundary / integration unknown）",
+      "where": "SKILL.md §5.6 L239–L248",
+      "disposition": "REUSE",
+      "why": "概念本身够用，是三个上游中唯一把「有配置≠在运行」写成显式三分的地方；L247–L248 规定 provider 配置文件存在则必须有 Integration 页或解释性 Unknown，可直接成为强制规则"
+    },
+    {
+      "id": "C02",
+      "capability": "集成指示符正则集合 + 必扫面清单",
+      "where": "SKILL.md §9.5 L901–L909（正则）、L876–L899（必扫面）",
+      "disposition": "REUSE",
+      "why": "全文唯一实质性代码块，8 组正则可直接嵌入确定性扫描器；必扫面清单与 UPSTREAM-01 Collector 表面高度重合，不构成新采集器"
+    },
+    {
+      "id": "C03",
+      "capability": "「显式未知优于自信猜测」+「无证据必须降级为假设」",
+      "where": "SKILL.md §4.4 L94–L98、§4.3 L125–L128",
+      "disposition": "REUSE",
+      "why": "两条原则短、无歧义、无工具依赖，L128「Unsupported claims MUST NOT be presented as facts」可作 prompt 级硬规则"
+    },
+    {
+      "id": "C04",
+      "capability": "观察/推理硬隔离（Inventory 只写观察，附好例坏例）",
+      "where": "SKILL.md §6.1 L275–L286、L316–L324",
+      "disposition": "ADAPT",
+      "why": "纪律可用，形态须改：上游要求生成 Inventory.md 文件，SourceLore 应改为由 repo_facts.json 渲染清单层并在渲染层物理禁止注入模型句子；L316–L324 好例坏例可作 few-shot"
+    },
+    {
+      "id": "C05",
+      "capability": "Canonical Knowledge Registry（名字/别名/类型/路径权威清单）",
+      "where": "SKILL.md §6.4 L352–L384",
+      "disposition": "ADAPT",
+      "why": "全篇最强数据模型构件，直接对应 claims.json 实体消解层。须改：上游允许内部草稿，SourceLore 必须落成机器可读文件；L379–L381 的「不够格当 Unknown」需补「合并」出口"
+    },
+    {
+      "id": "C06",
+      "capability": "产品模型八要素（Frame/Roles/Entities/Capabilities/Flows/Boundaries/Constraints/Decisions-Risks-Unknowns）",
+      "where": "SKILL.md §5.1–§5.8 L171–L266",
+      "disposition": "ADAPT",
+      "why": "要素划分合理完整，但仅 Roles（L193–L197）、Flows（L227–L228）、Boundaries（L239–L246）三处做了证据分级，其余五要素无。须为每字段强制加 claim_type 与 evidence_refs"
+    },
+    {
+      "id": "C07",
+      "capability": "十四步依赖序构建",
+      "where": "SKILL.md §6.5 L385–L423",
+      "disposition": "ADAPT",
+      "why": "顺序是现成 DAG，L421 Flow 页在 glossary/role/feature 之后、L423 Overview 最后两条硬约束可直接采用。须去掉「每阶段回看整仓」假设，否则与低 token 目标冲突（D3）"
+    },
+    {
+      "id": "C08",
+      "capability": "Rerun Protocol 九个重跑触发点",
+      "where": "SKILL.md §6.8 L467–L484",
+      "disposition": "ADAPT",
+      "why": "三个上游唯一的增量更新契约。须把九个触发点从叙述句改成可判定条件（文件哈希变化、注册表条目增减、页面缺失）"
+    },
+    {
+      "id": "C09",
+      "capability": "未知项一等公民（类型/五字段/生命周期）",
+      "where": "SKILL.md §14.1 L1245–L1260、§14.2 L1262–L1274、§14.3 L1276–L1282、§7.9 L692–L705",
+      "disposition": "ADAPT",
+      "why": "五字段可直接 schema 化。须补 owner 与 resolved_by（上游无，见 D13）；五字段上游为 SHOULD，须提为 MUST 否则退化为可省略"
+    },
+    {
+      "id": "C10",
+      "capability": "「来源冲突必须记录」规则",
+      "where": "SKILL.md §12.4 L1162–L1168、§4.6 L152–L153",
+      "disposition": "ADAPT",
+      "why": "规则正确必要，但上游只说记录冲突未给解决程序。须改为：冲突记录进 evidence.json，按既有 source_type 裁定，不另立优先级（见 C23）"
+    },
+    {
+      "id": "C11",
+      "capability": "置信度三档 High/Medium/Low",
+      "where": "SKILL.md §13.1 L1193–L1202、§13.2、§13.3",
+      "disposition": "ADAPT",
+      "why": "三档定义清晰，7 升 9 降条件可作提示。须补聚合规则与跨页一致性度量否则只是装饰（D8、D9），并显式覆盖 L1201 百分比豁免"
+    },
+    {
+      "id": "C12",
+      "capability": "二十条反模式清单",
+      "where": "SKILL.md §16 L1322–L1348",
+      "disposition": "ADAPT",
+      "why": "条目具体，可作模型自检提示与 linter 检查项来源。须为每条补可判定的检测条件，否则只是警告语"
+    },
+    {
+      "id": "C13",
+      "capability": "渐进发现（广度→具体，禁止一次成型）",
+      "where": "SKILL.md §4.7 L155–L162、§6.3 L334–L351",
+      "disposition": "ADAPT",
+      "why": "恰好是低 token 策略的骨架，可作多轮取数调度原则；须补每轮预算与取样规则（上游无）"
+    },
+    {
+      "id": "C14",
+      "capability": "Knowledge Refinement 十个精修动作",
+      "where": "SKILL.md §6.6 L424–L442",
+      "disposition": "ADAPT",
+      "why": "动作清单可作模型内部精修提示集。上游写成流程阶段但无完成谓词，应去掉阶段含义只保留动作集"
+    },
+    {
+      "id": "C15",
+      "capability": "写作风格与受众定义",
+      "where": "SKILL.md §10.3 L987–L996",
+      "disposition": "ADAPT",
+      "why": "L995 受众清单可直接用于卡片层与渲染层的信息密度决策；其余风格条款价值不大"
+    },
+    {
+      "id": "C16",
+      "capability": "业务实体建模",
+      "where": "SKILL.md §5.3 L199–L207、§9.4 L840–L855",
+      "disposition": "REIMPLEMENT",
+      "why": "目标正确但实现缺失：14 步构建序无实体步、§7 无实体章、§3 范围清单无实体项、README 输出清单亦无实体（D4）。唯一判定标准 L206–L207 是纯判断无判据。须自建页类型+规范+判定清单"
+    },
+    {
+      "id": "C17",
+      "capability": "终止条件",
+      "where": "SKILL.md §6.9 L485–L503",
+      "disposition": "REIMPLEMENT",
+      "why": "十三条全为 SHOULD，L499–L501「additional passes produce little new product knowledge」不可度量，等于没有终止条件（D11）。须自行设计可计算判据"
+    },
+    {
+      "id": "C18",
+      "capability": "十八条结构一致性检查",
+      "where": "SKILL.md §8 L707–L782（检查项 L764–L781）",
+      "disposition": "REIMPLEMENT",
+      "why": "L712 自称必需质量门却无 schema、无 linter、无失败处置（D6）。检查项内容有价值，须自行实现为带 rule id 的 linter"
+    },
+    {
+      "id": "C19",
+      "capability": "Obsidian wiki link 校验",
+      "where": "SKILL.md §10.4 L997–L1021（L1020）",
+      "disposition": "REIMPLEMENT",
+      "why": "全文少数真正可机器检查的规则，但上游无页面清单可对照、无校验算法。须先有 page manifest 才能实现"
+    },
+    {
+      "id": "C20",
+      "capability": "五条一致性规则（命名/链接/主张/置信度/未知项）",
+      "where": "SKILL.md §15.1–§15.5 L1287–L1321",
+      "disposition": "REIMPLEMENT",
+      "why": "§15.1/§15.2 部分可机检；§15.4 因 evidence strength 未定义而不可执行（D9）；§15.5 三种处置无仲裁顺序。须重写为可判定规则集"
+    },
+    {
+      "id": "C21",
+      "capability": "五十五问自检清单",
+      "where": "SKILL.md §17 L1349–L1439（7 组）",
+      "disposition": "REIMPLEMENT",
+      "why": "问题质量不低但无通过标准、无计分、无阈值、无产物（D16）。须改造为结构化 gate，每问绑定可判定检查项与失败动作"
+    },
+    {
+      "id": "C22",
+      "capability": "主张措辞规则",
+      "where": "SKILL.md §13.4 L1229–L1239",
+      "disposition": "REIMPLEMENT",
+      "why": "全文最强的可机检措辞规则，但未附任何检测器。可实现为文本扫描器，成本低收益直接"
+    },
+    {
+      "id": "C23",
+      "capability": "五档证据优先级",
+      "where": "SKILL.md §12.2 L1142–L1154",
+      "disposition": "REJECT",
+      "why": "五档无权重不构成全序；L1152–L1153 又允许源码处任意层级，唯一排序机制自我消解（D10）。SourceLore 已有 source_type 四值与确定性事实，再叠一套优先级会产生两套互不兼容证据体系"
+    },
+    {
+      "id": "C24",
+      "capability": "D2 图规范（强制 D2）",
+      "where": "SKILL.md §11.1–§11.6 L1044–L1113",
+      "disposition": "REJECT",
+      "why": "L1046 强制 D2 却无工具链、无语法校验、无法检测装饰性图表（§11.2 L1069）与一图一意（§11.6）（D12）。图形态应由渲染层决定，不应被锁定为 D2"
+    },
+    {
+      "id": "C25",
+      "capability": "「不得依赖 AST 解析器/图数据库/静态分析管线/索引系统」",
+      "where": "SKILL.md §2 L52–L53",
+      "disposition": "REJECT",
+      "why": "与 SourceLore 确定性 CLI 架构正面冲突，且与 UPSTREAM-01 已确立的「确定性工具算事实、模型只解释含义」路线相反。本源最主要的架构不兼容点"
+    },
+    {
+      "id": "C26",
+      "capability": "每个术语必须独立成页（含小仓库）",
+      "where": "SKILL.md §7.2 L530–L559（L534、L557）",
+      "disposition": "REJECT",
+      "why": "与低 token 目标冲突：小仓库也会被迫产出大量单句页，而 §15.1 只有散文级去重无检测手段。应改为术语表条目 + 按需升格为页的两级策略"
+    },
+    {
+      "id": "C27",
+      "capability": "百分比置信度豁免",
+      "where": "SKILL.md §13.1 L1201",
+      "disposition": "REJECT",
+      "why": "允许「项目明确偏好时用百分比」但未给校准方法。SourceLore 明令禁止未校准百分比，此条必须显式覆盖（D7）"
+    }
+  ],
+  "disposition_counts": {
+    "REUSE": 3,
+    "ADAPT": 12,
+    "REIMPLEMENT": 7,
+    "REJECT": 5,
+    "total": 27
+  },
+  "defects": [
+    {
+      "id": "D1",
+      "severity": "blocker",
+      "file": "SKILL.md",
+      "line": "512-705",
+      "problem": "九类页面的必备 section 集合各不相同（9/8/11/14/13/9/8/8 项），而 §8 L738 要求「Each Role, Feature, Flow, Integration, Constraint, Decision, Risk, and Unknown MUST contain all required sections defined by this methodology」，却从未指明 this methodology 指哪一套",
+      "fix": "为每类页面定义唯二来源：schema 文件 + 生成器校验；九套集合重排为「通用五段 + 类型专属最小集」"
+    },
+    {
+      "id": "D2",
+      "severity": "high",
+      "file": "SKILL.md",
+      "line": "692-705",
+      "problem": "Unknown 页缺 Confidence，而 §10.2 L963–L969 把它列为每个主要页面必备段；examples/knowledge-base-structure.md L85–L109 又给出第三套五段模板。同一类页面存在三套互相冲突的模板",
+      "fix": "以 schema 为唯一权威；examples 与正文冲突处以正文+schema 为准并在迁移时修正示例"
+    },
+    {
+      "id": "D3",
+      "severity": "blocker",
+      "file": "SKILL.md",
+      "line": "88, 388, 876-877",
+      "problem": "声明支持 monorepo、要求先建注册表后写成品页、要求全仓扫集成指示符，但全文零 token 预算、零每轮读仓上限、零采样规则",
+      "fix": "引入分级预算：按仓库规模切换扫描深度，注册表分种子/扩展两轮，扫描面按 §9.5 清单优先级取前 N 项"
+    },
+    {
+      "id": "D4",
+      "severity": "high",
+      "file": "SKILL.md",
+      "line": "199-207",
+      "problem": "要求识别业务实体，但 14 步构建序无实体步、§7 无实体章、§3 范围内清单无实体项。模型被要求产出却没有产物位置",
+      "fix": "在构建序插入实体页步骤，或新增 §7.x 实体章节并给出 section 集，二者择一不可悬空"
+    },
+    {
+      "id": "D5",
+      "severity": "medium",
+      "file": "SKILL.md",
+      "line": "209-219, 397",
+      "problem": "Capability 与 Feature 都要求成页但两者页面边界未定义；14 步构建序第 8 步只出现 Features，Capabilities 页在序中无位置",
+      "fix": "明确定义 Capability=稳定产品能力域、Feature=该域下可交付具体功能；或合并为一类页面"
+    },
+    {
+      "id": "D6",
+      "severity": "blocker",
+      "file": "SKILL.md",
+      "line": "707-782",
+      "problem": "§8 L712 自称「a required quality gate, not a style preference」，但无 schema、无 linter、无失败处置流程，18 项检查全部依赖人工判读",
+      "fix": "落成 JSON Schema + 带 rule id 的 linter，每项检查有明确 pass/fail 与修复提示"
+    },
+    {
+      "id": "D7",
+      "severity": "high",
+      "file": "SKILL.md",
+      "line": "1201",
+      "problem": "「The skill MAY use percentages only when the project explicitly prefers numeric confidence」开了未校准百分比的口子且未给校准方法",
+      "fix": "显式拒绝（C27）；只允许三档序数标签，百分比一律不得出现，写入生成层约束而非仅作注记"
+    },
+    {
+      "id": "D8",
+      "severity": "high",
+      "file": "SKILL.md",
+      "line": "1203-1227",
+      "problem": "只有 7 条升档 9 条降档的 SHOULD 条件，零聚合规则：多条证据如何合成一档没有定义，置信度是判断而非计算",
+      "fix": "定义聚合函数（证据计数 + 证据类型权重 + 冲突惩罚）输出三档；无法聚合时强制降为 Unknown"
+    },
+    {
+      "id": "D9",
+      "severity": "high",
+      "file": "SKILL.md",
+      "line": "1310-1320",
+      "problem": "§15.4 L1311 要求「similar evidence strength SHOULD produce similar confidence」，但 evidence strength 全文未定义，唯一的一致性规则不可执行；§15.5 给出三种处置却无仲裁顺序",
+      "fix": "先定义可比较的 evidence strength 度量（类型+直接性+一致性），再谈一致性；§15.5 三种处置排优先级"
+    },
+    {
+      "id": "D10",
+      "severity": "medium",
+      "file": "SKILL.md",
+      "line": "1142-1154",
+      "problem": "五档优先级无权重不构成全序；L1152–L1153 又把源码放回任意层级，唯一的排序机制自我消解",
+      "fix": "不采纳该优先级（C23），改用既有 source_type 四值 + 确定性事实优先"
+    },
+    {
+      "id": "D11",
+      "severity": "high",
+      "file": "SKILL.md",
+      "line": "485-503",
+      "problem": "十三条终止条件全为 SHOULD；L499–L501「additional passes produce little new product knowledge」无度量方式。没有硬终止就有无限循环与成本失控风险",
+      "fix": "设计可计算终止判据：连续两轮新增主张数低于首轮 X%、注册表闭合、Unknown 全部带五字段"
+    },
+    {
+      "id": "D12",
+      "severity": "medium",
+      "file": "SKILL.md",
+      "line": "1044-1113",
+      "problem": "L1046 强制 D2，但无 D2 工具链、无语法校验、无法检测装饰性图表（L1069）与一图一意（§11.6）",
+      "fix": "不采纳（C24）；图形态交渲染层决定，若要校验则用结构化中间表示而非 D2 源码"
+    },
+    {
+      "id": "D13",
+      "severity": "medium",
+      "file": "SKILL.md",
+      "line": "1276-1282",
+      "problem": "未知项生命周期只有「保持开启直到证据/干系人/运行时观察解决」，无 owner、无触发条件、无过期机制，Unknown 可永远挂着无人负责",
+      "fix": "补 owner、resolved_by、review_after 三字段；到期未解则强制降级或归档"
+    },
+    {
+      "id": "D14",
+      "severity": "medium",
+      "file": "README.md",
+      "line": "46-195",
+      "problem": "README 与 SKILL 是两套并行体系而非摘要与详述：README 四步 vs SKILL 九节工作流；README 十二个证据源 vs SKILL §12.1 十七个；README 输出 11 项不含 business entities",
+      "fix": "以 SKILL 为唯一权威，README 降格为导览；差异处标注「以 SKILL 为准」"
+    },
+    {
+      "id": "D15",
+      "severity": "medium",
+      "file": "SKILL.md",
+      "line": "424-442",
+      "problem": "十个精修动作无完成谓词，无法判断精修是否足够",
+      "fix": "每个动作配一个可判定条件（如同义合并后注册表无别名冲突）"
+    },
+    {
+      "id": "D16",
+      "severity": "medium",
+      "file": "SKILL.md",
+      "line": "1349-1439",
+      "problem": "自检清单 55 问无通过标准、无计分、无阈值、无产物，全部靠主观回答",
+      "fix": "改造为结构化 gate，每问绑定可判定检查项与失败动作"
+    },
+    {
+      "id": "D17",
+      "severity": "low",
+      "file": "SKILL.md",
+      "line": "790-806, 807-823, 935-949",
+      "problem": "角色/流程/约束的表面清单是开放式 often found in 启发式，无权重、无完整性判据",
+      "fix": "保留为提示不当作覆盖度依据；覆盖度另设可计算指标"
+    },
+    {
+      "id": "D18",
+      "severity": "low",
+      "file": "SKILL.md",
+      "line": "45-57",
+      "problem": "§2 L47–L50 要求通过仓库实验演进方法论并记录实验日志，但仓库内不存在任何实验日志、issue 或修订记录（单根提交，从未更新）",
+      "fix": "记录为方法论自述与仓库事实的落差；不影响能力判定"
+    }
+  ],
+  "dependencies": {
+    "upstream": [],
+    "upstream_note": "零依赖、零运行时、零可执行物；无 package.json / requirements.txt / pyproject.toml / Cargo.toml / go.mod",
+    "external_references": [
+      "https://creativecommons.org/licenses/by/4.0/legalcode（LICENSE L16；本次未访问）"
+    ],
+    "implicit_dependency": "能读代码、能跨文件对照、能写长文档的 LLM（§2 L52 显式要求 LLM-first）",
+    "sourcelore_impact": "无新增依赖，无安装动作，无版本冲突风险",
+    "tooling_prohibition": "§2 L52–L53 禁 AST 解析器/图数据库/静态分析管线/索引系统，已按 C25 判 REJECT，不构成约束"
+  },
+  "security_constraints": [
+    "§12.5 L1176–L1178：证据中不得抄录密钥值 → 落为 linter 规则 KB013",
+    "§9.5 L915–L920：匹配到的 provider 产物不得静默省略，但只允许写配置存在，不得写具体值",
+    "§9.5 L929–L933：噪声目录（node_modules、编译产物、vendored 库）应排除，排除项必须记录在 Review.md",
+    "快照隔离：upstreams/ 由 .gitignore:4 排除，冻结副本不进 Git 历史（已用 git check-ignore -v 复核）",
+    "不执行上游指令：SKILL.md 1452 行含大量祈使句，本次审计全程只读，未按其要求产出任何知识库",
+    "不访问上游引用的外部地址：LICENSE L16 的 CC legalcode 地址未访问",
+    "残余风险-祈使句冲突：SKILL.md 整篇作 prompt 注入会与 SourceLore 系统规则竞争，至少两条（§2 L53 禁确定性工具、§13.1 L1201 允许百分比）直接冲突。融合时只允许注入改写后的规则集，禁止注入原文"
+  ],
+  "reuse_obligations": [
+    "署名：THIRD_PARTY_NOTICES.md 记录 仓库URL https://github.com/maboasoft/repository-discovery + Repository ID 1290761659 + Commit 557703fffe69c9ab97eff67acabea6b346afd89c + 作者 Vladimir <kuzmenko.dn@gmail.com>（LICENSE 无版权行，署名只能由这四项合成）",
+    "许可证链接：附 https://creativecommons.org/licenses/by/4.0/legalcode 与 LICENSE 快照路径 upstreams/UPSTREAM-03-repository-discovery/tree/LICENSE",
+    "标明修改：27 项能力中 12 项 ADAPT、7 项 REIMPLEMENT 均为修改后使用，须写明「以下内容改编自上述来源，已作修改」并列出改编项 C04–C15、C16–C22",
+    "不得附加额外限制：不得对改编部分施加比 CC BY 4.0 更严的条款",
+    "REUSE 三项（C01/C02/C03）虽未修改仍构成「使用该材料」，署名义务不因未修改而消失",
+    "不能整体并入自有许可：SKILL.md 1452 行是受保护的表达，SourceLore 自有许可不能覆盖这些正文；可自由使用的是思想、方法、清单结构，受保护的是具体表述，实现时须自行撰写规则文本不得复制原句成段",
+    "examples/knowledge-base-structure.md 未被复用；其三套冲突模板（D2）已判不可直接采用，若后续参考目录树形态同样触发署名义务"
+  ],
+  "fusion_design": {
+    "single_collector_constraint": {
+      "status": "自动满足",
+      "reason": "本源不提任何 GitHub API 调用、不提 commit 查询、不提 issue 检索；唯一采集动作是扫本地已克隆仓库文件（§9.5 必扫面清单），故无采集器可建",
+      "new_scan_requirement": "§9.5 必扫面 + 8 组正则必须全部落在 UPSTREAM-01 CLI 之内，作为新子命令读 upstreams/<id>/tree/ 只读快照，不新增网络请求、不新增第三方依赖"
+    },
+    "product_model_mapping": {
+      "repo_facts_json": "确定性事实层（UPSTREAM-01 CLI 产出）→ 对应 §6.1 Inventory，渲染时不注入任何模型句子",
+      "product_model": "产品语义草稿层（§5.1–§5.8，内部态）→ 每字段强制带 claim_type ∈ {fact, inference, insufficient} 与 evidence_refs",
+      "claims_json": "主张层（对外权威）→ Canonical Knowledge Registry（§6.4）在此实现为实体消解表",
+      "evidence_json": "证据层 → source_type 四值 / path / line_range / excerpt_hash / retrieved_at；§12.4 冲突落为同 subject 多条互斥 evidence_refs",
+      "render_layer": "Markdown 知识页 → §6.5 十四步顺序在此生效",
+      "one_line": "repo_facts.json 回答「存在什么」，Product Model 回答「这可能意味着什么」，claims.json 回答「我们断定什么以及凭什么」，evidence.json 回答「凭什么」本身",
+      "key_rule": "Product Model 不是第四套数据，是 claims.json 的草稿态；无法给出 evidence_refs 的字段只能以 claim_type=insufficient 进入并强制渲染为 Unknown 页"
+    },
+    "conflict_resolution": [
+      {
+        "conflict": "证据优先级",
+        "upstream": "§12.2 五档优先级（C23）",
+        "sourcelore": "source_type 四值（github_api / readme_claim / external_web / inference）",
+        "decision": "拒绝五档，一律映射到既有四值；源码与测试→github_api，README 与文档→readme_claim，上游外部资料→external_web，模型推断→inference"
+      },
+      {
+        "conflict": "置信度表达",
+        "upstream": "§13.1 L1201 允许百分比（C27）",
+        "sourcelore": "禁止未校准百分比",
+        "decision": "拒绝百分比，只保留三档序数标签"
+      },
+      {
+        "conflict": "工具化程度",
+        "upstream": "§2 L52–L53 禁 AST 解析器/图数据库/静态分析管线/索引系统（C25）",
+        "sourcelore": "核心是确定性 CLI + 索引",
+        "decision": "拒绝该禁令；上游禁令为 LLM-first v1 服务，SourceLore 架构前提不同，且 UPSTREAM-01 已证明确定性抽取可行"
+      },
+      {
+        "conflict": "证据格式",
+        "upstream": "§14.2 五字段未知项 + §10.2 六段页面",
+        "sourcelore": "需与 claims.json / evidence.json 兼容",
+        "decision": "五字段落为 claims.json 中 type=unknown 的五个必填子字段；页面六段由 schema 定义不由上游定义"
+      }
+    ],
+    "linter_rules": [
+      {
+        "rule": "KB001",
+        "source": "§8 L714",
+        "check": "Inventory.md 必须存在",
+        "impl": "文件存在性"
+      },
+      {
+        "rule": "KB002",
+        "source": "§8 L723",
+        "check": "Decision 必须是一等产物",
+        "impl": "目录中存在 Decision 页"
+      },
+      {
+        "rule": "KB003",
+        "source": "§8 L725",
+        "check": "Risk 必须是一等产物",
+        "impl": "目录中存在 Risk 页"
+      },
+      {
+        "rule": "KB004",
+        "source": "§6.4 L376",
+        "check": "无竞争规范名",
+        "impl": "注册表别名冲突检测"
+      },
+      {
+        "rule": "KB005",
+        "source": "§6.5 L418",
+        "check": "registry-backed 链接指向存在的页",
+        "impl": "链接目标存在性"
+      },
+      {
+        "rule": "KB006",
+        "source": "§10.4 L1020",
+        "check": "wiki link 可解析",
+        "impl": "与 KB005 合并"
+      },
+      {
+        "rule": "KB007",
+        "source": "§7.2 L534",
+        "check": "每个 glossary 条目必须成页",
+        "impl": "按 C26 拒绝，改为条目覆盖率指标"
+      },
+      {
+        "rule": "KB008",
+        "source": "§10.2 L961-969",
+        "check": "必备五段齐备",
+        "impl": "段标题存在性"
+      },
+      {
+        "rule": "KB009",
+        "source": "§10.2 L983",
+        "check": "必备段不得为空壳",
+        "impl": "段内容最小长度 + 非模板句"
+      },
+      {
+        "rule": "KB010",
+        "source": "§13.4 L1229-1239",
+        "check": "措辞不得过度确定",
+        "impl": "措辞扫描"
+      },
+      {
+        "rule": "KB011",
+        "source": "§14.2 L1262-1274",
+        "check": "Unknown 五字段齐备",
+        "impl": "字段存在性"
+      },
+      {
+        "rule": "KB012",
+        "source": "§14.2 L1275",
+        "check": "禁止空洞未知",
+        "impl": "措辞扫描"
+      },
+      {
+        "rule": "KB013",
+        "source": "§12.5 L1176-1178",
+        "check": "证据中不得出现密钥值",
+        "impl": "熵检测 + 已知模式扫描"
+      },
+      {
+        "rule": "KB014",
+        "source": "§15.1",
+        "check": "命名一致性",
+        "impl": "注册表交叉比对"
+      },
+      {
+        "rule": "KB015",
+        "source": "§15.3",
+        "check": "主张一致性",
+        "impl": "claims.json 查询"
+      },
+      {
+        "rule": "KB016",
+        "source": "§6.9 L499",
+        "check": "终止判据",
+        "impl": "连续两轮新增主张数 / 首轮 < 阈值"
+      },
+      {
+        "rule": "KB017",
+        "source": "§4.3 L128",
+        "check": "无证据主张不得标为 fact",
+        "impl": "claim_type=fact 必须有 evidence_refs"
+      },
+      {
+        "rule": "KB018",
+        "source": "§5.6 L247-248",
+        "check": "provider 配置存在则必须有 Integration 页或解释性 Unknown",
+        "impl": "配置扫描结果 × 页面清单"
+      }
+    ],
+    "linter_note": "18 条中 17 条可完全机器判定；KB007 按 C26 改为覆盖率指标而非硬失败",
+    "rerun_contract": [
+      {
+        "upstream_point": "新证据出现",
+        "measurable": "repo_facts.json 哈希变化"
+      },
+      {
+        "upstream_point": "Product Model 变更",
+        "measurable": "claims.json 中 claim_type=inference 记录数变化"
+      },
+      {
+        "upstream_point": "注册表变更",
+        "measurable": "注册表条目增删或别名变更"
+      },
+      {
+        "upstream_point": "页面新增/删除",
+        "measurable": "页面清单差异"
+      },
+      {
+        "upstream_point": "证据冲突被记录",
+        "measurable": "claims.json 新增冲突组"
+      },
+      {
+        "upstream_point": "Unknown 被解决",
+        "measurable": "Unknown 状态 open → resolved"
+      },
+      {
+        "upstream_point": "构建序被违反",
+        "measurable": "linter KB005 失败"
+      },
+      {
+        "upstream_point": "一致性审查发现新问题",
+        "measurable": "linter 结果差异"
+      },
+      {
+        "upstream_point": "方法论修订",
+        "measurable": "linter rule 集版本变化"
+      }
+    ],
+    "token_budget_mapping": {
+      "R0_facts": "§6.1 Inventory → 由 CLI 渲染，零模型调用",
+      "R1_skeleton": "§6.2 Product Model + §6.4 Registry → 模型只读 R0 产物 + 少量定点文件，产出草稿 claims",
+      "R2_targeted_search": "§9 各类启发式 → 按 §9.5 扫描面优先级取前 N 项，受预算上限约束",
+      "R3_cross_validation": "§12 证据规则 + §15 一致性 → linter 跑 KB* 规则集，模型只处理 linter 报出的冲突",
+      "R4_render": "§6.5 十四步构建序 + §10 文档标准 → schema 驱动渲染，模型不参与结构决策",
+      "key_insight": "把「每阶段回看整仓」替换为「每轮只读上一轮产物 + 定点文件」，token 成本从 O(仓库大小 × 14) 降为 O(仓库大小 × 1 + 定点读取)"
+    }
+  },
+  "acceptance": {
+    "commit_pinned": true,
+    "reviewed_scope_stated": true,
+    "license_and_attribution_sourced": true,
+    "product_model_fully_decomposed": true,
+    "knowledge_entity_and_relation_model_proposed": true,
+    "overlap_with_01_02_identified": true,
+    "no_unverified_inference_as_source_fact": true,
+    "no_engine_or_unauthorized_file_modified": true
+  },
+  "acceptance_note": "全部 8 项通过。详见 docs/upstream-audit-03-repository-discovery.md 第 13 节验收表",
+  "test_status": {
+    "unit": "NOT_RUN",
+    "integration": "NOT_RUN",
+    "static_check": "NOT_RUN",
+    "executable_verification": "NOT_RUN",
+    "reason": "上游仓库不存在任何可执行物：无脚本、无依赖清单、无测试文件、无 CI 配置、无构建配置。1820 行文档零行代码。language=null 与 size=22KB 为外部旁证",
+    "enumeration_proof": "tree.json truncated=false；files.tsv 仅 4 行；此结论不是「没找到」，是「枚举全部 4 个 blob 后确认不存在」"
+  },
+  "snapshot_integrity_verified_again": "本次复核 4/4 [OK]：git hash-object 与 API blob SHA 全部一致，sha256sum 第二道指纹一致，git check-ignore 确认 .gitignore:4:upstreams/ 仍生效"
+}

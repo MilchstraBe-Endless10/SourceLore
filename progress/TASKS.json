@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-10-31T14:13:00+08:00",
+  "updated_at": "2026-10-31T15:20:00+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -128,16 +128,28 @@
       "goal": "审计 repository-discovery",
       "inputs": "上游地址（已核实，来自总控提示词 §C 原文）：https://github.com/maboasoft/repository-discovery",
       "expected_outputs": [
+        "docs/upstream-audit-03-repository-discovery.md",
+        "progress/UPSTREAM-03-audit.json",
         "docs/upstream-manifest.json 条目"
       ],
-      "status": "PENDING",
-      "verification_commands": [],
-      "evidence_paths": [],
+      "status": "DONE",
+      "verification_commands": [
+        "python3 -c \"import json;json.load(open('progress/UPSTREAM-03-audit.json'))\"",
+        "git check-ignore -v upstreams/UPSTREAM-03-repository-discovery/tree/SKILL.md"
+      ],
+      "evidence_paths": [
+        "docs/upstream-audit-03-repository-discovery.md",
+        "progress/UPSTREAM-03-audit.json",
+        "upstreams/UPSTREAM-03-repository-discovery/files.tsv",
+        "upstreams/UPSTREAM-03-repository-discovery/tree.json"
+      ],
       "git_commit": null,
       "blocked_reason": null,
       "depends_on": [
         "M0-02"
-      ]
+      ],
+      "audit_sha": "557703fffe69c9ab97eff67acabea6b346afd89c",
+      "completed_at": "2026-10-31T15:20:00+08:00"
     },
     {
       "id": "UPSTREAM-04",
