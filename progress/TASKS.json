@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-10-31T10:32:57+08:00",
+  "updated_at": "2026-10-31T14:00:00+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -66,35 +66,61 @@
       "goal": "审计 repo-analyzer-skill：URL、Commit、入口文件、脚本依赖、可复用设计、许可证证据、冲突缺陷、吸收策略",
       "inputs": "上游地址（已核实，来自总控提示词 §C 原文）：https://github.com/jeannie-jy/repo-analyzer-skill",
       "expected_outputs": [
-        "upstreams/ 只读快照",
-        "docs/upstream-manifest.json 条目",
-        "docs/fusion-matrix.md 条目"
+        "docs/upstream-audit-01-repo-analyzer-skill.md",
+        "progress/UPSTREAM-01-audit.json"
       ],
-      "status": "READY",
-      "verification_commands": [],
-      "evidence_paths": [],
+      "status": "DONE",
+      "verification_commands": [
+        "gh api repos/jeannie-jy/repo-analyzer-skill --jq '.id,.default_branch,.pushed_at'",
+        "gh api repos/jeannie-jy/repo-analyzer-skill/commits/main --jq '.sha'",
+        "git check-ignore -v upstreams/UPSTREAM-01-repo-analyzer-skill/tree",
+        "python3 -c \"import json;json.load(open('progress/UPSTREAM-01-audit.json'))\""
+      ],
+      "evidence_paths": [
+        "docs/upstream-audit-01-repo-analyzer-skill.md",
+        "progress/UPSTREAM-01-audit.json",
+        "upstreams/UPSTREAM-01-repo-analyzer-skill/tree"
+      ],
       "git_commit": null,
       "blocked_reason": null,
       "depends_on": [
         "M0-02"
-      ]
+      ],
+      "audit_sha": "b8c000f60c03003cbb08e6737b2e8193289904ea",
+      "completed_at": "2026-10-31T12:15:00+08:00"
     },
     {
       "id": "UPSTREAM-02",
       "milestone": "M1",
-      "goal": "审计 deer-flow",
-      "inputs": "上游地址（已核实，来自总控提示词 §C 原文）：https://github.com/bytedance/deer-flow/tree/main/skills/public/github-deep-research",
+      "goal": "审计 deer-flow 的 skills/public/github-deep-research 子树：Commit、许可证、四轮研究流程实现度、GitHub API 采集纪律、来源证据分层、与 UPSTREAM-01 的互补边界与统一 Collector 融合判定",
+      "inputs": "https://github.com/bytedance/deer-flow/tree/main/skills/public/github-deep-research",
       "expected_outputs": [
+        "docs/upstream-audit-02-github-deep-research.md",
+        "progress/UPSTREAM-02-audit.json",
         "docs/upstream-manifest.json 条目"
       ],
-      "status": "PENDING",
-      "verification_commands": [],
-      "evidence_paths": [],
+      "status": "DONE",
+      "verification_commands": [
+        "python3 -m json.tool progress/UPSTREAM-02-audit.json > /dev/null",
+        "python3 -m json.tool progress/TASKS.json > /dev/null",
+        "python3 -m json.tool progress/STATE.json > /dev/null",
+        "python3 -m json.tool docs/upstream-manifest.json > /dev/null",
+        "git check-ignore -v upstreams/UPSTREAM-02-deer-flow/tree",
+        "test -f docs/upstream-audit-02-github-deep-research.md"
+      ],
+      "evidence_paths": [
+        "docs/upstream-audit-02-github-deep-research.md",
+        "progress/UPSTREAM-02-audit.json",
+        "upstreams/UPSTREAM-02-deer-flow/tree",
+        "upstreams/UPSTREAM-02-deer-flow/files.tsv"
+      ],
       "git_commit": null,
       "blocked_reason": null,
       "depends_on": [
         "M0-02"
-      ]
+      ],
+      "audit_sha": "44e372dd7f8a511e6223f548f55f7b4c939ca226",
+      "completed_at": "2026-10-31T14:00:00+08:00"
     },
     {
       "id": "UPSTREAM-03",

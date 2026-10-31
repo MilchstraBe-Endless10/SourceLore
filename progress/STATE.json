@@ -2,11 +2,11 @@
   "project": "SourceLore",
   "schema_version": 1,
   "active_milestone": "M1",
-  "active_task": "UPSTREAM-01",
-  "status": "READY",
+  "active_task": "UPSTREAM-02",
+  "status": "IN_PROGRESS",
   "last_verified_commit": "ee8550682692fc30e47856ec826d788cec21c135",
-  "last_test_summary": "NOT_RUN",
+  "last_test_summary": "UPSTREAM-02 审计通过（只读快照，未执行上游代码；上游子树无任何测试文件，测试状态 NOT_RUN）",
   "blockers": [],
-  "notes": "M0 Gate 通过；基线 commit 已建立。进入 M1，先核实六个上游的真实 URL 与 Commit。",
-  "updated_at": "2026-10-31T10:05:48+08:00"
+  "notes": "M0 Gate 通过。UPSTREAM-01 @ b8c000f6 审计完成（MIT，15 项能力 REUSE 4 / ADAPT 8 / REJECT 3，6 条缺陷，D1 证据仅验存在为最高优先）。UPSTREAM-02 @ 44e372dd（deer-flow skills/public/github-deep-research 子树）审计完成：MIT（双版权主体），18 项能力 REUSE 4 / ADAPT 8 / REIMPLEMENT 1 / REJECT 5，12 条缺陷（blocker 3：单页取数、format_tree 静默截断、summarize_repo 吞异常）。核心结论：四轮流程只有散文无实现；SourceLore 必须自建唯一 Collector（改走平台 gh api、强制分页、检查 trees.truncated、失败抛异常、按 SHA 缓存），并建立 source_type 四分类（github_api / readme_claim / external_web / inference）。与 UPSTREAM-01 互补不重复：01 出确定性源码事实，02 出带来源的生态叙述，共用同一 Collector 且事实只算一次。下一步：UPSTREAM-03..06 逐个钉 SHA 后审计（均仍为 PENDING，未开工）。",
+  "updated_at": "2026-10-31T14:00:00+08:00"
 }

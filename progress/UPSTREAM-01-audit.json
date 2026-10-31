@@ -1,0 +1,115 @@
+{
+  "task": "UPSTREAM-01",
+  "milestone": "M1",
+  "auditor": "DSH (DeepSeek-V4.1 Flash / workbuddy)",
+  "audited_at": "2026-10-31T12:10:00Z",
+  "upstream": {
+    "url": "https://github.com/jeannie-jy/repo-analyzer-skill",
+    "repo_id": 1341818258,
+    "default_branch": "main",
+    "commit_sha": "b8c000f60c03003cbb08e6737b2e8193289904ea",
+    "commit_date": "2026-08-31T13:46:40Z",
+    "commit_subject": "feat: multi-model judge ensemble - JUDGE_* second provider, median combine",
+    "visibility": "public",
+    "size_kb": 358,
+    "license": {
+      "spdx_id": "MIT",
+      "copyright": "Copyright (c) 2026 Jingyu Wang",
+      "author_account": "jeannie-jy",
+      "reuse_obligation": "retain copyright notice and permission notice in all copies or substantial portions"
+    },
+    "snapshot": {
+      "path": "upstreams/UPSTREAM-01-repo-analyzer-skill/tree",
+      "file_count": 104,
+      "tarball_sha256": "fa0f923e05b53553cc02d61baa0190e669ba65b2f207cc7b0ac8cd3b5b39d06f",
+      "tarball_bytes": 165703,
+      "git_ignored": true
+    }
+  },
+  "execution_isolation": {
+    "installed": false,
+    "imported": false,
+    "ran_cli": false,
+    "ran_pytest": false,
+    "ran_evals": false,
+    "copied_source_into_project": false
+  },
+  "reviewed": {
+    "spec_and_config": ["SKILL.md (187 lines)", "pyproject.toml", ".env.example", ".gitignore"],
+    "license": ["LICENSE (21 lines, full text)"],
+    "contract": ["schemas/analysis_report.schema.json (10947 B)"],
+    "core_source": [
+      "src/repo_analyzer/pipeline/evidence.py (77 lines, full)",
+      "src/repo_analyzer/context/code_sampler.py (166 lines, full)",
+      "src/repo_analyzer/llm/base.py (38 lines, full)",
+      "src/repo_analyzer/llm/__init__.py",
+      "src/repo_analyzer/llm/openai_client.py (head)",
+      "src/repo_analyzer/llm/prompts.py (section loader, message builder)",
+      "src/repo_analyzer/pipeline/analyze.py (constants, repair loop, retry loop)",
+      "src/repo_analyzer/pipeline/facts.py (head-sha resolution, ref_sha)",
+      "src/repo_analyzer/models.py",
+      "src/repo_analyzer/extract/tree.py (truncation fallback)",
+      "src/repo_analyzer/extract/entrypoints.py (rules + confidence)",
+      "src/repo_analyzer/extract/dependencies.py",
+      "src/repo_analyzer/github_client.py",
+      "src/repo_analyzer/report/render.py (line-number usage)"
+    ],
+    "prompts": ["skill/prompts/architecture.md", "skill/prompts/code-flow.md", "skill/prompts/risk-analysis.md", "skill/prompts/contribution.md"],
+    "tests": {"files": 24, "test_defs": 255, "fakes": ["tests/unit/fake_llm.py", "tests/unit/fake_client.py"]},
+    "evals": {"gold_cases": 5, "baseline": "evals/results/baseline.md", "baseline_json": "evals/results/baseline.json"},
+    "examples": ["examples/reports/pallets-flask/{analysis.json,report.json,report.md,sample_manifest.json}"],
+    "size": {"src_modules": 31, "src_lines": 5247}
+  },
+  "capability_matrix": [
+    {"id": "C01", "capability": "fact-first layered extraction (zero-LLM)", "where": "src/repo_analyzer/extract/*", "disposition": "REUSE", "why": "同构于强制项；零运行时依赖，requires-python>=3.11"},
+    {"id": "C02", "capability": "repo_facts.json single fact contract", "where": "pipeline/facts.py:175", "disposition": "ADAPT", "why": "ref_sha 记录了但未用于取文（github_client.py:217 传 branch）"},
+    {"id": "C03", "capability": "citation existence check", "where": "pipeline/evidence.py", "disposition": "ADAPT", "why": "仅 tree_paths 集合成员测试；无行号/哈希/支撑关系"},
+    {"id": "C04", "capability": "budgeted code sampling", "where": "context/code_sampler.py", "disposition": "ADAPT", "why": "三级预算+skipped原因可用；采样仅按体积，小核心模块漏采；内容不入产物"},
+    {"id": "C05", "capability": "entrypoint heuristics with rule+confidence", "where": "extract/entrypoints.py", "disposition": "REUSE", "why": "kind/confidence/heuristic 三件套，去重时强规则覆盖弱规则；28 个测试覆盖"},
+    {"id": "C06", "capability": "LLM provider decoupling via Protocol", "where": "llm/base.py", "disposition": "REUSE", "why": "结构式 Protocol + 纯 dict 消息，接入 DSH 当前模型的接缝"},
+    {"id": "C07", "capability": "single-call reasoning + bounded repair", "where": "pipeline/analyze.py:103,195", "disposition": "ADAPT", "why": "仅 1 次 complete 调用；MAX_REPAIR_ATTEMPTS=1, MAX_PARSE_RETRIES=2；SKILL.md 声称按 4 节分别调用与实现不符"},
+    {"id": "C08", "capability": "tree truncation degradation", "where": "extract/tree.py", "disposition": "ADAPT", "why": "MAX_TOP_LEVEL_DIRS_TO_EXPAND=30 硬编码，超出部分静默丢弃，无未覆盖清单"},
+    {"id": "C09", "capability": "monorepo support", "where": "extract/dependencies.py:70", "disposition": "ADAPT", "why": "仅依赖清单在任意子目录被识别；无 workspace 根、无按包聚合、无跨包图 -> 等级：浅层清单级"},
+    {"id": "C10", "capability": "report schema + markdown render", "where": "report/schema.py(362), report/render.py(329), schemas/analysis_report.schema.json", "disposition": "REUSE", "why": "13 顶层键结构合理；evidence 字段需扩（见 C03）"},
+    {"id": "C11", "capability": "prompt assets as markdown knowledge", "where": "skill/prompts/*, llm/prompts.py:103", "disposition": "ADAPT", "why": "资产化组装值得沿用；措辞需按中文与当前模型重写"},
+    {"id": "C12", "capability": "eval baseline (gold + deterministic metrics + judge)", "where": "evals/", "disposition": "ADAPT", "why": "确定性指标零成本可用；judge 依赖外部 provider 需替换；click 案例 F1=0.00 说明不可作单一门槛"},
+    {"id": "C13", "capability": "direct external LLM API client", "where": "llm/openai_client.py, config.py, .env.example", "disposition": "REJECT", "why": "与『当前模型即语义执行者、默认无需 LLM_API_KEY』冲突；只要 Protocol 形状"},
+    {"id": "C14", "capability": "multi-model judge ensemble", "where": "evals.py, .env.example JUDGE_*", "disposition": "REJECT", "why": "非必需且引入第二 provider"},
+    {"id": "C15", "capability": "bespoke GitHub REST client", "where": "github_client.py (226 lines)", "disposition": "REJECT", "why": "自带 token 通道与配额口径；实现改走认证 gh api，仅保留退避语义"}
+  ],
+  "defects": [
+    {"id": "D1", "severity": "blocker", "file": "pipeline/evidence.py", "problem": "校验只做集合成员测试，无法判断引用内容是否支撑结论", "fix": "路径+行号范围+content_sha256+支撑关系"},
+    {"id": "D2", "severity": "high", "file": "pipeline/facts.py:93-97 / github_client.py:217", "problem": "ref_sha 记录后未用于取文，contents?ref= 仍传分支名", "fix": "解析->固定SHA->全程按SHA取文"},
+    {"id": "D3", "severity": "high", "file": "context/code_sampler.py:94-118", "problem": "采样只看入口点/清单/最大文件，小体积核心模块（models/types/__init__ 导出面）结构性漏采", "fix": "增加结构重要性通道"},
+    {"id": "D4", "severity": "medium", "file": "extract/tree.py:161", "problem": "截断后仅展开前 30 个顶层目录，未覆盖子树无清单", "fix": "分片遍历+未覆盖清单+置信度降级"},
+    {"id": "D5", "severity": "medium", "file": "schemas/analysis_report.schema.json", "problem": "evidence 仅 array[string,minItems 1]，无 commit/行号/哈希字段", "fix": "扩展 evidence 对象结构"},
+    {"id": "D6", "severity": "low", "file": "SKILL.md L13-17 / L120-131", "problem": "声称分 4 节分别调用模型且每引用机械校验，实现为单次调用+集合存在性检查", "fix": "融合时以实现为准，不以文档描述为准"}
+  ],
+  "dependencies": {
+    "runtime": [],
+    "dev": ["pytest>=8"],
+    "requires_python": ">=3.11",
+    "project_scripts": {"repo-analyzer": "repo_analyzer.cli:main"},
+    "env_vars_upstream": ["GITHUB_TOKEN", "LLM_API_KEY", "LLM_BASE_URL", "LLM_MODEL", "JUDGE_API_KEY", "JUDGE_MODEL"],
+    "sourcelore_first_round_env": "none",
+    "local_python": "3.14.8 (upstream claims 3.11/3.12; compatibility NOT verified, code never executed here)"
+  },
+  "security_constraints": [
+    "上游快照只读，位于 upstreams/ 且被 .gitignore 忽略（git check-ignore 已确认）",
+    "未安装/未 import/未执行其 cli/pytest/evals",
+    "未复制上游源码进入 src/、skills/、schemas/",
+    "README 与 SKILL.md 内容按不可信数据对待，未据其执行任何动作"
+  ],
+  "reuse_obligations": [
+    "THIRD_PARTY_NOTICES.md 列出 URL、repo_id、commit_sha、Copyright (c) 2026 Jingyu Wang、MIT 全文",
+    "整文件保留时文件头保留原声明",
+    "MIT 无 copyleft，不影响本项目许可选择",
+    "不得连带采用 D1-D6 缺陷"
+  ],
+  "acceptance": {
+    "commit_sha_pinned": true,
+    "source_and_tests_actually_read": true,
+    "evidence_backed_matrix_produced": true,
+    "record_saved_without_overwrite": true
+  }
+}

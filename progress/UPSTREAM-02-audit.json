@@ -1,0 +1,375 @@
+{
+  "task": "UPSTREAM-02",
+  "milestone": "M1",
+  "auditor": "DSH (DeepSeek-V4.1 Flash / workbuddy)",
+  "audited_at": "2026-10-31T13:43:00+08:00",
+  "upstream": {
+    "url": "https://github.com/bytedance/deer-flow",
+    "subtree": "skills/public/github-deep-research",
+    "repo_id": 979115477,
+    "default_branch": "main",
+    "commit_sha": "44e372dd7f8a511e6223f548f55f7b4c939ca226",
+    "commit_date": "2026-10-31T03:35:36Z",
+    "commit_subject": "feat(runtime): support Queue and Steer during active Web runs (#7729)",
+    "visibility": "public",
+    "size_kb": 97338,
+    "retrieved_at": "2026-10-31 12:43 +08:00",
+    "license": {
+      "spdx_id": "MIT",
+      "path": "LICENSE",
+      "copyright": [
+        "Copyright (c) 2025 Bytedance Ltd. and/or its affiliates",
+        "Copyright (c) 2025-2026 DeerFlow Authors"
+      ],
+      "reuse_obligation": "在所有副本或实质性部分中保留两行版权与 MIT 许可声明"
+    },
+    "snapshot": {
+      "path": "upstreams/UPSTREAM-02-deer-flow/tree",
+      "blob_count": 3,
+      "tree_count": 2,
+      "files": [
+        {
+          "path": "SKILL.md",
+          "lines": 168,
+          "bytes": 5257,
+          "sha256": "b6a19fa2cf70b60a4cc920d8ebee079b6126eaa483eb612abe346dcbb0b02683"
+        },
+        {
+          "path": "scripts/github_api.py",
+          "lines": 358,
+          "bytes": 12571,
+          "sha256": "03ef058acd92e18de24e9672235c789e44741001d135cf3c6d3b5b6f6da7e660"
+        },
+        {
+          "path": "assets/report_template.md",
+          "lines": 192,
+          "bytes": 3580,
+          "sha256": "fdd14d2ebf049ef7bf7bb839ac76c259bd4cfa05614a22b844a4e97210f62502"
+        },
+        {
+          "path": "LICENSE",
+          "lines": 21,
+          "bytes": 1134,
+          "sha256": "b23dff4d4bac8d17b6efaaa7e88c2b730149c4dda45699ce676b719cfdffe7e1"
+        }
+      ],
+      "git_ignored": true,
+      "git_ignore_rule": ".gitignore:4:upstreams/"
+    }
+  },
+  "execution_isolation": {
+    "installed": false,
+    "imported": false,
+    "ran_cli": false,
+    "ran_pytest": false,
+    "ran_evals": false,
+    "copied_source_into_project": false
+  },
+  "reviewed": {
+    "skill_md": true,
+    "scripts_github_api_py": true,
+    "assets_report_template_md": true,
+    "license": true,
+    "test_files": "NOT_RUN — 子树仅 3 个 blob，经 files.tsv 全量枚举确认不存在任何测试文件",
+    "dependency_manifest": "NOT_RUN — 不存在 requirements*/pyproject.toml/setup.cfg/配置文件",
+    "python_version_compat": "NOT_RUN — 未执行其代码，不作兼容性断言"
+  },
+  "ten_questions": {
+    "q1_four_round_flow": "四轮为散文建议，无状态机、无交接 schema、无终止判据；仅第 1 轮有确定性实现，交接载体只有 LLM 上下文",
+    "q2_github_api_discipline": "认证可用但匿名降级无提示；分页仅 get_issues 有循环；限流/重试/退避/缓存全部零实现（grep 计数 retry=0 sleep=0 backoff=0 Retry-After=0 etag=0 x-ratelimit=0）；无 trees.truncated 检查",
+    "q3_data_collection": "五类数据全部单页取数，无法支撑报告要求的完整时间线；labels 参数不可达",
+    "q4_search_reliability": "来源优先级仅序数无权重；去重与 URL 规范化零实现；交叉验证为祈使句无机制",
+    "q5_activity_analysis": "活跃度/版本/社区三维所依赖的 get_commit_activity、get_code_frequency、get_tags、search_issues 均为死代码，CLI 不可达",
+    "q6_stale_conflict_missing": "无时间戳比较；无冲突承载字段；summarize_repo 三处 except Exception 把失败与空数据混为一谈",
+    "q7_deerflow_deps": "依赖 web_search/web_fetch 及直接执行脚本的指令；脚本侧 requests 为可选依赖有 urllib 降级，可移植性高于表象；但取数通道必须改走平台 gh api",
+    "q8_source_typing": "完全缺失：引用格式只有标题与 URL，无来源类型、无取数时间、无 Commit SHA，API 事实与博客说法结构上无法区分",
+    "q9_false_precision": "三处可指认：contributor_count 静默截断到 100；置信度百分比未校准；模板固定基数 + 无条件 Status: Complete",
+    "q10_vs_upstream01": "互补不重复：01 出确定性源码事实（repo_facts.json），02 出带来源的生态叙述；唯一交集是 GitHub 取数，按单一 Collector 消解，事实只算一次"
+  },
+  "capability_matrix": [
+    {
+      "id": "C01",
+      "capability": "GitHub REST 端点清单与取数语义",
+      "where": "scripts/github_api.py L101-230",
+      "disposition": "ADAPT",
+      "why": "端点路径与 Accept: application/vnd.github.raw 用法正确，可作 Collector 端点规格表；但其周边必须全部重写（改走平台 gh api、强制多页、检查 truncated、暴露 since/until/path）"
+    },
+    {
+      "id": "C02",
+      "capability": "get_tree 用 HEAD 让服务端解析默认分支",
+      "where": "scripts/github_api.py L114-125, docstring L119-121",
+      "disposition": "REUSE",
+      "why": "唯一设计正确处：不硬编 main/master，交给服务端解析。仅限解析那一次，解析完必须立刻钉 SHA"
+    },
+    {
+      "id": "C03",
+      "capability": "原始内容直取（raw accept）",
+      "where": "scripts/github_api.py L127-152",
+      "disposition": "REUSE",
+      "why": "取 README 与单文件正文的正确方式，避免 base64 编解码环节；Collector 沿用，但 ref 必须是固定 SHA"
+    },
+    {
+      "id": "C04",
+      "capability": "requests 可选依赖的优雅降级",
+      "where": "scripts/github_api.py L7-19, L13-50 RequestsFallback",
+      "disposition": "ADAPT",
+      "why": "取「单一依赖不阻断运行」的思想；弃其双通道实现，Collector 应只走 gh api 子进程，保留 urllib 回退等于留第二套通道"
+    },
+    {
+      "id": "C05",
+      "capability": "失败必须是异常而非写入数据通道",
+      "where": "scripts/github_api.py L53-61 GitHubAPIError docstring",
+      "disposition": "REUSE",
+      "why": "被上游自身缺陷史证明的判断（限流与缺 README 曾在 stdout 上无法区分）；Collector 契约要写死：失败抛异常并携带 endpoint 与 HTTP 状态"
+    },
+    {
+      "id": "C06",
+      "capability": "分页遍历与短页终止判据",
+      "where": "scripts/github_api.py L186-194",
+      "disposition": "ADAPT",
+      "why": "循环结构可借，但 if len(items) < limit: break 判据错误，应与 per_page 比较或看 Link 的 rel=next，否则 PR 密集仓库提前退出"
+    },
+    {
+      "id": "C07",
+      "capability": "Issue 列表排除 PR 的语义",
+      "where": "scripts/github_api.py L192",
+      "disposition": "REUSE",
+      "why": "GitHub /issues 混排 PR 是反复踩的坑，上游为此专门发过 commit 5ca17829be；语义直接沿用"
+    },
+    {
+      "id": "C08",
+      "capability": "仓库摘要聚合 summarize_repo",
+      "where": "scripts/github_api.py L257-312",
+      "disposition": "REJECT",
+      "why": "照搬不可用：三处 except Exception 吞异常、contributor_count 双调用且截断到 100。仅保留「每仓一个扁平摘要供下游消费」的思想，缺失值须给出 unavailable 原因"
+    },
+    {
+      "id": "C09",
+      "capability": "树格式化 format_tree",
+      "where": "scripts/github_api.py L232-255",
+      "disposition": "REJECT",
+      "why": "lines[:100] 静默截断且无标记，max_depth=3 之外静默丢弃；Collector 需要结构化树而非供人阅读的缩进字符串"
+    },
+    {
+      "id": "C10",
+      "capability": "四轮研究流程",
+      "where": "SKILL.md L10-15, L61-75",
+      "disposition": "REIMPLEMENT",
+      "why": "分轮与由广到深的探索顺序正确，但只是散文：无状态、无交接、无预算强制、无退出路径；须实现为显式状态机"
+    },
+    {
+      "id": "C11",
+      "capability": "查询策略 Broad to Narrow",
+      "where": "SKILL.md L19-28",
+      "disposition": "ADAPT",
+      "why": "查询模板序列可用，必须补去重与 URL 规范化，否则镜像转载会击穿「2+ 独立来源」的三角验证"
+    },
+    {
+      "id": "C12",
+      "capability": "五层来源优先级",
+      "where": "SKILL.md L30-35",
+      "disposition": "ADAPT",
+      "why": "分层直觉正确，但仅有序数无权重；须数字化并为每层给出可判定的入层规则（verified media outlet 必须有定义或白名单）"
+    },
+    {
+      "id": "C13",
+      "capability": "报告九节结构",
+      "where": "SKILL.md L77-89 + assets/report_template.md",
+      "disposition": "ADAPT",
+      "why": "节划分覆盖面合理可作骨架；必须去掉固定基数与无条件 Status: Complete，并把置信度换成可机械复核的条件陈述"
+    },
+    {
+      "id": "C14",
+      "capability": "来源分桶清单（Primary/Media/Academic/Community）",
+      "where": "assets/report_template.md L139-155",
+      "disposition": "ADAPT",
+      "why": "全套资产里最接近来源类型标记的设计，思想正确；须升级为结构化字段 source_type + retrieved_at + commit_sha"
+    },
+    {
+      "id": "C15",
+      "capability": "置信度三档百分比",
+      "where": "SKILL.md L123-131, assets/report_template.md L159-168",
+      "disposition": "REJECT",
+      "why": "90%+/70-89%/50-69% 未经任何校准，无样本集无准确率测量；唯一功能是让报告显得专业，属虚假精准度"
+    },
+    {
+      "id": "C16",
+      "capability": "强制内联引用规则与好/坏示例",
+      "where": "SKILL.md L146-152, L156-168",
+      "disposition": "ADAPT",
+      "why": "引用纪律正确、示例教学可借；但为祈使句无机械校验，SourceLore 必须把校验从提示词搬到校验器"
+    },
+    {
+      "id": "C17",
+      "capability": "Mermaid 图表硬要求",
+      "where": "SKILL.md L91-121, assets/report_template.md L74-83",
+      "disposition": "REJECT",
+      "why": "为出图而出图：模板固定 4 节点 flowchart，与真实架构无关时也必须填，是形式驱动虚构的直接来源；图表应由数据触发"
+    },
+    {
+      "id": "C18",
+      "capability": "自建 GitHub REST 客户端",
+      "where": "scripts/github_api.py 全文（GITHUB_TOKEN/BASE_URL/_get）",
+      "disposition": "REJECT",
+      "why": "与 UPSTREAM-01 对 github_client.py 的判定一致，且 Human 明文禁止第二个客户端；平台已有认证 gh api，自带 token 即第二套凭据面与配额口径"
+    }
+  ],
+  "defects": [
+    {
+      "id": "D1",
+      "severity": "blocker",
+      "file": "scripts/github_api.py",
+      "line": 198,
+      "problem": "get_pull_requests/get_releases/get_recent_commits/get_contributors 全部单页取数，而 SKILL.md L74-75 与模板 L38-56 要求完整时间线，报告未说明只有一页",
+      "fix": "Collector 一律翻页至 Link 无 next 或短页（与 per_page 比较）；报告头部登记 coverage 与页数"
+    },
+    {
+      "id": "D2",
+      "severity": "blocker",
+      "file": "scripts/github_api.py",
+      "line": 255,
+      "problem": "format_tree 用 return join(lines[:100]) 静默截断，max_depth=3 之外路径静默丢弃，均无标记无计数",
+      "fix": "改为结构化树输出；任何截断必须显式登记被省略的路径与数量"
+    },
+    {
+      "id": "D3",
+      "severity": "high",
+      "file": "scripts/github_api.py",
+      "line": 192,
+      "problem": "get_issues 短页判据 if len(items) < limit: break 量纲错位，PR 密集仓库在过滤后提前终止，静默少返回（由 commit 5ca17829be 引入）",
+      "fix": "判据改为本页返回数 < per_page，或解析 Link header 判断是否存在 rel=next"
+    },
+    {
+      "id": "D4",
+      "severity": "medium",
+      "file": "scripts/github_api.py",
+      "line": 186,
+      "problem": "get_issues 接收 labels 参数并拼入请求，但 commands L336 的 lambda 永不传值，按 label 过滤能力不可达",
+      "fix": "CLI 暴露 label 参数；或删除该参数避免虚假能力"
+    },
+    {
+      "id": "D5",
+      "severity": "high",
+      "file": "scripts/github_api.py",
+      "line": 292,
+      "problem": "summarize_repo 先调 get_contributors(limit=1) 并绑定到未使用的变量，再调 limit=100 取 len()；300 贡献者仓库报 100，浪费一次配额，输出无近似标注",
+      "fix": "解析 contributors 的 Link header 取 total，或分页取全量后计数；无法取得时输出 unavailable 与原因"
+    },
+    {
+      "id": "D6",
+      "severity": "high",
+      "file": "scripts/github_api.py",
+      "line": 53,
+      "problem": "内容读取器曾把 404/429 写成字符串返回到 stdout 且退出码相同（docstring L53-61 自述），上游已改成抛异常，但修复只覆盖内容读取器",
+      "fix": "把该纪律推广到全文件：任何失败路径不得把错误信息写进数据通道"
+    },
+    {
+      "id": "D7",
+      "severity": "blocker",
+      "file": "scripts/github_api.py",
+      "line": 287,
+      "problem": "summarize_repo 三处 except Exception 把 languages/contributor_count/latest_release 的取数失败降级为 {}/\"N/A\"/None，限流、无权限、仓库不存在、真无数据四种情况输出完全一致",
+      "fix": "捕获具体异常类型并登记原因；缺失值用结构化 unavailable 字段承载；禁止裸 except Exception"
+    },
+    {
+      "id": "D8",
+      "severity": "medium",
+      "file": "scripts/github_api.py",
+      "line": 115,
+      "problem": "get_tree 默认 branch=\"HEAD\" 且 commands L331 不传参，四轮之间若上游推送，各轮看到不同 commit 的树，输出中无 SHA 可对账",
+      "fix": "先解析默认分支再立即钉完整 SHA，之后一切按 SHA 取；输出必带 commit_sha"
+    },
+    {
+      "id": "D9",
+      "severity": "medium",
+      "file": "scripts/github_api.py",
+      "line": 94,
+      "problem": "无限流、无重试、无退避、无缓存（grep 计数 retry/sleep/backoff/Retry-After/etag/x-ratelimit 全为 0），唯一防护是 timeout=30；匿名模式 60 次/小时极易触顶且报错只有 HTTP 403",
+      "fix": "Collector 增加按 (endpoint,params,sha) 的缓存、指数退避重试、限流头解析与提前停止"
+    },
+    {
+      "id": "D10",
+      "severity": "high",
+      "file": "assets/report_template.md",
+      "line": 38,
+      "problem": "模板把基数写成字面槽位（3 阶段、2 分析节、3 行指标、2 竞品、4 节点 flowchart），且 L192 无条件 Status: Complete；无「不适用/降级」的合法出口，结构性激励为填满格子而虚构对称",
+      "fix": "基数由数据决定；状态字段限定为 complete/partial/facts_only；每个小节允许显式声明未覆盖及原因"
+    },
+    {
+      "id": "D11",
+      "severity": "low",
+      "file": "scripts/github_api.py",
+      "line": 213,
+      "problem": "search_issues/get_tags/get_commit_activity/get_code_frequency 四个方法不在 commands 字典（L329-338 共 10 项），CLI 不可达；恰是活跃度/版本分析所需能力",
+      "fix": "接线到 CLI，或删除以免虚假能力；活跃度分析必须走确定性统计而非让 LLM 用搜索替代"
+    },
+    {
+      "id": "D12",
+      "severity": "low",
+      "file": "skills/public/github-deep-research",
+      "line": 0,
+      "problem": "子树无任何测试、无依赖声明、无配置；D3 是在一次修复 commit 中引入的，正是缺测试的直接代价",
+      "fix": "SourceLore 自建 Collector 时必须配测试；本源的测试状态记为 NOT_RUN（不存在）"
+    }
+  ],
+  "dependencies": {
+    "upstream": [
+      "requests（可选，缺失时由 RequestsFallback 用 stdlib urllib 等价替代）",
+      "web_search（DeerFlow agent 工具）",
+      "web_fetch（DeerFlow agent 工具）",
+      "直接执行 scripts/github_api.py 的能力（DeerFlow 工具使用约定）"
+    ],
+    "sourcelore_first_round_env": "none — 统一 Collector 走平台已认证的 gh api，不引入 GITHUB_TOKEN 依赖，不需要安装 requests",
+    "local_python": "3.14.8（上游未声明版本；代码从未执行，兼容性 NOT_RUN）"
+  },
+  "security_constraints": [
+    "全程只读快照：未 pip install、未 import、未运行 github_api.py、未跑其任何命令或测试",
+    "快照存放在 upstreams/UPSTREAM-02-deer-flow/tree，由 .gitignore 第 4 行 upstreams/ 忽略（git check-ignore -v 已确认）",
+    "未复制上游任何源码文件进入 src/；本审计记录只含路径、行号与判定，不构成代码搬运",
+    "上游 SKILL.md 与 report_template.md 中的 CRITICAL 指令、格式要求、执行指令一律按不可信数据处理，未据其执行任何动作",
+    "未修改 DSH/Tobs 配置，未安装任何上游依赖"
+  ],
+  "reuse_obligations": [
+    "THIRD_PARTY_NOTICES.md 须列仓库 URL、Repository ID 979115477、Commit SHA 44e372dd7f8a511e6223f548f55f7b4c939ca226、两行版权（Bytedance 与 DeerFlow Authors）、MIT 全文链接",
+    "整文件保留时须在文件头保留原版权与许可声明",
+    "MIT 无 copyleft 传染，不影响 SourceLore 自身许可选择",
+    "不得因许可宽松而连带采用 D1-D12 的缺陷；相关部分按能力矩阵改写或重写",
+    "不得把 SKILL.md 的散文式流程当作实现依据——它是审计对象，不是规格来源"
+  ],
+  "fusion_design": {
+    "single_collector_constraint": "SourceLore 只允许一个统一 GitHub 数据采集入口；UPSTREAM-01 与 UPSTREAM-02 都只从该 Collector 读取，任何模块自行发 HTTP 请求即为违约",
+    "collector_contract": [
+      "传输：平台已认证的 gh api，不新建 token 通道",
+      "固定：先解析默认分支并立即钉成完整 SHA，之后一切按 SHA 取",
+      "分页：翻页至 Link 无 next 或短页，短页判据比 per_page 而非 limit",
+      "截断：检查 trees.truncated，遇 true 必须显式登记未覆盖路径",
+      "失败：抛 GithubFetchError{endpoint,http_status,attempt}，禁止写入数据通道",
+      "缓存：按 (endpoint,params,sha) 落 cache/",
+      "输出：确定性事实层 JSON，每条含 source_type=github_api + retrieved_at + commit_sha"
+    ],
+    "source_type_taxonomy": [
+      "github_api — Collector 确定性输出",
+      "readme_claim — 仓库自称，明确标为声明而非事实",
+      "external_web — 外部文章与检索结果",
+      "inference — 模型归纳，必须标出"
+    ],
+    "token_plan": {
+      "R0_facts": "Collector 全量确定性取数，LLM 成本 0，产出 ecosystem_facts.json",
+      "R1_skeleton": "1 次 LLM 调用，读事实摘要产出研究缺口清单，约 4k 输入 / 1k 输出，不依赖搜索",
+      "R2_targeted_search": "有条件：每缺口最多 2 条查询、总计上限 6 条，结果规范化去重；不可用则整段跳过并把缺口写进未覆盖节",
+      "R3_cross_validation": "1 次 LLM 调用，产出带 source_type 的断言（verified/single_source/inferred），冲突并列保留不二选一，约 8k",
+      "R4_render": "1 次 LLM 调用或纯脚本，基数由数据决定，头部强制含 commit_sha/retrieved_at/collector_version/coverage，状态仅 complete|partial|facts_only，约 6k",
+      "totals": "LLM 调用 3-4 次、搜索 0-6 次、token 上限约 20k；完全无搜索时仍可产出 facts_only 级可用知识"
+    }
+  },
+  "acceptance": {
+    "commit_sha_pinned": true,
+    "source_and_tests_actually_read": true,
+    "ten_questions_answered_with_evidence": true,
+    "capability_matrix_produced": true,
+    "single_collector_constraint_addressed": true,
+    "tests_not_run_declared": true,
+    "record_saved_without_overwrite": true
+  },
+  "test_status": "NOT_RUN — 上游子树不存在任何测试文件（files.tsv 全量枚举确认），其代码亦未执行；不得据此断言任何功能可用或通过"
+}

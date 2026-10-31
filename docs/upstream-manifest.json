@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-31T10:30:09+08:00",
-  "note": "M1 源核实结果。commit 与许可证证据在逐源审计时补齐。",
+  "generated_at": "2026-10-31T13:58:00+08:00",
+  "note": "M1 源核实结果。UPSTREAM-01 / UPSTREAM-02 已补齐 commit 与许可证证据并完成逐源审计；其余源待审计时补齐。",
   "upstreams": [
     {
       "id": "UPSTREAM-01",
@@ -16,9 +16,15 @@
       "fork": false,
       "pushed_at": "2026-08-31T13:53:21Z",
       "description": "An Agent Skill for automated GitHub repository analysis, architecture understanding, codebase exploration, and contribution planning.",
-      "commit": null,
-      "license_evidence_paths": [],
-      "audit_status": "NOT_RUN"
+      "commit": "b8c000f60c03003cbb08e6737b2e8193289904ea",
+      "license_evidence_paths": [
+        "upstreams/UPSTREAM-01-repo-analyzer-skill/tree/LICENSE",
+        "docs/upstream-audit-01-repo-analyzer-skill.md"
+      ],
+      "audit_status": "DONE",
+      "audit_record": "docs/upstream-audit-01-repo-analyzer-skill.md",
+      "audit_json": "progress/UPSTREAM-01-audit.json",
+      "audited_at": "2026-10-31T12:15:00+08:00"
     },
     {
       "id": "UPSTREAM-02",
@@ -33,9 +39,16 @@
       "fork": false,
       "pushed_at": "2026-10-31T00:46:16Z",
       "description": "An open-source long-horizon SuperAgent harness that researches, codes, and creates. With the help of sandboxes, memories, tools, skill, subagents and message gateway, it handles different levels of tasks that could take minutes to hours.",
-      "commit": null,
-      "license_evidence_paths": [],
-      "audit_status": "NOT_RUN"
+      "commit": "44e372dd7f8a511e6223f548f55f7b4c939ca226",
+      "license_evidence_paths": [
+        "upstreams/UPSTREAM-02-deer-flow/tree/LICENSE",
+        "docs/upstream-audit-02-github-deep-research.md"
+      ],
+      "audit_status": "DONE",
+      "subtree": "skills/public/github-deep-research",
+      "audit_record": "docs/upstream-audit-02-github-deep-research.md",
+      "audit_json": "progress/UPSTREAM-02-audit.json",
+      "audited_at": "2026-10-31T13:58:00+08:00"
     },
     {
       "id": "UPSTREAM-03",
