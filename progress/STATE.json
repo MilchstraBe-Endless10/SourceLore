@@ -2,11 +2,13 @@
   "project": "SourceLore",
   "schema_version": 1,
   "active_milestone": "M1",
-  "active_task": "UPSTREAM-04",
+  "active_task": "UPSTREAM-05",
   "status": "IN_PROGRESS",
   "last_verified_commit": "9ff5f9b77cf5b064cd0018759414b1111ac9be30",
+  "last_revision_commit": "565199f8afb996ed8329ad81cf53a5e5ffa568e7",
+  "last_revision_note": "UPSTREAM-04 最小范围修订：§13.2 缺陷编号与第 7 节对齐（D2/D3 错位、8→4 个 high、D9 不误挂 D8）；TASKS.json 校验命令改为 git hash-object 并新增独立 sha256 复核；新增 §1.1 记录 files.tsv 列序契约与 UPSTREAM-02 冲突。能力 27 项/缺陷 18 条/严重度分布/源码证据/固定 SHA 均未变。六项一致性检查与 5 条验证命令全部 exit 0。",
   "last_test_summary": "UPSTREAM-04 审计通过（只读冻结快照，未执行上游任何指令；上游为纯文档 skill，6 blob / 475 行 / 28286 字节，零脚本、零依赖、零 CI，测试状态 NOT_RUN；快照 6/6 sha256 校验通过）",
   "blockers": [],
-  "notes": "M0 门禁已过。UPSTREAM-01 @ b8c000f6（MIT，15 项能力 REUSE 4 / ADAPT 8 / REJECT 3，6 项缺陷）；UPSTREAM-02 @ 44e372dd（MIT 双版权，18 项能力 REUSE 4 / ADAPT 8 / REIMPLEMENT 1 / REJECT 5，12 项缺陷，3 项 blocker）；UPSTREAM-03 @ 557703ff（CC BY 4.0，无版权行；27 项能力 REUSE 3 / ADAPT 12 / REIMPLEMENT 7 / REJECT 5，18 项缺陷含 3 项 blocker：页面 section 集合冲突、低 token 与全仓扫描矛盾、质量门无实现）；UPSTREAM-04 @ a3e5e9da（MIT，含版权行；子集 swe-research 共 6 blob / 475 行，27 项能力 REUSE 6 / ADAPT 11 / REIMPLEMENT 7 / REJECT 3，18 项缺陷含 3 项 blocker：Reuse/Extend/Create 无判据、INDEX.md 生成前提不存在（规则自相矛盾）、新鲜度无检测机制）。UPSTREAM-04 的独有贡献是知识生命周期与并发语义：可变/不可变层分离、subject 作为身份单位、superseded 关系、派生索引、三轴状态分离（任务/知识快照/单条 claim）、「执行失败不是知识失效」不变量。四源共同结论：单一 GitHub Collector + 单一兼容证据格式。下一步 UPSTREAM-05 先钉 SHA 再审。",
-  "updated_at": "2026-11-01T14:27:00+08:00"
+  "notes": "M0 门禁已过。UPSTREAM-01 @ b8c000f6（MIT，15 项能力 REUSE 4 / ADAPT 8 / REJECT 3，6 项缺陷）；UPSTREAM-02 @ 44e372dd（MIT 双版权，18 项能力 REUSE 4 / ADAPT 8 / REIMPLEMENT 1 / REJECT 5，12 项缺陷，3 项 blocker）；UPSTREAM-03 @ 557703ff（CC BY 4.0，无版权行；27 项能力 REUSE 3 / ADAPT 12 / REIMPLEMENT 7 / REJECT 5，18 项缺陷含 3 项 blocker：页面 section 集合冲突、低 token 与全仓扫描矛盾、质量门无实现）；UPSTREAM-04 @ a3e5e9da（MIT，含版权行；子集 swe-research 共 6 blob / 475 行，27 项能力 REUSE 6 / ADAPT 11 / REIMPLEMENT 7 / REJECT 3，18 项缺陷含 3 项 blocker：Reuse/Extend/Create 无判据、INDEX.md 生成前提不存在（规则自相矛盾）、新鲜度无检测机制）。UPSTREAM-04 的独有贡献是知识生命周期与并发语义：可变/不可变层分离、subject 作为身份单位、superseded 关系、派生索引、三轴状态分离（任务/知识快照/单条 claim）、「执行失败不是知识失效」不变量。四源共同结论：单一 GitHub Collector + 单一兼容证据格式。UPSTREAM-04 已完成最小范围修订（565199f8a），只动文档与校验命令，未重审上游。下一步 UPSTREAM-05（walterfan/lazy-rabbit-skills 的 skills/project-knowledge-base/）先钉 SHA 再审。",
+  "updated_at": "2026-11-01T16:05:00+08:00"
 }

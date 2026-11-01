@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-01T14:27:00+08:00",
+  "updated_at": "2026-11-01T16:05:00+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -177,6 +177,8 @@
         "upstreams/UPSTREAM-04-agent-skills/tree.json"
       ],
       "git_commit": "9ff5f9b77cf5b064cd0018759414b1111ac9be30",
+      "revision_commit": "565199f8afb996ed8329ad81cf53a5e5ffa568e7",
+      "revision_note": "最小范围修订：§13.2 缺陷编号对齐、校验命令改为 blob SHA 语义并新增独立 sha256 复核",
       "blocked_reason": null,
       "depends_on": [
         "M0-02"

@@ -307,6 +307,21 @@ Reuse/Extend/Create 三态 + 查重键（01/02/03 都没有「先查再写」）
 - `progress/UPSTREAM-04-audit.json`（27 项能力 + 18 项缺陷 + 三轴状态机 + 七段生命周期 + 6 条 claim 转移 + 5 类失败处置）
 - 账本更新：`progress/TASKS.json`、`progress/STATE.json`、`docs/upstream-manifest.json`
 
+### 修订轮（2026-11-01 16:00 +08:00）
+
+审计提交 `9ff5f9b77cf5` 之后执行了一次最小范围修订，提交 `565199f8afb996ed8329ad81cf53a5e5ffa568e7`，主题 `fix(audit): align upstream-04 defect references and blob verification`。只改文档与校验命令，**未重审上游**。
+
+改了什么：
+
+1. §13.2 的缺陷编号此前与第 7 节错位——原文的「D2」其实是第 7 节的 D3，「D3」其实是 D8。已按第 7 节（唯一权威）改回 D1/D2/D3。
+2. §13.2 结尾句的「8 个 high」是错的，实为 4 个（D4/D5/D6/D8）；线性重生成（D9）被误挂在 D8 名下，已剥离，D8 恢复为并发写入保护。
+3. `TASKS.json` 的第三条校验命令原本是 `sha256sum -c` 且用 `NR>1` 跳过表头——但 `files.tsv` 根本没有表头，第三列也不是文件字节 SHA-256 而是 Git blob SHA。命令与事实自相矛盾，已替换为 `git hash-object` 逐行比对；另新增一条独立命令单独复核文件字节 SHA-256。两者永不互相替代。
+4. 新增 §1.1，记录 `files.tsv` 的列序契约，以及 `UPSTREAM-02-deer-flow` 的 TSV 列序不同（`type/bytes/path`，无哈希列）这一冲突。只记录，不改写任何历史文件。
+
+没动的：27 项能力及其 6/11/7/3 分布、18 条缺陷及其 3/4/7/4 分布、全部源码行号证据、固定提交 SHA、测试状态全 `NOT_RUN`、隔离记录。
+
+复验结果：5 条验证命令逐条执行全部 exit 0（其中 blob 校验输出 `blob-ok`）；六项一致性检查全部 PASS，退出码 0。
+
 ### 遗留未决（4 条）
 
 1. Reuse 分支是否必须写盘（D17）——本审计提案「不必写盘、只读」，未评审。
