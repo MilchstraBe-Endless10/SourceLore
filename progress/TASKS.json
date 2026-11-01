@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-01T13:52:00+08:00",
+  "updated_at": "2026-11-01T14:27:00+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -175,7 +175,7 @@
         "upstreams/UPSTREAM-04-agent-skills/files.tsv",
         "upstreams/UPSTREAM-04-agent-skills/tree.json"
       ],
-      "git_commit": "PENDING_COMMIT",
+      "git_commit": "9ff5f9b77cf5b064cd0018759414b1111ac9be30",
       "blocked_reason": null,
       "depends_on": [
         "M0-02"
