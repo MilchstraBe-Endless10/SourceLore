@@ -165,8 +165,9 @@
       "verification_commands": [
         "python3 -c \"import json;json.load(open('progress/UPSTREAM-04-audit.json'))\"",
         "git check-ignore -v upstreams/UPSTREAM-04-agent-skills/tree/skills/swe-research/SKILL.md",
-        "sha256sum -c <(awk -F'\\t' 'NR>1{print $3\"  \"$1}' upstreams/UPSTREAM-04-agent-skills/files.tsv)",
-        "gh api repos/SNIKO/agent-skills/commits/master --jq .sha"
+        "awk -F'\\t' -v r=\"upstreams/UPSTREAM-04-agent-skills/tree\" '{print r\"/\"$1\"\\t\"$3}' upstreams/UPSTREAM-04-agent-skills/files.tsv | while IFS=\"$(printf '\\t')\" read -r f want; do got=$(git hash-object \"$f\") || exit 1; [ \"$got\" = \"$want\" ] || { echo \"MISMATCH $f\"; exit 1; }; done; echo blob-ok",
+        "gh api repos/SNIKO/agent-skills/commits/master --jq .sha",
+        "while IFS=\"$(printf '\\t')\" read -r p b s; do [ -z \"$p\" ] && continue; printf \"%s  %s\\n\" \"$(sha256sum \"upstreams/UPSTREAM-04-agent-skills/tree/$p\" | cut -d' ' -f1)\" \"$p\"; done < upstreams/UPSTREAM-04-agent-skills/files.tsv"
       ],
       "evidence_paths": [
         "docs/upstream-audit-04-swe-research.md",

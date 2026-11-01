@@ -691,5 +691,35 @@
     "subject_key 规范化规则目前只是提案，尚未与 UPSTREAM-03 的实体消解表（Canonical Knowledge Registry）对齐。",
     "UPSTREAM-02 的 C08 summarize_repo 混合判定是否应拆成两条，本轮未处理，仍挂账。",
     "未进入 UPSTREAM-05，本审计到此为止。"
-  ]
+  ],
+  "revision": {
+    "round": "最小范围文档与验证命令修订",
+    "date": "2026-11-01T15:50:00+08:00",
+    "scope": "docs/upstream-audit-04-swe-research.md §1.1 新增、§13.2 缺陷编号订正；progress/TASKS.json verification_commands[2] 订正 + 新增独立 sha256 命令",
+    "defect_id_authority": "第 7 节缺陷表与本文件 defects 数组是唯一权威；§13.2 摘要必须与之对齐",
+    "changes": [
+      "§13.2 的 D2/D3 描述此前错位（原 D2 实为 D3、原 D3 实为 D8），已改为 D1/D2/D3 与第 7 节一致",
+      "§13.2 结尾句「8 个 high」订正为「4 个 high」；线性重生成（D9）不再误挂在 D8 名下，D8 恢复为并发写入保护",
+      "TASKS.json 校验命令原为 sha256sum -c + NR>1 跳过表头，与 files.tsv 无表头且第 3 列为 Git blob SHA 的事实相矛盾，已替换为 git hash-object 逐行比对",
+      "新增独立命令单独复核文件字节 SHA-256，与 blob SHA 校验互不替代",
+      "新增 §1.1 记录 files.tsv 列序契约与 UPSTREAM-02 的冲突"
+    ],
+    "unchanged": [
+      "能力分类 27 项及其四档分布 6/11/7/3",
+      "缺陷 18 条及其严重度分布 3/4/7/4",
+      "全部源码行号证据",
+      "固定提交 SHA",
+      "测试状态全部 NOT_RUN",
+      "隔离记录"
+    ],
+    "tsv_contract": {
+      "header": false,
+      "columns": 3,
+      "layout": "path<TAB>bytes<TAB>git_blob_sha",
+      "column3_semantics": "Git blob object hash（git hash-object），非文件字节 SHA-256",
+      "conflict_with": "UPSTREAM-02-deer-flow",
+      "conflict_detail": "UPSTREAM-02 为 type<TAB>bytes<TAB>path，第 1 列为 tree/blob，第 3 列为路径，含目录行；与本源不共用解析规则",
+      "action": "仅记录，不改写任何历史 TSV"
+    }
+  }
 }
