@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-01T16:05:00+08:00",
+  "updated_at": "2026-11-02T00:47:00+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -143,13 +143,14 @@
         "upstreams/UPSTREAM-03-repository-discovery/files.tsv",
         "upstreams/UPSTREAM-03-repository-discovery/tree.json"
       ],
-      "git_commit": "d19f63277",
+      "git_commit": "d19f63277fdf47675e5f28edad356dbaec0e78b2",
       "blocked_reason": null,
       "depends_on": [
         "M0-02"
       ],
       "audit_sha": "557703fffe69c9ab97eff67acabea6b346afd89c",
-      "completed_at": "2026-10-31T15:20:00+08:00"
+      "completed_at": "2026-10-31T15:20:00+08:00",
+      "sha_normalized_note": "2026-11-02 规范化：原记短 SHA d19f63277，经 git rev-parse 解析为完整 40 位，前缀唯一（rev-list --all 仅 1 条匹配），对象类型 commit，提交标题「audit(upstream): 完成 UPSTREAM-03 repository-discovery 审计」。仅改本字段，审计结论与 fact 未动。"
     },
     {
       "id": "UPSTREAM-04",
@@ -192,16 +193,32 @@
       "goal": "审计 project-knowledge-base（walterfan/lazy-rabbit-skills）",
       "inputs": "上游地址（已核实，来自总控提示词 §C 原文）：https://github.com/walterfan/lazy-rabbit-skills/blob/master/skills/project-knowledge-base/SKILL.md",
       "expected_outputs": [
+        "docs/upstream-audit-05-project-knowledge-base.md",
+        "progress/UPSTREAM-05-audit.json",
         "docs/upstream-manifest.json 条目"
       ],
-      "status": "PENDING",
-      "verification_commands": [],
-      "evidence_paths": [],
+      "status": "DONE",
+      "verification_commands": [
+        "python3 -c \"import json;json.load(open('progress/UPSTREAM-05-audit.json'))\"",
+        "git check-ignore -v upstreams/UPSTREAM-05-lazy-rabbit-skills/tree/skills/project-knowledge-base/SKILL.md",
+        "awk -F'\\t' -v r=\"upstreams/UPSTREAM-05-lazy-rabbit-skills/tree\" '{print r\"/\"$1\"\\t\"$3}' upstreams/UPSTREAM-05-lazy-rabbit-skills/files.tsv | while IFS=\"$(printf '\\t')\" read -r f want; do got=$(git hash-object \"$f\") || exit 1; [ \"$got\" = \"$want\" ] || { echo \"MISMATCH $f\"; exit 1; }; done; echo blob-ok",
+        "python3 -c \"import json;d=json.load(open('upstreams/UPSTREAM-05-lazy-rabbit-skills/tree.json'));print(d['sha'],len(d['tree']),d['truncated'])\"",
+        "wc -l < upstreams/UPSTREAM-05-lazy-rabbit-skills/files.tsv"
+      ],
+      "evidence_paths": [
+        "docs/upstream-audit-05-project-knowledge-base.md",
+        "progress/UPSTREAM-05-audit.json",
+        "upstreams/UPSTREAM-05-lazy-rabbit-skills/files.tsv",
+        "upstreams/UPSTREAM-05-lazy-rabbit-skills/tree.json"
+      ],
       "git_commit": null,
       "blocked_reason": null,
       "depends_on": [
         "M0-02"
-      ]
+      ],
+      "audit_sha": "284971cdd2666878d13716af8f26f51521cd915c",
+      "completed_at": "2026-11-02T00:30:00+08:00",
+      "counts_summary": "能力 28（REUSE 6 / ADAPT 10 / REIMPLEMENT 9 / REJECT 3）；缺陷 18（blocker 3 / high 4 / medium 7 / low 4）；测试 NOT_RUN"
     },
     {
       "id": "UPSTREAM-06",

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-01T14:06:00+08:00",
-  "note": "SourceLore M1 上游源台账。四源（01–04）均已钉 SHA 并完成审计；05、06 仍为 NOT_RUN，各自先钉 SHA 再审。upstreams/ 目录整体被 .gitignore 忽略，快照不入库，仅记录指纹。",
+  "generated_at": "2026-11-02T00:52:00+08:00",
+  "note": "SourceLore M1 上游源台账。五源（01–05）均已钉 SHA 并完成审计；06 仍为 NOT_RUN，先钉 SHA 再审。upstreams/ 目录整体被 .gitignore 忽略，快照不入库，仅记录指纹。",
   "upstreams": [
     {
       "id": "UPSTREAM-01",
@@ -141,9 +141,41 @@
       "fork": false,
       "pushed_at": "2026-08-16T01:54:31Z",
       "description": "lazy rabbit's AI skills",
-      "commit": null,
-      "license_evidence_paths": [],
-      "audit_status": "NOT_RUN"
+      "commit": "284971cdd2666878d13716af8f26f51521cd915c",
+      "license_evidence_paths": [
+        "upstreams/UPSTREAM-05-lazy-rabbit-skills/tree/LICENSE",
+        "docs/upstream-audit-05-project-knowledge-base.md"
+      ],
+      "audit_status": "DONE",
+      "license_verified_spdx": "Apache-2.0",
+      "license_verified_note": "LICENSE 全文 201 行 / 11357 字节，实测为 Apache License 2.0 标准文本；与 GitHub API 的 size=11357、sha=261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64、spdx_id=Apache-2.0 三方一致。仓库根目录无 NOTICE 文件（tree 根仅 LICENSE、README.md、skills/），Apache-2.0 §4(d) 的 NOTICE 传播义务在本源无对应文件，但再分发时仍须随附 LICENSE 与修改声明。",
+      "subtree": "skills/project-knowledge-base",
+      "subtree_note": "仓库为多 skill 合集；本源审计范围=skills/project-knowledge-base/ 全子树 + 根 LICENSE + 根 README.md，共 66 blob。其余并列 skill 未读未判。",
+      "audit_record": "docs/upstream-audit-05-project-knowledge-base.md",
+      "audit_json": "progress/UPSTREAM-05-audit.json",
+      "audited_at": "2026-11-02T00:30:00+08:00",
+      "snapshot_path": "upstreams/UPSTREAM-05-lazy-rabbit-skills/",
+      "blob_count": 66,
+      "total_bytes": 488925,
+      "test_status": "NOT_RUN",
+      "test_status_reason": "18 个脚本文件确实存在，tests/ 下 3 个文件含 19 个测试方法，但本轮禁止执行上游代码、禁止安装依赖，故一律标 NOT_RUN。静态层面可确认的事实是：仅 3 个脚本被任何测试引用，5 个脚本零引用；「文件存在」与「测试跑过」是两件事，不得写成本源测试通过。",
+      "disposition_counts": {
+        "REUSE": 6,
+        "ADAPT": 10,
+        "REIMPLEMENT": 9,
+        "REJECT": 3
+      },
+      "defect_counts": {
+        "blocker": 3,
+        "high": 4,
+        "medium": 7,
+        "low": 4
+      },
+      "blocker_ids": [
+        "D1",
+        "D2",
+        "D3"
+      ]
     },
     {
       "id": "UPSTREAM-06",

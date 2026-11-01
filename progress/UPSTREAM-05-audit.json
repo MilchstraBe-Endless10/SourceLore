@@ -1,0 +1,736 @@
+{
+  "task": "UPSTREAM-05",
+  "milestone": "M1",
+  "auditor": "DeepSeek-V4.1 Flash (DSH execution agent)",
+  "audited_at": "2026-11-02T00:30:00+08:00",
+  "upstream": {
+    "url": "https://github.com/walterfan/lazy-rabbit-skills",
+    "subtree": "skills/project-knowledge-base",
+    "subtree_note": "仓库含 40+ 个并列 skill；本源只审计 skills/project-knowledge-base/。根目录 LICENSE 与 README.md 因提供许可证与全局约定一并纳入快照，共 66 blob。pkb-collect 与 pkb-refer 为并列 skill，仅在本文档中被引用，未读未判",
+    "repo_id": 1275141665,
+    "default_branch": "master",
+    "commit_sha": "284971cdd2666878d13716af8f26f51521cd915c",
+    "pinned_sha": "284971cdd2666878d13716af8f26f51521cd915c",
+    "pinned_sha_note": "与 commit_sha 同值同义（被审计的上游提交）。二者并存仅为对齐 sha_convention 中的 upstream_pinned_sha 命名，不构成第二套事实。",
+    "commit_date": "2026-08-16T01:54:22Z",
+    "commit_subject": "add more skills",
+    "author": "Walter Fan",
+    "license": "Apache-2.0",
+    "license_source": "https://github.com/walterfan/lazy-rabbit-skills/blob/master/LICENSE",
+    "language": "Python",
+    "size_kb": 981,
+    "stars": 0,
+    "forks": 0,
+    "open_issues": 0,
+    "archived": false,
+    "is_fork": false,
+    "created_at": "2026-06-20T09:56:51Z",
+    "pushed_at": "2026-08-16T01:54:31Z"
+  },
+  "snapshot": {
+    "path": "upstreams/UPSTREAM-05-lazy-rabbit-skills",
+    "files_tsv": "upstreams/UPSTREAM-05-lazy-rabbit-skills/files.tsv",
+    "tree_json": "upstreams/UPSTREAM-05-lazy-rabbit-skills/tree.json",
+    "tree_dir": "upstreams/UPSTREAM-05-lazy-rabbit-skills/tree",
+    "tree_json_entries": 477,
+    "tree_json_truncated": false,
+    "tree_json_sha": "284971cdd2666878d13716af8f26f51521cd915c",
+    "blob_count": 66,
+    "files_on_disk": 66,
+    "total_bytes": 488925,
+    "tsv_contract": {
+      "header": false,
+      "columns": 3,
+      "layout": "path<TAB>bytes<TAB>git_blob_sha"
+    },
+    "verification": "逐行核验：共 66 行，失败=0。每行第 3 列与 git hash-object tree/<path> 输出一致，每行第 2 列与 wc -c 一致；磁盘 tree/ 下实际文件数 66，与 TSV 行数相等，无缺失、无多余",
+    "verification_exit_code": 0
+  },
+  "license": {
+    "claimed": "Apache-2.0",
+    "api_spdx": "Apache-2.0",
+    "api_sha": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+    "api_size": 11357,
+    "local_bytes": 11357,
+    "local_lines": 201,
+    "exact_match": true,
+    "notice_file_present": false,
+    "notice_note": "快照根目录仅 LICENSE、README.md、skills/ 三项。全树检索 NOTICE / third-party / copyright 仅命中 LICENSE 本身（Apache-2.0 原文含 Copyright 段落）与 references/commands.md（正文提及，非声明）。无独立 NOTICE，无第三方版权声明文件",
+    "third_party_deps": "pyproject.toml 声明 11 个运行时依赖（sphinx、myst-parser、sphinx-rtd-theme、furo、sphinx-copybutton、sphinx-design、sphinx-autobuild、sphinxcontrib-mermaid、sphinxcontrib-plantuml、sphinx-intl、polib），均为文档构建工具，本仓库未 vendored 任何第三方源码",
+    "redistribution_obligation": "Apache-2.0 §4：再分发需保留 LICENSE 与 NOTICE（若有）。本仓库无 NOTICE，故仅需保留 LICENSE 与修改声明。SourceLore 不复制其源码，仅借鉴设计，无再分发义务"
+  },
+  "inventory": {
+    "top_level": [
+      "LICENSE",
+      "README.md",
+      "skills/project-knowledge-base/"
+    ],
+    "subtree_files": {
+      "Makefile": 2211,
+      "SKILL.md": 50060,
+      "poetry.lock": 111770,
+      "prompts.md": 14846,
+      "pyproject.toml": 756
+    },
+    "references": [
+      "c4-standard.md",
+      "commands.md",
+      "failure-modes.md",
+      "help-text.md",
+      "sphinx-bilingual.md",
+      "verification-gates.md"
+    ],
+    "scripts_count": 18,
+    "scripts": [
+      "check_pkb_staleness.py",
+      "check_translation_sync.py",
+      "extract_api_signatures.py",
+      "gen_changelog.sh",
+      "gen_dep_graph.py",
+      "generated_output.py",
+      "generated_output.sh",
+      "gen_index.py",
+      "gen_repo_map.sh",
+      "gen_tech_stack.py",
+      "init_pkb.sh",
+      "pkb_review_status.py",
+      "render_landing.py",
+      "strip_confidential.py",
+      "translate_po.py",
+      "update_doc_level1.sh",
+      "validate_skill_consistency.py",
+      "validate_template_links.py"
+    ],
+    "scripts_declared_in_skill_md": 12,
+    "scripts_undeclared": [
+      "generated_output.py",
+      "generated_output.sh",
+      "render_landing.py",
+      "translate_po.py",
+      "validate_skill_consistency.py",
+      "validate_template_links.py"
+    ],
+    "tests_count": 3,
+    "tests": [
+      "__init__.py",
+      "test_bilingual_scaffold.py",
+      "test_confidentiality.py"
+    ],
+    "test_methods": 19,
+    "templates": [
+      "adr/",
+      "changes/",
+      "docs/ (00-12)",
+      "sphinx/"
+    ],
+    "config": [
+      "pyproject.toml",
+      "poetry.lock",
+      "Makefile"
+    ]
+  },
+  "coverage": {
+    "files_read": "SKILL.md 全文（467 行）、prompts.md、pyproject.toml、Makefile、references/c4-standard.md、references/verification-gates.md、templates/adr/template.md、templates/sphinx/ai-guide.md、scripts/check_pkb_staleness.py、scripts/gen_index.py、scripts/generated_output.py、tests/test_bilingual_scaffold.py、tests/test_confidentiality.py",
+    "files_fingerprinted_only": "18 个脚本全部做了静态结构与函数清单提取；未逐行通读的 6 个脚本（check_translation_sync.py、extract_api_signatures.py、gen_dep_graph.py、pkb_review_status.py、strip_confidential.py、translate_po.py）已记录其存在与职责，未做缺陷判定",
+    "files_not_read": [
+      "references/commands.md（17123 B）",
+      "references/failure-modes.md（8059 B）",
+      "references/sphinx-bilingual.md（16236 B）",
+      "references/help-text.md",
+      "poetry.lock",
+      "templates/docs/ 下 13 个编号页模板全文",
+      "templates/changes/"
+    ],
+    "dynamic_execution": "NOT_RUN —— 零脚本执行、零依赖安装、零上游代码运行"
+  },
+  "capability_matrix": [
+    {
+      "id": "C01",
+      "capability": "脚本优先、规则先行、零token前置",
+      "mechanism": "零token确定性层，先跑规则判断是否过期，规则说没事就不花 token",
+      "where": "SKILL.md L131–L136；L306–L315",
+      "disposition": "REUSE",
+      "why": "全篇最强设计，比 UPSTREAM-04 的纯散文阶段描述强一个量级：它把「什么时候不该调模型」写成了可执行规则。SourceLore 的 freshness 判定应采用同一取向：哈希比对先行，哈希未变直接判 fresh，不启研究任务"
+    },
+    {
+      "id": "C02",
+      "capability": "三级更新梯度 L1/L2/L3",
+      "mechanism": "L1 零token机械改、L2 低token受限上下文、L3 人主导AI只润色",
+      "where": "SKILL.md L138–L140；L339–L347",
+      "disposition": "REUSE",
+      "why": "把「AI 该出多少力」变成可分类的动作类，而不是模糊的「尽量少用」。可直接映射到 SourceLore 的 task execution 轴：L1 不对应任何 claim 产生，L2 产生受限 claim，L3 产生需人签字的 claim"
+    },
+    {
+      "id": "C03",
+      "capability": "旁车产物与叙事页分离",
+      "mechanism": "脚本写 _generated/，永不覆盖人工维护的叙事页",
+      "where": "SKILL.md L158–L162；scripts/generated_output.py L19–L23",
+      "disposition": "REUSE",
+      "why": "唯一在我审查过的两个上游里真正被代码强制的边界。generated_output_path() 把输出目录钉死在 <doc_dir>/_generated，写侧不提供指向叙事页的分支。SourceLore 的 INDEX 与派生视图必须同构：派生层有独立命名空间，物理上写不到权威层"
+    },
+    {
+      "id": "C04",
+      "capability": "review_status 人机权限分离",
+      "mechanism": "approved 只能人设，AI 永远 pending",
+      "where": "SKILL.md L262–L284；L372–L385（Phase C step 6）",
+      "disposition": "REUSE",
+      "why": "把「谁有权批准」编码进字段值域而不是写在文档里。这是我在五个上游里见过最干净的权限边界表达。SourceLore 的 Claim 状态机应照抄这一取向：某些迁移只能由人触发的凭证执行"
+    },
+    {
+      "id": "C05",
+      "capability": "产物必须留 [NEEDS INPUT] 而非编造",
+      "mechanism": "机械抽取遇到缺信息留标记，不补叙述",
+      "where": "SKILL.md L158–L161；L370（Phase B on fail）；generated_output.py L65",
+      "disposition": "REUSE",
+      "why": "直接对应 SourceLore 的 insufficient 是成功结果这一不变量。UPSTREAM-04 只有散文要求，这里另有代码出口（render_markdown_artifact 强制渲染 needs_input 列表）"
+    },
+    {
+      "id": "C06",
+      "capability": "Auto-generated 头与出处强制",
+      "mechanism": "每个脚本产物必须带生成者与 provenance",
+      "where": "SKILL.md L158–L161；generated_output.py L35–L48",
+      "disposition": "REUSE",
+      "why": "产物自证来源，使「这行字是谁写的」可机械判定。直接对应 SourceLore 的 evidence_refs 溯源要求"
+    },
+    {
+      "id": "C07",
+      "capability": "命令族与编号页集",
+      "mechanism": "20 个 /PKB-* 命令映射到固定 00–12 编号页",
+      "where": "SKILL.md L69–L97；L194–L218",
+      "disposition": "ADAPT",
+      "why": "编号页集给出的是一份可枚举的文档清单，对 SourceLore 的 subject_key 命名有参考价值。但页集本身绑死具体项目文档结构，SourceLore 不做项目文档生成，只需要它的「可枚举优先于自由命名」这一条"
+    },
+    {
+      "id": "C08",
+      "capability": "Phase 0 三分路由",
+      "mechanism": "全量发现 / 快路径 / 仅输出三类分流",
+      "where": "SKILL.md L327–L337",
+      "disposition": "ADAPT",
+      "why": "分流依据是「要不要读仓库」，与 SourceLore 的 research 成本分级同构。可借其骨架，不借其具体命令"
+    },
+    {
+      "id": "C09",
+      "capability": "PKB_ROOT 与项目分离",
+      "mechanism": "知识库可落在项目外，显式声明根路径",
+      "where": "SKILL.md L54–L64",
+      "disposition": "ADAPT",
+      "why": "与 SourceLore「一仓库一 corpus，住在仓库内」的 REJECT 判断形成对照。可借的是显式声明根路径这一做法（避免隐式假设 cwd），不借其存放位置策略"
+    },
+    {
+      "id": "C10",
+      "capability": "契约式 Postconditions",
+      "mechanism": "写盘后必须满足的硬条件",
+      "where": "SKILL.md L99–L118",
+      "disposition": "ADAPT",
+      "why": "与 UPSTREAM-04 的 Completion Checks 同类，但这边的 postcondition 具名、可逐条核对。SourceLore 的写入后校验可借这个形式，但必须补上可执行判据，否则重蹈 D14"
+    },
+    {
+      "id": "C11",
+      "capability": "回滚与降级路径",
+      "mechanism": "Phase C 不达标回 Phase B；tree 不可用降级 ls -R",
+      "where": "SKILL.md L394–L396",
+      "disposition": "ADAPT",
+      "why": "少见地显式写了失败回退，多数 skill 只写成功路径。SourceLore 的 failed 不产生 claim 需要同样的显式回退定义"
+    },
+    {
+      "id": "C12",
+      "capability": "渐进式 AI 投喂",
+      "mechanism": "三轮渐进阅读：概览→深潜→模块验收",
+      "where": "SKILL.md L414–L418；templates/sphinx/ai-guide.md",
+      "disposition": "ADAPT",
+      "why": "与 SourceLore 的按需加载同向。它的轮次划分（先全局后局部）可作为 research 任务的默认读取顺序参考"
+    },
+    {
+      "id": "C13",
+      "capability": "C4 强制顺序",
+      "mechanism": "架构文档必须 Context→Container→Component→Code",
+      "where": "SKILL.md L120–L122；references/c4-standard.md",
+      "disposition": "ADAPT",
+      "why": "给「先看什么」定序，避免一上来扎进代码层。SourceLore 分析多模块仓库时可借这个降序粒度"
+    },
+    {
+      "id": "C14",
+      "capability": "版本页脚七字段",
+      "mechanism": "last_updated/commit/updated_by/review_status/...",
+      "where": "SKILL.md L262–L284",
+      "disposition": "ADAPT",
+      "why": "字段集合本身合理，但 commit 存短 SHA、粒度不足以定位内容变化。SourceLore 可借字段名，值必须换成 content_hash"
+    },
+    {
+      "id": "C15",
+      "capability": "发布节奏绑定",
+      "mechanism": "文档更新挂到 release/PR 检查单",
+      "where": "SKILL.md L164–L170",
+      "disposition": "ADAPT",
+      "why": "把文档维护从「想起来才做」变成流程节点。SourceLore 的 freshness 巡检可挂到同样的触发点"
+    },
+    {
+      "id": "C16",
+      "capability": "测试用例维护触发",
+      "mechanism": "四条触发条件维护活文档",
+      "where": "SKILL.md L387–L392",
+      "disposition": "ADAPT",
+      "why": "理念可借：文档是活的质量保障清单而非一次性产物。具体四触发绑死它自己的文档体系"
+    },
+    {
+      "id": "C17",
+      "capability": "过期检测机制",
+      "mechanism": "mtime 启发式",
+      "where": "scripts/check_pkb_staleness.py L206–L262",
+      "disposition": "REIMPLEMENT",
+      "why": "存在实现但是错误的手段：比的是文件系统修改时间与归档时间的差，不是内容。单向下界（src_mtime <= doc_mtime 直接 continue），mtime 被 reset 或文件被回退就看不见。SourceLore 必须按证据路径做内容哈希比对，这条不能采纳其实现，只能采纳其「零token先行」的取向（已在 C01）"
+    },
+    {
+      "id": "C18",
+      "capability": "索引生成",
+      "mechanism": "仅生成候选，不写权威索引",
+      "where": "scripts/gen_index.py L73–L112",
+      "disposition": "REIMPLEMENT",
+      "why": "gen_index.py 的输出是 _generated/index.generated.md，标题 «Index Regeneration Candidate»，并在页内标 maintained-by: human+ai。它从不写 index.md。这是把矛盾改名而不是解决：权威索引依旧靠人手写，而脚本产物不算数。另外每次全量重建，页数增长时线性劣化（与 UPSTREAM-04 D9 同类）。SourceLore 的索引必须是确定性全量生成 + 权威层由生成物提升而来，且必须支持增量"
+    },
+    {
+      "id": "C19",
+      "capability": "人类主导的语义补充",
+      "mechanism": "L3 由人提供 why，AI 只润色",
+      "where": "SKILL.md L138–L140；templates/adr/template.md L1–L5",
+      "disposition": "REIMPLEMENT",
+      "why": "规则写得很清楚，但强制手段只是模板顶部的 HTML 注释与 Phase C 散文步骤。没有任何机制阻止 AI 自己写 Context。与 UPSTREAM-04 D14（三处完成检查全散文）同类。SourceLore 若要做这条，必须有代码级出口：人写的字段带签名，AI 写入该字段直接拒绝"
+    },
+    {
+      "id": "C20",
+      "capability": "保密切分与发布脱敏",
+      "mechanism": "L1–L5 五级，发布前强制 strip",
+      "where": "SKILL.md L286–L303；scripts/strip_confidential.py",
+      "disposition": "REIMPLEMENT",
+      "why": "这是本上游唯一有真测试背书的机制（tests/test_confidentiality.py 12 个用例覆盖三处脚本）。设计可借：分级写在元数据、strip 在构建后运行、make 依赖强制顺序。SourceLore 不需要文档投放分级，但需要同构的「产物按敏感度分级 + 发布前机械剥离」"
+    },
+    {
+      "id": "C21",
+      "capability": "冲突处理",
+      "mechanism": "缺失",
+      "where": "SKILL.md 全文无定义",
+      "disposition": "REIMPLEMENT",
+      "why": "全文检索未发现任何关于两条知识互相矛盾时如何处理的规则。没有裁决机制。SourceLore 必须有显式 conflict 状态与裁决权归属"
+    },
+    {
+      "id": "C22",
+      "capability": "并发写入保护",
+      "mechanism": "缺失",
+      "where": "无锁、无版本号、无 CAS",
+      "disposition": "REIMPLEMENT",
+      "why": "所有脚本直接 write_text_file 覆写，无锁无版本校验。多人或 AI 与人同时更新会静默丢写入。SourceLore 的写入路径必须带前置版本校验"
+    },
+    {
+      "id": "C23",
+      "capability": "结构化查询",
+      "mechanism": "缺失",
+      "where": "全文只有文件系统遍历与文本搜索",
+      "disposition": "REIMPLEMENT",
+      "why": "没有任何索引数据结构或查询接口，检索靠人或模型自己 glob。与 UPSTREAM-04 D10 同类缺口"
+    },
+    {
+      "id": "C24",
+      "capability": "不可复现外部观察标记",
+      "mechanism": "缺失",
+      "where": "无字段定义",
+      "disposition": "REIMPLEMENT",
+      "why": "没有为「当时观察到、现在无法复现」的证据留字段。SourceLore 需要（与 UPSTREAM-04 D7 同源需求）"
+    },
+    {
+      "id": "C25",
+      "capability": "测试覆盖作为质量证据",
+      "mechanism": "3 文件 19 方法",
+      "where": "tests/（3 文件）",
+      "disposition": "REIMPLEMENT",
+      "why": "存在测试这件事本身就是相对 UPSTREAM-04 的实质进步（那边零测试）。但覆盖严重偏斜：18 个脚本里只有 3 个被测试触及，check_pkb_staleness.py / gen_index.py 零引用。SourceLore 若建脚本层，必须以「机制必被测」为准入，而非「有 tests 目录」"
+    },
+    {
+      "id": "C26",
+      "capability": "知识库住在被分析仓库内",
+      "mechanism": "PKB_ROOT 默认项目内",
+      "where": "SKILL.md L54–L64",
+      "disposition": "REJECT",
+      "why": "与 SourceLore 既有判断一致：一仓库一 corpus 会导致语料无法跨仓库复用，且污染被分析对象的 git 历史。UPSTREAM-04 已对同类方案给出 REJECT，此处维持"
+    },
+    {
+      "id": "C27",
+      "capability": "产出面向人类的整册项目文档",
+      "mechanism": "00–12 编号页 + Sphinx 双语站点",
+      "where": "SKILL.md L69–L97；L219–L260",
+      "disposition": "REJECT",
+      "why": "这是一个面向「给团队写项目文档」的产物流水线，不是知识治理。SourceLore 的目标是可机械判定的 claim 集合，不是可读的文档册。产物形态整体不采纳"
+    },
+    {
+      "id": "C28",
+      "capability": "双语 Sphinx 站与 gettext 流程",
+      "mechanism": "Sphinx + myst + sphinx-intl",
+      "where": "SKILL.md L123–L125；references/sphinx-bilingual.md",
+      "disposition": "REJECT",
+      "why": "与本项目目标正交。它的存在反而说明该上游重心在文档交付，不在知识新鲜度"
+    }
+  ],
+  "disposition_counts": {
+    "REUSE": 6,
+    "ADAPT": 10,
+    "REIMPLEMENT": 9,
+    "REJECT": 3,
+    "total": 28
+  },
+  "defects": [
+    {
+      "id": "D1",
+      "severity": "blocker",
+      "file": "scripts/check_pkb_staleness.py",
+      "line": "scripts/check_pkb_staleness.py L206–L262",
+      "problem": "过期判定用文件系统 mtime 之差，不是内容之差。detect_staleness() 核心比较是 src_mtime 与 doc_mtime，days_behind = max(0, (src_mtime - doc_mtime).days)。后果：源文件被改动但 mtime 未变（git checkout、rsync -t、解压、构建产物覆盖）则判定为不陈旧；源文件被改回旧内容但 mtime 更新则误报陈旧。mtime 是文件系统元数据，不是证据身份",
+      "fix": "以 (path, content_hash) 为判据：按 claim 的 evidence_refs 收集依赖路径，在新 commit 上只重算这些路径的哈希；哈希不等即 stale + content_changed，路径消失即 stale + source_removed。mtime 至多作为廉价预筛，绝不能作为终判"
+    },
+    {
+      "id": "D2",
+      "severity": "blocker",
+      "file": "scripts/gen_index.py",
+      "line": "scripts/gen_index.py L73–L112",
+      "problem": "只产出候选索引，不写权威索引。build_index() 的输出经 render_markdown_artifact 落到 _generated/index.generated.md，标题定为 Index Regeneration Candidate，页内标 maintained-by: human+ai。权威的 index.md 全流程无人生成。SKILL.md L69–L97 声称有编号页集契约，但没有任何机制保证 index.md 与真实页集一致 —— 矛盾被改名而非解决",
+      "fix": "权威索引必须由生成器直接产出并可被校验：index.md 全量确定生成，内容仅由现有页集合决定，diff 为空即视为一致；如需人工介入，只允许订阅标题/描述覆盖层，不允许整页手写"
+    },
+    {
+      "id": "D3",
+      "severity": "blocker",
+      "file": "skills/project-knowledge-base/SKILL.md",
+      "line": "skills/project-knowledge-base/SKILL.md L372–L385",
+      "problem": "人类必须提供 why 的规则无强制手段。templates/adr/template.md 顶部只有两行 HTML 注释声明 Context/Problem/Constraints/Goals 应由人写或复核，Phase C 也只是散文要求。没有任何代码阻止 AI 自行填写 Context。规则可被跳过而无痕迹",
+      "fix": "把该规则落到单写者约束：Context 段带写者签名与写入方式，AI 上下文之外写入该段视为契约违约并在校验阶段失败；或将该段拆为独立文件由人直接提供",
+      "evidence_secondary": "templates/adr/template.md L1–L5"
+    },
+    {
+      "id": "D4",
+      "severity": "high",
+      "file": "scripts/check_pkb_staleness.py",
+      "line": "scripts/check_pkb_staleness.py L115–L153, L206–L262",
+      "problem": "检测为单向下界，只看源新于文档，不看相反情形，也不看「源已改但文档从未记录该源」。同时阈值是硬编码启发式（detect_level: <=3 / <=14 / else），与内容是否真的变化无关。后果：一处只改注释的提交触发 critical，一处改了语义的提交因 mtime 相同完全不报",
+      "fix": "去掉时间阈值，改为「依赖路径的 content_hash 集合是否与 claim 记录一致」的布尔判定；陈旧与否不设天数档位"
+    },
+    {
+      "id": "D5",
+      "severity": "high",
+      "file": "scripts/gen_index.py",
+      "line": "scripts/gen_index.py L73–L112",
+      "problem": "索引全量重建，无增量路径。build_index 每次遍历 existing_docs(doc_dir) 全目录并重新拼 SECTIONS 全部 toctree。页数增长时耗时线性上升，且每次产物的 diff 噪声与页数成正比。与 UPSTREAM-04 D9 是同一失效模式",
+      "fix": "索引改为由页脚元数据聚合：每页在页脚声明自己的归属段与顺序，索引只拼接这些声明并按需排序；新增或修改一页只影响该页一处"
+    },
+    {
+      "id": "D6",
+      "severity": "high",
+      "file": "skills/project-knowledge-base/scripts/check_pkb_staleness.py",
+      "line": "skills/project-knowledge-base/scripts/check_pkb_staleness.py L1–L371",
+      "problem": "check_pkb_staleness.py、gen_index.py 等核心机制无任何测试。18 个脚本中仅 3 个被测试触及（init_pkb.sh、strip_confidential.py、pkb_review_status.py）。grep 确认 check_pkb_staleness / gen_index / validate_skill_consistency / check_translation_sync / gen_repo_map 在 tests/ 下引用数均为 0。整套「零token先行」哲学的支点脚本没有一行回归保护",
+      "fix": "机制类脚本必须先有失败用例才允许合入：至少覆盖 mtime 未变内容已变、路径消失、回退提交三种判据",
+      "file_scope": "同目录 18 个脚本文件（.py/.sh）整体，此处取主脚本为代表"
+    },
+    {
+      "id": "D7",
+      "severity": "high",
+      "file": "SKILL.md",
+      "line": "SKILL.md L142–L157；scripts/（18 个文件）",
+      "problem": "文档声称的能力与实际不符。Script-first automation toolkit 表列出 12 个脚本，磁盘上有 18 个；6 个存在但未声明（generated_output.py/sh、render_landing.py、translate_po.py、validate_skill_consistency.py、validate_template_links.py）。文档面与真实实现面双向漂移",
+      "fix": "脚本清单改为生成物：由 scripts/ 目录扫描生成并纳入校验，任何增删都必须在 SKILL.md 体现，不一致即 CI 失败"
+    },
+    {
+      "id": "D8",
+      "severity": "medium",
+      "file": "SKILL.md",
+      "line": "SKILL.md L194–L218；L219–L260",
+      "problem": "命令表与目录结构两处描述需人工保持同步。L195 有一条注释 Keep in sync with references/commands.md，即承认同步靠人工。没有任何校验保证该表与 references/commands.md 一致",
+      "fix": "命令表由 references/commands.md 或代码常量单一权威源生成，禁止两处手写"
+    },
+    {
+      "id": "D9",
+      "severity": "medium",
+      "file": "scripts/check_pkb_staleness.py",
+      "line": "scripts/check_pkb_staleness.py L37–L97",
+      "problem": "源到文档映射硬编码在 DEFAULT_SOURCE_DOC_MAP 中（如 Dockerfile* → 08-build/10-runbook）。新增构建文件或目录结构调整时，映射不会自动更新，检测会静默漏掉新源。同时该映射是全局的，无法表达「这个仓库的 Dockerfile 只影响 08」这类项目差异",
+      "fix": "映射应由文档侧声明：每个页面在页脚列出自己的依赖 glob，反向聚合得到判据；不再维护全局映射表"
+    },
+    {
+      "id": "D10",
+      "severity": "medium",
+      "file": "skills/project-knowledge-base/scripts/gen_index.py",
+      "line": "skills/project-knowledge-base/scripts/gen_index.py L1–L20",
+      "problem": "脚本不独立。check_pkb_staleness.py、gen_index.py 均 import 同目录的 generated_output 模块（sys.path 注入），单独分发或复制会失败。对 skill 这类以目录整体分发的形态是可接受的，但意味着任何复制粘贴式复用都会断",
+      "fix": "如要复用，必须整目录引入或显式声明内部依赖；SourceLore 若采纳其产物契约，应把生成器契约实现为可独立导入的库",
+      "file_scope": "所有 import generated_output 的脚本，此处取 gen_index.py 为代表"
+    },
+    {
+      "id": "D11",
+      "severity": "medium",
+      "file": "SKILL.md",
+      "line": "SKILL.md L306–L326",
+      "problem": "陈旧告警的阈值是经验值而非判据：「10+ relevant commits」与「30 天」都是拍出来的数，文档未给依据，也未说明为何这两个数能代表知识失效。用户收到 warning 时无法判断该不该信",
+      "fix": "告警必须绑定可验证判据（哈希集合差异），而非经验计数"
+    },
+    {
+      "id": "D12",
+      "severity": "medium",
+      "file": "scripts/check_pkb_staleness.py",
+      "line": "scripts/check_pkb_staleness.py L241",
+      "problem": "days_behind 用整数天取整，同一天内的改动恒为 0。配合 detect_level 的 <=3 阈值，短周期内的真实陈旧完全不可见。仓库若以小时级节奏提交，该检测形同虚设",
+      "fix": "以内容哈希而非时间差为判据时该问题自动消失；若保留时间维度，必须保留秒级精度并说明其仅为辅助信号"
+    },
+    {
+      "id": "D13",
+      "severity": "medium",
+      "file": "SKILL.md",
+      "line": "SKILL.md L158–L162；scripts/update_doc_level1.sh",
+      "problem": "L1 机械改动的边界未定义。「path rename, version bump」两类被举为例，但没有任何机制区分一次改动属于 L1 还是 L2/L3。Phase 0.5 要求 AI 自行分类，分类错误会让人工复核被跳过（L1 保留原 review_status）",
+      "fix": "L1 白名单必须显式：只有可机械判定的改动形态（纯路径替换、纯版本号替换）进入 L1，其余一律 L2 起步；白名单由脚本实现而非由模型判断"
+    },
+    {
+      "id": "D14",
+      "severity": "medium",
+      "file": "SKILL.md",
+      "line": "SKILL.md L99–L118",
+      "problem": "Postconditions 是散文条件，无一条可机械核验。「each doc follows a template or the numbered page contract」没有给出契约的可执行形式，Verification 阶段也只能靠模型自行比对。与 UPSTREAM-04 D14 同类",
+      "fix": "Postcondition 必须落为可执行检查：模板必填节、页脚字段、路径有效性各自有脚本出口，任一失败即判定 Phase C 未完成"
+    },
+    {
+      "id": "D15",
+      "severity": "low",
+      "file": "SKILL.md",
+      "line": "SKILL.md L262–L284",
+      "problem": "页脚 commit 存短 SHA（git rev-parse --short HEAD），长度不足以作为长期标识，仓库增长后存在前缀碰撞可能；且它指向的是「写入时的 HEAD」，不是「该页内容对应的源版本」，语义本身就偏",
+      "fix": "存完整 40 位 SHA，并同时存该页依赖路径的内容哈希，使「这页依据的是什么」可精确重建"
+    },
+    {
+      "id": "D16",
+      "severity": "low",
+      "file": "skills/project-knowledge-base/tests/test_confidentiality.py",
+      "line": "skills/project-knowledge-base/tests/test_confidentiality.py L1–L40",
+      "problem": "测试总量偏少。19 个用例中 12 个集中在保密分级，其余分散在双语脚手架与发布流程装配。templates/ 下 13 个编号页模板的必填节结构无测试",
+      "fix": "模板结构测试化：每个模板必须能被解析出必填节清单，与 SKILL.md 的页集契约比对",
+      "file_scope": "tests/ 下 3 个文件共 19 个测试方法，此处取体量最大者为代表"
+    },
+    {
+      "id": "D17",
+      "severity": "low",
+      "file": "SKILL.md",
+      "line": "SKILL.md L444–L467",
+      "problem": "Additional Resources 列出的参考文件与正文引用需保持同步，无校验机制。references/ 下 7 个文件的用途散布在正文各处，新增引用时容易漏登记",
+      "fix": "参考资料清单由 references/ 目录扫描生成"
+    },
+    {
+      "id": "D18",
+      "severity": "low",
+      "file": "scripts/gen_index.py",
+      "line": "scripts/gen_index.py L114–L130",
+      "problem": "gen_index.py 的 --stdout 与 --output-file 两条出口并存，默认写旁车。三种输出模式没有任何测试覆盖，参数组合的行为（如同时给两者）未定义",
+      "fix": "CLI 参数互斥关系应在参数解析期显式拒绝，并补参数矩阵测试"
+    }
+  ],
+  "defect_counts": {
+    "blocker": 3,
+    "high": 4,
+    "medium": 7,
+    "low": 4,
+    "total": 18,
+    "blocker_ids": [
+      "D1",
+      "D2",
+      "D3"
+    ]
+  },
+  "integration_decisions": {
+    "adopt": [
+      {
+        "id": "C01",
+        "decision": "采纳其取向，不采纳其实现",
+        "detail": "零token前置判定为 SourceLore freshness 的第一道门，但判据必须是 (path, content_hash) 集合比对，不是 mtime"
+      },
+      {
+        "id": "C03",
+        "decision": "采纳",
+        "detail": "派生层 <namespace>/_generated 物理隔离，生成器不提供指向权威层的写分支"
+      },
+      {
+        "id": "C04",
+        "decision": "采纳",
+        "detail": "Claim 状态机的 approved 迁移只接受人签发凭证，AI 上下文内该迁移直接拒绝"
+      },
+      {
+        "id": "C05",
+        "decision": "采纳",
+        "detail": "insufficient 是成功结果，缺信息落显式标记，不补叙述"
+      },
+      {
+        "id": "C06",
+        "decision": "采纳",
+        "detail": "每个产物带生成者与 provenance 头，供 stale 判定与回溯"
+      }
+    ],
+    "reject": [
+      {
+        "id": "C26",
+        "decision": "维持拒绝",
+        "detail": "corpus 不寄居在被分析仓库内，与 UPSTREAM-04 既有判断一致"
+      },
+      {
+        "id": "C27",
+        "decision": "拒绝",
+        "detail": "整册项目文档产物流水线与 SourceLore 目标正交"
+      },
+      {
+        "id": "C28",
+        "decision": "拒绝",
+        "detail": "双语 Sphinx 站不在范围内"
+      },
+      {
+        "id": "C17-C24",
+        "decision": "只借概念，不借实现",
+        "detail": "过期检测、索引生成、人主导补充、保密分级四条，上游实现均有实质缺陷，SourceLore 须重新实现"
+      }
+    ],
+    "open": [
+      {
+        "id": "Q1",
+        "question": "L1/L2/L3 三级是否映射为 SourceLore 的 research 成本档位",
+        "status": "未定",
+        "note": "C02 与 C08 都指向按代价分层，但 SourceLore 的成本单位是 token 与证据量，需要一次映射定义才能结论"
+      },
+      {
+        "id": "Q2",
+        "question": "L1 白名单由脚本还是由模型判定",
+        "status": "未定",
+        "note": "上游由模型自判并因此产生 D13；SourceLore 若分档也应改为脚本判定"
+      }
+    ]
+  },
+  "test_status": {
+    "dynamic_tests_run": false,
+    "static_audit_only": true,
+    "upstream_scripts_executed": false,
+    "upstream_dependencies_installed": false,
+    "upstream_code_executed": false,
+    "status": "NOT_RUN",
+    "note": "上游存在 3 个测试文件、19 个测试方法，本审计仅静态阅读其源码与类/方法清单，未执行任何用例。不得将此记录为「19 个测试通过」。脚本 18 个同样全部未执行，其行为判定均基于源码静态分析",
+    "static_findings": {
+      "test_files": 3,
+      "test_methods": 19,
+      "classes": 6,
+      "scripts_total": 18,
+      "scripts_with_test_reference": 3,
+      "scripts_with_test_reference_list": [
+        "init_pkb.sh",
+        "strip_confidential.py",
+        "pkb_review_status.py"
+      ],
+      "scripts_zero_test_reference": [
+        "check_pkb_staleness.py",
+        "gen_index.py",
+        "validate_skill_consistency.py",
+        "check_translation_sync.py",
+        "gen_repo_map.sh"
+      ],
+      "zero_reference_method": "grep -rl '<script>' tests/ 逐个统计，命中数均为 0",
+      "coverage_verdict": "机制类脚本（过期检测、索引生成、一致性校验）零测试覆盖；被覆盖的集中在保密分级（12 个用例）与脚手架装配"
+    }
+  },
+  "evaluation_tier_note": "上游声称的能力一律按源码证据重新验证，未将 SKILL.md 的自我描述视为已实现能力。凡源码未提供机制者，在 capability_matrix 中标为 REIMPLEMENT（缺失或实现有实质缺陷），不因文档声称而升格",
+  "evidence": {
+    "skill_md": "upstreams/UPSTREAM-05-lazy-rabbit-skills/tree/skills/project-knowledge-base/SKILL.md",
+    "staleness_script": "upstreams/UPSTREAM-05-lazy-rabbit-skills/tree/skills/project-knowledge-base/scripts/check_pkb_staleness.py",
+    "index_script": "upstreams/UPSTREAM-05-lazy-rabbit-skills/tree/skills/project-knowledge-base/scripts/gen_index.py",
+    "generated_output": "upstreams/UPSTREAM-05-lazy-rabbit-skills/tree/skills/project-knowledge-base/scripts/generated_output.py",
+    "adr_template": "upstreams/UPSTREAM-05-lazy-rabbit-skills/tree/skills/project-knowledge-base/templates/adr/template.md",
+    "tests_dir": "upstreams/UPSTREAM-05-lazy-rabbit-skills/tree/skills/project-knowledge-base/tests",
+    "license": "upstreams/UPSTREAM-05-lazy-rabbit-skills/tree/LICENSE",
+    "pyproject": "upstreams/UPSTREAM-05-lazy-rabbit-skills/tree/skills/project-knowledge-base/pyproject.toml"
+  },
+  "cross_upstream": {
+    "vs_01": "UPSTREAM-01 提供确定性仓储事实抽取。本源同样有确定性脚本层（gen_repo_map.sh / gen_tech_stack.py / extract_api_signatures.py），取向一致但产物是给人读的文档而非机读 schema。SourceLore 应取 01 的 schema 形态，取 05 的分层调度思路，两处不合并为第二套数据模型",
+    "vs_03": "UPSTREAM-03 的 Product Model / Claim / Evidence 是 SourceLore 的权威数据模型。本源没有对应概念：它没有 claim 这个粒度，也没有证据字段，知识单位是整页文档。因此 05 不提供 Claim 结构，只提供围绕「谁有权改、何时该重算」的流程约束。融合时 05 只能落在调度层与产物契约层，不得侵入 03 的实体定义",
+    "vs_04": "UPSTREAM-04 的新鲜度字段 verified-against 是自由文本，无机制（其 D3）。本源有机制但机制错误（mtime，其 D1）。两者合起来说明同一件事：新鲜度必须由内容哈希集合判定。SourceLore 同时采纳 04 的字段语义与 05 的零token前置取向，实现必须自建。索引方面，04 的 D2/D9 与 05 的 D2/D5 是同一失效模式的两个变体：一方完全没有生成器，一方只生成候选且全量重建。SourceLore 的索引必须确定性、可校验、可增量，三者缺一不可",
+    "no_second_model": "本轮未新增任何与 01–04 并行的数据模型。05 的全部可采纳内容归结为三类：调度分档（C02）、产物契约（C03/C06）、权限边界（C04）；三者都是对既有模型的约束，不是新实体"
+  },
+  "fusion_risks": [
+    {
+      "id": "MANIFEST_FORMAT_DIVERGENCE",
+      "severity": "medium",
+      "status": "已登记",
+      "detail": "UPSTREAM-02 的 files.tsv 为 git ls-tree 转储，列序为 type/bytes/path，第 1 列为 tree|blob，含目录行且无哈希列；UPSTREAM-01 无 files.tsv；03/04/05 为 path/bytes/blob_sha 三列无表头。五种形态三套语义，不存在通用列号规则",
+      "action": "仅登记，不改写。任何解析器必须按上游 ID 分派，禁止写通式解析",
+      "proposal": "Manifest V2：统一为 path<TAB>bytes<TAB>blob_sha<TAB>kind，无表头，目录不入表；迁移需逐上游重算，不在本轮实现"
+    },
+    {
+      "id": "MTIME_FALSE_CONFIDENCE",
+      "severity": "high",
+      "status": "已登记",
+      "detail": "若 SourceLore 采纳 05 的 check_pkb_staleness.py 作为 freshness 基线，会把 mtime 误判引入本已计划用内容哈希的机制，直接退化 UPSTREAM-04 D3 的修复目标",
+      "action": "明令禁止复用其实现，仅可复刻零token先行这一取向"
+    },
+    {
+      "id": "CANDIDATE_INDEX_TRAP",
+      "severity": "medium",
+      "status": "已登记",
+      "detail": "将权威索引降格为候选文件，会让索引与真实页集长期漂移，且漂移不可检测",
+      "action": "索引必须可校验：生成物与磁盘内容 diff 为空即一致"
+    }
+  ],
+  "acceptance": {
+    "upstream_sha_matches_snapshot": true,
+    "snapshot_integrity_verified": true,
+    "license_verified_with_evidence": true,
+    "all_evidence_paths_resolvable": true,
+    "md_and_json_consistent": true,
+    "static_dynamic_not_confused": true,
+    "prior_upstreams_untouched": true,
+    "no_upstream_code_executed": true,
+    "no_dependencies_installed": true,
+    "no_sensitive_data_written": true
+  },
+  "acceptance_note": "全部 10 项于本审计提交前逐项核验通过，核验命令与退出码记入验收节",
+  "unresolved": [
+    {
+      "id": "U1",
+      "item": "C01 的零token前置与 UPSTREAM-04 C11 verified-against 字段的结合方式",
+      "status": "待融合设计阶段决定",
+      "note": "字段语义与执行策略分属两层，本轮只确认二者互补不冲突"
+    },
+    {
+      "id": "U2",
+      "item": "L1 白名单的具体边界",
+      "status": "未定",
+      "note": "见 integration_decisions.open Q2"
+    },
+    {
+      "id": "U3",
+      "item": "references/ 下 commands.md、failure-modes.md、sphinx-bilingual.md 未通读",
+      "status": "已登记未读",
+      "note": "三者分别为 17123 / 8059 / 16236 字节，内容为命令细则与配置指南，不改变能力判定；如需二次审计应单列"
+    },
+    {
+      "id": "U4",
+      "item": "templates/docs/ 下 13 个编号页模板结构未逐份审计",
+      "status": "已登记未读",
+      "note": "D16 已记录其结构无测试覆盖"
+    },
+    {
+      "id": "U5",
+      "item": "6 个未声明的脚本是否属于设计上不对外模块",
+      "status": "未定",
+      "note": "D7 记录为文档面漂移，但源码未说明其是否内部模块"
+    }
+  ],
+  "sha_convention": {
+    "adopted": "自本轮起所有新记录使用 40 位完整 Git Commit SHA",
+    "upstream_pinned_sha": "284971cdd2666878d13716af8f26f51521cd915c",
+    "audit_git_commit": "本审计提交的 SHA（回填阶段写入 TASKS/STATE，非上游事实）",
+    "note": "二者语义不同，不得相互替代；upstream_pinned_sha 指被审计的上游提交，audit_git_commit 指产生本审计的 SourceLore 提交"
+  },
+  "execution_isolation": {
+    "upstream_code_executed": false,
+    "upstream_tests_executed": false,
+    "dependencies_installed": false,
+    "network_requests": 0,
+    "writes_outside_snapshot": false,
+    "note": "全部证据来自本地固定快照的静态阅读；未运行任何上游脚本、未执行任何上游测试、未 poetry install"
+  }
+}
