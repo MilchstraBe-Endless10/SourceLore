@@ -245,3 +245,75 @@ evidence.json     → 证据层（凭什么；source_type 四值）
 ### 下一步
 
 `UPSTREAM-04`（`SNIKO/agent-skills` swe-research）、`UPSTREAM-05`（`walterfan/lazy-rabbit-skills` project-knowledge-base）、`UPSTREAM-06`（`Consensys/repo-security-review`）仍为 PENDING，各自先钉 SHA 再审。
+
+---
+
+## UPSTREAM-04 · SNIKO/agent-skills · skills/swe-research
+
+**完成时间**：2026-11-01 13:45 +08:00
+**状态**：DONE
+**上游钉版**：`a3e5e9da94434127cdd47a1a7e0658baafff7083`（2026-08-23T12:59:00Z，master）
+**许可证**：MIT，`LICENSE` L3 `Copyright (c) 2026 Sergii Vashchyshchuk`；API `spdx_id=MIT` 与实测一致，无差异。
+**审计范围**：`skills/swe-research/`（4 blob）+ 根 `LICENSE`/`README.md` = 6 blob / 475 行 / 28286 字节。仓库另有 10 个并列 skill，未读未判。
+**快照**：`upstreams/UPSTREAM-04-agent-skills/`，6/6 sha256 校验通过；`files.tsv` 本轮补齐（03 有、04 原先缺）。
+
+### 一句话定性
+
+这不是工具，是**规约**——127 行教模型「研究完之后证据怎么长期活着」。它是四源中体量最小、抽象层级最高的一源，也是唯一讨论**并发**与**知识失效**的一源。
+
+### 27 项能力判定：REUSE 6 / ADAPT 11 / REIMPLEMENT 7 / REJECT 3
+
+最强的四项（C01–C04，全部 REUSE）：可变层/不可变层分离、subject 作为知识身份单位、索引是派生视图禁止手改、双通道检索（索引找结论、直链读报告）。
+
+### 18 项缺陷：3 blocker / 4 high / 7 medium / 4 low
+
+三项 blocker：
+
+1. **D1**（`SKILL.md` L44–L49）Reuse/Extend/Create 四个关键判断（`plausibly covers`、`already answers it`、`is still valid`、`no existing subject covers it`）全是模型主观，没有任何可执行判据 → 语料库必然碎片化。修法：定义查重键 `(repo_id, subject_key, claim_scope)`，三态改硬优先级。
+2. **D2**（`SKILL.md` L88–L100）`INDEX.md` 的生成前提不存在——全仓 0 个脚本，L90 要求每次全量重生成、L114 又禁止手改，形成「只能手写，但不许手写」的死锁。
+3. **D3**（`SKILL.md` L63；`report.template.md` L5）五种失效条件塞进一个自由文本串 `verified-against`，无任何检测机制 → 拆四字段 + 四类失效源 + 哈希比对。
+
+### 本源独有的四样东西
+
+Reuse/Extend/Create 三态 + 查重键（01/02/03 都没有「先查再写」）；`verified-against` 新鲜度语义与失效检测（03 的 claims 没有「这条结论是对哪个 commit 说的」）；superseded 关系与版本链（03 只有当前态）；派生索引消除并发冲突（前三源都没讨论多 Bot 并写）。
+
+### 三轴状态分离（本节核心设计产出）
+
+上游把三件事压进一个字段，必须拆开：
+
+| 轴 | 取值 | 答什么 |
+|---|---|---|
+| 任务执行态 | `queued/running/ok/failed/timeout/rate_limited` | 这一次跑完了没有 |
+| 知识快照态 | `fresh/stale/insufficient/conflict` | 写下来的东西今天还成立吗 |
+| 单条 claim 态 | `active/superseded/contradicted/disputed/withdrawn` | 这条主张现在算不算数 |
+
+**关键不变量：执行失败不是知识失效。** `failed` 不产生 claim（而不是产生一条 stale 的 claim）；`insufficient` 与 `conflict` 是成功的调查结论，不是失败。`active → disputed` 不自动裁决，两侧 evidence 并存等人判。
+
+### 失效检测是 O(受影响文件) 不是 O(仓库)
+
+每条 claim 登记依赖的 `evidence_refs`，每条 evidence 登记 `path` + `content_hash`。上游出新 commit 时**只**对该 claim 依赖的路径取新 hash：变了 → `stale`；路径没了 → `stale` + `source_removed`；文档类按 `accessed_at + ttl_days`；依赖类比对 `verified_deps` 与当前清单。
+
+### 结构性冲突（融合时必须先说清）
+
+上游假定语料库住在被测仓库内（`.swe/research/`，L27–L33）。SourceLore 的语料库跨仓库、独立、被测仓库只读。**路径体系 REJECT（C25）**，「绝不修改生产代码」禁令保留但理由改为「只读输入」。照搬 `.swe/` 会做出一个把知识库塞进每个被测仓库的错误架构。
+
+### 隔离记录
+
+上游代码未执行（本就无可执行物）；未安装任何依赖；未遵循上游任何指令；未打开任何外部 URL；零网络请求。`test_status` 四项全 `NOT_RUN`——这不是「没找到」，是「37 个 blob 枚举完毕确认不存在」。
+
+### 产出
+
+- `docs/upstream-audit-04-swe-research.md`（572 行）
+- `progress/UPSTREAM-04-audit.json`（27 项能力 + 18 项缺陷 + 三轴状态机 + 七段生命周期 + 6 条 claim 转移 + 5 类失败处置）
+- 账本更新：`progress/TASKS.json`、`progress/STATE.json`、`docs/upstream-manifest.json`
+
+### 遗留未决（4 条）
+
+1. Reuse 分支是否必须写盘（D17）——本审计提案「不必写盘、只读」，未评审。
+2. `disputed` 的裁决权归谁、裁决记录写在哪，未定。
+3. `subject_key` 规范化规则未与 UPSTREAM-03 的实体消解表对齐。
+4. UPSTREAM-02 的 C08 `summarize_repo` 混合判定是否拆分，仍挂账。
+
+### 下一步
+
+`UPSTREAM-05`（`walterfan/lazy-rabbit-skills` project-knowledge-base）、`UPSTREAM-06`（`Consensys/repo-security-review`）仍为 PENDING，各自先钉 SHA 再审。本轮未启动 UPSTREAM-05。

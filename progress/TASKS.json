@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-10-31T15:25:00+08:00",
+  "updated_at": "2026-11-01T13:52:00+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -154,19 +154,34 @@
     {
       "id": "UPSTREAM-04",
       "milestone": "M1",
-      "goal": "审计 SNIKO agent-skills",
+      "goal": "审计 SNIKO agent-skills 的 swe-research skill（知识长期维护规约）",
       "inputs": "上游地址（已核实，来自总控提示词 §C 原文）：https://github.com/SNIKO/agent-skills/blob/master/skills/swe-research/SKILL.md",
       "expected_outputs": [
+        "docs/upstream-audit-04-swe-research.md",
+        "progress/UPSTREAM-04-audit.json",
         "docs/upstream-manifest.json 条目"
       ],
-      "status": "PENDING",
-      "verification_commands": [],
-      "evidence_paths": [],
-      "git_commit": null,
+      "status": "DONE",
+      "verification_commands": [
+        "python3 -c \"import json;json.load(open('progress/UPSTREAM-04-audit.json'))\"",
+        "git check-ignore -v upstreams/UPSTREAM-04-agent-skills/tree/skills/swe-research/SKILL.md",
+        "sha256sum -c <(awk -F'\\t' 'NR>1{print $3\"  \"$1}' upstreams/UPSTREAM-04-agent-skills/files.tsv)",
+        "gh api repos/SNIKO/agent-skills/commits/master --jq .sha"
+      ],
+      "evidence_paths": [
+        "docs/upstream-audit-04-swe-research.md",
+        "progress/UPSTREAM-04-audit.json",
+        "progress/CHECKPOINT-UPSTREAM-04.md",
+        "upstreams/UPSTREAM-04-agent-skills/files.tsv",
+        "upstreams/UPSTREAM-04-agent-skills/tree.json"
+      ],
+      "git_commit": "PENDING_COMMIT",
       "blocked_reason": null,
       "depends_on": [
         "M0-02"
-      ]
+      ],
+      "audit_sha": "a3e5e9da94434127cdd47a1a7e0658baafff7083",
+      "completed_at": "2026-11-01T13:45:00+08:00"
     },
     {
       "id": "UPSTREAM-05",
