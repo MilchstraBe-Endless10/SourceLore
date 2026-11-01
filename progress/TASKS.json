@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-02T00:47:00+08:00",
+  "updated_at": "2026-11-02T02:15:00+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -211,7 +211,7 @@
         "upstreams/UPSTREAM-05-lazy-rabbit-skills/files.tsv",
         "upstreams/UPSTREAM-05-lazy-rabbit-skills/tree.json"
       ],
-      "git_commit": null,
+      "git_commit": "cee595134f21fb082191a52cb7b54658d4d1bb85",
       "blocked_reason": null,
       "depends_on": [
         "M0-02"
