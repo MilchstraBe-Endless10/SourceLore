@@ -3,7 +3,7 @@
   "schema_version": 1,
   "task": "M1-FUSION-GATE-F1 / F1-B",
   "status": "DRAFT — 未冻结，F1-D 全量验收前不得发布为 CAPABILITY_CROSSWALK.json",
-  "generated_at": "2026-11-03T05:25:58+08:00",
+  "generated_at": "2026-11-03T06:00:06+08:00",
   "generator": "tools/fusion/f1b_build_collector.py（增量：Facts 由 f1b_build_facts.py 产出）",
   "source_index": "docs/fusion/RAW_CAPABILITY_INDEX.json",
   "source_index_sha256": "e62b68ed1658b95ebe73b37d8c991c995b1a18201faabbde81e41214c03a2f11",
