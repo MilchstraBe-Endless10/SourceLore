@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-02T22:27:30+08:00",
+  "updated_at": "2026-11-02T22:28:20+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -316,7 +316,7 @@
         "docs/fusion/ERRATA.md",
         "docs/fusion/F0_VERIFICATION.json"
       ],
-      "git_commit": null,
+      "git_commit": "c0877e0124551352e603d693158f8296ada08607",
       "blocked_reason": null,
       "depends_on": [
         "M1-FUSION-GATE"

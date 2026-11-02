@@ -61,7 +61,7 @@ F0 门禁九项全部实跑，`FAILURES: 0`，`exit=0`。
 
 ## 六、Git HEAD
 
-见 `progress/TASKS.json` 的 `git_commit`（回填阶段写入）。
+`c0877e0124551352e603d693158f8296ada08607` —— M1-FUSION-GATE F0 审计提交。前一条 `b0c8e6d` 是 UPSTREAM-06 的 SHA 回填提交。
 
 ## 七、下一步
 
