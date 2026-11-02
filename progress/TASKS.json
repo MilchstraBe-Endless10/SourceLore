@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-02T22:50:00+08:00",
+  "updated_at": "2026-11-03T05:39:01+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -340,7 +340,9 @@
         "python3 -c \"import json;I=json.load(open('docs/fusion/RAW_CAPABILITY_INDEX.json'));print(I['counts']['total_raw_capabilities'])\"",
         "python3 tools/fusion/f1a_extract.py",
         "python3 tools/fusion/f1b_build_facts.py",
-        "python3 tools/fusion/f1b_verify.py"
+        "python3 tools/fusion/f1b_verify.py",
+        "python3 tools/fusion/f1b_build_collector.py",
+        "python3 tools/fusion/f1b_verify_collector.py"
       ],
       "evidence_paths": [
         "docs/fusion/CAPABILITY_CROSSWALK.draft.json",
@@ -352,14 +354,19 @@
         "tools/fusion/f1a_extract.py",
         "tools/fusion/f1b_build_facts.py",
         "tools/fusion/f1b_facts_def.py",
-        "tools/fusion/f1b_verify.py"
+        "tools/fusion/f1b_verify.py",
+        "docs/fusion/F1B_COLLECTOR_DECISIONS.md",
+        "docs/fusion/F1B_COLLECTOR_VERIFICATION.json"
       ],
       "git_commit": "4f7d8a5d1901d030ebeb5570ad9045a5dbadcdf0",
       "blocked_reason": null,
       "depends_on": [
         "M1-FUSION-GATE-F0"
       ],
-      "progress_note": "F1-A DONE (commit 4f7d8a5, 143 items indexed). F1-B/Facts DONE: 11 raw consumed -> 10 canonical (SL-CAP-0001..0010), 11 redirected to other modules, 121 pending. Verification 12/12 PASS."
+      "progress_note": "F1-A DONE (commit 4f7d8a5, 143 items indexed). F1-B/Facts DONE: 11 raw consumed -> 10 canonical (SL-CAP-0001..0010), 11 redirected to other modules, 121 pending. Verification 12/12 PASS.",
+      "notes": [
+        "F1-B Collector 批次完成：9 canonical（SL-CAP-0011…0019）/ 11 raw 承接 / 5 项分流待办。累计 19 canonical，三态 22 MAPPED + 14 ROUTED + 107 UNREVIEWED = 143。验证 f1b_verify_collector 30/30 PASS、f1b_verify 12/12 PASS。F1 整体仍未完成。"
+      ]
     }
   ]
 }

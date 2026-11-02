@@ -34,6 +34,9 @@ def c1():
     keys = [i["identity_key"] for i in items]
     ok = n == 143 and len(set(keys)) == 143 and raw["counts"]["total_raw_capabilities"] == 143
     return ok, f"项数={n}, 唯一身份键={len(set(keys))}, counts.total={raw['counts']['total_raw_capabilities']}"
+# Facts 批次自己的 canonical 编号范围（后续模块批次的条目不在本验证器职责内）
+FACTS_IDS = {f"SL-CAP-{n:04d}" for n in range(1, 11)}
+
 check(1, "原始索引仍为 143 且身份键唯一", c1)
 
 # 2
@@ -58,7 +61,8 @@ check(3, "每项已映射原始能力只映射到一个 canonical ID", c3)
 
 # 4
 def c4():
-    owners = {c["canonical_id"]: c["owner_module"] for c in canon}
+    # 本验证器只对 Facts 批次自己的能力负责；其余模块的 owner 由各自批次的验证器判定
+    owners = {c["canonical_id"]: c["owner_module"] for c in canon if c["canonical_id"] in FACTS_IDS}
     bad = [k for k, v in owners.items() if v != "Facts"]
     return not bad, f"owner_module 全为 Facts={not bad}，异常={bad or '无'}，共 {len(owners)} 条"
 check(4, "每个 canonical 能力恰有一个主 owner", c4)
@@ -120,7 +124,8 @@ check(9, "未映射能力仍为待处理（不视为已裁决）", c9)
 def c10():
     allowed = {"Collector", "Facts", "Evidence-Claims", "Product", "Research", "Lifecycle",
                "Security", "Renderer", "Storage", "DSH-Adapter"}
-    bad = [c["canonical_id"] for c in canon if c["owner_module"] != "Facts"]
+    bad = [c["canonical_id"] for c in canon
+           if c["canonical_id"] in FACTS_IDS and c["owner_module"] != "Facts"]
     bad += [r["identity_key"] for r in redir if r["owner_module"] not in allowed or r["owner_module"] == "Facts"]
     reserved = {("UPSTREAM-01", "C03"), ("UPSTREAM-01", "C10")}
     wrong = [k for k in reserved
@@ -133,7 +138,8 @@ def c11():
     if not DOC.exists():
         return False, f"决策文档不存在: {DOC.name}"
     txt = DOC.read_text(encoding="utf-8")
-    missing = [c["canonical_id"] for c in canon if c["canonical_id"] not in txt]
+    missing = [c["canonical_id"] for c in canon
+               if c["canonical_id"] in FACTS_IDS and c["canonical_id"] not in txt]
     bs = draft["batch_summary"]
     nums = [bs["raw_mapped_to_facts"], bs["canonical_count"], bs["raw_remaining_unmapped"]]
     nums_ok = all(str(n) in txt for n in nums)

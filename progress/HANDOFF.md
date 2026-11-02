@@ -578,3 +578,52 @@ F1 启动了，做完状态核验和数据提取就熔断了。**没有任何半
 
 检查点里已备好 143 项能力的完整清单与六条继承约束（06 全部仅参考设计、C06 记 ADAPT、
 03 的 CC BY 4.0 署名要求、名称相似语义不同不得合并等），续跑不必重读六份审计 JSON 全文。
+
+## M1-FUSION-GATE / F1-B Collector 批次完成（2026-11-03 04:35 +08:00）
+
+### 一句话
+
+F1-B 第二批次（Collector 模块）完成：9 条 canonical（`SL-CAP-0011`~`0019`）、11 个原始身份正式归属、
+5 个身份分流到其它模块待承接。两个验证器全绿。F1 整体仍未完成。
+
+### 本批做了什么
+
+- 从 `RAW_CAPABILITY_INDEX` 全量检索出 Collector 相关候选，不是凭聊天记忆补的
+- 归并为 9 条 canonical，并明确 Collector 的十项职责与六项非职责
+- 关键裁决 A：唯一采集入口 —— 逻辑接口 / 当前 `gh api` 传输适配 / 可验证原始数据 / 传输可替换，四层分离；
+  数据契约不得绑定 GitHub CLI 的输出格式
+- 从 Facts 批次的分流记录中接手 5 个身份（UPSTREAM-02 的 C01/C04/C06/C07/C09 等），
+  按晋升规则从 `cross_module_redirections` 提升进对应 canonical 的 `upstream_refs`，
+  并在 `routed_promotions` 留迁移记录 —— 这些身份从 ROUTED 变为 MAPPED，不是重复计算
+
+### 统计口径（三态互斥，实测非声明）
+
+| 状态 | 数量 |
+|---|---|
+| MAPPED | 22 |
+| ROUTED（去向已定、目标模块尚未承接） | 14 |
+| UNREVIEWED（既未映射也未分流） | 107 |
+| **合计** | **143** |
+
+MAPPED ∩ ROUTED = ∅。`canonical_count = 19`（不是 143）。
+
+### 验证证据
+
+- `tools/fusion/f1b_verify_collector.py` → `28/28 PASS -> F1B_COLLECTOR_VERIFICATION.json`
+- `tools/fusion/f1b_verify.py` → `汇总: 12/12 PASS`
+- 两个构建器均幂等（重复运行产物字节一致）；写入都在校验通过之后
+
+### 本批修掉的坑（下一批别再踩）
+
+1. 验证器职责边界：`f1b_verify.py` 原先断言「全表 owner 必须是 Facts」，Collector 条目一进来就误报红。
+   已收窄到 `FACTS_IDS` 范围 —— 每批验证器只判自己那一号段，全表不变量留给 F1-D。
+2. Facts 构建器会静默抹掉其它模块的条目（它重写整张表）。已加闸：检测到 `SL-CAP-0010` 以外的条目就
+   `exit 2` 且不写盘。整表重建的正确顺序是 `f1b_build_facts.py` → `f1b_build_collector.py` → 两个验证器。
+3. 分流记录里 `owner_module` 存的是**目标**模块，不能拿它反推产出方；去重与剥离必须按
+   `(upstream_id, original_capability_id)` 配对。
+4. `refs` 是三元组 `(upstream_id, original_capability_id, verdict)`，不是字典。
+
+### 下一步
+
+F1-B 剩余模块：Evidence-Claims → Product → Research → Lifecycle → Security → Renderer → Storage → DSH Adapter。
+每批照本批流程：检索候选 → 归并 → 裁决 → 幂等构建器 → 独立验证器 → 进度记录 → 独立提交。

@@ -26,6 +26,9 @@ from f1b_facts_def import CANON, DEFERRED_TO_OTHER_MODULE
 # ── 明确排除：属于 Facts 之外模块的候选（保留去向，不计入本模块） ──────────
 # 未列出的原始能力 = 本轮未处理，仍为 UNMAPPED / PENDING
 
+# 本构建器拥有的 canonical 编号（Facts 批次为 0001~0010）
+FACTS_IDS = {f"SL-CAP-{n:04d}" for n in range(1, 11)}
+
 def main() -> int:
     errors = []
     raw = json.loads(RAW.read_text(encoding="utf-8"))
@@ -193,7 +196,7 @@ def main() -> int:
             "未处理的原始能力仍为 UNMAPPED/PENDING，不视为已裁决",
         ],
     }
-    DRAFT.write_text(json.dumps(doc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    # 写入延后到校验通过之后（失败时不得留下半成品草稿）
 
     # 6. 回填进度（从草稿推导，不信索引初值）
     prog = json.loads(PROG.read_text(encoding="utf-8"))
@@ -210,7 +213,8 @@ def main() -> int:
     }
     prog["progress_computed_from"] = "docs/fusion/CAPABILITY_CROSSWALK.draft.json"
     prog["last_updated"] = datetime.now(TZ).isoformat(timespec="seconds")
-    assigned = sum(v["raw_consumed"] + v.get("raw_redirected", 0)
+    # 其他批次的 module_progress 可能不含 raw_consumed，缺失按 0 处理不得直接 KeyError
+    assigned = sum(v.get("raw_consumed", 0) + v.get("raw_redirected", 0)
                    for v in prog["module_progress"].values())
     prog["totals"] = {
         "raw_total": len(items),
@@ -218,7 +222,6 @@ def main() -> int:
         "raw_pending": len(items) - assigned,
         "canonical_total": sum(v["canonical_count"] for v in prog["module_progress"].values()),
     }
-    PROG.write_text(json.dumps(prog, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     print(f"raw_total            = {len(items)}")
     print(f"facts raw consumed   = {len(facts_keys)}")
@@ -227,11 +230,28 @@ def main() -> int:
     print(f"remaining unmapped   = {len(pending_keys)}")
     print(f"per_source_consumed  = {json.dumps(doc['batch_summary']['per_source_consumed'])}")
     print(f"dedup_ratio          = {doc['batch_summary']['dedup_ratio']}")
+    # 防误跑：本构建器只拥有 Facts 的 SL-CAP-0001~0010，若草稿已被后续批次扩展，
+    # 直接写入会抹掉其它模块的条目，因此拒绝执行并要求用对应批次的构建器。
+    _existing = OUT_DIR / "CAPABILITY_CROSSWALK.draft.json"
+    other = []
+    if _existing.exists():
+        _prev = json.loads(_existing.read_text(encoding="utf-8"))
+        other = [c.get("canonical_id") for c in _prev.get("canonical_capabilities", [])
+                 if c.get("canonical_id") not in FACTS_IDS]
+    if other:
+        print("ERROR: 草稿已包含其它模块的能力条目 %s，本构建器会抹除它们。" % other, file=sys.stderr)
+        print("请改用对应模块批次的构建器（如 f1b_build_collector.py）。未写入任何文件。", file=sys.stderr)
+        return 2
+
     if errors:
         for e in errors:
             print("ERROR:", e, file=sys.stderr)
         print("RESULT: FAIL", file=sys.stderr)
+        print("未写入任何文件。", file=sys.stderr)
         return 1
+
+    DRAFT.write_text(json.dumps(doc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    PROG.write_text(json.dumps(prog, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("RESULT: OK")
     return 0
 
