@@ -1,17 +1,18 @@
 # SourceLore 交接文档
 
 > 本文件是跨会话恢复的唯一入口。任何新会话第一件事就是读它。
-> 最后更新：2026-10-31T09:58:00+08:00
+> 最后更新：2026-11-02T15:36:00+08:00
 
 ---
 
 ## 一、现状
 
-项目已初始化，M0 环境审计完成并通过 Gate。M1 尚未开始。
+M1 六个上游只读审计全部完成，等用户启动 M1-FUSION-GATE。M2 开发未开始。
 
 - 项目根：`/mnt/Server_Data_Center/Team_Flie(团队文件)/GitHub_Knowledge_Base(Gihub知识库)/SourceLore`
-- 当前里程碑：**M0（已通过）**
-- 当前任务：**M0-02 项目骨架与 Git 初始化（进行中，等待首个 commit）**
+- 当前里程碑：**M1（六源审计 DONE）**
+- 当前任务：**无**（`active_task` 为 null）
+- 下一任务：**M1-FUSION-GATE**（需用户明确启动）
 - 开发模型：`workbuddy/deepseek-v4.1-flash`（上下文 131072，务必小步走）
 
 ## 二、已通过的 Gate
@@ -21,15 +22,18 @@
 | M0：可读取和安全写入指定目录 | PASS | `BASE_WRITABLE=YES`；骨架已创建；`git init` 成功 |
 | M0：模型能运行最小工具实验 | PASS | bash / git / python3 venv / SQLite FTS5 / curl 全部实跑成功 |
 | M0：DSH 技能路径有依据 | PASS | 用户级根 `<DSH_HOME>/skills` 经 Catalog 交叉验证；三个 skill Provider 已注册 |
+| UPSTREAM-01~06：单源只读审计 | PASS | 每源九项门禁实跑，退出码均为 0，详见各 `docs/upstream-audit-0N-*.md` §验收 |
 
 ## 三、最后一条真实命令与退出码
 
 ```
-cd '/mnt/Server_Data_Center/Team_Flie(团队文件)/GitHub_Knowledge_Base(Gihub知识库)/SourceLore' && git init -b main
+python3 - <<'PY'  # UPSTREAM-06 九项门禁
+... SHA / 证据路径 / Markdown-JSON 一致性 / 许可证处置 / 静态动态不混淆 / 快照完整性 / 敏感内容 ...
+PY
 ```
 
 ```
-Initialized empty Git repository in .../SourceLore/.git/
+FAILURES: 0
 ```
 
 `exit=0`
@@ -38,43 +42,42 @@ Initialized empty Git repository in .../SourceLore/.git/
 
 | 文件 | 说明 |
 |---|---|
-| `.gitignore` | 忽略 knowledge/ cache/ upstreams/ .dsh/skills/ 与 Python、密钥产物 |
-| `.gitattributes` | LF 统一、二进制标注 |
-| `docs/environment-audit.md` | M0-01 完整审计报告（实测数据） |
-| `docs/platform-compatibility.md` | 平台兼容性矩阵与陷阱清单 |
-| `progress/STATE.json` | 状态机初始值 |
-| `progress/TASKS.json` | M0-01 DONE、M0-02 IN_PROGRESS、UPSTREAM-01~06 PENDING |
+| `docs/upstream-audit-06-repo-security-review.md` | UPSTREAM-06 审计报告，15 章 |
+| `progress/UPSTREAM-06-audit.json` | 结构化审计记录 |
+| `docs/upstream-manifest.json` | 补全 UPSTREAM-06 条目（含无许可证说明） |
+| `THIRD_PARTY_NOTICES.md` | 新建。六源许可状态与零复制事实 |
+| `progress/TASKS.json` | UPSTREAM-06 转 DONE |
+| `progress/STATE.json` | `next_task` 改为 M1-FUSION-GATE |
 | `progress/HANDOFF.md` | 本文件 |
-
-创建的目录骨架（按总控提示词 §E）：
-
-```
-src/sourcelore/{collection,evidence,lifecycle,storage}
-skills/sourcelore/{references,scripts}
-schemas docs tests progress reports/acceptance
-knowledge cache upstreams .dsh/skills
-```
 
 ## 五、测试
 
-`NOT_RUN` —— M0 不含自动化测试，M2 才开始引入单元测试。审计类验证以真实命令输出为准，已在 `docs/environment-audit.md` 逐条记录。
+`NOT_RUN`。M1 六个上游全部禁止执行上游代码、禁止安装依赖、禁止启动容器、禁止对真实部署发起请求。审计类验证以真实命令输出为准，逐条记录在各审计文档的验收节。**不得把任何一源的审计读作「该工具已通过安全测试」。**
 
 ## 六、Git HEAD
 
-`NOT_COMMITTED` —— 仓库刚初始化，尚无 commit。
+见 `progress/TASKS.json` 的 `git_commit` 字段与 `progress/STATE.json` 的 `last_verified_commit`（回填阶段写入）。
 
 ## 七、下一步
 
-**M0-02 收尾**：完成首个基线提交，然后进入 M1 的 UPSTREAM-01。
+**M1-FUSION-GATE**。六源审计已全部 DONE，但融合还没开始。
 
 M1 硬性约束（来自总控提示词 §G）：
 
-- 六个上游**一次只处理一个**，每个都固定 Commit SHA
-- 每个都要查 LICENSE / NOTICE / 文件头许可证声明
-- 每个都要读 SKILL.md 与脚本，列出可复用能力与兼容性风险
-- 逐个更新 `docs/upstream-manifest.json` 与 `docs/fusion-matrix.md`
+- 六个上游**一次只处理一个**，每个都固定 Commit SHA —— 已完成
+- 每个都要查 LICENSE / NOTICE / 文件头许可证声明 —— 已完成
+- 每个都要读 SKILL.md 与脚本，列出可复用能力与兼容性风险 —— 已完成
+- 逐个更新 `docs/upstream-manifest.json` 与 `docs/fusion-matrix.md` —— manifest 已完成；**`docs/fusion-matrix.md` 尚未产出**，属 M1-FUSION-GATE 的活
 - **严禁把六个 SKILL.md 原样拼接**
 - 未到 M1 Gate 不得开始大规模融合编码
+
+融合阶段要处理的具体账（按优先级）：
+
+1. `MANIFEST_FORMAT_DIVERGENCE`（medium）：UPSTREAM-02 的 TSV 是 `type/bytes/path`，其余是 `path/bytes/blob_sha`。Manifest V2 已提出未定稿。
+2. 06 的 C05 四节点证据结构如何并入 03 的 Claim/Evidence —— 是字段扩展还是新层，需定。
+3. 06 的 C04 边界门依赖 `auth_coverage`，而该映射必须改成确定性抽取；精度不足时门只能降级为标注（06 的 Q2）。
+4. 否定结论的覆盖面字段（06 的 C14）与 04 的增量机制语义冲突，需统一定义（06 的 Q3）。
+5. `disputed` 的裁决权归属仍未定（结转自 UPSTREAM-04/05）。
 
 ## 八、已知限制
 
@@ -83,7 +86,8 @@ M1 硬性约束（来自总控提示词 §G）：
 3. **路径含括号与中文**：shell 必须引号，Python 用 pathlib
 4. **Skill 源码目录不是发现根**：M6 必须安装到发现根并用 Catalog 复验
 5. **Tobs 会话 cwd 不是项目根**：M7 触发依赖用户级 skill 根，需专门验证
-6. **上游 URL 待核实**：`TASKS.json` 中 UPSTREAM-01/03/04 的仓库地址是从记忆推测的，M1 必须先核实真实地址，核实不了就记录为待用户确认，不得凭空编造
+6. **`upstreams/` 被 `.gitignore` 排除**：快照副本不进历史，只是审计期只读材料
+7. **UPSTREAM-06 无许可证**：该源只可取抽象设计思想，不得复制任何源码、提示词、规则原文或模板；边界宽度需法务判断（其 U10）
 
 ## 九、恢复命令
 
@@ -91,7 +95,9 @@ M1 硬性约束（来自总控提示词 §G）：
 cd '/mnt/Server_Data_Center/Team_Flie(团队文件)/GitHub_Knowledge_Base(Gihub知识库)/SourceLore' && git log --oneline -5 && python3 -m json.tool progress/STATE.json && python3 -m json.tool progress/TASKS.json | head -40
 ```
 
-然后读 `progress/STATE.json` 的 `active_task`，继续该任务。
+然后读 `progress/STATE.json` 的 `next_task`。当前应为 `M1-FUSION-GATE`。
+
+---
 
 ## UPSTREAM-01 完成（2026-10-31 12:15 +08:00）
 
@@ -411,3 +417,87 @@ REUSE 6 / ADAPT 10 / REIMPLEMENT 9 / REJECT 3。这一源不是 27 项——数�
 ### 下一步
 
 只剩 `UPSTREAM-06`（`Consensys/repo-security-review`），状态仍为 PENDING，尚未钉 SHA。本轮未启动它。
+
+## UPSTREAM-06 完成（2026-11-02 15:30 +08:00）
+
+### 一句话定性
+
+六个上游里唯一没有许可证的一个。它是一套成熟的漏洞审查流水线（P0 拓扑 → P1 密钥 → P2 架构 → P2a 技术栈 → P3 依赖 → P3b 可达性 → P4 OWASP → P4b LLM 安全 → P5 验证 → P6 报告 → P7 合成），但自身的边界有三处不成立：无授权却提供整套可复制的方法论、安装脚本无钉定、`--runtime` 默认可构建并运行不受信代码。
+
+### 上游形态
+
+`Consensys/repo-security-review`，整仓 16 个文件 / 466023 字节 / 8959 行。除 `scripts/setup.sh`（10530 字节）外全部是 Markdown。仓库里没有分析引擎代码——只有提示词、规则文本与安装脚本。固定提交 `d5128b03d6a785bfb7c8be4139291f887c2a3215`（2026-10-21，`Clarify dependency CVE triage and reporting`）。
+
+### 许可证
+
+**无。** API `license` 为 null，`/license` 端点 404，16 个文件全文检索 LICENSE / Copyright / SPDX / © 命中 0，树内无 LICENSE / COPYING / NOTICE，`.gitignore` 仅一行 `.DS_Store`。
+
+处置：只取抽象设计思想，不复制源码、提示词、规则原文与模板。许可证状态在 manifest 与审计 JSON 中作为独立字段（`license_verified_spdx: null`、`license.status: "none"`），不被任何复用判定覆盖。
+
+### 能力判定：28 项
+
+REUSE 11 / ADAPT 11 / REIMPLEMENT 4 / REJECT 2。
+
+REUSE 的十一条里，最值钱的四条：四节点数据流契约（entrypoint → hops → sink 逐跳 file:line）、两级的确定性前置门（Surface Gate / Boundary Gate，带置信度分级与封顶）、环境失败绝不改判 + 动态否证只降级到人工复核、族扫描与诚实否定（族里一个成员没读，整个类的「确信」就作废）。
+
+REJECT 的两条：Claude 家族模型分层、一键安装外部扫描器。
+
+### 缺陷：20 项，其中 3 个 blocker
+
+- D1（blocker）无许可证
+- D2（blocker）`setup.sh` 用 brew / `go install @latest` / releases 下载 / `pip --break-system-packages` / `curl | sh` 装六个工具，无版本钉定、无校验和
+- D3（blocker）`--runtime` 会 build 并 run 目标仓库的 Dockerfile，加固标志只加在 run 上；`--yes` 一次跳过全部同意门
+
+三个 blocker 有共同形状：不是功能没做，而是做了但边界不成立。
+
+high 四条：上游自陈「边界 2 不防边界 1」、全部静态探测带 head 封顶与族扫描纪律冲突、模型分层绑死供应商、宿主路径硬编码。
+
+### 十二项风险核验
+
+6 成立 / 5 部分成立 / 1 不成立。唯一不成立的是「自动构建/执行 PoC」——`--poc` 只持久化不执行，`--runtime` 只执行不持久化，都不设时连 `pocs/` 目录都不创建，构造点钉在验证之后，被拒绝的 finding 永不构造。这是本轮最值得采纳的设计。
+
+### 最有价值的机制
+
+1. **四节点数据流契约。** 把「这里有注入」变成一条可被第二个上下文独立复核的链。跨文件边界却缺 hop 的声称被明确判为不可验证。
+2. **确定性前置门 + 置信度封顶。** 非生产面 + 高置信直接终止；中置信照常验证但结果封顶。两条门各带一句纪律：绝不因为 finding 严重就跳过门；门不是误报判定。
+3. **环境失败绝不改判。** 工具没跑起来不是证据。与 SourceLore 既有不变量同源——两处独立收敛，说明这是不变量级而非风格选择。
+4. **族扫描与诚实否定。** 上游给的失败案例极准：读了 `curl` 包装器就宣布「SSRF 确信无」，而同目录的 `wget` 包装器没读。
+
+### 测试状态
+
+`NOT_RUN`。`setup.sh` 只读未执行；未安装 gitleaks / osv-scanner / semgrep / pip-audit / grype 中任何一个；未启动 Docker；未对任何真实部署发起请求。28 条能力判定与 20 条缺陷全部来自静态阅读。
+
+### 融合风险（3 条最要紧）
+
+1. `PROMPT_INJECTION_INHERENT`（high）：任何读取不受信仓库内容的分析阶段都暴露在提示注入下。上游自己承认边界 2 不防边界 1。SourceLore 不能靠分层代理解决。
+2. `BOUNDED_SEARCH_FALSE_NEGATIVE`（high）：有界搜索的空结果被当否定证据。上游在依赖可达性上明令禁止，却在 OWASP 探测上自己就在做。
+3. `SEVERITY_CONFIDENCE_COLLAPSE`（high）：把环境档位调整与置信度封顶混成同一根严重度轴。上游选择在报告里不解释，这不是修复。
+
+### SHA 规范化
+
+`upstream_pinned_sha` = `d5128b03d6a785bfb7c8be4139291f887c2a3215`（上游事实），`audit_git_commit` = 本仓库提交（回填阶段写入），二者不可互换。上游 SHA 不是本地 Git 对象，核验方式是比对 `tree.json.sha`、审计 JSON 三处字段与 manifest `commit`。
+
+### 产出
+
+- `docs/upstream-audit-06-repo-security-review.md`
+- `progress/UPSTREAM-06-audit.json`
+- `docs/upstream-manifest.json` 的 UPSTREAM-06 条目
+- `THIRD_PARTY_NOTICES.md`（新建）
+- 账本：`TASKS.json` 的 `UPSTREAM-06` 转 DONE，`STATE.json` 同步，`next_task` 改为 `M1-FUSION-GATE`
+
+### 验收
+
+九项门禁全部实跑，退出码均为 0。过程中发现两处真实数据缺陷并修正：D18 在文档与 JSON 中严重度不一致（medium / low），连带文档自身的统计行与表格矛盾；manifest 的 UPSTREAM-06 行仍是占位（`commit: null`、`audit_status: NOT_RUN`）。修正后复跑全部通过。
+
+### 结转未决
+
+1. 06 的 U10：无许可证下「抽象设计思想」与「受版权保护表达」的边界宽度，需法务判断。
+2. 06 的 Q1：四节点结构在非 HTTP 场景（CLI、文件解析、CI 配置）的 hops 粒度如何定义。
+3. 06 的 Q2：`auth_coverage` 的确定性抽取能做到什么精度；不足则边界门只能降级为标注。
+4. 06 的 Q3：否定结论的覆盖面字段与 04 的增量机制如何共存。
+5. `docs/fusion-matrix.md` 尚未产出，属 M1-FUSION-GATE。
+6. 结转自 04/05：Reuse 分支是否必须写盘、`disputed` 裁决权归属、`subject_key` 规范化、UPSTREAM-02 C08 是否拆分、Manifest V2 列契约未定稿。
+
+### 下一步
+
+M1 六个上游全部 DONE。**M1-FUSION-GATE 需用户明确启动**；M2 开发未开始。本轮到此停止，不自动进入融合。

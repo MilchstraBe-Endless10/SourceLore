@@ -190,9 +190,41 @@
       "fork": false,
       "pushed_at": "2026-10-21T17:06:40Z",
       "description": "A Claude Skill to perform security code review for repositories (code and Skill)",
-      "commit": null,
-      "license_evidence_paths": [],
-      "audit_status": "NOT_RUN"
+      "commit": "d5128b03d6a785bfb7c8be4139291f887c2a3215",
+      "license_evidence_paths": [
+        "upstreams/UPSTREAM-06-repo-security-review/tree.json",
+        "docs/upstream-audit-06-repo-security-review.md"
+      ],
+      "audit_status": "DONE",
+      "license_verified_spdx": null,
+      "license_verified_note": "仓库无许可证。GitHub API license 字段为 null，/repos/Consensys/repo-security-review/license 端点返回 HTTP 404，全部 16 个文件全文检索 LICENSE / Copyright / SPDX / © 命中 0，树内无 LICENSE、COPYING、NOTICE 任何文件，.gitignore 仅一行 .DS_Store（10 字节）。因此在默认著作权下保留全部权利，不存在可复制或可改编的授权。处置：上游源码、提示词、规则原文与模板一律不并入 SourceLore；本轮 REUSE/ADAPT 判定只表示抽象设计思想可被采用，具体实现独立编写。许可证状态为独立字段，不受任何复用判定覆盖。",
+      "subtree": null,
+      "subtree_note": "整仓纳入快照，无子树切分；仓库仅三层：根目录 3 文件、references/ 11 文件、scripts/ 2 文件",
+      "audit_record": "docs/upstream-audit-06-repo-security-review.md",
+      "audit_json": "progress/UPSTREAM-06-audit.json",
+      "audited_at": "2026-11-02T15:30:00+08:00",
+      "snapshot_path": "upstreams/UPSTREAM-06-repo-security-review/",
+      "blob_count": 16,
+      "total_bytes": 466023,
+      "test_status": "NOT_RUN",
+      "test_status_reason": "仓库唯一可执行脚本 scripts/setup.sh 只读未执行；未安装 gitleaks / osv-scanner / semgrep / pip-audit / grype 中任何一个；未启动 Docker、未构建镜像；未对任何真实部署发起 HTTP 请求；未生成或执行任何 PoC。28 条能力判定与 20 条缺陷全部来自静态阅读，不得读作该工具已通过安全测试，也不得读作其不安全。",
+      "disposition_counts": {
+        "REUSE": 11,
+        "ADAPT": 11,
+        "REIMPLEMENT": 4,
+        "REJECT": 2
+      },
+      "defect_counts": {
+        "blocker": 3,
+        "high": 4,
+        "medium": 11,
+        "low": 2
+      },
+      "blocker_ids": [
+        "D1",
+        "D2",
+        "D3"
+      ]
     }
   ]
 }

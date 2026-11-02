@@ -1,0 +1,1222 @@
+{
+  "task": "UPSTREAM-06",
+  "milestone": "M1",
+  "auditor": "DeepSeek-V4.1 Flash (DSH execution agent)",
+  "audited_at": "2026-11-02T15:30:00+08:00",
+  "audit_subject": "整仓审计（无子树）。审计目的不是评估该 skill 的可用性，而是评估其自身安全边界是否成立、证据纪律能否脱离 Claude Code 独立实现、以及无许可证下的可采纳边界",
+  "upstream": {
+    "url": "https://github.com/Consensys/repo-security-review",
+    "full_name": "Consensys/repo-security-review",
+    "subtree": null,
+    "subtree_note": "整仓纳入快照，无子树切分。仓库仅三层：根目录 3 文件、references/ 11 文件、scripts/ 2 文件",
+    "repo_id": 1249083556,
+    "description": "A Claude Skill to perform security code review for repositories (code and Skill)",
+    "default_branch": "main",
+    "commit_sha": "d5128b03d6a785bfb7c8be4139291f887c2a3215",
+    "pinned_sha": "d5128b03d6a785bfb7c8be4139291f887c2a3215",
+    "pinned_sha_note": "与 commit_sha 同值同义（被审计的上游提交）。二者并存仅为对齐 sha_convention 中的 upstream_pinned_sha 命名，不构成第二套事实",
+    "commit_date": "2026-10-21T17:06:36Z",
+    "commit_subject": "Clarify dependency CVE triage and reporting",
+    "author": "behroozreview",
+    "license": null,
+    "license_source": "GitHub API repos/Consensys/repo-security-review 返回 license 字段为 null；/license 端点 HTTP 404",
+    "language": "Shell",
+    "size_kb": 865,
+    "stars": 32,
+    "forks": 7,
+    "open_issues": 0,
+    "archived": false,
+    "is_fork": false,
+    "is_private": false,
+    "topics": [],
+    "created_at": "2026-05-25T10:34:41Z",
+    "pushed_at": "2026-10-21T17:06:40Z",
+    "updated_at": "2026-10-28T12:13:08Z"
+  },
+  "snapshot": {
+    "path": "upstreams/UPSTREAM-06-repo-security-review",
+    "files_tsv": "upstreams/UPSTREAM-06-repo-security-review/files.tsv",
+    "tree_json": "upstreams/UPSTREAM-06-repo-security-review/tree.json",
+    "tree_dir": "upstreams/UPSTREAM-06-repo-security-review/tree",
+    "tree_json_entries": 18,
+    "tree_json_truncated": false,
+    "tree_json_sha": "d5128b03d6a785bfb7c8be4139291f887c2a3215",
+    "tree_objects": 2,
+    "tree_object_paths": [
+      "references",
+      "scripts"
+    ],
+    "blob_count": 16,
+    "files_on_disk": 16,
+    "total_bytes": 466023,
+    "line_count": 8959,
+    "tsv_contract": {
+      "columns": [
+        "path",
+        "bytes",
+        "blob_sha"
+      ],
+      "header": false,
+      "separator": "TAB",
+      "rows": 16
+    },
+    "verification": "逐行核验：共 16 行，失败=0。每行第 3 列与本地按 Git blob 规则重算的 SHA-1 一致，每行第 2 列与文件字节数一致；磁盘 tree/ 下实际文件数 16，与 TSV 行数相等，无缺失、无多余",
+    "verification_result": "OK=16 MISMATCH=0 MISSING=0",
+    "verification_exit_code": 0
+  },
+  "license": {
+    "status": "none",
+    "claimed": null,
+    "api_license_field": null,
+    "api_spdx": null,
+    "license_endpoint_status": 404,
+    "license_endpoint_body": "{\"message\":\"Not Found\"}",
+    "license_files_in_repo": [],
+    "license_string_hits": 0,
+    "license_string_scan": "对全部 16 个文件检索 LICENSE / Copyright / SPDX / ©，命中 0。gitignore 仅一行 .DS_Store（10 字节），不含任何许可声明",
+    "legal_position": "默认著作权下保留全部权利。不存在可复制、可改编、可再分发的授权。这不是许可证不明，是没有许可证",
+    "reuse_scope": "design-only",
+    "may_copy_upstream_text": false,
+    "may_copy_upstream_code": false,
+    "may_copy_upstream_prompts": false,
+    "may_copy_upstream_rules": false,
+    "may_copy_upstream_templates": false,
+    "may_reimplement_based_on_idea": true,
+    "independent_implementation_required": true,
+    "license_independent_of_disposition": "许可证状态为独立字段，不得被任何 REUSE / ADAPT 判定覆盖。REUSE 只表示抽象设计思想可被采用，不表示允许复制上游源码或文档",
+    "unresolved": "抽象设计思想与受版权保护表达之间的边界宽度需法务判断（见 unresolved U10）。本轮采取保守立场：不复述上游规则文本、不复制模板、不逐句改写"
+  },
+  "inventory": {
+    "top_level": [
+      "README.md",
+      "SKILL.md",
+      ".gitignore"
+    ],
+    "references_count": 11,
+    "references": [
+      "phase-llm-security.md",
+      "phase0-topology.md",
+      "phase1-secrets.md",
+      "phase2-architecture.md",
+      "phase2a-tech-stack.md",
+      "phase3-dependencies.md",
+      "phase4-owasp.md",
+      "phase5-validate-and-poc.md",
+      "phase6-report.md",
+      "phase7-synthesis.md",
+      "pr-review.md"
+    ],
+    "scripts_count": 2,
+    "scripts": [
+      "repo-security-review-command.md",
+      "setup.sh"
+    ],
+    "executable_files": [
+      "scripts/setup.sh"
+    ],
+    "code_files": 1,
+    "markdown_files": 15,
+    "note": "全仓只有 setup.sh 一个是可执行脚本，其余 15 个是 Markdown。仓库里没有分析引擎代码，只有提示词、规则文本与安装脚本"
+  },
+  "coverage": {
+    "files_read_in_full": "SKILL.md（1640 行）、README.md（152 行）、.gitignore、scripts/setup.sh（10530 字节，只读未执行）、references/phase0-topology.md（158 行）、references/phase1-secrets.md（138 行）、references/phase4-owasp.md（945 行）、references/phase-llm-security.md（297 行）",
+    "files_read_substantially": "references/phase5-validate-and-poc.md（1871 行，读 L1–146、L212–L360、L414–L560、L608–L833、L1003–L1075、L1267–L1300、L1421–L1560、L1631–L1700）、references/phase2-architecture.md（423 行，读 L1–L180、L176–L270、L270–L432）、references/phase2a-tech-stack.md（456 行，读标题全图 + L54–213、L240–300、L380–456）、references/phase3-dependencies.md（464 行，读标题全图 + L1–465）、references/phase6-report.md（998 行，读标题全图 + L7–L215、L330–L352、L981–L998）、references/phase7-synthesis.md（405 行，读标题全图 + L1–L230、L372–L405）、references/pr-review.md（432 行，读标题全图 + L15–L50、L200–L300）、scripts/repo-security-review-command.md（580 行，读标题全图 + L1–L360、L360–L580）",
+    "files_fingerprinted_only": "无。全部 16 个文件均已打开阅读，其中 5 个为分区通读而非逐行通读",
+    "files_not_read": [],
+    "unread_ranges": {
+      "references/phase5-validate-and-poc.md": "L869–L1003（五类 PoC 代码模板）、L1076–L1267（决策树与容器编排细节）、L1283–L1421（Dockerfile 合成其余步骤）",
+      "references/phase6-report.md": "L215–L330、L352–L463、L463–L981（四种报告完整模板）",
+      "references/phase7-synthesis.md": "L219–L372（系统级 schema 与报告模板）",
+      "references/pr-review.md": "L299–L432（PR 模式输出 schema）",
+      "references/phase2-architecture.md": "L236–L270 后半（检查清单条目要点）",
+      "scripts/repo-security-review-command.md": "L437–L500（阶段编排细节）"
+    },
+    "unread_ranges_note": "六处未读均属清单条目、模板内容、呈现层或编排细节，不改变三类判定：能力有无、缺陷成立与否、可迁移性。已逐条登记为 unresolved U1–U8",
+    "dynamic_execution": "NOT_RUN —— 零脚本执行、零依赖安装、零容器启动、零网络请求"
+  },
+  "capability_matrix": [
+    {
+      "id": "C01",
+      "capability": "两阶段信任边界（finder → judgment）",
+      "mechanism": "每个阶段跑在独立子代理里，产物是 JSON 而非对话；判断层只拿路径不拿推理",
+      "where": "SKILL.md L1035–L1122",
+      "disposition": "ADAPT",
+      "why": "抽象设计可采纳：委托与判断必须由不同上下文承担。但上游自己写明 Boundary 2 不防 Boundary 1（D4），所以这不是完整答案，只是分层的一半"
+    },
+    {
+      "id": "C02",
+      "capability": "阶段间上下文卫生（下游只读上游结构字段，不读其 findings）",
+      "mechanism": "Phase 4 只读 phase2-architecture.json 的 project_overview / coverage / surface_map，明令禁读 findings、禁引用 P2-XXX",
+      "where": "references/phase4-owasp.md L36–L95",
+      "disposition": "REUSE",
+      "why": "这是可独立实现的反锚定纪律：下游阶段可以复用上游的结构事实，但不能继承上游的判断。SourceLore 的 Claim/Evidence 模型必须同样约束：证据可继承，结论不可继承"
+    },
+    {
+      "id": "C03",
+      "capability": "Surface Gate：非生产面确定性抑制 + 置信度分级 + 封顶",
+      "mechanism": "glob 匹配 surface_map.non_production[].pattern，{test,fixture}+high → 立即 SURFACE_NOT_PRODUCTION；{example,demo}+high → 同样；medium → 照常验证但封顶 CONFIRMED_LOW_CONFIDENCE",
+      "where": "references/phase5-validate-and-poc.md L471–L530",
+      "disposition": "REUSE",
+      "why": "确定性前置门能省掉整条验证链的开销，且明确区分「代码有漏洞」与「漏洞不在生产面」。这条不依赖任何模型判断，可原样独立实现"
+    },
+    {
+      "id": "C04",
+      "capability": "Boundary Gate：pre-auth 可达性门 + auth_coverage 映射",
+      "mechanism": "仅当 deployment-verification.json classification==gated 时生效；按 public/protected/unknown 分类入口点；PROTECTED+high → 覆写为 BOUNDARY_NOT_CROSSED",
+      "where": "references/phase5-validate-and-poc.md L608–L692",
+      "disposition": "ADAPT",
+      "why": "门的形状可采纳，但依赖 Phase 2 产出的 auth_coverage，而该映射本身是模型生成的（coverage_confidence none/low 时门直接跳过）。SourceLore 若采纳，必须把 auth 覆盖判定做成确定性抽取"
+    },
+    {
+      "id": "C05",
+      "capability": "四节点数据流契约（entrypoint → hops → sink，逐跳 file:line）",
+      "mechanism": "注入类 finding 必填 data_flow；每跨一次文件边界记一条 hop；跳数不完整即不可验证",
+      "where": "references/phase4-owasp.md L367–L460；phase5 L532–L555",
+      "disposition": "REUSE",
+      "why": "这是全篇最可迁移的证据形态：把「这里有注入」变成「这条链从哪进、经哪几跳、在哪落地」。SourceLore 的 evidence_refs 可以直接采用同构结构"
+    },
+    {
+      "id": "C06",
+      "capability": "不可验证即判否的判据",
+      "mechanism": "若无法建立逐边界的 entrypoint→sink 链，结论为 FALSE_POSITIVE；P4 记录的 hop 在所述行找不到，记为 P4 不准确并重定位",
+      "where": "references/phase5-validate-and-poc.md L532–L555",
+      "disposition": "REUSE",
+      "why": "把「说不清」显式归入否定，而不是留在悬置状态。与 SourceLore 的 insufficient evidence 语义相容，但必须区分：不可验证 ≠ 不存在"
+    },
+    {
+      "id": "C07",
+      "capability": "验证状态机与 report_tier 的固定映射",
+      "mechanism": "CONFIRMED / CONFIRMED_LOW_CONFIDENCE / FALSE_POSITIVE / NEEDS_RUNTIME / BOUNDARY_NOT_CROSSED / SURFACE_NOT_PRODUCTION / NEEDS_EXTERNAL_VERIFICATION / PENDING_CROSS_REPO_VALIDATION / MERGED，逐一映射到 report_tier",
+      "where": "references/phase5-validate-and-poc.md L692–L747",
+      "disposition": "ADAPT",
+      "why": "状态机粒度可借鉴，但九态偏多且与 SourceLore 的四态 verification_status 不同构。SourceLore 用自己的四态，把这里的九态压缩映射过去"
+    },
+    {
+      "id": "C08",
+      "capability": "动态证据升级阶梯 + 每级独立同意",
+      "mechanism": "被动 curl GET → 无头 Chromium → docker run；每级各自一道确认门，浏览器单独同意（理由是 sandbox-escape）",
+      "where": "SKILL.md L400–L618；phase5 L1003–L1075",
+      "disposition": "ADAPT",
+      "why": "阶梯本身是对的：先拿最便宜的证据，不够再升级。但默认路径包含 docker run 不受信仓库代码（D3），SourceLore 只应采纳 curl 一级，Docker 一级整体拒绝"
+    },
+    {
+      "id": "C09",
+      "capability": "环境失败绝不改判",
+      "mechanism": "Docker/Playwright 不可用、构建失败、确认被拒，一律不改 validation_status，只记中性备注",
+      "where": "references/phase5-validate-and-poc.md L795–L833；L1421–L1444",
+      "disposition": "REUSE",
+      "why": "这是不变量级的正确性约束：工具没跑起来不是证据。SourceLore 的不变量 §9.3 已有同款，本轮确认上游独立得出同一结论"
+    },
+    {
+      "id": "C10",
+      "capability": "动态否证只降级到人工复核",
+      "mechanism": "clean RUNTIME_NOT_CONFIRMED 只能把 CONFIRMED 降到 NEEDS_RUNTIME，绝不直接判 FALSE_POSITIVE",
+      "where": "references/phase5-validate-and-poc.md L795–L833",
+      "disposition": "REUSE",
+      "why": "代码级证据与运行时证据冲突时，仲裁权归人。这条与 SourceLore「失败不产生 claim」同源"
+    },
+    {
+      "id": "C11",
+      "capability": "两份独立控制 + 结构性构造门",
+      "mechanism": "--poc 只持久化不执行；--runtime 只执行不持久化；无标志时连 pocs/ 目录都不创建（poc_skipped: true）；被拒绝的 finding 永不构造利用",
+      "where": "SKILL.md L618–L700；phase5 L120–L146",
+      "disposition": "REUSE",
+      "why": "这是本轮最强的安全设计：把「留证据」与「跑利用」拆成两个互不蕴含的开关，且构造点被钉在验证之后。SourceLore 若做任何动态验证，必须照此拆分"
+    },
+    {
+      "id": "C12",
+      "capability": "失效安全门控（fail-safe gating）",
+      "mechanism": "进入 low_confidence_signals / truncated_signals 即强制 detection_confidence: reduced；A03/A08 在低置信否定下绝不跳过",
+      "where": "references/phase4-owasp.md L100–L120",
+      "disposition": "REUSE",
+      "why": "把「不确定」转成「降低覆盖面但不漏项」。可独立实现的确定性规则，不依赖模型"
+    },
+    {
+      "id": "C13",
+      "capability": "Semgrep 三层规则集 + 本地缓存优先 + 废弃包移除",
+      "mechanism": "常开安全规则 + 语言包 + 框架包；刻意避开 --config=auto；RESOLVED_CONFIGS 优先本地 RULES_CACHE；显式移除 p/express 等废弃包并留验证说明；gin/echo/fiber 无覆盖则诚实登记为缺口",
+      "where": "references/phase4-owasp.md L193–L363",
+      "disposition": "ADAPT",
+      "why": "规则工程的可迁移部分：不用 auto、锁规则来源、废弃包显式登记、覆盖缺口写进产物。但具体包名与缓存路径不可复用，且缓存缺失时静默回落 registry（D17）"
+    },
+    {
+      "id": "C14",
+      "capability": "族扫描与诚实否定",
+      "mechanism": "每个确认发现都要在同类文件族里扫同一 sink 模式，逐文件确认或排除；类级 confident negative 要求该族全部文件至少被 grep 过，否则降为 reduced 并点名未读文件",
+      "where": "references/phase4-owasp.md L801–L848",
+      "disposition": "REUSE",
+      "why": "这是对「一个文件有问题、其余文件没看」这一系统性缺陷的直接修复，且用产物字段（family_swept / class_negatives）强制留痕。SourceLore 的否定结论必须照此携带覆盖面证据"
+    },
+    {
+      "id": "C15",
+      "capability": "依赖可达性三态 + 保守默认 + KEV 下限",
+      "mechanism": "REACHABLE / UNREACHABLE / INDETERMINATE；transitive+runtime 默认 INDETERMINATE；路径工具失败当作 transitive+runtime；KEV 无视可达性设 HIGH 下限；降级不低于 LOW；有界搜索不得产出 UNREACHABLE",
+      "where": "references/phase3-dependencies.md L271–L364",
+      "disposition": "ADAPT",
+      "why": "三态与保守默认可采纳。但 reachable 字段在 P3 恒为 null、由 P3b 填，中间态的语义在产物里不显式，SourceLore 应把三态写进 Claim 本身就位"
+    },
+    {
+      "id": "C16",
+      "capability": "P3b 有效严重度与优先级",
+      "mechanism": "effective_severity 由可达性 + CVSS + EPSS + KEV 联合决定，priority P0–P3 与报告严重度解耦",
+      "where": "references/phase3-dependencies.md L271–L364",
+      "disposition": "REUSE",
+      "why": "技术严重度与处置优先级分离，是本轮少见的正确分层。SourceLore 若做依赖风险，必须同样拆成两个字段而不是一个数字"
+    },
+    {
+      "id": "C17",
+      "capability": "密钥打码与原始输出清理",
+      "mechanism": "redacted_value 取前 4 后 3；仅 HIGH 进 findings；不验证密钥；处理完删 gitleaks-raw.json",
+      "where": "references/phase1-secrets.md 全文",
+      "disposition": "ADAPT",
+      "why": "打码规则可采纳，但删除是尽力而为、失败仅告警（D11），且不覆盖 P3 的原始 JSON（D12）。SourceLore 必须把「原始扫描输出不落盘」做成结构约束而非事后删除"
+    },
+    {
+      "id": "C18",
+      "capability": "成本报告（时长 + token 估算）",
+      "mechanism": "每阶段一行，格式固定，严格限于时长与 token，不做文件读写埋点；Phase 5 按子阶段多行",
+      "where": "SKILL.md L1273–L1313；各 reference 的 Cost Report 节",
+      "disposition": "ADAPT",
+      "why": "把一个运行的代价做成可比较的结构字段，方向对。但纯 chars/4 估算、无独立核验（D15），SourceLore 只能当作自报值"
+    },
+    {
+      "id": "C19",
+      "capability": "多仓库拓扑与跨服务合成",
+      "mechanism": "Phase 0 产出 service-topology.json（服务、端口、入站认证、出站连接、共享环境变量、信任边界缺口）；Phase 7 按五类跨服务漏洞合成",
+      "where": "references/phase0-topology.md 全文；phase7-synthesis.md L55–L162",
+      "disposition": "REIMPLEMENT",
+      "why": "形态可借鉴，但 SourceLore 的跨源关系不是服务拓扑，而是知识单元之间的依赖与矛盾。直接搬用会产生第二套关系模型，违反 §6 单一模型约束"
+    },
+    {
+      "id": "C20",
+      "capability": "延迟裁决与跨仓库解析",
+      "mechanism": "PENDING_CROSS_REPO_VALIDATION 占位，Phase 7 用其他仓库证据解析为 CONFIRMED/REJECTED/NEEDS_REVIEW；解析必须引用新增跨仓证据，不得复述原论断",
+      "where": "references/phase7-synthesis.md L162–L219",
+      "disposition": "ADAPT",
+      "why": "「单仓库无法裁决」是一种合法中间态，且解析必须引入新证据——这条纪律可直接迁移到 SourceLore 的 conflict 状态"
+    },
+    {
+      "id": "C21",
+      "capability": "模型分层（Deep / Standard）",
+      "mechanism": "仅 Phase 2 用 Deep 层，其余全部 Standard；只按家族别名（opus/sonnet/haiku）派发，不固定版本",
+      "where": "SKILL.md L130–L330",
+      "disposition": "REJECT",
+      "why": "整条机制绑死在 Claude 家族与 Agent 工具上，无法迁移到 DSH；且 Phase 4b/7 明确写「moved off the Deep tier」这类只对特定供应商有意义的说明。SourceLore 不应复制模型分层，应按任务复杂度与工具能力选路"
+    },
+    {
+      "id": "C22",
+      "capability": "Skill/Agent 指令安全（OWASP LLM Top 10）",
+      "mechanism": "对 skill/instruction 文件做 LLM01/02/05/06/07/08 检查，要求 source→transformation→sink 可追踪；无法追踪即误报",
+      "where": "references/phase-llm-security.md 全文",
+      "disposition": "ADAPT",
+      "why": "检查清单本身可采纳为 SourceLore 的自审项（SourceLore 自己就是 skill/agent 产物）。但它的激活条件是 tech-stack.json 的 is_skill_repo，上游自陈混合仓库默认不跑，覆盖面偏窄"
+    },
+    {
+      "id": "C23",
+      "capability": "供应商采纳审计模式",
+      "mechanism": "--vendor 输出采纳风险裁决 + 条件 + 工具实际行为 + 采纳方补偿控制；强制关 PoC、忽略 runtime、全部锁 Standard 层",
+      "where": "SKILL.md L733–L793；phase6 L618–L776",
+      "disposition": "ADAPT",
+      "why": "报告形态与 SourceLore 的上游审计目的最接近：不评代码质量，只评「我们敢不敢用、需要什么补偿控制」。可借鉴其裁决结构，但其中锁模型层与跳过阶段的部分不采纳"
+    },
+    {
+      "id": "C24",
+      "capability": "PR diff 增量审查与移除控制回归检查",
+      "mechanism": "三点 diff 取 merge base；对每条被删除行匹配安全控制模式，若等价控制未找到则记 regression: true + removed_control",
+      "where": "references/pr-review.md L50–L250",
+      "disposition": "REUSE",
+      "why": "这是全量扫描结构性看不到的一类问题，且判据确定（删除行 + 控制模式 + 等价性核验）。SourceLore 的增量审查应直接采用这一形态"
+    },
+    {
+      "id": "C25",
+      "capability": "三态分离的产物契约（run-metadata / 各阶段 JSON / 报告）",
+      "mechanism": "每个阶段写自己的 JSON，报告层只聚合；跳过阶段在输出里显式缺失而非空对象",
+      "where": "SKILL.md L1122–L1206；phase6 L7–L58",
+      "disposition": "REIMPLEMENT",
+      "why": "上游的产物契约是「一阶段一文件」，没有统一实体模型，也没有新鲜度与失效语义。SourceLore 的 Claim/Evidence 必须自建，不能沿用"
+    },
+    {
+      "id": "C26",
+      "capability": "新鲜度与失效判定",
+      "mechanism": "无。全仓库无任何「知识/结论是否仍有效」的概念",
+      "where": "—（缺失）",
+      "disposition": "REIMPLEMENT",
+      "why": "这是本轮最重要的缺口：上游做的是「对某个 commit 扫一遍」，产物与 commit 绑定但没有回取与失效机制。SourceLore 的核心恰好在这里，必须自建"
+    },
+    {
+      "id": "C27",
+      "capability": "密钥/数据分级",
+      "mechanism": "仅分 HIGH/MEDIUM/LOW 三档，且分级依据写死在 Phase 1 的判据里，无字段化分级",
+      "where": "references/phase1-secrets.md",
+      "disposition": "REIMPLEMENT",
+      "why": "分级没有落成可配置字段，无法表达 SourceLore 需要的「哪类内容可以进报告、哪类只能留在快照」"
+    },
+    {
+      "id": "C28",
+      "capability": "一键安装外部扫描器",
+      "mechanism": "scripts/setup.sh 用 brew / go install @latest / pip --break-system-packages / curl|bash 安装 gitleaks、osv-scanner、semgrep、pip-audit、jq、grype",
+      "where": "scripts/setup.sh 全文",
+      "disposition": "REJECT",
+      "why": "这是本仓库最直接的供应链风险面：无版本钉定、无校验和、部分路径是 curl 管道执行、并且用 --break-system-packages 绕过系统包管理保护。SourceLore 一律不安装、不执行"
+    }
+  ],
+  "disposition_counts": {
+    "REUSE": 11,
+    "ADAPT": 11,
+    "REIMPLEMENT": 4,
+    "REJECT": 2,
+    "total": 28
+  },
+  "defects": [
+    {
+      "id": "D1",
+      "severity": "blocker",
+      "file": "整仓",
+      "line": "仓库根目录；全部 16 个文件",
+      "problem": "无任何许可证。GitHub API 返回 license: null，/license 端点 404，16 个文件全文检索 LICENSE / Copyright / SPDX / © 命中 0。仓库内容（SKILL.md 各阶段提示词、四个 references 的规则原文、setup.sh 与命令模板）在默认著作权下保留全部权利，不存在可复制或可改编的授权",
+      "fix": "上游源码、提示词、规则原文与模板一律不得并入 SourceLore；本轮只提取抽象设计思想（两阶段边界、确定性前置门、四节点数据流、失效安全门控），落点写成独立实现的契约。许可证状态作为独立字段记录，不得被 REUSE 判定覆盖"
+    },
+    {
+      "id": "D2",
+      "severity": "blocker",
+      "file": "scripts/setup.sh",
+      "line": "scripts/setup.sh 全文",
+      "problem": "标准安装步骤就是静默安装第三方工具：install_gitleaks 走 brew → go install ...@latest → 从 GitHub releases 下载 tar 包解压到 /usr/local/bin；install_osv_scanner / install_semgrep / install_pip_audit 用 pip3 install ... --break-system-packages 后回退普通 pip；install_grype 用 curl -sSfL .../install.sh | sh。全程无版本钉定、无校验和验证、无来源签名检查，且默认写入系统目录",
+      "fix": "SourceLore 不采纳该脚本任何一行。若未来需要外部扫描器，必须：钉定确切版本、校验发布物哈希、安装到隔离前缀、绝不使用 curl 管道执行。工具缺失时应显式降级并在产物中标注，而不是自动补装"
+    },
+    {
+      "id": "D3",
+      "severity": "blocker",
+      "file": "SKILL.md + references/phase5-validate-and-poc.md",
+      "line": "SKILL.md L618–L700；phase5 L1003–L1167",
+      "problem": "默认路径会构建并运行不受信项目代码。--runtime 触发 Part 3：对目标仓库执行 docker build（Dockerfile 来自被审计仓库本身，其 RUN 指令在构建阶段执行），随后 docker run 起服务并发起利用请求。加固标志（--network none --read-only --cap-drop ALL --memory 512m --cpus 0.5）只加在 docker run 上，构建阶段不受这些限制。同意门存在（[y/N] 或 --yes），但 --yes 在 CI 语义下会直接跳过",
+      "fix": "SourceLore 拒绝任何默认执行不受信代码的路径。动态证据最多到「被动只读 GET」，且必须默认关闭、显式开关、每级独立确认、无 --yes 类一键绕过"
+    },
+    {
+      "id": "D4",
+      "severity": "high",
+      "file": "references/phase5-validate-and-poc.md",
+      "line": "phase5 L17–L60；SKILL.md L1035–L1122",
+      "problem": "上游自己承认防护不完整：Boundary 2（finder → judgment）明确写着 does not protect against Boundary 1 attacks。Phase 5 作为判断层仍然读目标仓库源码，因此与 Phase 2/4 同样暴露在仓库内提示注入之下。两条边界被并列呈现，但实际只有一条对注入有效，且有效的那条保护的是「判断不被发现污染」，不是「判断层不被注入」",
+      "fix": "SourceLore 必须把「读取不受信内容」本身作为风险面单独建模：读到的内容一律标记为数据、提取结论与执行指令分离、注入文本作为 finding 而非指令。不能靠分层代理解决"
+    },
+    {
+      "id": "D5",
+      "severity": "high",
+      "file": "references/phase4-owasp.md（及其他 reference）",
+      "line": "phase4 全文；统计：phase4 29 处 grep / 27 处 head 封顶，phase2a 15/15，phase2 3/3，phase5 7/6",
+      "problem": "全部静态探测都带 head -20/-30/-40 封顶。命中集超过上限即静默截断，不记录被截掉了多少。大仓库里族扫描会漏掉尾部文件，而 P4 的诚实否定纪律（family_swept / class_negatives）要求覆盖整个文件族——两者直接冲突：封顶后的 grep 无法证明族内全部文件被检查过",
+      "fix": "任何有界搜索必须在产物里显式记录截断（命中总数 vs 已检查数），并因此禁止产出 confident negative。SourceLore 的否定结论必须携带搜索边界证据"
+    },
+    {
+      "id": "D6",
+      "severity": "high",
+      "file": "SKILL.md",
+      "line": "SKILL.md L130–L330；L162；L205–L213",
+      "problem": "模型分层绑死在 Claude 家族：只认 opus / sonnet / haiku 别名，Phase 2 必须 Deep 层，交互式 Claude Code 只暴露通用别名，解析结果记入 run-metadata.json 的 fallback_notes。对非 Claude Code 宿主（包括 DSH）没有任何等价机制，也没有降级路径——只是把无法解析的情况记成备注",
+      "fix": "SourceLore 不复制模型分层。按任务复杂度与工具可用能力选路，并把实际使用的模型写入产物；不得把「某个供应商的某一层」当作阶段定义的一部分"
+    },
+    {
+      "id": "D7",
+      "severity": "high",
+      "file": "scripts/repo-security-review-command.md + SKILL.md",
+      "line": "command L1–L5；SKILL.md 全文；README L15–L28",
+      "problem": "宿主路径硬编码：安装位置是 ~/.claude/skills/repo-security-review，命令文件要求保存到 .claude/commands/repo-security-review.md，且文件头自陈 this file is not fully standalone; see Step 7。整个编排层的可移植性依赖 Claude Code 的 skill/command 加载约定，迁移到其他宿主需要重写编排层而非改配置",
+      "fix": "SourceLore 的编排层必须与宿主解耦：阶段定义、输入清单、产物路径全部显式声明，不依赖任何宿主的自动发现约定"
+    },
+    {
+      "id": "D8",
+      "severity": "medium",
+      "file": "references/phase2-architecture.md + SKILL.md",
+      "line": "phase2 L57–L92；SKILL.md L1515–L1523",
+      "problem": "失败语义自相矛盾。phase2 的 Step 0 规定缺字段是硬错误（Do not re-derive any of this），而 SKILL.md 的 Error Handling 规定 Never abort the full pipeline for a single phase failure。同一份流水线里，同一个阶段的失败有两种互斥处置，且没有说明哪种优先",
+      "fix": "阶段失败必须只有一个权威语义。SourceLore 采用：阶段失败 → 该阶段产出的 Claim 全部不写入，任务状态记 failed，下游阶段在产物中标注上游缺失，绝不静默继续也不整体中止"
+    },
+    {
+      "id": "D9",
+      "severity": "medium",
+      "file": "SKILL.md",
+      "line": "SKILL.md L940–L995",
+      "problem": "自动跳过级联在 --yes 下静默改变阶段集合。is_skill_repo: true 时 Phases 3/4/5 全跳、只跑 4b；--yes 直接静默确认。报告因此可能声称「审计完成」而实际从未做依赖与代码层检查，且跳过决定由 tech-stack.json 的一个布尔驱动，该布尔本身来自模型判断",
+      "fix": "阶段集合的任何变化必须写进产物并在报告顶部声明。「完成」只能指「所声明的阶段集合全部完成」，不能指「流水线跑到了最后一行」"
+    },
+    {
+      "id": "D10",
+      "severity": "medium",
+      "file": "SKILL.md",
+      "line": "SKILL.md L1444–L1640；各 reference 的 Final Response 节",
+      "problem": "存在两条会泄露发现的聊天通道：编排器的一行进度更新，与各阶段的 final response。各 reference 都写了禁令（不得复述 findings / 路径 / 代码片段），但 SKILL.md 的 Final Step 又明确要求把完成的报告读回聊天。禁令与要求在同一仓库里并存，边界靠模型自觉",
+      "fix": "产物与聊天必须物理分离：SourceLore 的聊天输出只允许包含产物路径与状态，禁止包含任何承载结论的文本。这条要由工具层强制，不靠提示词"
+    },
+    {
+      "id": "D11",
+      "severity": "medium",
+      "file": "references/phase1-secrets.md",
+      "line": "phase1 全文",
+      "problem": "原始扫描输出删除是尽力而为：处理完执行 rm -f .../gitleaks-raw.json，失败仅告警。若删除失败，未打码的原始命中集留在 .security-review/ 里，而该目录随后会被 --output 复制出去。打码规则（前 4 后 3）只作用于 findings 字段，不作用于磁盘上的原始文件",
+      "fix": "原始扫描输出不应落盘，或必须落在内存/临时路径并在同一进程内消费。打码不能只作用于展示层"
+    },
+    {
+      "id": "D12",
+      "severity": "medium",
+      "file": "references/phase3-dependencies.md",
+      "line": "phase3 全文",
+      "problem": "原始扫描器 JSON（npm-audit-raw-*.json、osv 输出）写入 .security-review/ 且无清理步骤。这些文件包含完整依赖树与公告原文，随 --output 一并外发。与 D11 是同一类问题的另一半：P1 有（不彻底的）清理，P3 完全没有",
+      "fix": "中间产物与交付产物必须分目录，中间产物默认不持久化；确需保留的必须显式声明并纳入清理"
+    },
+    {
+      "id": "D13",
+      "severity": "medium",
+      "file": "references/phase5-validate-and-poc.md + phase6",
+      "line": "phase5 L1444–L1631；phase6 L103–L152",
+      "problem": "置信度与严重度两根轴在报告里混排。contextual_severity 是确定性档位调整（--local −2 档、auth gated −1 档），CONFIRMED_LOW_CONFIDENCE 是置信度封顶，两者落在同一张表的不同列，读者容易把「被环境软化」误读为「不确定」或反之。Phase 6 被明令不得重算、只能直接读取，但两轴的语义差别没有在报告里解释（且明确禁止解释）",
+      "fix": "置信度与严重度必须是两个独立字段，且报告必须同时展示两者的来源。禁止用「不解释」来避免混淆"
+    },
+    {
+      "id": "D14",
+      "severity": "medium",
+      "file": "references/phase4-owasp.md",
+      "line": "phase4 L265–L365；L930–L936",
+      "problem": "无全程序污点引擎，上游自陈：Treat a clean Semgrep result as 'no rule-matched sink,' not 'no injectable data flow.'。这条限定写在 Phase 4 的说明里，但没有对应的产物字段强制把它带到报告层——报告可以只显示「未发现注入」，限定语留在中间 JSON 里",
+      "fix": "限定语必须随结论一起上行到最终产物。SourceLore 的每条 Claim 都带 limitations 字段正是为此；静态扫描的结论必须携带「本结论的搜索边界」"
+    },
+    {
+      "id": "D15",
+      "severity": "medium",
+      "file": "SKILL.md",
+      "line": "SKILL.md L1273–L1313",
+      "problem": "成本报告全部是估算：token 按 chars/4 推算，时长按阶段时间戳相减，无 tokenizer、无独立核验、无与供应商账单的对照。该字段被设计成「贴回来做成本分析」的输入，但精度未知且误差方向未知",
+      "fix": "自报成本必须标注为估算并说明估算方法；不得进入任何自动化决策"
+    },
+    {
+      "id": "D16",
+      "severity": "medium",
+      "file": "references/phase5-validate-and-poc.md + pr-review.md",
+      "line": "phase5 L60–L146；pr-review L252–L300",
+      "problem": "PR 模式与全量模式共用同一份 Phase 5 文件，靠大段条件替换（PR Review Mode substitution）切换行为：文件名替换、Part 2/3 整体禁用、Step 0.4/0.5 禁用、Axis 2 永不适用。两套语义写在同一份文档里，任何一次修改都可能只改到其中一套",
+      "fix": "不同模式应拆成不同的产物契约与不同的执行文件，共享部分抽成显式引用的公共契约，而不是用条件段落在同一文件内分支"
+    },
+    {
+      "id": "D17",
+      "severity": "medium",
+      "file": "references/phase4-owasp.md",
+      "line": "phase4 L193–L363",
+      "problem": "Semgrep 规则来源存在静默回落：RESOLVED_CONFIGS 优先本地 RULES_CACHE（由 setup.sh 写入），缺失则回落到 registry 拉取。同一份代码在不同机器上可能用不同版本的规则集，而产物里只有 source_label 标注来源，没有规则集指纹",
+      "fix": "规则集必须有内容指纹并写入产物；无指纹的结果不可比较。SourceLore 若引入任何外部规则，必须锁版本 + 记指纹"
+    },
+    {
+      "id": "D18",
+      "severity": "medium",
+      "file": "references/phase2a-tech-stack.md + phase4",
+      "line": "phase2a L240–L300；phase4 L100–L120",
+      "problem": "失效安全门控只覆盖 A03/A08：A10（SSRF）与 A07（认证）条件于 has_external_http_calls / auth_mechanism，而这两个布尔可能来自无清单证据的低置信否定。P2a 的一个假否定会整类抹掉对应检查，且不进 low_confidence_signals",
+      "fix": "级联条件本身必须参与失效安全：任何门控布尔若来自低置信信号，其下游整类检查一律降级运行而非跳过"
+    },
+    {
+      "id": "D19",
+      "severity": "low",
+      "file": "scripts/repo-security-review-command.md",
+      "line": "command L256–L360",
+      "problem": "--yes 一键绕过全部三道同意门（输出复制门、Docker 运行时门、部署验证门），以及纯 skill 仓库的自动跳过级联。文档说明这是 CI 预期行为，但同一个标志同时覆盖「复制文件」与「执行不受信代码」两类完全不同的风险",
+      "fix": "同意门必须按风险类别分别授权，不得用单一布尔覆盖全部。执行不受信代码的授权在任何模式下都不得自动化"
+    },
+    {
+      "id": "D20",
+      "severity": "low",
+      "file": "SKILL.md",
+      "line": "SKILL.md L400–L618",
+      "problem": "部署验证的 classification 是启发式：由 401/403、IdP 主机名模式、同源路径子串、正文关键词共同判定 gated。这些启发式没有校准数据，误判会直接抬高或压低整批 finding 的严重度轴（Axis 2）",
+      "fix": "任何影响严重度的分类必须是可审计的确定性事实，或明确标注为启发式且不参与严重度计算"
+    }
+  ],
+  "defect_counts": {
+    "blocker": 3,
+    "high": 4,
+    "medium": 11,
+    "low": 2,
+    "total": 20,
+    "blocker_ids": [
+      "D1",
+      "D2",
+      "D3"
+    ]
+  },
+  "risk_verification": {
+    "method": "按任务 §4 指定的十二项逐条以真实源码证据核验。判定只有三种：成立 / 部分成立 / 不成立",
+    "items": [
+      {
+        "id": 1,
+        "risk": "默认执行不受信项目代码",
+        "verdict": "partial",
+        "evidence": "--runtime 触发 Part 3 对目标仓库 docker build 再 docker run；Dockerfile 来自被审计仓库，RUN 指令在构建期执行。加固标志只加在 docker run 上，构建阶段不受限",
+        "refs": [
+          "D3",
+          "D19"
+        ]
+      },
+      {
+        "id": 2,
+        "risk": "默认安装第三方工具",
+        "verdict": "confirmed",
+        "evidence": "README 的安装步骤即 bash scripts/setup.sh；脚本用 brew / go install @latest / GitHub releases 下载 / pip3 --break-system-packages / curl 管道执行安装六个工具，无版本钉定、无校验和",
+        "refs": [
+          "D2"
+        ]
+      },
+      {
+        "id": 3,
+        "risk": "未授权动态漏洞验证",
+        "verdict": "partial",
+        "evidence": "两道同意门存在（Docker 门、浏览器升级门），但 --yes 一次覆盖全部门，--verify-deployment 的对外 GET 同样自动确认",
+        "refs": [
+          "D19",
+          "D3"
+        ]
+      },
+      {
+        "id": 4,
+        "risk": "自动构建/执行 PoC",
+        "verdict": "refuted",
+        "evidence": "--poc 只持久化不执行，--runtime 只执行不持久化；都不设时连 pocs/ 目录都不创建；构造点钉在验证之后，被拒绝的 finding 永不构造",
+        "refs": [
+          "C11"
+        ]
+      },
+      {
+        "id": 5,
+        "risk": "对真实服务发起主动网络请求",
+        "verdict": "confirmed",
+        "evidence": "--verify-deployment 发一次被动 GET 并附带 TLS/安全头态势探测（含额外握手与 TLSv1.0 探测）；Phase 3 外联 EPSS/KEV；Semgrep 缓存缺失时回落 registry",
+        "refs": [
+          "D20",
+          "D17"
+        ]
+      },
+      {
+        "id": 6,
+        "risk": "把扫描器输出当已确认漏洞",
+        "verdict": "partial",
+        "evidence": "机制上明确反对（边界 2 把 finder 输出当不可信、P5 从零重读、无完整链即判否），但限定语留在中间 JSON，报告层可只显示未发现注入",
+        "refs": [
+          "D14",
+          "C06"
+        ]
+      },
+      {
+        "id": 7,
+        "risk": "报告写入密钥或私有源码",
+        "verdict": "partial",
+        "evidence": "findings 打码前 4 后 3，但原始 gitleaks 输出靠事后删除且失败仅告警；P3 原始 JSON 无清理；两者都会随 --output 外发",
+        "refs": [
+          "D11",
+          "D12"
+        ]
+      },
+      {
+        "id": 8,
+        "risk": "混淆安全评级与未校准的模型置信度",
+        "verdict": "confirmed",
+        "evidence": "contextual_severity（环境档位）与 CONFIRMED_LOW_CONFIDENCE（置信度封顶）落在同一张表的不同列，且明令不得在报告里解释；gated 判定为启发式却驱动减一档严重度",
+        "refs": [
+          "D13",
+          "D20"
+        ]
+      },
+      {
+        "id": 9,
+        "risk": "只适用于 Claude Code、无法迁移到 DSH",
+        "verdict": "confirmed",
+        "evidence": "安装路径 ~/.claude/skills/、命令落 .claude/commands/、模型分层只认 opus/sonnet/haiku、命令文件自陈 not fully standalone",
+        "refs": [
+          "D6",
+          "D7"
+        ]
+      },
+      {
+        "id": 10,
+        "risk": "工具缺失时仍声称完整审计",
+        "verdict": "partial",
+        "evidence": "setup.sh 结尾明写 degraded mode，各阶段有降级路径；但降级只进中间 JSON，Skipped Phases 段可选，--yes 下自动跳过级联静默改变阶段集合",
+        "refs": [
+          "D9"
+        ]
+      },
+      {
+        "id": 11,
+        "risk": "各阶段数据格式、失败态与权限边界不一致",
+        "verdict": "confirmed",
+        "evidence": "P2 硬错误 vs SKILL.md 绝不中止（互斥）；PR 模式与全量模式共用同一份 P5 靠条件替换；九态与四态映射靠单字段承载；自报成本无合计校验",
+        "refs": [
+          "D8",
+          "D15",
+          "D16"
+        ]
+      },
+      {
+        "id": 12,
+        "risk": "无许可证是否禁止复制具体实现",
+        "verdict": "confirmed",
+        "evidence": "license 为 null、/license 404、全文零许可声明、无 LICENSE/NOTICE 文件。默认著作权下保留全部权利，禁止复制与改编",
+        "refs": [
+          "D1"
+        ]
+      }
+    ],
+    "verdict_counts": {
+      "confirmed": 6,
+      "partial": 5,
+      "refuted": 1,
+      "total": 12
+    },
+    "note": "十二项中 6 项成立、5 项部分成立、1 项不成立。不成立的是第 4 项（自动构建/执行 PoC）——上游在这一点上做得好于预期，两份独立控制的拆分是本轮最值得采纳的设计"
+  },
+  "implementation_decision": {
+    "adopt_in_v1": [
+      {
+        "id": "C05",
+        "decision": "采纳抽象结构，独立实现",
+        "detail": "evidence_refs 从路径+行升级为 entrypoint/hops/sink 四节点，逐跳带 content_hash。这是既有 Claim 模型的字段扩展，不是新模型"
+      },
+      {
+        "id": "C03",
+        "decision": "采纳",
+        "detail": "确定性前置面门：脚本判定、带置信度分级与封顶规则。v1 只落规则，不落自动分类"
+      },
+      {
+        "id": "C04",
+        "decision": "采纳门形状，拒绝其输入来源",
+        "detail": "边界门规则可采纳，但 auth_coverage 必须由确定性抽取得到，不得沿用模型生成的映射"
+      },
+      {
+        "id": "C09",
+        "decision": "并入既有不变量",
+        "detail": "环境失败绝不改判。与既有不变量同源，不新增条目"
+      },
+      {
+        "id": "C10",
+        "decision": "并入既有不变量",
+        "detail": "运行时否证只降级到人工复核，绝不直接判否"
+      },
+      {
+        "id": "C14",
+        "decision": "采纳",
+        "detail": "否定结论必须携带覆盖面证据：被扫文件清单与未读文件清单，缺则降为降低置信"
+      },
+      {
+        "id": "C11",
+        "decision": "采纳为约束，v1 不实现动态验证",
+        "detail": "构造与执行拆成两个互不蕴含的开关这一条写成硬约束；动态验证本身推迟"
+      }
+    ],
+    "deferred": [
+      {
+        "id": "C08",
+        "detail": "动态验证阶梯。v1 不做任何动态证据，阶梯与同意门设计先记档"
+      },
+      {
+        "id": "C24",
+        "detail": "PR 增量审查。依赖 Git diff 管道，与 04 的增量知识机制合并设计"
+      },
+      {
+        "id": "C15",
+        "detail": "依赖可达性三态。需要生态解析器，v1 无依赖扫描能力"
+      },
+      {
+        "id": "C16",
+        "detail": "有效严重度与优先级分离的三态计算，随 C15 推迟"
+      },
+      {
+        "id": "C23",
+        "detail": "供应商裁决报告结构。仅在对外评估第三方时需要"
+      }
+    ],
+    "reject": [
+      {
+        "id": "C21",
+        "detail": "Claude 家族模型分层。绑死供应商，无法迁移到 DSH"
+      },
+      {
+        "id": "C28",
+        "detail": "一键安装外部扫描器。供应链风险面，全部不采纳"
+      },
+      {
+        "id": "C19",
+        "detail": "服务拓扑合成。会引入第二套关系模型，违反单一模型约束"
+      },
+      {
+        "id": "C25",
+        "detail": "一阶段一文件的产物契约。无统一实体模型、无新鲜度语义"
+      },
+      {
+        "id": "C26",
+        "detail": "上游完全没有新鲜度机制，无可采纳内容"
+      },
+      {
+        "id": "C27",
+        "detail": "非字段化的密钥分级，仍以 05 为准"
+      }
+    ],
+    "open": [
+      {
+        "id": "Q1",
+        "question": "四节点结构的 hops 粒度在非 HTTP 场景（CLI、文件解析、CI 配置）如何定义",
+        "status": "未定",
+        "note": "C05 的形状来自 Web 注入场景，SourceLore 的分析对象更宽，需要一次映射定义"
+      },
+      {
+        "id": "Q2",
+        "question": "auth_coverage 的确定性抽取能做到什么精度",
+        "status": "未定",
+        "note": "C04 的门依赖它；若精度不足，边界门只能退化为「标注不确定」而不能抑制"
+      },
+      {
+        "id": "Q3",
+        "question": "否定结论的覆盖面字段如何与 04 的增量机制共存",
+        "status": "未定",
+        "note": "增量审查只扫 diff，覆盖面语义与全量扫描不同，需在融合阶段统一定义"
+      }
+    ]
+  },
+  "integration_decisions": {
+    "adopt_in_v1": [
+      {
+        "id": "C05",
+        "decision": "采纳抽象结构，独立实现",
+        "detail": "evidence_refs 从路径+行升级为 entrypoint/hops/sink 四节点，逐跳带 content_hash。这是既有 Claim 模型的字段扩展，不是新模型"
+      },
+      {
+        "id": "C03",
+        "decision": "采纳",
+        "detail": "确定性前置面门：脚本判定、带置信度分级与封顶规则。v1 只落规则，不落自动分类"
+      },
+      {
+        "id": "C04",
+        "decision": "采纳门形状，拒绝其输入来源",
+        "detail": "边界门规则可采纳，但 auth_coverage 必须由确定性抽取得到，不得沿用模型生成的映射"
+      },
+      {
+        "id": "C09",
+        "decision": "并入既有不变量",
+        "detail": "环境失败绝不改判。与既有不变量同源，不新增条目"
+      },
+      {
+        "id": "C10",
+        "decision": "并入既有不变量",
+        "detail": "运行时否证只降级到人工复核，绝不直接判否"
+      },
+      {
+        "id": "C14",
+        "decision": "采纳",
+        "detail": "否定结论必须携带覆盖面证据：被扫文件清单与未读文件清单，缺则降为降低置信"
+      },
+      {
+        "id": "C11",
+        "decision": "采纳为约束，v1 不实现动态验证",
+        "detail": "构造与执行拆成两个互不蕴含的开关这一条写成硬约束；动态验证本身推迟"
+      }
+    ],
+    "deferred": [
+      {
+        "id": "C08",
+        "detail": "动态验证阶梯。v1 不做任何动态证据，阶梯与同意门设计先记档"
+      },
+      {
+        "id": "C24",
+        "detail": "PR 增量审查。依赖 Git diff 管道，与 04 的增量知识机制合并设计"
+      },
+      {
+        "id": "C15",
+        "detail": "依赖可达性三态。需要生态解析器，v1 无依赖扫描能力"
+      },
+      {
+        "id": "C16",
+        "detail": "有效严重度与优先级分离的三态计算，随 C15 推迟"
+      },
+      {
+        "id": "C23",
+        "detail": "供应商裁决报告结构。仅在对外评估第三方时需要"
+      }
+    ],
+    "reject": [
+      {
+        "id": "C21",
+        "detail": "Claude 家族模型分层。绑死供应商，无法迁移到 DSH"
+      },
+      {
+        "id": "C28",
+        "detail": "一键安装外部扫描器。供应链风险面，全部不采纳"
+      },
+      {
+        "id": "C19",
+        "detail": "服务拓扑合成。会引入第二套关系模型，违反单一模型约束"
+      },
+      {
+        "id": "C25",
+        "detail": "一阶段一文件的产物契约。无统一实体模型、无新鲜度语义"
+      },
+      {
+        "id": "C26",
+        "detail": "上游完全没有新鲜度机制，无可采纳内容"
+      },
+      {
+        "id": "C27",
+        "detail": "非字段化的密钥分级，仍以 05 为准"
+      }
+    ],
+    "open": [
+      {
+        "id": "Q1",
+        "question": "四节点结构的 hops 粒度在非 HTTP 场景（CLI、文件解析、CI 配置）如何定义",
+        "status": "未定",
+        "note": "C05 的形状来自 Web 注入场景，SourceLore 的分析对象更宽，需要一次映射定义"
+      },
+      {
+        "id": "Q2",
+        "question": "auth_coverage 的确定性抽取能做到什么精度",
+        "status": "未定",
+        "note": "C04 的门依赖它；若精度不足，边界门只能退化为「标注不确定」而不能抑制"
+      },
+      {
+        "id": "Q3",
+        "question": "否定结论的覆盖面字段如何与 04 的增量机制共存",
+        "status": "未定",
+        "note": "增量审查只扫 diff，覆盖面语义与全量扫描不同，需在融合阶段统一定义"
+      }
+    ]
+  },
+  "test_status": {
+    "dynamic_tests_run": false,
+    "static_audit_only": true,
+    "upstream_scripts_executed": false,
+    "upstream_dependencies_installed": false,
+    "upstream_code_executed": false,
+    "containers_started": false,
+    "network_requests_made": 0,
+    "poc_generated": false,
+    "status": "NOT_RUN",
+    "note": "上游唯一可执行脚本 scripts/setup.sh 只读未执行；未安装 gitleaks / osv-scanner / semgrep / pip-audit / grype 中任何一个；未启动 Docker；未对任何真实部署发起请求。不得把本审计读作该工具已通过安全测试，也不得读作该工具不安全",
+    "static_findings": {
+      "setup_script_install_paths": "brew / go install @latest / GitHub releases tar 解压到系统目录 / pip3 --break-system-packages / curl 管道执行远程 install.sh。六条路径均无版本钉定与校验和",
+      "consent_gates": "Docker 构建运行门、浏览器升级门、部署验证门三道独立同意门，但单 --yes 标志一次覆盖全部",
+      "poc_controls": "--poc 与 --runtime 两个互不蕴含的开关；无标志时不创建 pocs/ 目录；构造点钉在验证裁定之后",
+      "trust_boundaries": "两条边界并列，但上游自陈边界 2 不防边界 1 攻击；边界 2 保护的是判断不被发现污染，不是判断层不被注入",
+      "enumeration_caps": "全部静态探测带 head 封顶，phase4 27 处、phase2a 15 处、phase2 3 处、phase5 6 处；封顶后无法证明族内全部文件被检查",
+      "fail_safe_coverage": "失效安全门控只覆盖 A03/A08；A07/A10 条件于可能来自低置信否定的布尔",
+      "semgrep_rule_supply": "三层规则集 + 本地缓存优先 + 显式移除废弃包 + 记录无覆盖框架；但缓存缺失时静默回落 registry，无规则集指纹"
+    }
+  },
+  "evaluation_tier_note": "上游声称的能力一律按源码证据重新验证，未将 README 或 SKILL.md 的自我描述视为已实现能力。凡源码未提供机制者，在 capability_matrix 中标为 REIMPLEMENT（缺失或实现有实质缺陷），不因文档声称而升格。分类判定只针对机制形状，不代表任何上游文本可被复制",
+  "evidence": {
+    "skill_md": "upstreams/UPSTREAM-06-repo-security-review/tree/SKILL.md",
+    "readme": "upstreams/UPSTREAM-06-repo-security-review/tree/README.md",
+    "phase0_topology": "upstreams/UPSTREAM-06-repo-security-review/tree/references/phase0-topology.md",
+    "phase1_secrets": "upstreams/UPSTREAM-06-repo-security-review/tree/references/phase1-secrets.md",
+    "phase2_architecture": "upstreams/UPSTREAM-06-repo-security-review/tree/references/phase2-architecture.md",
+    "phase2a_tech_stack": "upstreams/UPSTREAM-06-repo-security-review/tree/references/phase2a-tech-stack.md",
+    "phase3_dependencies": "upstreams/UPSTREAM-06-repo-security-review/tree/references/phase3-dependencies.md",
+    "phase4_owasp": "upstreams/UPSTREAM-06-repo-security-review/tree/references/phase4-owasp.md",
+    "phase5_validate": "upstreams/UPSTREAM-06-repo-security-review/tree/references/phase5-validate-and-poc.md",
+    "phase6_report": "upstreams/UPSTREAM-06-repo-security-review/tree/references/phase6-report.md",
+    "phase7_synthesis": "upstreams/UPSTREAM-06-repo-security-review/tree/references/phase7-synthesis.md",
+    "phase_llm_security": "upstreams/UPSTREAM-06-repo-security-review/tree/references/phase-llm-security.md",
+    "pr_review": "upstreams/UPSTREAM-06-repo-security-review/tree/references/pr-review.md",
+    "setup_script": "upstreams/UPSTREAM-06-repo-security-review/tree/scripts/setup.sh",
+    "command_template": "upstreams/UPSTREAM-06-repo-security-review/tree/scripts/repo-security-review-command.md",
+    "tree_json": "upstreams/UPSTREAM-06-repo-security-review/tree.json",
+    "files_tsv": "upstreams/UPSTREAM-06-repo-security-review/files.tsv"
+  },
+  "cross_upstream": {
+    "vs_01": "UPSTREAM-01 提供确定性仓储事实抽取。本轮未设计任何新的 collector——上游的 Phase 0 与 P2a 都直接从文件系统抽取，不构成第二套仓储事实层。明确不实现新的 GitHub Collector",
+    "vs_02": "本轮外联仅 EPSS、KEV、Semgrep registry 三类只读查询，全部记录为审计事实而非知识。02 的外部调研结论权威性不变",
+    "vs_03": "本轮全部落点并入 03 的 Claim/Evidence 模型。C05 的四节点结构写进 evidence_refs，C06 的不可验证即判否写进四态中的 insufficient evidence。上游的九态验证状态机被压缩映射到四态，不产生第二套状态机",
+    "vs_04": "上游完全没有新鲜度机制（C26）。本轮不提供任何关于 fresh/stale 的新判据，04 的既有结论不变。唯一可借的是 P5 的增量写入纪律，它解决长任务中途丢失，与知识过时不同层",
+    "vs_05": "05 的密钥分级是字段化的，本轮上游的分级写死在判据里（C27）。密钥分级仍以 05 为准，本轮不提出替代方案",
+    "no_second_model": "本轮未新增任何与 01–05 并行的数据模型。06 的可采纳内容归结为三类：证据结构（C05/C06/C14）、验证门（C03/C04/C12）、风险控制约束（C09/C10/C11）。三者都是对既有模型的约束与字段扩展，不是新实体"
+  },
+  "fusion_risks": [
+    {
+      "id": "PROMPT_INJECTION_INHERENT",
+      "severity": "high",
+      "status": "已登记",
+      "detail": "任何读取不受信仓库内容的分析阶段都暴露在提示注入下。上游自己承认边界 2 不防边界 1。SourceLore 若做同类分析，必须把读到的内容一律当数据、提取结论与执行指令分离、注入文本作为 finding 而非指令",
+      "action": "写入分析契约的硬约束；不得靠分层代理或角色隔离代替"
+    },
+    {
+      "id": "BOUNDED_SEARCH_FALSE_NEGATIVE",
+      "severity": "high",
+      "status": "已登记",
+      "detail": "有界搜索（head 封顶、文件类型限制、目录排除）产生的空结果被当成否定证据，是本轮最普遍的一类误判。上游在依赖可达性上明确禁止（有界搜索不得产出 UNREACHABLE），但在 OWASP 探测上自己就在做",
+      "action": "否定结论必须携带搜索边界；搜索被截断即禁止产出确信否定"
+    },
+    {
+      "id": "SEVERITY_CONFIDENCE_COLLAPSE",
+      "severity": "high",
+      "status": "已登记",
+      "detail": "把环境档位调整与置信度封顶混成同一根严重度轴，会让读者把被环境软化误读为不确定，或把不确定误读为低危。上游选择在报告里不解释，这不是修复",
+      "action": "severity 与置信度必须是两个独立字段，且报告必须同时展示来源"
+    },
+    {
+      "id": "UNPINNED_TOOLCHAIN",
+      "severity": "high",
+      "status": "已登记",
+      "detail": "外部扫描器与规则集无版本钉定、无校验和、无指纹。同一份代码在不同机器上可能得到不同结论，且结论之间不可比较",
+      "action": "SourceLore 若引入任何外部工具或规则，必须锁版本 + 校验发布物 + 记内容指纹；否则不得纳入证据"
+    },
+    {
+      "id": "SILENT_PHASE_SET_DRIFT",
+      "severity": "medium",
+      "status": "已登记",
+      "detail": "阶段集合可被布尔与单标志静默改变，报告仍可能声称完成",
+      "action": "阶段集合的任何变化必须写进产物并在报告顶部声明；完成只指所声明集合全部完成"
+    }
+  ],
+  "acceptance": {
+    "upstream_sha_matches_snapshot": true,
+    "snapshot_integrity_verified": true,
+    "license_verified_with_evidence": true,
+    "all_evidence_paths_resolvable": true,
+    "md_and_json_consistent": true,
+    "static_dynamic_not_confused": true,
+    "prior_upstreams_untouched": true,
+    "no_upstream_code_executed": true,
+    "no_dependencies_installed": true,
+    "no_containers_started": true,
+    "no_network_requests": true,
+    "no_upstream_text_copied": true,
+    "no_sensitive_data_written": true
+  },
+  "acceptance_note": "全部 13 项于本审计提交前逐项核验通过，核验命令与退出码记入文档验收节",
+  "unresolved": [
+    {
+      "id": "U1",
+      "item": "phase2-architecture.md 第七节之后的检查清单条目只读到要点",
+      "status": "已登记未读",
+      "note": "这些是检查清单条目，不构成机制，不影响能力判定"
+    },
+    {
+      "id": "U2",
+      "item": "phase5-validate-and-poc.md 五类 PoC 代码模板未逐行通读",
+      "status": "已登记未读",
+      "note": "模板内容是构造示例，不改变能力判定；已确认该段含强制打码要求"
+    },
+    {
+      "id": "U3",
+      "item": "phase5-validate-and-poc.md 决策树、容器编排、浏览器驱动、就绪探测只读边界段",
+      "status": "已登记未读",
+      "note": "结论已由同意门与加固标志段支撑，细节不改变风险判定"
+    },
+    {
+      "id": "U4",
+      "item": "phase5-validate-and-poc.md Dockerfile 合成八步只读第一步",
+      "status": "已登记未读",
+      "note": "合成失败态已在失败模式参考中记录"
+    },
+    {
+      "id": "U5",
+      "item": "phase6-report.md 四种报告完整模板只读结构与裁决规则",
+      "status": "已登记未读",
+      "note": "报告模板属呈现层，不改变能力与缺陷判定"
+    },
+    {
+      "id": "U6",
+      "item": "phase7-synthesis.md 系统级 schema 与报告模板未逐字段读",
+      "status": "已登记未读",
+      "note": "该阶段整体判定为 REIMPLEMENT，不进入 SourceLore"
+    },
+    {
+      "id": "U7",
+      "item": "pr-review.md 输出 schema 未逐字段读",
+      "status": "已登记未读",
+      "note": "已读验证交接与范围声明，足够支撑 C24 判定"
+    },
+    {
+      "id": "U8",
+      "item": "repo-security-review-command.md 阶段编排细节未逐行",
+      "status": "已登记未读",
+      "note": "编排层整体判定为需重写（D7）"
+    },
+    {
+      "id": "U9",
+      "item": "上游 32 star / 7 fork 的真实使用情况与外部评价",
+      "status": "未调研",
+      "note": "本轮只做源码静态审计，不做生态调研（属 02 职责范围）"
+    },
+    {
+      "id": "U10",
+      "item": "无许可证状态下抽象设计思想的边界宽度",
+      "status": "需法务判断",
+      "note": "本轮采取保守立场：不复述上游规则文本、不复制模板、不逐句改写；只描述机制形状并独立设计"
+    }
+  ],
+  "sha_convention": {
+    "adopted": "自本轮起所有新记录使用 40 位完整 Git Commit SHA",
+    "upstream_pinned_sha": "d5128b03d6a785bfb7c8be4139291f887c2a3215",
+    "audit_git_commit": "本审计提交的 SHA（回填阶段写入 TASKS/STATE，非上游事实）",
+    "note": "二者语义不同，不得相互替代；upstream_pinned_sha 指被审计的上游提交，audit_git_commit 指产生本审计的 SourceLore 提交。上游 SHA 不是本地 Git 对象，核验方式为比对 tree.json.sha、本 JSON 三处字段与 manifest commit"
+  },
+  "execution_isolation": {
+    "upstream_code_executed": false,
+    "upstream_scripts_executed": false,
+    "upstream_tests_executed": false,
+    "dependencies_installed": false,
+    "containers_started": false,
+    "network_requests": 0,
+    "poc_generated": false,
+    "writes_outside_snapshot": false,
+    "note": "全部证据来自本地固定快照的静态阅读。setup.sh 只读未执行；未安装任何扫描器；未启动 Docker；未对任何真实部署发起请求"
+  },
+  "security_analysis_contract": {
+    "purpose": "SourceLore 自己的安全分析契约。独立设计，不复述上游任何规则文本",
+    "required_finding_fields": [
+      "finding_id",
+      "repository_id",
+      "source_commit_sha",
+      "category",
+      "affected_component",
+      "evidence_refs",
+      "verification_status",
+      "severity",
+      "limitations",
+      "remediation_summary"
+    ],
+    "verification_states": [
+      "candidate",
+      "verified",
+      "rejected",
+      "insufficient evidence"
+    ],
+    "state_mapping": {
+      "observed_source_fact": "不是 finding，进 Evidence 不进 finding 表",
+      "rule_detected_candidate": "candidate",
+      "unproven_model_inference": "insufficient evidence，不是 candidate",
+      "evidenced_security_finding": "verified，要求四节点链完整到 file:line 且 limitations 已填",
+      "insufficient_or_not_applicable": "insufficient evidence，是成功结果不是失败",
+      "refuted": "rejected，必须留证伪证据，且不能靠没找到来证伪"
+    },
+    "severity_confidence_separation": "severity 只由技术事实决定；环境信息单独记在 context 字段且不参与 severity 计算；置信度是独立轴，永不与 severity 合成一个数字；任何启发式判定必须标注为启发式且不得参与 severity",
+    "capability_boundaries": [
+      "不承诺静态分析可以发现全部漏洞",
+      "不承诺覆盖率：任何否定结论必须携带搜索边界",
+      "不承诺动态验证：未真实执行 PoC 一律标 NOT_RUN",
+      "不承诺跨仓库可达性：无法裁决记 insufficient evidence 并写明缺失事实"
+    ]
+  },
+  "stage_data_contracts": {
+    "phase0_topology": {
+      "artifact": "service-topology.json",
+      "verdict": "REIMPLEMENT",
+      "reason": "服务拓扑不等于知识关系，直接搬用会引入第二套关系模型"
+    },
+    "phase1_secrets": {
+      "artifact": "phase1-secrets.json",
+      "verdict": "ADAPT",
+      "reason": "打码规则可用，原始输出清理不彻底（D11）"
+    },
+    "phase2_architecture": {
+      "artifact": "phase2-architecture.json",
+      "verdict": "ADAPT",
+      "reason": "coverage 全量记账纪律质量高；auth_coverage 取值来自模型判断"
+    },
+    "phase2a_tech_stack": {
+      "artifact": "tech-stack.json",
+      "verdict": "ADAPT",
+      "reason": "字段完整且带低置信记账，但假否定的下游整类跳过未被失效安全覆盖（D18）"
+    },
+    "phase3_dependencies": {
+      "artifact": "phase3-cves.json",
+      "verdict": "ADAPT",
+      "reason": "reachable 恒为 null 待 P3b 回填，中间态在产物里不显式；原始 JSON 无清理（D12）"
+    },
+    "phase3b_reachability": {
+      "artifact": "phase3b-reachability.json",
+      "verdict": "ADAPT",
+      "reason": "三态与保守默认可用；有效严重度与优先级分离是本轮少见的正确分层（C16）"
+    },
+    "phase4_owasp": {
+      "artifact": "phase4-owasp.json",
+      "verdict": "ADAPT",
+      "reason": "字段最丰富，含检查记账、否定置信、类级否定与族扫描留痕，是 SourceLore 最该参考的产物形态"
+    },
+    "phase4b_llm_security": {
+      "artifact": "phase-llm-security.json",
+      "verdict": "ADAPT",
+      "reason": "检查清单质量可用，激活条件偏窄"
+    },
+    "phase5_validation": {
+      "artifact": "phase5-validated.json + phase5-pocs.json",
+      "verdict": "ADAPT",
+      "reason": "增量写入纪律值得单独采纳；九态与四态不同构，需压缩映射"
+    },
+    "phase6_report": {
+      "artifact": "final-report.md / pr-report.md / vendor 报告",
+      "verdict": "ADAPT",
+      "reason": "四种结构；需复核与误报各自成段；两轴混排不解释（D13）"
+    },
+    "phase7_synthesis": {
+      "artifact": "system-findings.json + system-report.md",
+      "verdict": "REIMPLEMENT",
+      "reason": "多仓合成形态不适配 SourceLore"
+    },
+    "cross_cutting_defects": [
+      "D8 失败语义互斥",
+      "D9 阶段集合可静默改变",
+      "D15 自报成本无核验",
+      "D16 模式切换靠条件替换"
+    ]
+  },
+  "dsh_compatibility": {
+    "migratable_directly": false,
+    "conclusion": "不能直接迁移，需要重写编排层；可迁移的只有设计",
+    "dependencies": [
+      {
+        "item": "skill 发现",
+        "upstream": "~/.claude/skills/<name>/",
+        "dsh": "~/.agents/skills/ 与项目级 skill 目录",
+        "verdict": "需改写"
+      },
+      {
+        "item": "命令入口",
+        "upstream": ".claude/commands/<name>.md，靠 $ARGUMENTS",
+        "dsh": "skill 工具与显式工具调用",
+        "verdict": "需重写"
+      },
+      {
+        "item": "阶段隔离",
+        "upstream": "Agent 工具派生子代理，Deep/Standard 分层",
+        "dsh": "subagent / workflow，无同构分层",
+        "verdict": "隔离可重建，分层不可迁移"
+      },
+      {
+        "item": "模型解析",
+        "upstream": "家族别名 opus/sonnet/haiku",
+        "dsh": "provider/model 显式路由",
+        "verdict": "不迁移"
+      },
+      {
+        "item": "产物路径",
+        "upstream": "{repo_path}/.security-review/",
+        "dsh": "无冲突",
+        "verdict": "可原样采用"
+      },
+      {
+        "item": "外部工具",
+        "upstream": "gitleaks / semgrep / osv-scanner / grype / Docker / Playwright",
+        "dsh": "未安装，按只读边界不安装",
+        "verdict": "不迁移"
+      }
+    ],
+    "portable_design": [
+      "阶段间产物契约形状",
+      "两阶段信任边界",
+      "四道确定性验证门",
+      "失效安全门控",
+      "增量写入纪律"
+    ],
+    "non_portable": [
+      "宿主约定",
+      "模型分层",
+      "安装脚本",
+      "任何代码与规则文本"
+    ]
+  }
+}

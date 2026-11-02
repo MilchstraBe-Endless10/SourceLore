@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-02T02:15:00+08:00",
+  "updated_at": "2026-11-02T15:36:00+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -223,20 +223,39 @@
     {
       "id": "UPSTREAM-06",
       "milestone": "M1",
-      "goal": "审计 repo-security-review（Consensys，无根 LICENSE，仅方法论参考）",
+      "goal": "审计 repo-security-review（Consensys）。重点不是评估该 skill 是否可用，而是三件事：其自身安全边界是否成立、其证据纪律能否脱离 Claude Code 独立实现、以及在无许可证前提下 SourceLore 能拿走什么",
       "inputs": "上游地址（已核实，来自总控提示词 §C 原文）：https://github.com/Consensys/repo-security-review",
       "expected_outputs": [
+        "docs/upstream-audit-06-repo-security-review.md",
+        "progress/UPSTREAM-06-audit.json",
         "docs/upstream-manifest.json 条目",
         "THIRD_PARTY_NOTICES.md"
       ],
-      "status": "PENDING",
-      "verification_commands": [],
-      "evidence_paths": [],
+      "status": "DONE",
+      "verification_commands": [
+        "python3 -c \"import json;json.load(open('progress/UPSTREAM-06-audit.json'))\"",
+        "git check-ignore -v upstreams/UPSTREAM-06-repo-security-review/tree/SKILL.md",
+        "awk -F'\\t' -v r=\"upstreams/UPSTREAM-06-repo-security-review/tree\" '{print r\"/\"$1\"\\t\"$3}' upstreams/UPSTREAM-06-repo-security-review/files.tsv | while IFS=\"$(printf '\\t')\" read -r f want; do got=$(git hash-object \"$f\") || exit 1; [ \"$got\" = \"$want\" ] || { echo \"MISMATCH $f\"; exit 1; }; done; echo blob-ok",
+        "python3 -c \"import json;d=json.load(open('upstreams/UPSTREAM-06-repo-security-review/tree.json'));print(d['sha'],len(d['tree']),d['truncated'])\"",
+        "gh api repos/Consensys/repo-security-review/license; test $? -eq 1 && echo license-404-confirmed",
+        "wc -l < upstreams/UPSTREAM-06-repo-security-review/files.tsv"
+      ],
+      "evidence_paths": [
+        "docs/upstream-audit-06-repo-security-review.md",
+        "progress/UPSTREAM-06-audit.json",
+        "THIRD_PARTY_NOTICES.md",
+        "upstreams/UPSTREAM-06-repo-security-review/files.tsv",
+        "upstreams/UPSTREAM-06-repo-security-review/tree.json"
+      ],
       "git_commit": null,
       "blocked_reason": null,
       "depends_on": [
         "M0-02"
-      ]
+      ],
+      "audit_sha": "d5128b03d6a785bfb7c8be4139291f887c2a3215",
+      "completed_at": "2026-11-02T15:30:00+08:00",
+      "counts_summary": "能力 28（REUSE 11 / ADAPT 11 / REIMPLEMENT 4 / REJECT 2）；缺陷 20（blocker 3 / high 4 / medium 11 / low 2）；十二项风险 6 成立 / 5 部分成立 / 1 不成立；测试 NOT_RUN；无许可证，零复制",
+      "license_status": "none —— 上游无任何许可证；仅取抽象设计思想，不复制源码、提示词、规则原文与模板"
     }
   ]
 }
