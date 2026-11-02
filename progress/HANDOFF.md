@@ -1,22 +1,22 @@
 # SourceLore 交接文档
 
 > 本文件是跨会话恢复的唯一入口。任何新会话第一件事就是读它。
-> 最后更新：2026-11-02T22:50:00+08:00
+> 最后更新：2026-11-03T05:50:00+08:00
 
 ---
 
 ## 一、现状
 
-M1-FUSION-GATE 已启动。**F0 完成并提交；F1 已启动但中断，未完成、未提交。**
+M1-FUSION-GATE 进行中。**F0 完成并提交；F1 已按批次推进，F1-A、F1-B/Facts、F1-B/Collector 均已 DONE 并各自独立提交。**
 
-> **F1 中断原因：模型输出预算熔断（连续 6 轮未产出正文），非项目阻塞。**
-> 恢复入口：`progress/CHECKPOINT-F1.md`（含 143 项能力清单、已定约束、恢复步骤）。
+> F1 曾因模型输出预算熔断中断，恢复后改为按模块分批推进。
+> 清单与约束仍以 `progress/CHECKPOINT-F1.md`、`docs/fusion/BASELINE.md` §8 为准。
 
 - 项目根：`/mnt/Server_Data_Center/Team_Flie(团队文件)/GitHub_Knowledge_Base(Gihub知识库)/SourceLore`
 - 当前里程碑：**M1-FUSION-GATE（IN_PROGRESS）**
-- 当前任务：**M1-FUSION-GATE-F1**（已启动，中断待续）
-- 已完成：**M1-FUSION-GATE-F0**
-- 下一动作：手动压缩上下文 → 读 `progress/CHECKPOINT-F1.md` → 续跑 F1
+- 当前任务：**M1-FUSION-GATE-F1**（分批进行中，已完成 19/143 的正式映射）
+- 已完成批次：**F1-A、F1-B/Facts（SL-CAP-0001~0010）、F1-B/Collector（SL-CAP-0011~0019）**
+- 下一动作：F1-B 剩余八模块，从 Evidence-Claims 起，按同一流程逐批推进
 - 开发模型：`workbuddy/deepseek-v4.1-flash`（上下文 131072，务必小步走）
 
 ## 二、已通过的 Gate
@@ -67,13 +67,16 @@ F0 门禁九项全部实跑，`FAILURES: 0`，`exit=0`。
 
 ## 六、Git HEAD
 
-`c0877e0124551352e603d693158f8296ada08607` —— M1-FUSION-GATE F0 审计提交。前一条 `b0c8e6d` 是 UPSTREAM-06 的 SHA 回填提交。
+`58e9b3739698068a8b0cdb98f6d82ca7b40f5cf6` —— F1-B Collector 批次提交（9 canonical / 11 raw 承接 / 5 分流待办，晋升记录修复后落盘）。
 
 ## 七、下一步
 
-**续跑 F1。** 已完成：F0 状态核验、六源 143 项能力全量提取（15+18+27+27+28+28，与对照数一致）、
-字段结构确认（`id`/`capability`/`mechanism`/`where`/`disposition`/`why`，六源一致）。
-未完成：`CAPABILITY_CROSSWALK.json`、`ABILITY_DECISIONS.md`、十项冲突裁决、13 项验收、提交。
+**继续 F1-B 剩余模块**（Evidence-Claims → Product → Research → Lifecycle → Security → Renderer → Storage → DSH Adapter）。
+
+已完成：F0 状态核验、六源 143 项能力全量提取（15+18+27+27+28+28，与对照数一致）、
+字段结构确认（`id`/`capability`/`mechanism`/`where`/`disposition`/`why`，六源一致）、
+F1-A 冲突裁决、F1-B 的 Facts 与 Collector 两批共 19 条 canonical。
+未完成：其余八模块的能力归并、F1-C 边界裁决、F1-D 全量验收与 `CAPABILITY_CROSSWALK.json` 冻结。
 
 详细恢复步骤见 `progress/CHECKPOINT-F1.md`。三条前置约束仍以 `BASELINE.md` §8 为准：
 
@@ -592,9 +595,15 @@ F1-B 第二批次（Collector 模块）完成：9 条 canonical（`SL-CAP-0011`~
 - 归并为 9 条 canonical，并明确 Collector 的十项职责与六项非职责
 - 关键裁决 A：唯一采集入口 —— 逻辑接口 / 当前 `gh api` 传输适配 / 可验证原始数据 / 传输可替换，四层分离；
   数据契约不得绑定 GitHub CLI 的输出格式
-- 从 Facts 批次的分流记录中接手 5 个身份（UPSTREAM-02 的 C01/C04/C06/C07/C09 等），
-  按晋升规则从 `cross_module_redirections` 提升进对应 canonical 的 `upstream_refs`，
-  并在 `routed_promotions` 留迁移记录 —— 这些身份从 ROUTED 变为 MAPPED，不是重复计算
+- 承接 11 个原始身份（其中 `U02::C01/C02/C03/C04/C07/C08/C09/C18`、`U01::C15`、`U06::C13` 直接映射）
+- 本批向其它模块分流 5 条（`DEFERRED_TO_OTHER_MODULE`）：Evidence-Claims 2 条
+  （`U04::C11` verified-against、`U06::C13` 存储路径）、Lifecycle 1 条（`U05::C17` 过期检测）、
+  Security 2 条（`U06::C18`、`U06::C24`）、Research 1 条（`U02::C11`）
+- 分流表当前共 14 条：Facts 批次留下的 9 条加本批 5 条。两者都记 ROUTED，
+  只有目标模块真正建出 canonical 时才转成 MAPPED
+- 另有 2 个身份（`U02::C06` → `SL-CAP-0014`、`U02::C09` → `SL-CAP-0015`）原本由 Facts 判为「去向 Collector」，
+  本批建出 canonical 正式承接，按晋升规则从 ROUTED 变为 MAPPED，并在 `routed_promotions` 留迁移记录。
+  这 2 条与上面 5 条分流是两个不相交的集合，所以 MAPPED 与 ROUTED 不重复计数
 
 ### 统计口径（三态互斥，实测非声明）
 
@@ -609,7 +618,7 @@ MAPPED ∩ ROUTED = ∅。`canonical_count = 19`（不是 143）。
 
 ### 验证证据
 
-- `tools/fusion/f1b_verify_collector.py` → `28/28 PASS -> F1B_COLLECTOR_VERIFICATION.json`
+- `tools/fusion/f1b_verify_collector.py` → `30/30 PASS -> F1B_COLLECTOR_VERIFICATION.json`
 - `tools/fusion/f1b_verify.py` → `汇总: 12/12 PASS`
 - 两个构建器均幂等（重复运行产物字节一致）；写入都在校验通过之后
 
@@ -621,7 +630,11 @@ MAPPED ∩ ROUTED = ∅。`canonical_count = 19`（不是 143）。
    `exit 2` 且不写盘。整表重建的正确顺序是 `f1b_build_facts.py` → `f1b_build_collector.py` → 两个验证器。
 3. 分流记录里 `owner_module` 存的是**目标**模块，不能拿它反推产出方；去重与剥离必须按
    `(upstream_id, original_capability_id)` 配对。
-4. `refs` 是三元组 `(upstream_id, original_capability_id, verdict)`，不是字典。
+4. `refs` 是三元组 `(upstream_id, original_capability_id, verdict)`，不是字典；
+   构建产物里对应字段叫 `upstream_refs`，元素是字典 —— 两边键名不通用，先打印再取值。
+5. **晋升记录不能从运行时状态反推。** 草稿合并后原始分流已被本批消费，而原始索引不携带分流信息，
+   反推会让证据在第二次运行时凭空消失。改为由定义文件 `PROMOTED_FROM_FACTS` 声明，构建器只做一致性校验。
+6. 验证器 `check()` 收的是返回 `(ok, detail)` 的函数，不是结论值 —— 直接传结论会 TypeError。
 
 ### 下一步
 
