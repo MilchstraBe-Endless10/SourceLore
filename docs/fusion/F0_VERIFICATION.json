@@ -1,0 +1,260 @@
+{
+  "task": "M1-FUSION-GATE / F0",
+  "generated_at": "2026-11-02T22:25:00+08:00",
+  "generated_by": "DeepSeek-V4.1 Flash (DSH execution agent)",
+  "method": "本地 Git + 文件系统 + 已认证 gh api 实测；不引用历史聊天记录作为通过依据",
+  "git": {
+    "head": "b0c8e6d2897fbf53171934e9c74a864266c412d4",
+    "head_short": "b0c8e6d",
+    "branch": "main",
+    "worktree_clean": true,
+    "log_recent": [
+      "b0c8e6d chore(progress): 回填 UPSTREAM-06 审计提交 SHA 至账本",
+      "094a0d8 audit(upstream): 完成 UPSTREAM-06 repo-security-review 审计",
+      "fe36c7d chore(progress): 回填 UPSTREAM-05 审计提交 SHA 至账本",
+      "cee5951 audit(upstream): 完成 UPSTREAM-05 lazy-rabbit-skills project-knowledge-base 审计",
+      "af946e9 chore(progress): 回填 UPSTREAM-04 修订提交 SHA 至账本",
+      "565199f fix(audit): align upstream-04 defect references and blob verification"
+    ]
+  },
+  "upstreams": [
+    {
+      "upstream_id": "UPSTREAM-01",
+      "repo": "jeannie-jy/repo-analyzer-skill",
+      "commit_sha": "b8c000f60c03003cbb08e6737b2e8193289904ea",
+      "subtree": null,
+      "root_tree_sha": "625f45c6809a08ebdb18b69ae5f86daa5c36f1a1",
+      "tree_json_sha": null,
+      "tree_json_sha_equals_commit": null,
+      "tree_json_sha_equals_root_tree": null,
+      "tree_entries": null,
+      "tree_truncated": null,
+      "license_manifest": "MIT",
+      "audit_capability_count": 15,
+      "audit_defect_count": 6,
+      "test_status": null,
+      "manifest_row_present": true
+    },
+    {
+      "upstream_id": "UPSTREAM-02",
+      "repo": "bytedance/deer-flow",
+      "commit_sha": "44e372dd7f8a511e6223f548f55f7b4c939ca226",
+      "subtree": "skills/public/github-deep-research",
+      "root_tree_sha": "e87770212f1c057000c96c66dec11a341b74e957",
+      "tree_json_sha": null,
+      "tree_json_sha_equals_commit": null,
+      "tree_json_sha_equals_root_tree": null,
+      "tree_entries": null,
+      "tree_truncated": null,
+      "license_manifest": "MIT",
+      "audit_capability_count": 18,
+      "audit_defect_count": 12,
+      "test_status": "NOT_RUN — 上游子树不存在任何测试文件（files.tsv 全量枚举确认），其代码亦未执行；不得据此断言任何功能可用或通过",
+      "manifest_row_present": true
+    },
+    {
+      "upstream_id": "UPSTREAM-03",
+      "repo": "maboasoft/repository-discovery",
+      "commit_sha": "557703fffe69c9ab97eff67acabea6b346afd89c",
+      "subtree": null,
+      "root_tree_sha": "92023d6b3878ccec01f4941ea22574f585004454",
+      "tree_json_sha": "557703fffe69c9ab97eff67acabea6b346afd89c",
+      "tree_json_sha_equals_commit": true,
+      "tree_json_sha_equals_root_tree": false,
+      "tree_entries": 5,
+      "tree_truncated": false,
+      "license_manifest": "CC-BY-4.0",
+      "audit_capability_count": 27,
+      "audit_defect_count": 18,
+      "test_status": null,
+      "manifest_row_present": true
+    },
+    {
+      "upstream_id": "UPSTREAM-04",
+      "repo": "SNIKO/agent-skills",
+      "commit_sha": "a3e5e9da94434127cdd47a1a7e0658baafff7083",
+      "subtree": "skills/swe-research",
+      "root_tree_sha": "b38a48ebdd022f496e629ec2eb48e75d51bdf08a",
+      "tree_json_sha": "a3e5e9da94434127cdd47a1a7e0658baafff7083",
+      "tree_json_sha_equals_commit": true,
+      "tree_json_sha_equals_root_tree": false,
+      "tree_entries": 55,
+      "tree_truncated": false,
+      "license_manifest": "MIT",
+      "audit_capability_count": 27,
+      "audit_defect_count": 18,
+      "test_status": null,
+      "manifest_row_present": true
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "repo": "walterfan/lazy-rabbit-skills",
+      "commit_sha": "284971cdd2666878d13716af8f26f51521cd915c",
+      "subtree": "skills/project-knowledge-base",
+      "root_tree_sha": "3fee9bc635b6940ce2c7a189be494060c72cdca4",
+      "tree_json_sha": "284971cdd2666878d13716af8f26f51521cd915c",
+      "tree_json_sha_equals_commit": true,
+      "tree_json_sha_equals_root_tree": false,
+      "tree_entries": 477,
+      "tree_truncated": false,
+      "license_manifest": "Apache-2.0",
+      "audit_capability_count": 28,
+      "audit_defect_count": 18,
+      "test_status": "NOT_RUN",
+      "manifest_row_present": true
+    },
+    {
+      "upstream_id": "UPSTREAM-06",
+      "repo": "Consensys/repo-security-review",
+      "commit_sha": "d5128b03d6a785bfb7c8be4139291f887c2a3215",
+      "subtree": null,
+      "root_tree_sha": "68af655f92d2d15f40335017c0e0819f59524413",
+      "tree_json_sha": "d5128b03d6a785bfb7c8be4139291f887c2a3215",
+      "tree_json_sha_equals_commit": true,
+      "tree_json_sha_equals_root_tree": false,
+      "tree_entries": 18,
+      "tree_truncated": false,
+      "license_manifest": null,
+      "audit_capability_count": 28,
+      "audit_defect_count": 20,
+      "test_status": "NOT_RUN",
+      "manifest_row_present": true
+    }
+  ],
+  "snapshot_integrity": [
+    {
+      "upstream_id": "UPSTREAM-01",
+      "snapshot_dir": "upstreams/UPSTREAM-01-repo-analyzer-skill",
+      "has_files_tsv": false,
+      "tsv_rows": 0,
+      "has_tree_json": false,
+      "tree_dir_files": 104,
+      "tsv_columns": null
+    },
+    {
+      "upstream_id": "UPSTREAM-02",
+      "snapshot_dir": "upstreams/UPSTREAM-02-deer-flow",
+      "has_files_tsv": true,
+      "tsv_rows": 6,
+      "has_tree_json": false,
+      "tree_dir_files": 4,
+      "tsv_columns": 3
+    },
+    {
+      "upstream_id": "UPSTREAM-03",
+      "snapshot_dir": "upstreams/UPSTREAM-03-repository-discovery",
+      "has_files_tsv": true,
+      "tsv_rows": 4,
+      "has_tree_json": true,
+      "tree_dir_files": 4,
+      "tsv_columns": 3
+    },
+    {
+      "upstream_id": "UPSTREAM-04",
+      "snapshot_dir": "upstreams/UPSTREAM-04-agent-skills",
+      "has_files_tsv": true,
+      "tsv_rows": 6,
+      "has_tree_json": true,
+      "tree_dir_files": 6,
+      "tsv_columns": 3
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "snapshot_dir": "upstreams/UPSTREAM-05-lazy-rabbit-skills",
+      "has_files_tsv": true,
+      "tsv_rows": 66,
+      "has_tree_json": true,
+      "tree_dir_files": 66,
+      "tsv_columns": 3
+    },
+    {
+      "upstream_id": "UPSTREAM-06",
+      "snapshot_dir": "upstreams/UPSTREAM-06-repo-security-review",
+      "has_files_tsv": true,
+      "tsv_rows": 16,
+      "has_tree_json": true,
+      "tree_dir_files": 16,
+      "tsv_columns": 3
+    }
+  ],
+  "git_object_verification": {
+    "finding": "GitHub Trees API 在 ref 为 commit-ish 时，响应中的 sha 字段回显请求标识，而非该 commit 的根 tree SHA",
+    "evidence": {
+      "commit_endpoint": "GET /repos/Consensys/repo-security-review/commits/d5128b03... → commit.tree.sha = 68af655f92d2d15f40335017c0e0819f59524413",
+      "trees_by_commit": "GET /repos/Consensys/repo-security-review/git/trees/d5128b03... → sha = d5128b03... (回显), entries=5, truncated=false",
+      "trees_by_tree": "GET /repos/Consensys/repo-security-review/git/trees/68af655f... → sha = 68af655f..., entries=5, truncated=false"
+    },
+    "three_distinct_fields": [
+      "commit_sha",
+      "root_tree_sha",
+      "tree_query_ref"
+    ],
+    "impact": "本地 tree.json 的 sha 字段是请求标识（commit SHA）而非根 tree SHA；但 tree 数组内容与真实 tree 逐一比对完全一致",
+    "content_check": "UPSTREAM-03/04/05/06 共 4 源，local 5/55/477/18 条 对 远端同路径同 SHA，逐条一致，不符 0 条",
+    "does_not_invalidate": "16 个 blob 的哈希匹配结论不受影响"
+  },
+  "differences": [
+    {
+      "id": "F0-D01",
+      "severity": "high",
+      "category": "git_object_semantics",
+      "summary": "UPSTREAM-03/04/05/06 的 tree.json.sha 存的是 commit SHA（请求回显），不是根 tree SHA",
+      "evidence": "见 git_object_verification；六源中 4 源本地 tree.json.sha == commit_sha，均 != 真实 root_tree_sha",
+      "impact": "任何把 tree.json.sha 当作「树身份」或「快照指纹」的下游逻辑会得到错误结论；但不影响条目内容正确性",
+      "disposition": "写入 ERRATA；F2 的 snapshot_manifest_v2 必须分离 commit_sha / root_tree_sha / tree_query_ref 三字段"
+    },
+    {
+      "id": "F0-D02",
+      "severity": "high",
+      "category": "evidence_mislabel",
+      "summary": "THIRD_PARTY_NOTICES.md 声称「本仓库不包含任何第三方源代码、提示词、规则文本或模板」，与 docs/ 审计文档中存在上游短句引用的事实不符",
+      "evidence": "docs/upstream-audit-03/04 等文档含引号内的上游原文短句（如 \"（03 文档中关于 Product Model 必须先于最终文档生成的那句英文原文引用）\"）；04 有 21 处 >=6 词英文长句、03 有 14 处",
+      "impact": "声明过度绝对，会让人误以为连引文都没有；实际是「产品代码零复制，审计文档含引文式短句引用」，性质不同",
+      "disposition": "本轮不修改历史审计文档；在 ERRATA 登记，并在 F5 重写 THIRD_PARTY_NOTICES 措辞为分层表述"
+    },
+    {
+      "id": "F0-D03",
+      "severity": "medium",
+      "category": "manifest_schema",
+      "summary": "manifest 六行字段不齐：UPSTREAM-01/02 缺 license_verified_spdx / disposition_counts / defect_counts / test_status 等字段，03/04/05/06 有",
+      "evidence": "UPSTREAM-01 行键数 18，UPSTREAM-05 行键数 30；01/02 的 license_verified_spdx 为缺键而非 null",
+      "impact": "按统一 schema 解析 manifest 会因缺键 KeyError；「无许可证」与「字段未填」在 06 上是靠显式 null 区分，在 01/02 上不可区分",
+      "disposition": "F1/F2 统一 schema 时补齐为显式 null，不改写历史数值"
+    },
+    {
+      "id": "F0-D04",
+      "severity": "medium",
+      "category": "manifest_format",
+      "summary": "MANIFEST_FORMAT_DIVERGENCE 仍存在：UPSTREAM-02 的 files.tsv 第 1 列是 type（tree/blob），其余四源是 path",
+      "evidence": "实测 5 个 files.tsv：02 首行首列为 tree，03/04/05/06 首行首列为实际路径（LICENSE/.gitignore 等）；全部 3 列",
+      "impact": "按第三列统一读 blob_sha 会在 02 上读到 path；必须具名适配器分派",
+      "disposition": "F2 要求「通过具名适配器解析，绝不按第三列统一读取」；本轮只登记"
+    },
+    {
+      "id": "F0-D05",
+      "severity": "medium",
+      "category": "coverage_gap",
+      "summary": "UPSTREAM-01 无 tree.json，UPSTREAM-02 无 tree.json，两源快照形态与其他四源不一致",
+      "evidence": "upstreams/UPSTREAM-01-repo-analyzer-skill/ 只有 src.tar.gz 与 tree/；UPSTREAM-02-deer-flow/ 只有 files.tsv 与 tree/",
+      "impact": "无法对 01/02 做「tree.json.sha vs root_tree_sha」核验；01 的获取路径是 tar.gz 而非 Trees API",
+      "disposition": "登记为已知形态差异；F2 的 manifest v2 需声明每源的抓取方式（trees_api / archive_tarball）"
+    },
+    {
+      "id": "F0-D06",
+      "severity": "medium",
+      "category": "semantics_conflict",
+      "summary": "UPSTREAM-06 C06 上游语义「无法建立完整链 → FALSE_POSITIVE（判否）」与 SourceLore 设计「证据不足 → insufficient」冲突",
+      "evidence": "progress/UPSTREAM-06-audit.json capability_matrix C06 mechanism 字段",
+      "impact": "若照搬上游，未证明存在会被写成不存在，违反「不得把未证明存在变成不存在」",
+      "disposition": "F2 采用 insufficient；C06 的可用部分只是「必须能逐跳定位」，判否语义由 SourceLore 自行定义"
+    }
+  ],
+  "gate_checks": {
+    "six_upstream_history_unchanged": true,
+    "every_difference_has_source_and_disposition": true,
+    "git_object_verification_has_real_output": true,
+    "third_party_notices_does_not_claim_unlicensed_code_adopted": true,
+    "no_upstream_text_copied": true,
+    "no_audit_conclusion_modified": true
+  }
+}

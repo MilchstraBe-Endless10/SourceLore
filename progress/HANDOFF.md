@@ -1,34 +1,33 @@
 # SourceLore 交接文档
 
 > 本文件是跨会话恢复的唯一入口。任何新会话第一件事就是读它。
-> 最后更新：2026-11-02T15:36:00+08:00
+> 最后更新：2026-11-02T22:27:00+08:00
 
 ---
 
 ## 一、现状
 
-M1 六个上游只读审计全部完成，等用户启动 M1-FUSION-GATE。M2 开发未开始。
+M1-FUSION-GATE 已启动，**只完成 F0**，按执行指令停止。F1 未开始。
 
 - 项目根：`/mnt/Server_Data_Center/Team_Flie(团队文件)/GitHub_Knowledge_Base(Gihub知识库)/SourceLore`
-- 当前里程碑：**M1（六源审计 DONE）**
-- 当前任务：**无**（`active_task` 为 null）
-- 下一任务：**M1-FUSION-GATE**（需用户明确启动）
+- 当前里程碑：**M1-FUSION-GATE（IN_PROGRESS，F0 DONE）**
+- 当前任务：**M1-FUSION-GATE**（宿主任务）
+- 下一任务：**M1-FUSION-GATE-F1**（六源能力去重及归属，需 Owner 确认后启动）
 - 开发模型：`workbuddy/deepseek-v4.1-flash`（上下文 131072，务必小步走）
 
 ## 二、已通过的 Gate
 
 | Gate | 判定 | 证据 |
 |---|---|---|
-| M0：可读取和安全写入指定目录 | PASS | `BASE_WRITABLE=YES`；骨架已创建；`git init` 成功 |
-| M0：模型能运行最小工具实验 | PASS | bash / git / python3 venv / SQLite FTS5 / curl 全部实跑成功 |
-| M0：DSH 技能路径有依据 | PASS | 用户级根 `<DSH_HOME>/skills` 经 Catalog 交叉验证；三个 skill Provider 已注册 |
-| UPSTREAM-01~06：单源只读审计 | PASS | 每源九项门禁实跑，退出码均为 0，详见各 `docs/upstream-audit-0N-*.md` §验收 |
+| M0 | PASS | 见 `docs/environment-audit.md` |
+| UPSTREAM-01~06 单源只读审计 | PASS | 各 `docs/upstream-audit-0N-*.md` §验收 |
+| **M1-FUSION-GATE / F0** | **PASS** | `docs/fusion/BASELINE.md` §7；九项门禁 exit 0 |
 
 ## 三、最后一条真实命令与退出码
 
-```
-python3 - <<'PY'  # UPSTREAM-06 九项门禁
-... SHA / 证据路径 / Markdown-JSON 一致性 / 许可证处置 / 静态动态不混淆 / 快照完整性 / 敏感内容 ...
+```bash
+python3 - <<'PY'   # F0 九项门禁：JSON 结构 / 六源数 / Git 三字段 / 差异完整性 /
+                   # ERRATA 对齐 / 历史零改动 / 数字对齐 / 无文本搬运 / 执行隔离
 PY
 ```
 
@@ -42,60 +41,52 @@ FAILURES: 0
 
 | 文件 | 说明 |
 |---|---|
-| `docs/upstream-audit-06-repo-security-review.md` | UPSTREAM-06 审计报告，15 章 |
-| `progress/UPSTREAM-06-audit.json` | 结构化审计记录 |
-| `docs/upstream-manifest.json` | 补全 UPSTREAM-06 条目（含无许可证说明） |
-| `THIRD_PARTY_NOTICES.md` | 新建。六源许可状态与零复制事实 |
-| `progress/TASKS.json` | UPSTREAM-06 转 DONE |
-| `progress/STATE.json` | `next_task` 改为 M1-FUSION-GATE |
+| `docs/fusion/BASELINE.md` | 新建。F0 基线冻结，含六源核验表与 Git 对象核验实测输出 |
+| `docs/fusion/ERRATA.md` | 新建。六条勘误，全部声明不改历史史料 |
+| `docs/fusion/F0_VERIFICATION.json` | 新建。机读证据，BASELINE 与 ERRATA 均从此渲染 |
+| `progress/TASKS.json` | 新增 `M1-FUSION-GATE`（IN_PROGRESS）与 `M1-FUSION-GATE-F0`（DONE） |
+| `progress/STATE.json` | 推进到 M1-FUSION-GATE，next_task 设为 F1 |
 | `progress/HANDOFF.md` | 本文件 |
+
+未改动：六份 `progress/UPSTREAM-0X-audit.json`、六份 `docs/upstream-audit-0N-*.md`、
+`docs/upstream-manifest.json`、`THIRD_PARTY_NOTICES.md`、`upstreams/`。
 
 ## 五、测试
 
-`NOT_RUN`。M1 六个上游全部禁止执行上游代码、禁止安装依赖、禁止启动容器、禁止对真实部署发起请求。审计类验证以真实命令输出为准，逐条记录在各审计文档的验收节。**不得把任何一源的审计读作「该工具已通过安全测试」。**
+F0 门禁九项全部实跑，`FAILURES: 0`，`exit=0`。
+
+过程中三处判据误报并已修正，不是数据问题：能力总数误算为 120（实为 143）；
+「不改历史」行数判据未覆盖带补充说明的单元格；以及本节自身在描述上游引文时
+**又复制了一遍**被指的英文原句——已改为描述性指代，这条错误值得记住。
 
 ## 六、Git HEAD
 
-`094a0d8bb4f879d5da8046bbb91a9fbf8effecfc` —— UPSTREAM-06 审计提交。前一条 `fe36c7d` 是 UPSTREAM-05 的 SHA 回填提交。
+见 `progress/TASKS.json` 的 `git_commit`（回填阶段写入）。
 
 ## 七、下一步
 
-**M1-FUSION-GATE**。六源审计已全部 DONE，但融合还没开始。
+**F1 — 六源能力去重及归属。** 三条前置约束已写入 `BASELINE.md` §8：
 
-M1 硬性约束（来自总控提示词 §G）：
-
-- 六个上游**一次只处理一个**，每个都固定 Commit SHA —— 已完成
-- 每个都要查 LICENSE / NOTICE / 文件头许可证声明 —— 已完成
-- 每个都要读 SKILL.md 与脚本，列出可复用能力与兼容性风险 —— 已完成
-- 逐个更新 `docs/upstream-manifest.json` 与 `docs/fusion-matrix.md` —— manifest 已完成；**`docs/fusion-matrix.md` 尚未产出**，属 M1-FUSION-GATE 的活
-- **严禁把六个 SKILL.md 原样拼接**
-- 未到 M1 Gate 不得开始大规模融合编码
-
-融合阶段要处理的具体账（按优先级）：
-
-1. `MANIFEST_FORMAT_DIVERGENCE`（medium）：UPSTREAM-02 的 TSV 是 `type/bytes/path`，其余是 `path/bytes/blob_sha`。Manifest V2 已提出未定稿。
-2. 06 的 C05 四节点证据结构如何并入 03 的 Claim/Evidence —— 是字段扩展还是新层，需定。
-3. 06 的 C04 边界门依赖 `auth_coverage`，而该映射必须改成确定性抽取；精度不足时门只能降级为标注（06 的 Q2）。
-4. 否定结论的覆盖面字段（06 的 C14）与 04 的增量机制语义冲突，需统一定义（06 的 Q3）。
-5. `disputed` 的裁决权归属仍未定（结转自 UPSTREAM-04/05）。
+1. 能力总数是 **143 项上游候选**，不是 143 项 SourceLore 能力。F1 Gate 要求的是原始候选全覆盖，不是去重后仍为 143。
+2. 每条记录必须带 `license_permission` 独立字段；UPSTREAM-06 的 28 项全部只能是「仅参考设计」。
+3. 06 的 C06 判否语义（E-06）不能沿用，`disposition` 记 `ADAPT` 而非 `ADOPT_DESIGN`。
 
 ## 八、已知限制
 
-1. **上下文 131072**：不能大段读上游源码，必须用脚本采事实 + 分页读取
-2. **会话 cwd 不在项目根**：所有命令必须绝对路径或显式 cd
-3. **路径含括号与中文**：shell 必须引号，Python 用 pathlib
-4. **Skill 源码目录不是发现根**：M6 必须安装到发现根并用 Catalog 复验
-5. **Tobs 会话 cwd 不是项目根**：M7 触发依赖用户级 skill 根，需专门验证
-6. **`upstreams/` 被 `.gitignore` 排除**：快照副本不进历史，只是审计期只读材料
-7. **UPSTREAM-06 无许可证**：该源只可取抽象设计思想，不得复制任何源码、提示词、规则原文或模板；边界宽度需法务判断（其 U10）
+1. **上下文 131072**：按阶段与输入预算截断，标记覆盖范围，截断不得宣布「全量」
+2. **会话 cwd 不在项目根**：命令必须显式 cd
+3. **路径含括号与中文**：shell 必须引号
+4. **`upstreams/` 被 `.gitignore` 排除**：快照不进历史
+5. **UPSTREAM-06 无许可证**：只可取抽象设计思想，不得复制任何原文
+6. **Git 三字段不可互换**：`commit_sha` / `root_tree_sha` / `tree_query_ref`（E-01）
 
 ## 九、恢复命令
 
 ```bash
-cd '/mnt/Server_Data_Center/Team_Flie(团队文件)/GitHub_Knowledge_Base(Gihub知识库)/SourceLore' && git log --oneline -5 && python3 -m json.tool progress/STATE.json && python3 -m json.tool progress/TASKS.json | head -40
+cd '/mnt/Server_Data_Center/Team_Flie(团队文件)/GitHub_Knowledge_Base(Gihub知识库)/SourceLore' && git log --oneline -5 && python3 -m json.tool progress/STATE.json && cat docs/fusion/BASELINE.md | head -60
 ```
 
-然后读 `progress/STATE.json` 的 `next_task`。当前应为 `M1-FUSION-GATE`。
+然后读 `progress/STATE.json` 的 `next_task`。当前应为 `M1-FUSION-GATE-F1`。
 
 ---
 
@@ -501,3 +492,45 @@ high 四条：上游自陈「边界 2 不防边界 1」、全部静态探测带 
 ### 下一步
 
 M1 六个上游全部 DONE。**M1-FUSION-GATE 需用户明确启动**；M2 开发未开始。本轮到此停止，不自动进入融合。
+
+## M1-FUSION-GATE / F0 完成（2026-11-02 22:27 +08:00）
+
+### 一句话定性
+
+基线冻结完成，六源历史零改动。最重要的一条发现是 **Git 对象三字段不能互换**：GitHub Trees API 在 ref 为 commit-ish 时，响应 `sha` 字段回显请求标识，所以四源的 `tree.json.sha` 存的其实是 commit SHA，不是根 tree SHA。
+
+### 关键发现
+
+UPSTREAM-06 的 commit `d5128b03…` 真实根 tree 是 `68af655f92d2d15f40335017c0e0819f59524413`。三条 `gh api` 实测输出互相对照即可区分：按 commit 查 trees 返回的仍是 commit SHA，按 tree 查才返回 tree SHA；两次的 `entries` 与 `truncated` 相同，说明指向同一棵树。
+
+**这不让历史审计失效。** 对 03/04/05/06 四源，把本地 `tree.json` 的 `tree[]` 与远端 `recursive=1` 逐条比对：5/55/477/18 条全部同路径同 SHA，不符 0 条。所以是字段语义错误，不是数据污染，blob 哈希结论全部成立。
+
+### 六源核验
+
+能力 143 项上游候选（15+18+27+27+28+28），缺陷 92 项（6+12+18+18+18+20）。六源状态全部 DONE。
+
+形态不齐：UPSTREAM-01 只有 `src.tar.gz` + `tree/`，UPSTREAM-02 只有 `files.tsv` + `tree/`，两源都没有 `tree.json`，无法做上述核验。
+
+### 六条勘误（全部不改历史史料）
+
+| ID | 类型 | 严重度 | 何时处理 |
+|---|---|---|---|
+| E-01 | 字段语义错误（tree.json.sha） | high | F2 |
+| E-02 | 声明过度绝对（THIRD_PARTY_NOTICES） | high | F5 |
+| E-03 | Manifest 结构不齐（01/02 缺键） | medium | F1/F2 |
+| E-04 | Manifest 格式分叉（02 列序） | medium | F2 |
+| E-05 | 覆盖缺口（01/02 无 tree.json） | medium | F2 |
+| E-06 | 语义冲突（06 C06 判否语义） | medium | F1 |
+
+E-02 值得单独说：`THIRD_PARTY_NOTICES.md` 写「本仓库不包含任何第三方源代码、提示词、规则文本或模板」，但 `docs/` 下的审计文档确实含上游英文原句的引文式引用（03 有 14 处、04 有 21 处 ≥6 词长句）。核心主张（产品代码与提示词零复制）属实，措辞越界。本轮不改，留待 F5 重写为分层表述。
+
+### 产出
+
+- `docs/fusion/BASELINE.md`
+- `docs/fusion/ERRATA.md`
+- `docs/fusion/F0_VERIFICATION.json`（机读证据，两份 Markdown 均从此渲染）
+- 账本：`TASKS.json` 新增宿主行与 F0 行，`STATE.json` 推进
+
+### 下一个
+
+F1（六源能力去重及归属）。需 Owner 确认后启动。
