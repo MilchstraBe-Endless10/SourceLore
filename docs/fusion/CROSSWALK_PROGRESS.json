@@ -2,7 +2,7 @@
   "artifact": "CROSSWALK_PROGRESS",
   "schema_version": 1,
   "task": "M1-FUSION-GATE-F1",
-  "phase": "F1-A_DONE / F1-B_PENDING",
+  "phase": "F1-A_DONE / F1-B_IN_PROGRESS (Facts DONE)",
   "updated_at": "2026-11-02T23:15:01+08:00",
   "batches": [
     {
@@ -49,9 +49,10 @@
       "status": "PENDING"
     },
     "Facts": {
-      "canonical_count": 0,
-      "raw_consumed": 0,
-      "status": "PENDING"
+      "canonical_count": 10,
+      "raw_consumed": 11,
+      "raw_redirected": 11,
+      "status": "DONE"
     },
     "Evidence-Claims": {
       "canonical_count": 0,
@@ -94,12 +95,23 @@
       "status": "PENDING"
     }
   },
-  "next_batch_start": "F1-B 第一模块：Facts。输入 docs/fusion/RAW_CAPABILITY_INDEX.json，从 UPSTREAM-01 C01/C02/C03/C04/C05/C10 与 UPSTREAM-05 的采集/事实类条目开始建立 canonical。",
+  "next_batch_start": {
+    "module_hint": "Collector",
+    "note": "Facts 已完成；其余九个模块待办。UPSTREAM-01 C03/C10 已保留给 Evidence-Claims 与 Renderer。"
+  },
   "invariants": [
     "每个 (upstream_id, original_capability_id) 必须且只能映射一次",
     "每个 canonical 必须恰好一个 owner_module（十模块之一）",
     "license_permission 独立于 disposition，不得互相覆盖",
     "UPSTREAM-06 全部 28 项 copy_permitted=false",
     "名称相似而语义不同不得合并"
-  ]
+  ],
+  "progress_computed_from": "docs/fusion/CAPABILITY_CROSSWALK.draft.json",
+  "last_updated": "2026-11-03T00:52:00+08:00",
+  "totals": {
+    "raw_total": 143,
+    "raw_assigned": 22,
+    "raw_pending": 121,
+    "canonical_total": 10
+  }
 }

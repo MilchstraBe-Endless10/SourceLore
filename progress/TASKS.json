@@ -336,22 +336,30 @@
       ],
       "status": "IN_PROGRESS",
       "verification_commands": [
-        "python3 tools/fusion/f1a_extract.py",
+        "git diff --quiet HEAD -- progress/UPSTREAM-0*-audit.json",
         "python3 -c \"import json;I=json.load(open('docs/fusion/RAW_CAPABILITY_INDEX.json'));print(I['counts']['total_raw_capabilities'])\"",
-        "git diff --quiet HEAD -- progress/UPSTREAM-0*-audit.json"
+        "python3 tools/fusion/f1a_extract.py",
+        "python3 tools/fusion/f1b_build_facts.py",
+        "python3 tools/fusion/f1b_verify.py"
       ],
       "evidence_paths": [
-        "progress/CHECKPOINT-F1.md",
-        "docs/fusion/RAW_CAPABILITY_INDEX.json",
+        "docs/fusion/CAPABILITY_CROSSWALK.draft.json",
         "docs/fusion/CROSSWALK_PROGRESS.json",
-        "tools/fusion/f1a_extract.py"
+        "docs/fusion/F1B_FACTS_DECISIONS.md",
+        "docs/fusion/F1B_FACTS_VERIFICATION.json",
+        "docs/fusion/RAW_CAPABILITY_INDEX.json",
+        "progress/CHECKPOINT-F1.md",
+        "tools/fusion/f1a_extract.py",
+        "tools/fusion/f1b_build_facts.py",
+        "tools/fusion/f1b_facts_def.py",
+        "tools/fusion/f1b_verify.py"
       ],
-      "git_commit": null,
+      "git_commit": "4f7d8a5d1901d030ebeb5570ad9045a5dbadcdf0",
       "blocked_reason": null,
       "depends_on": [
         "M1-FUSION-GATE-F0"
       ],
-      "progress_note": "F1-A 已完成并复核：六源 143 项原始能力抽取为可机读索引，身份键 (upstream_id, original_capability_id) 唯一 143/143，动态重算 15+18+27+27+28+28=143，许可证逐源独立登记（UPSTREAM-06 全 28 项 copy_permitted=false，design-only），143 项全部 mapping_status=UNMAPPED 待 F1-B。F1-B/C/D 待续。"
+      "progress_note": "F1-A DONE (commit 4f7d8a5, 143 items indexed). F1-B/Facts DONE: 11 raw consumed -> 10 canonical (SL-CAP-0001..0010), 11 redirected to other modules, 121 pending. Verification 12/12 PASS."
     }
   ]
 }

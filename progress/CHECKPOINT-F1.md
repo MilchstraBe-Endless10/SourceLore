@@ -192,3 +192,16 @@ print('TOTAL', t)   # 必须打印 143
 
 **不要重新读六份审计 JSON 的全文**——§5 的清单已经够用，只有需要 `mechanism` 细节时
 才按需查单条。
+
+---
+
+## 批次记录 · F1-B / Facts（DONE）
+
+- 范围：仅 Facts 模块。
+- 结果：143 项原始能力中，11 项归入 Facts，产出 10 条 canonical（SL-CAP-0001 … SL-CAP-0010）；11 项转交其他模块（Collector / Evidence-Claims / Renderer）并登记去向；121 项保持 UNMAPPED。
+- 唯一一次跨源合并：SL-CAP-0001 吸收 U01-C01（零 LLM 抽取实现）+ U05-C01（哈希先行、不启模型的调度规则）。
+- 保留未动：U01-C03 → Evidence-Claims，U01-C10 → Renderer。
+- 产物：`docs/fusion/CAPABILITY_CROSSWALK.draft.json`、`docs/fusion/F1B_FACTS_DECISIONS.md`、`docs/fusion/F1B_FACTS_VERIFICATION.json`、`tools/fusion/f1b_build_facts.py`、`tools/fusion/f1b_facts_def.py`、`tools/fusion/f1b_verify.py`。
+- 验收：`python3 tools/fusion/f1b_verify.py` → 12/12 PASS，退出码 0。
+- 未做：未生成 `CAPABILITY_CROSSWALK.json`，未冻结；未进入 F2；未改 `src/`、`tests/`、`schemas/`。
+- 下一批起点：Collector 模块（其余九个模块待办）。

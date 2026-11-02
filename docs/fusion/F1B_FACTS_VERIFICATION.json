@@ -1,0 +1,78 @@
+{
+  "passed": 12,
+  "total": 12,
+  "checks": [
+    {
+      "no": 1,
+      "title": "原始索引仍为 143 且身份键唯一",
+      "ok": true,
+      "detail": "项数=143, 唯一身份键=143, counts.total=143"
+    },
+    {
+      "no": 2,
+      "title": "Facts canonical ID 唯一且形态合规",
+      "ok": true,
+      "detail": "canonical 数=10, 唯一=10, 形态=True"
+    },
+    {
+      "no": 3,
+      "title": "每项已映射原始能力只映射到一个 canonical ID",
+      "ok": true,
+      "detail": "已映射原始身份=11，重复归属=无"
+    },
+    {
+      "no": 4,
+      "title": "每个 canonical 能力恰有一个主 owner",
+      "ok": true,
+      "detail": "owner_module 全为 Facts=True，异常=无，共 10 条"
+    },
+    {
+      "no": 5,
+      "title": "最终处置与许可权限独立且逐源记录",
+      "ok": true,
+      "detail": "逐源许可条目=11，问题=无"
+    },
+    {
+      "no": 6,
+      "title": "全部映射引用可在原始索引中定位",
+      "ok": true,
+      "detail": "引用总数=22，在原始索引中不可定位=无"
+    },
+    {
+      "no": 7,
+      "title": "原始索引未被意外修改",
+      "ok": true,
+      "detail": "sha256=e62b68ed1658b95e… 与草稿一致=True，git diff 退出码=0"
+    },
+    {
+      "no": 8,
+      "title": "六份上游审计文件未修改",
+      "ok": true,
+      "detail": "六份审计文件 git diff 退出码=0"
+    },
+    {
+      "no": 9,
+      "title": "未映射能力仍为待处理（不视为已裁决）",
+      "ok": true,
+      "detail": "未处理=121，其中索引内仍标 UNMAPPED=True"
+    },
+    {
+      "no": 10,
+      "title": "Facts 未与 Collector/Evidence/Renderer 混同",
+      "ok": true,
+      "detail": "越界=无；C03/C10 未被 Facts 占用=True；跨模块去向=11 项"
+    },
+    {
+      "no": 11,
+      "title": "JSON 与决策文档一致",
+      "ok": true,
+      "detail": "文档缺失的 ID=无；关键数字 [11, 10, 121] 均出现=True"
+    },
+    {
+      "no": 12,
+      "title": "未改动生产分析引擎/schema/测试目录",
+      "ok": true,
+      "detail": "src/tests/schemas 变更=无"
+    }
+  ]
+}
