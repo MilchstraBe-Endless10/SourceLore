@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-02T15:36:00+08:00",
+  "updated_at": "2026-11-02T15:37:00+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -247,7 +247,7 @@
         "upstreams/UPSTREAM-06-repo-security-review/files.tsv",
         "upstreams/UPSTREAM-06-repo-security-review/tree.json"
       ],
-      "git_commit": null,
+      "git_commit": "094a0d8bb4f879d5da8046bbb91a9fbf8effecfc",
       "blocked_reason": null,
       "depends_on": [
         "M0-02"

@@ -56,7 +56,7 @@ FAILURES: 0
 
 ## 六、Git HEAD
 
-见 `progress/TASKS.json` 的 `git_commit` 字段与 `progress/STATE.json` 的 `last_verified_commit`（回填阶段写入）。
+`094a0d8bb4f879d5da8046bbb91a9fbf8effecfc` —— UPSTREAM-06 审计提交。前一条 `fe36c7d` 是 UPSTREAM-05 的 SHA 回填提交。
 
 ## 七、下一步
 
