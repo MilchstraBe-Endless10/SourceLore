@@ -1,0 +1,105 @@
+{
+  "artifact": "CROSSWALK_PROGRESS",
+  "schema_version": 1,
+  "task": "M1-FUSION-GATE-F1",
+  "phase": "F1-A_DONE / F1-B_PENDING",
+  "updated_at": "2026-11-02T23:15:01+08:00",
+  "batches": [
+    {
+      "id": "F1-A",
+      "name": "原始能力索引与身份校验",
+      "status": "DONE",
+      "output": "docs/fusion/RAW_CAPABILITY_INDEX.json"
+    },
+    {
+      "id": "F1-B",
+      "name": "按逻辑模块合并原始能力→canonical",
+      "status": "PENDING",
+      "output": "docs/fusion/CAPABILITY_CROSSWALK.json"
+    },
+    {
+      "id": "F1-C",
+      "name": "十项冲突裁决",
+      "status": "PENDING",
+      "output": "docs/fusion/ABILITY_DECISIONS.md"
+    },
+    {
+      "id": "F1-D",
+      "name": "自动化验收 + 账本更新",
+      "status": "PENDING",
+      "output": "docs/fusion/F1_VERIFICATION.json"
+    }
+  ],
+  "modules": [
+    "Collector",
+    "Facts",
+    "Evidence-Claims",
+    "Product",
+    "Research",
+    "Lifecycle",
+    "Security",
+    "Renderer",
+    "Storage",
+    "DSH-Adapter"
+  ],
+  "module_progress": {
+    "Collector": {
+      "canonical_count": 0,
+      "raw_consumed": 0,
+      "status": "PENDING"
+    },
+    "Facts": {
+      "canonical_count": 0,
+      "raw_consumed": 0,
+      "status": "PENDING"
+    },
+    "Evidence-Claims": {
+      "canonical_count": 0,
+      "raw_consumed": 0,
+      "status": "PENDING"
+    },
+    "Product": {
+      "canonical_count": 0,
+      "raw_consumed": 0,
+      "status": "PENDING"
+    },
+    "Research": {
+      "canonical_count": 0,
+      "raw_consumed": 0,
+      "status": "PENDING"
+    },
+    "Lifecycle": {
+      "canonical_count": 0,
+      "raw_consumed": 0,
+      "status": "PENDING"
+    },
+    "Security": {
+      "canonical_count": 0,
+      "raw_consumed": 0,
+      "status": "PENDING"
+    },
+    "Renderer": {
+      "canonical_count": 0,
+      "raw_consumed": 0,
+      "status": "PENDING"
+    },
+    "Storage": {
+      "canonical_count": 0,
+      "raw_consumed": 0,
+      "status": "PENDING"
+    },
+    "DSH-Adapter": {
+      "canonical_count": 0,
+      "raw_consumed": 0,
+      "status": "PENDING"
+    }
+  },
+  "next_batch_start": "F1-B 第一模块：Facts。输入 docs/fusion/RAW_CAPABILITY_INDEX.json，从 UPSTREAM-01 C01/C02/C03/C04/C05/C10 与 UPSTREAM-05 的采集/事实类条目开始建立 canonical。",
+  "invariants": [
+    "每个 (upstream_id, original_capability_id) 必须且只能映射一次",
+    "每个 canonical 必须恰好一个 owner_module（十模块之一）",
+    "license_permission 独立于 disposition，不得互相覆盖",
+    "UPSTREAM-06 全部 28 项 copy_permitted=false",
+    "名称相似而语义不同不得合并"
+  ]
+}

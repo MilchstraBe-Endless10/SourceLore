@@ -335,16 +335,23 @@
         "docs/fusion/ABILITY_DECISIONS.md"
       ],
       "status": "IN_PROGRESS",
-      "verification_commands": [],
+      "verification_commands": [
+        "python3 tools/fusion/f1a_extract.py",
+        "python3 -c \"import json;I=json.load(open('docs/fusion/RAW_CAPABILITY_INDEX.json'));print(I['counts']['total_raw_capabilities'])\"",
+        "git diff --quiet HEAD -- progress/UPSTREAM-0*-audit.json"
+      ],
       "evidence_paths": [
-        "progress/CHECKPOINT-F1.md"
+        "progress/CHECKPOINT-F1.md",
+        "docs/fusion/RAW_CAPABILITY_INDEX.json",
+        "docs/fusion/CROSSWALK_PROGRESS.json",
+        "tools/fusion/f1a_extract.py"
       ],
       "git_commit": null,
-      "blocked_reason": "模型输出预算熔断，非项目阻塞。已完成 F0 核验与 143 项能力提取，映射与裁决未产出。",
+      "blocked_reason": null,
       "depends_on": [
         "M1-FUSION-GATE-F0"
       ],
-      "progress_note": "六源能力实测 15+18+27+27+28+28=143，字段结构一致（id/capability/mechanism/where/disposition/why）。中断点与恢复步骤见 progress/CHECKPOINT-F1.md"
+      "progress_note": "F1-A 已完成并复核：六源 143 项原始能力抽取为可机读索引，身份键 (upstream_id, original_capability_id) 唯一 143/143，动态重算 15+18+27+27+28+28=143，许可证逐源独立登记（UPSTREAM-06 全 28 项 copy_permitted=false，design-only），143 项全部 mapping_status=UNMAPPED 待 F1-B。F1-B/C/D 待续。"
     }
   ]
 }

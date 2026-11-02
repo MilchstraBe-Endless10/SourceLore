@@ -1,0 +1,4347 @@
+{
+  "artifact": "RAW_CAPABILITY_INDEX",
+  "schema_version": 1,
+  "task": "M1-FUSION-GATE-F1 / F1-A",
+  "generated_at": "2026-11-02T23:15:01+08:00",
+  "generator": "tools/fusion/f1a_extract.py",
+  "identity_key": "upstream_id + original_capability_id",
+  "purpose": "六源 143 项原始能力的一次性、可机读、可复用的索引；F1-B/C/D 的输入基线。",
+  "does_not_mean": "143 不是最终独立能力数，只是上游候选数；去重后 canonical 数必然减少。",
+  "counts": {
+    "total_raw_capabilities": 143,
+    "per_source": {
+      "UPSTREAM-01": 15,
+      "UPSTREAM-02": 18,
+      "UPSTREAM-03": 27,
+      "UPSTREAM-04": 27,
+      "UPSTREAM-05": 28,
+      "UPSTREAM-06": 28
+    },
+    "dynamic_sum_check": 143,
+    "unique_identity_keys": 143,
+    "mapped": 0,
+    "unmapped": 143
+  },
+  "sources": [
+    {
+      "upstream_id": "UPSTREAM-01",
+      "label": "repo-analyzer-skill",
+      "repo_url": "https://github.com/jeannie-jy/repo-analyzer-skill",
+      "repo_id": 1341818258,
+      "subtree": null,
+      "commit_sha": "b8c000f60c03003cbb08e6737b2e8193289904ea",
+      "default_branch": "main",
+      "raw_count": 15,
+      "license": {
+        "spdx": "MIT",
+        "spdx_api": "MIT",
+        "copyright_holders": [
+          "Copyright (c) 2026 Jingyu Wang"
+        ],
+        "source": "upstream.license",
+        "reuse_obligation": "retain copyright notice and permission notice in all copies or substantial portions",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false,
+        "note": "MIT：保留版权与许可声明。"
+      },
+      "license_copy_permitted": true,
+      "audit_file": "progress/UPSTREAM-01-audit.json",
+      "audit_file_sha256": "46bfdafeb1b6d1cefb8559b46cbb31b75293ca4f426717b8916cf13b58f1b3eb"
+    },
+    {
+      "upstream_id": "UPSTREAM-02",
+      "label": "deer-flow/github-deep-research",
+      "repo_url": "https://github.com/bytedance/deer-flow",
+      "repo_id": 979115477,
+      "subtree": "skills/public/github-deep-research",
+      "commit_sha": "44e372dd7f8a511e6223f548f55f7b4c939ca226",
+      "default_branch": "main",
+      "raw_count": 18,
+      "license": {
+        "spdx": "MIT",
+        "spdx_api": "MIT",
+        "copyright_holders": [
+          "Copyright (c) 2025 Bytedance Ltd. and/or its affiliates",
+          "Copyright (c) 2025-2026 DeerFlow Authors"
+        ],
+        "source": "upstream.license",
+        "reuse_obligation": "在所有副本或实质性部分中保留两行版权与 MIT 许可声明",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false,
+        "note": "MIT 双版权行，两行均须保留。"
+      },
+      "license_copy_permitted": true,
+      "audit_file": "progress/UPSTREAM-02-audit.json",
+      "audit_file_sha256": "d83d069ae54a7d170a5769639d892f19b9362e47a95be17a82eaa25dee63ee61"
+    },
+    {
+      "upstream_id": "UPSTREAM-03",
+      "label": "repository-discovery",
+      "repo_url": "https://github.com/maboasoft/repository-discovery",
+      "repo_id": 1290761659,
+      "subtree": null,
+      "commit_sha": "557703fffe69c9ab97eff67acabea6b346afd89c",
+      "default_branch": "main",
+      "raw_count": 27,
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "spdx_api": "NOASSERTION",
+        "copyright_holders": [],
+        "source": "upstream.license",
+        "reuse_obligation": "CC BY 4.0：① 给予适当署名 ② 提供许可证链接 ③ 标明是否作了修改 ④ 不得附加法律或技术措施限制他人行使许可证允许的权利",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true,
+        "copyright_note": "LICENSE 全文 16 行不含任何版权持有人声明；署名只能由 仓库URL + repo_id + commit SHA + 作者邮箱 四者合成",
+        "api_discrepancy_note": "GitHub licensee 无法自动归类手写摘要文本，返回 Other/NOASSERTION 且 path 为 null；实测 LICENSE 前 13 行逐句对应 CC BY 4.0 标准摘要结构，L16 指向官方 legalcode，判定为真正的 CC BY 4.0",
+        "note": "CC BY 4.0：署名+许可链接+修改声明+不得附加限制。上游 LICENSE 无版权行，署名需四要素合成。"
+      },
+      "license_copy_permitted": true,
+      "audit_file": "progress/UPSTREAM-03-audit.json",
+      "audit_file_sha256": "4e1fce8c2bcd075e178344e8b041ce2b3ebbff41aec92f22cf0bf7f8b52161ca"
+    },
+    {
+      "upstream_id": "UPSTREAM-04",
+      "label": "agent-skills/swe-research",
+      "repo_url": "https://github.com/SNIKO/agent-skills",
+      "repo_id": 1240360167,
+      "subtree": "skills/swe-research",
+      "commit_sha": "a3e5e9da94434127cdd47a1a7e0658baafff7083",
+      "default_branch": "master",
+      "raw_count": 27,
+      "license": {
+        "spdx": "MIT",
+        "spdx_api": "MIT",
+        "copyright_holders": [
+          "Copyright (c) 2026 Sergii Vashchyshchuk"
+        ],
+        "source": "upstream.license",
+        "reuse_obligation": "MIT：保留版权声明与许可声明；分发含本源改写内容的产物需附 MIT 全文并说明修改。",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true,
+        "note": "MIT，LICENSE 含完整版权行。"
+      },
+      "license_copy_permitted": true,
+      "audit_file": "progress/UPSTREAM-04-audit.json",
+      "audit_file_sha256": "85846058b2eb38feb00a59110fb76c80c819d454d31fe64d0ffde0aa5aa2bb0a"
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "label": "lazy-rabbit-skills/project-knowledge-base",
+      "repo_url": "https://github.com/walterfan/lazy-rabbit-skills",
+      "repo_id": 1275141665,
+      "subtree": "skills/project-knowledge-base",
+      "commit_sha": "284971cdd2666878d13716af8f26f51521cd915c",
+      "default_branch": "master",
+      "raw_count": 28,
+      "license": {
+        "spdx": "Apache-2.0",
+        "spdx_api": "Apache-2.0",
+        "copyright_holders": [],
+        "source": "top-level license",
+        "reuse_obligation": "Apache-2.0 §4：再分发需保留 LICENSE 与 NOTICE（若有）。本仓库无 NOTICE，故仅需保留 LICENSE 与修改声明。SourceLore 不复制其源码，仅借鉴设计，无再分发义务",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true,
+        "notice_file_present": false,
+        "note": "Apache-2.0，无 NOTICE 文件；再分发需保留 LICENSE 与修改声明。"
+      },
+      "license_copy_permitted": true,
+      "audit_file": "progress/UPSTREAM-05-audit.json",
+      "audit_file_sha256": "b48e96afa1530e45786cfe510d0f9da58806a24f73c5c950428b3845244d1e36"
+    },
+    {
+      "upstream_id": "UPSTREAM-06",
+      "label": "repo-security-review",
+      "repo_url": "https://github.com/Consensys/repo-security-review",
+      "repo_id": 1249083556,
+      "subtree": null,
+      "commit_sha": "d5128b03d6a785bfb7c8be4139291f887c2a3215",
+      "default_branch": "main",
+      "raw_count": 28,
+      "license": {
+        "spdx": null,
+        "spdx_api": null,
+        "copyright_holders": [],
+        "source": "top-level license",
+        "reuse_obligation": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false,
+        "status": "none",
+        "legal_position": "默认著作权下保留全部权利。不存在可复制、可改编、可再分发的授权。这不是许可证不明，是没有许可证",
+        "reuse_scope": "design-only",
+        "may_copy_upstream_text": false,
+        "may_copy_upstream_code": false,
+        "may_copy_upstream_prompts": false,
+        "may_copy_upstream_rules": false,
+        "may_copy_upstream_templates": false,
+        "may_reimplement_based_on_idea": true,
+        "independent_implementation_required": true,
+        "unresolved": "抽象设计思想与受版权保护表达之间的边界宽度需法务判断（见 unresolved U10）。本轮采取保守立场：不复述上游规则文本、不复制模板、不逐句改写",
+        "note": "无许可证 = 保留全部权利。仅参考抽象设计，禁止任何形式的文本/代码/提示词/规则/模板移植。"
+      },
+      "license_copy_permitted": false,
+      "audit_file": "progress/UPSTREAM-06-audit.json",
+      "audit_file_sha256": "90a0ad0a726d846fef2cc6c084ff8169c9c8f3a9989014f19391854d846248fc"
+    }
+  ],
+  "items": [
+    {
+      "identity_key": "UPSTREAM-01::C01",
+      "upstream_id": "UPSTREAM-01",
+      "original_capability_id": "C01",
+      "sequence_in_source": 1,
+      "capability": "fact-first layered extraction (zero-LLM)",
+      "mechanism": null,
+      "where": "src/repo_analyzer/extract/*",
+      "disposition": "REUSE",
+      "why": "同构于强制项；零运行时依赖，requires-python>=3.11",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-01-audit.json",
+        "pointer": "capability_matrix[0]",
+        "where": "src/repo_analyzer/extract/*"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-01::C02",
+      "upstream_id": "UPSTREAM-01",
+      "original_capability_id": "C02",
+      "sequence_in_source": 2,
+      "capability": "repo_facts.json single fact contract",
+      "mechanism": null,
+      "where": "pipeline/facts.py:175",
+      "disposition": "ADAPT",
+      "why": "ref_sha 记录了但未用于取文（github_client.py:217 传 branch）",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-01-audit.json",
+        "pointer": "capability_matrix[1]",
+        "where": "pipeline/facts.py:175"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-01::C03",
+      "upstream_id": "UPSTREAM-01",
+      "original_capability_id": "C03",
+      "sequence_in_source": 3,
+      "capability": "citation existence check",
+      "mechanism": null,
+      "where": "pipeline/evidence.py",
+      "disposition": "ADAPT",
+      "why": "仅 tree_paths 集合成员测试；无行号/哈希/支撑关系",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-01-audit.json",
+        "pointer": "capability_matrix[2]",
+        "where": "pipeline/evidence.py"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-01::C04",
+      "upstream_id": "UPSTREAM-01",
+      "original_capability_id": "C04",
+      "sequence_in_source": 4,
+      "capability": "budgeted code sampling",
+      "mechanism": null,
+      "where": "context/code_sampler.py",
+      "disposition": "ADAPT",
+      "why": "三级预算+skipped原因可用；采样仅按体积，小核心模块漏采；内容不入产物",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-01-audit.json",
+        "pointer": "capability_matrix[3]",
+        "where": "context/code_sampler.py"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-01::C05",
+      "upstream_id": "UPSTREAM-01",
+      "original_capability_id": "C05",
+      "sequence_in_source": 5,
+      "capability": "entrypoint heuristics with rule+confidence",
+      "mechanism": null,
+      "where": "extract/entrypoints.py",
+      "disposition": "REUSE",
+      "why": "kind/confidence/heuristic 三件套，去重时强规则覆盖弱规则；28 个测试覆盖",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-01-audit.json",
+        "pointer": "capability_matrix[4]",
+        "where": "extract/entrypoints.py"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-01::C06",
+      "upstream_id": "UPSTREAM-01",
+      "original_capability_id": "C06",
+      "sequence_in_source": 6,
+      "capability": "LLM provider decoupling via Protocol",
+      "mechanism": null,
+      "where": "llm/base.py",
+      "disposition": "REUSE",
+      "why": "结构式 Protocol + 纯 dict 消息，接入 DSH 当前模型的接缝",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-01-audit.json",
+        "pointer": "capability_matrix[5]",
+        "where": "llm/base.py"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-01::C07",
+      "upstream_id": "UPSTREAM-01",
+      "original_capability_id": "C07",
+      "sequence_in_source": 7,
+      "capability": "single-call reasoning + bounded repair",
+      "mechanism": null,
+      "where": "pipeline/analyze.py:103,195",
+      "disposition": "ADAPT",
+      "why": "仅 1 次 complete 调用；MAX_REPAIR_ATTEMPTS=1, MAX_PARSE_RETRIES=2；SKILL.md 声称按 4 节分别调用与实现不符",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-01-audit.json",
+        "pointer": "capability_matrix[6]",
+        "where": "pipeline/analyze.py:103,195"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-01::C08",
+      "upstream_id": "UPSTREAM-01",
+      "original_capability_id": "C08",
+      "sequence_in_source": 8,
+      "capability": "tree truncation degradation",
+      "mechanism": null,
+      "where": "extract/tree.py",
+      "disposition": "ADAPT",
+      "why": "MAX_TOP_LEVEL_DIRS_TO_EXPAND=30 硬编码，超出部分静默丢弃，无未覆盖清单",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-01-audit.json",
+        "pointer": "capability_matrix[7]",
+        "where": "extract/tree.py"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-01::C09",
+      "upstream_id": "UPSTREAM-01",
+      "original_capability_id": "C09",
+      "sequence_in_source": 9,
+      "capability": "monorepo support",
+      "mechanism": null,
+      "where": "extract/dependencies.py:70",
+      "disposition": "ADAPT",
+      "why": "仅依赖清单在任意子目录被识别；无 workspace 根、无按包聚合、无跨包图 -> 等级：浅层清单级",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-01-audit.json",
+        "pointer": "capability_matrix[8]",
+        "where": "extract/dependencies.py:70"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-01::C10",
+      "upstream_id": "UPSTREAM-01",
+      "original_capability_id": "C10",
+      "sequence_in_source": 10,
+      "capability": "report schema + markdown render",
+      "mechanism": null,
+      "where": "report/schema.py(362), report/render.py(329), schemas/analysis_report.schema.json",
+      "disposition": "REUSE",
+      "why": "13 顶层键结构合理；evidence 字段需扩（见 C03）",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-01-audit.json",
+        "pointer": "capability_matrix[9]",
+        "where": "report/schema.py(362), report/render.py(329), schemas/analysis_report.schema.json"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-01::C11",
+      "upstream_id": "UPSTREAM-01",
+      "original_capability_id": "C11",
+      "sequence_in_source": 11,
+      "capability": "prompt assets as markdown knowledge",
+      "mechanism": null,
+      "where": "skill/prompts/*, llm/prompts.py:103",
+      "disposition": "ADAPT",
+      "why": "资产化组装值得沿用；措辞需按中文与当前模型重写",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-01-audit.json",
+        "pointer": "capability_matrix[10]",
+        "where": "skill/prompts/*, llm/prompts.py:103"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-01::C12",
+      "upstream_id": "UPSTREAM-01",
+      "original_capability_id": "C12",
+      "sequence_in_source": 12,
+      "capability": "eval baseline (gold + deterministic metrics + judge)",
+      "mechanism": null,
+      "where": "evals/",
+      "disposition": "ADAPT",
+      "why": "确定性指标零成本可用；judge 依赖外部 provider 需替换；click 案例 F1=0.00 说明不可作单一门槛",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-01-audit.json",
+        "pointer": "capability_matrix[11]",
+        "where": "evals/"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-01::C13",
+      "upstream_id": "UPSTREAM-01",
+      "original_capability_id": "C13",
+      "sequence_in_source": 13,
+      "capability": "direct external LLM API client",
+      "mechanism": null,
+      "where": "llm/openai_client.py, config.py, .env.example",
+      "disposition": "REJECT",
+      "why": "与『当前模型即语义执行者、默认无需 LLM_API_KEY』冲突；只要 Protocol 形状",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-01-audit.json",
+        "pointer": "capability_matrix[12]",
+        "where": "llm/openai_client.py, config.py, .env.example"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-01::C14",
+      "upstream_id": "UPSTREAM-01",
+      "original_capability_id": "C14",
+      "sequence_in_source": 14,
+      "capability": "multi-model judge ensemble",
+      "mechanism": null,
+      "where": "evals.py, .env.example JUDGE_*",
+      "disposition": "REJECT",
+      "why": "非必需且引入第二 provider",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-01-audit.json",
+        "pointer": "capability_matrix[13]",
+        "where": "evals.py, .env.example JUDGE_*"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-01::C15",
+      "upstream_id": "UPSTREAM-01",
+      "original_capability_id": "C15",
+      "sequence_in_source": 15,
+      "capability": "bespoke GitHub REST client",
+      "mechanism": null,
+      "where": "github_client.py (226 lines)",
+      "disposition": "REJECT",
+      "why": "自带 token 通道与配额口径；实现改走认证 gh api，仅保留退避语义",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-01-audit.json",
+        "pointer": "capability_matrix[14]",
+        "where": "github_client.py (226 lines)"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-02::C01",
+      "upstream_id": "UPSTREAM-02",
+      "original_capability_id": "C01",
+      "sequence_in_source": 1,
+      "capability": "GitHub REST 端点清单与取数语义",
+      "mechanism": null,
+      "where": "scripts/github_api.py L101-230",
+      "disposition": "ADAPT",
+      "why": "端点路径与 Accept: application/vnd.github.raw 用法正确，可作 Collector 端点规格表；但其周边必须全部重写（改走平台 gh api、强制多页、检查 truncated、暴露 since/until/path）",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-02-audit.json",
+        "pointer": "capability_matrix[0]",
+        "where": "scripts/github_api.py L101-230"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-02::C02",
+      "upstream_id": "UPSTREAM-02",
+      "original_capability_id": "C02",
+      "sequence_in_source": 2,
+      "capability": "get_tree 用 HEAD 让服务端解析默认分支",
+      "mechanism": null,
+      "where": "scripts/github_api.py L114-125, docstring L119-121",
+      "disposition": "REUSE",
+      "why": "唯一设计正确处：不硬编 main/master，交给服务端解析。仅限解析那一次，解析完必须立刻钉 SHA",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-02-audit.json",
+        "pointer": "capability_matrix[1]",
+        "where": "scripts/github_api.py L114-125, docstring L119-121"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-02::C03",
+      "upstream_id": "UPSTREAM-02",
+      "original_capability_id": "C03",
+      "sequence_in_source": 3,
+      "capability": "原始内容直取（raw accept）",
+      "mechanism": null,
+      "where": "scripts/github_api.py L127-152",
+      "disposition": "REUSE",
+      "why": "取 README 与单文件正文的正确方式，避免 base64 编解码环节；Collector 沿用，但 ref 必须是固定 SHA",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-02-audit.json",
+        "pointer": "capability_matrix[2]",
+        "where": "scripts/github_api.py L127-152"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-02::C04",
+      "upstream_id": "UPSTREAM-02",
+      "original_capability_id": "C04",
+      "sequence_in_source": 4,
+      "capability": "requests 可选依赖的优雅降级",
+      "mechanism": null,
+      "where": "scripts/github_api.py L7-19, L13-50 RequestsFallback",
+      "disposition": "ADAPT",
+      "why": "取「单一依赖不阻断运行」的思想；弃其双通道实现，Collector 应只走 gh api 子进程，保留 urllib 回退等于留第二套通道",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-02-audit.json",
+        "pointer": "capability_matrix[3]",
+        "where": "scripts/github_api.py L7-19, L13-50 RequestsFallback"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-02::C05",
+      "upstream_id": "UPSTREAM-02",
+      "original_capability_id": "C05",
+      "sequence_in_source": 5,
+      "capability": "失败必须是异常而非写入数据通道",
+      "mechanism": null,
+      "where": "scripts/github_api.py L53-61 GitHubAPIError docstring",
+      "disposition": "REUSE",
+      "why": "被上游自身缺陷史证明的判断（限流与缺 README 曾在 stdout 上无法区分）；Collector 契约要写死：失败抛异常并携带 endpoint 与 HTTP 状态",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-02-audit.json",
+        "pointer": "capability_matrix[4]",
+        "where": "scripts/github_api.py L53-61 GitHubAPIError docstring"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-02::C06",
+      "upstream_id": "UPSTREAM-02",
+      "original_capability_id": "C06",
+      "sequence_in_source": 6,
+      "capability": "分页遍历与短页终止判据",
+      "mechanism": null,
+      "where": "scripts/github_api.py L186-194",
+      "disposition": "ADAPT",
+      "why": "循环结构可借，但 if len(items) < limit: break 判据错误，应与 per_page 比较或看 Link 的 rel=next，否则 PR 密集仓库提前退出",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-02-audit.json",
+        "pointer": "capability_matrix[5]",
+        "where": "scripts/github_api.py L186-194"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-02::C07",
+      "upstream_id": "UPSTREAM-02",
+      "original_capability_id": "C07",
+      "sequence_in_source": 7,
+      "capability": "Issue 列表排除 PR 的语义",
+      "mechanism": null,
+      "where": "scripts/github_api.py L192",
+      "disposition": "REUSE",
+      "why": "GitHub /issues 混排 PR 是反复踩的坑，上游为此专门发过 commit 5ca17829be；语义直接沿用",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-02-audit.json",
+        "pointer": "capability_matrix[6]",
+        "where": "scripts/github_api.py L192"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-02::C08",
+      "upstream_id": "UPSTREAM-02",
+      "original_capability_id": "C08",
+      "sequence_in_source": 8,
+      "capability": "仓库摘要聚合 summarize_repo",
+      "mechanism": null,
+      "where": "scripts/github_api.py L257-312",
+      "disposition": "REJECT",
+      "why": "照搬不可用：三处 except Exception 吞异常、contributor_count 双调用且截断到 100。仅保留「每仓一个扁平摘要供下游消费」的思想，缺失值须给出 unavailable 原因",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-02-audit.json",
+        "pointer": "capability_matrix[7]",
+        "where": "scripts/github_api.py L257-312"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-02::C09",
+      "upstream_id": "UPSTREAM-02",
+      "original_capability_id": "C09",
+      "sequence_in_source": 9,
+      "capability": "树格式化 format_tree",
+      "mechanism": null,
+      "where": "scripts/github_api.py L232-255",
+      "disposition": "REJECT",
+      "why": "lines[:100] 静默截断且无标记，max_depth=3 之外静默丢弃；Collector 需要结构化树而非供人阅读的缩进字符串",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-02-audit.json",
+        "pointer": "capability_matrix[8]",
+        "where": "scripts/github_api.py L232-255"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-02::C10",
+      "upstream_id": "UPSTREAM-02",
+      "original_capability_id": "C10",
+      "sequence_in_source": 10,
+      "capability": "四轮研究流程",
+      "mechanism": null,
+      "where": "SKILL.md L10-15, L61-75",
+      "disposition": "REIMPLEMENT",
+      "why": "分轮与由广到深的探索顺序正确，但只是散文：无状态、无交接、无预算强制、无退出路径；须实现为显式状态机",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-02-audit.json",
+        "pointer": "capability_matrix[9]",
+        "where": "SKILL.md L10-15, L61-75"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-02::C11",
+      "upstream_id": "UPSTREAM-02",
+      "original_capability_id": "C11",
+      "sequence_in_source": 11,
+      "capability": "查询策略 Broad to Narrow",
+      "mechanism": null,
+      "where": "SKILL.md L19-28",
+      "disposition": "ADAPT",
+      "why": "查询模板序列可用，必须补去重与 URL 规范化，否则镜像转载会击穿「2+ 独立来源」的三角验证",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-02-audit.json",
+        "pointer": "capability_matrix[10]",
+        "where": "SKILL.md L19-28"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-02::C12",
+      "upstream_id": "UPSTREAM-02",
+      "original_capability_id": "C12",
+      "sequence_in_source": 12,
+      "capability": "五层来源优先级",
+      "mechanism": null,
+      "where": "SKILL.md L30-35",
+      "disposition": "ADAPT",
+      "why": "分层直觉正确，但仅有序数无权重；须数字化并为每层给出可判定的入层规则（verified media outlet 必须有定义或白名单）",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-02-audit.json",
+        "pointer": "capability_matrix[11]",
+        "where": "SKILL.md L30-35"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-02::C13",
+      "upstream_id": "UPSTREAM-02",
+      "original_capability_id": "C13",
+      "sequence_in_source": 13,
+      "capability": "报告九节结构",
+      "mechanism": null,
+      "where": "SKILL.md L77-89 + assets/report_template.md",
+      "disposition": "ADAPT",
+      "why": "节划分覆盖面合理可作骨架；必须去掉固定基数与无条件 Status: Complete，并把置信度换成可机械复核的条件陈述",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-02-audit.json",
+        "pointer": "capability_matrix[12]",
+        "where": "SKILL.md L77-89 + assets/report_template.md"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-02::C14",
+      "upstream_id": "UPSTREAM-02",
+      "original_capability_id": "C14",
+      "sequence_in_source": 14,
+      "capability": "来源分桶清单（Primary/Media/Academic/Community）",
+      "mechanism": null,
+      "where": "assets/report_template.md L139-155",
+      "disposition": "ADAPT",
+      "why": "全套资产里最接近来源类型标记的设计，思想正确；须升级为结构化字段 source_type + retrieved_at + commit_sha",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-02-audit.json",
+        "pointer": "capability_matrix[13]",
+        "where": "assets/report_template.md L139-155"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-02::C15",
+      "upstream_id": "UPSTREAM-02",
+      "original_capability_id": "C15",
+      "sequence_in_source": 15,
+      "capability": "置信度三档百分比",
+      "mechanism": null,
+      "where": "SKILL.md L123-131, assets/report_template.md L159-168",
+      "disposition": "REJECT",
+      "why": "90%+/70-89%/50-69% 未经任何校准，无样本集无准确率测量；唯一功能是让报告显得专业，属虚假精准度",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-02-audit.json",
+        "pointer": "capability_matrix[14]",
+        "where": "SKILL.md L123-131, assets/report_template.md L159-168"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-02::C16",
+      "upstream_id": "UPSTREAM-02",
+      "original_capability_id": "C16",
+      "sequence_in_source": 16,
+      "capability": "强制内联引用规则与好/坏示例",
+      "mechanism": null,
+      "where": "SKILL.md L146-152, L156-168",
+      "disposition": "ADAPT",
+      "why": "引用纪律正确、示例教学可借；但为祈使句无机械校验，SourceLore 必须把校验从提示词搬到校验器",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-02-audit.json",
+        "pointer": "capability_matrix[15]",
+        "where": "SKILL.md L146-152, L156-168"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-02::C17",
+      "upstream_id": "UPSTREAM-02",
+      "original_capability_id": "C17",
+      "sequence_in_source": 17,
+      "capability": "Mermaid 图表硬要求",
+      "mechanism": null,
+      "where": "SKILL.md L91-121, assets/report_template.md L74-83",
+      "disposition": "REJECT",
+      "why": "为出图而出图：模板固定 4 节点 flowchart，与真实架构无关时也必须填，是形式驱动虚构的直接来源；图表应由数据触发",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-02-audit.json",
+        "pointer": "capability_matrix[16]",
+        "where": "SKILL.md L91-121, assets/report_template.md L74-83"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-02::C18",
+      "upstream_id": "UPSTREAM-02",
+      "original_capability_id": "C18",
+      "sequence_in_source": 18,
+      "capability": "自建 GitHub REST 客户端",
+      "mechanism": null,
+      "where": "scripts/github_api.py 全文（GITHUB_TOKEN/BASE_URL/_get）",
+      "disposition": "REJECT",
+      "why": "与 UPSTREAM-01 对 github_client.py 的判定一致，且 Human 明文禁止第二个客户端；平台已有认证 gh api，自带 token 即第二套凭据面与配额口径",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-02-audit.json",
+        "pointer": "capability_matrix[17]",
+        "where": "scripts/github_api.py 全文（GITHUB_TOKEN/BASE_URL/_get）"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C01",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C01",
+      "sequence_in_source": 1,
+      "capability": "边界三分类（confirmed runtime integration / configured external boundary / integration unknown）",
+      "mechanism": null,
+      "where": "SKILL.md §5.6 L239–L248",
+      "disposition": "REUSE",
+      "why": "概念本身够用，是三个上游中唯一把「有配置≠在运行」写成显式三分的地方；L247–L248 规定 provider 配置文件存在则必须有 Integration 页或解释性 Unknown，可直接成为强制规则",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[0]",
+        "where": "SKILL.md §5.6 L239–L248"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C02",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C02",
+      "sequence_in_source": 2,
+      "capability": "集成指示符正则集合 + 必扫面清单",
+      "mechanism": null,
+      "where": "SKILL.md §9.5 L901–L909（正则）、L876–L899（必扫面）",
+      "disposition": "REUSE",
+      "why": "全文唯一实质性代码块，8 组正则可直接嵌入确定性扫描器；必扫面清单与 UPSTREAM-01 Collector 表面高度重合，不构成新采集器",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[1]",
+        "where": "SKILL.md §9.5 L901–L909（正则）、L876–L899（必扫面）"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C03",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C03",
+      "sequence_in_source": 3,
+      "capability": "「显式未知优于自信猜测」+「无证据必须降级为假设」",
+      "mechanism": null,
+      "where": "SKILL.md §4.4 L94–L98、§4.3 L125–L128",
+      "disposition": "REUSE",
+      "why": "两条原则短、无歧义、无工具依赖，L128「Unsupported claims MUST NOT be presented as facts」可作 prompt 级硬规则",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[2]",
+        "where": "SKILL.md §4.4 L94–L98、§4.3 L125–L128"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C04",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C04",
+      "sequence_in_source": 4,
+      "capability": "观察/推理硬隔离（Inventory 只写观察，附好例坏例）",
+      "mechanism": null,
+      "where": "SKILL.md §6.1 L275–L286、L316–L324",
+      "disposition": "ADAPT",
+      "why": "纪律可用，形态须改：上游要求生成 Inventory.md 文件，SourceLore 应改为由 repo_facts.json 渲染清单层并在渲染层物理禁止注入模型句子；L316–L324 好例坏例可作 few-shot",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[3]",
+        "where": "SKILL.md §6.1 L275–L286、L316–L324"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C05",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C05",
+      "sequence_in_source": 5,
+      "capability": "Canonical Knowledge Registry（名字/别名/类型/路径权威清单）",
+      "mechanism": null,
+      "where": "SKILL.md §6.4 L352–L384",
+      "disposition": "ADAPT",
+      "why": "全篇最强数据模型构件，直接对应 claims.json 实体消解层。须改：上游允许内部草稿，SourceLore 必须落成机器可读文件；L379–L381 的「不够格当 Unknown」需补「合并」出口",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[4]",
+        "where": "SKILL.md §6.4 L352–L384"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C06",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C06",
+      "sequence_in_source": 6,
+      "capability": "产品模型八要素（Frame/Roles/Entities/Capabilities/Flows/Boundaries/Constraints/Decisions-Risks-Unknowns）",
+      "mechanism": null,
+      "where": "SKILL.md §5.1–§5.8 L171–L266",
+      "disposition": "ADAPT",
+      "why": "要素划分合理完整，但仅 Roles（L193–L197）、Flows（L227–L228）、Boundaries（L239–L246）三处做了证据分级，其余五要素无。须为每字段强制加 claim_type 与 evidence_refs",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[5]",
+        "where": "SKILL.md §5.1–§5.8 L171–L266"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C07",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C07",
+      "sequence_in_source": 7,
+      "capability": "十四步依赖序构建",
+      "mechanism": null,
+      "where": "SKILL.md §6.5 L385–L423",
+      "disposition": "ADAPT",
+      "why": "顺序是现成 DAG，L421 Flow 页在 glossary/role/feature 之后、L423 Overview 最后两条硬约束可直接采用。须去掉「每阶段回看整仓」假设，否则与低 token 目标冲突（D3）",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[6]",
+        "where": "SKILL.md §6.5 L385–L423"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C08",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C08",
+      "sequence_in_source": 8,
+      "capability": "Rerun Protocol 九个重跑触发点",
+      "mechanism": null,
+      "where": "SKILL.md §6.8 L467–L484",
+      "disposition": "ADAPT",
+      "why": "三个上游唯一的增量更新契约。须把九个触发点从叙述句改成可判定条件（文件哈希变化、注册表条目增减、页面缺失）",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[7]",
+        "where": "SKILL.md §6.8 L467–L484"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C09",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C09",
+      "sequence_in_source": 9,
+      "capability": "未知项一等公民（类型/五字段/生命周期）",
+      "mechanism": null,
+      "where": "SKILL.md §14.1 L1245–L1260、§14.2 L1262–L1274、§14.3 L1276–L1282、§7.9 L692–L705",
+      "disposition": "ADAPT",
+      "why": "五字段可直接 schema 化。须补 owner 与 resolved_by（上游无，见 D13）；五字段上游为 SHOULD，须提为 MUST 否则退化为可省略",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[8]",
+        "where": "SKILL.md §14.1 L1245–L1260、§14.2 L1262–L1274、§14.3 L1276–L1282、§7.9 L692–L705"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C10",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C10",
+      "sequence_in_source": 10,
+      "capability": "「来源冲突必须记录」规则",
+      "mechanism": null,
+      "where": "SKILL.md §12.4 L1162–L1168、§4.6 L152–L153",
+      "disposition": "ADAPT",
+      "why": "规则正确必要，但上游只说记录冲突未给解决程序。须改为：冲突记录进 evidence.json，按既有 source_type 裁定，不另立优先级（见 C23）",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[9]",
+        "where": "SKILL.md §12.4 L1162–L1168、§4.6 L152–L153"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C11",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C11",
+      "sequence_in_source": 11,
+      "capability": "置信度三档 High/Medium/Low",
+      "mechanism": null,
+      "where": "SKILL.md §13.1 L1193–L1202、§13.2、§13.3",
+      "disposition": "ADAPT",
+      "why": "三档定义清晰，7 升 9 降条件可作提示。须补聚合规则与跨页一致性度量否则只是装饰（D8、D9），并显式覆盖 L1201 百分比豁免",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[10]",
+        "where": "SKILL.md §13.1 L1193–L1202、§13.2、§13.3"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C12",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C12",
+      "sequence_in_source": 12,
+      "capability": "二十条反模式清单",
+      "mechanism": null,
+      "where": "SKILL.md §16 L1322–L1348",
+      "disposition": "ADAPT",
+      "why": "条目具体，可作模型自检提示与 linter 检查项来源。须为每条补可判定的检测条件，否则只是警告语",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[11]",
+        "where": "SKILL.md §16 L1322–L1348"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C13",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C13",
+      "sequence_in_source": 13,
+      "capability": "渐进发现（广度→具体，禁止一次成型）",
+      "mechanism": null,
+      "where": "SKILL.md §4.7 L155–L162、§6.3 L334–L351",
+      "disposition": "ADAPT",
+      "why": "恰好是低 token 策略的骨架，可作多轮取数调度原则；须补每轮预算与取样规则（上游无）",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[12]",
+        "where": "SKILL.md §4.7 L155–L162、§6.3 L334–L351"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C14",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C14",
+      "sequence_in_source": 14,
+      "capability": "Knowledge Refinement 十个精修动作",
+      "mechanism": null,
+      "where": "SKILL.md §6.6 L424–L442",
+      "disposition": "ADAPT",
+      "why": "动作清单可作模型内部精修提示集。上游写成流程阶段但无完成谓词，应去掉阶段含义只保留动作集",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[13]",
+        "where": "SKILL.md §6.6 L424–L442"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C15",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C15",
+      "sequence_in_source": 15,
+      "capability": "写作风格与受众定义",
+      "mechanism": null,
+      "where": "SKILL.md §10.3 L987–L996",
+      "disposition": "ADAPT",
+      "why": "L995 受众清单可直接用于卡片层与渲染层的信息密度决策；其余风格条款价值不大",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[14]",
+        "where": "SKILL.md §10.3 L987–L996"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C16",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C16",
+      "sequence_in_source": 16,
+      "capability": "业务实体建模",
+      "mechanism": null,
+      "where": "SKILL.md §5.3 L199–L207、§9.4 L840–L855",
+      "disposition": "REIMPLEMENT",
+      "why": "目标正确但实现缺失：14 步构建序无实体步、§7 无实体章、§3 范围清单无实体项、README 输出清单亦无实体（D4）。唯一判定标准 L206–L207 是纯判断无判据。须自建页类型+规范+判定清单",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[15]",
+        "where": "SKILL.md §5.3 L199–L207、§9.4 L840–L855"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C17",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C17",
+      "sequence_in_source": 17,
+      "capability": "终止条件",
+      "mechanism": null,
+      "where": "SKILL.md §6.9 L485–L503",
+      "disposition": "REIMPLEMENT",
+      "why": "十三条全为 SHOULD，L499–L501「additional passes produce little new product knowledge」不可度量，等于没有终止条件（D11）。须自行设计可计算判据",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[16]",
+        "where": "SKILL.md §6.9 L485–L503"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C18",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C18",
+      "sequence_in_source": 18,
+      "capability": "十八条结构一致性检查",
+      "mechanism": null,
+      "where": "SKILL.md §8 L707–L782（检查项 L764–L781）",
+      "disposition": "REIMPLEMENT",
+      "why": "L712 自称必需质量门却无 schema、无 linter、无失败处置（D6）。检查项内容有价值，须自行实现为带 rule id 的 linter",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[17]",
+        "where": "SKILL.md §8 L707–L782（检查项 L764–L781）"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C19",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C19",
+      "sequence_in_source": 19,
+      "capability": "Obsidian wiki link 校验",
+      "mechanism": null,
+      "where": "SKILL.md §10.4 L997–L1021（L1020）",
+      "disposition": "REIMPLEMENT",
+      "why": "全文少数真正可机器检查的规则，但上游无页面清单可对照、无校验算法。须先有 page manifest 才能实现",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[18]",
+        "where": "SKILL.md §10.4 L997–L1021（L1020）"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C20",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C20",
+      "sequence_in_source": 20,
+      "capability": "五条一致性规则（命名/链接/主张/置信度/未知项）",
+      "mechanism": null,
+      "where": "SKILL.md §15.1–§15.5 L1287–L1321",
+      "disposition": "REIMPLEMENT",
+      "why": "§15.1/§15.2 部分可机检；§15.4 因 evidence strength 未定义而不可执行（D9）；§15.5 三种处置无仲裁顺序。须重写为可判定规则集",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[19]",
+        "where": "SKILL.md §15.1–§15.5 L1287–L1321"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C21",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C21",
+      "sequence_in_source": 21,
+      "capability": "五十五问自检清单",
+      "mechanism": null,
+      "where": "SKILL.md §17 L1349–L1439（7 组）",
+      "disposition": "REIMPLEMENT",
+      "why": "问题质量不低但无通过标准、无计分、无阈值、无产物（D16）。须改造为结构化 gate，每问绑定可判定检查项与失败动作",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[20]",
+        "where": "SKILL.md §17 L1349–L1439（7 组）"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C22",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C22",
+      "sequence_in_source": 22,
+      "capability": "主张措辞规则",
+      "mechanism": null,
+      "where": "SKILL.md §13.4 L1229–L1239",
+      "disposition": "REIMPLEMENT",
+      "why": "全文最强的可机检措辞规则，但未附任何检测器。可实现为文本扫描器，成本低收益直接",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[21]",
+        "where": "SKILL.md §13.4 L1229–L1239"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C23",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C23",
+      "sequence_in_source": 23,
+      "capability": "五档证据优先级",
+      "mechanism": null,
+      "where": "SKILL.md §12.2 L1142–L1154",
+      "disposition": "REJECT",
+      "why": "五档无权重不构成全序；L1152–L1153 又允许源码处任意层级，唯一排序机制自我消解（D10）。SourceLore 已有 source_type 四值与确定性事实，再叠一套优先级会产生两套互不兼容证据体系",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[22]",
+        "where": "SKILL.md §12.2 L1142–L1154"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C24",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C24",
+      "sequence_in_source": 24,
+      "capability": "D2 图规范（强制 D2）",
+      "mechanism": null,
+      "where": "SKILL.md §11.1–§11.6 L1044–L1113",
+      "disposition": "REJECT",
+      "why": "L1046 强制 D2 却无工具链、无语法校验、无法检测装饰性图表（§11.2 L1069）与一图一意（§11.6）（D12）。图形态应由渲染层决定，不应被锁定为 D2",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[23]",
+        "where": "SKILL.md §11.1–§11.6 L1044–L1113"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C25",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C25",
+      "sequence_in_source": 25,
+      "capability": "「不得依赖 AST 解析器/图数据库/静态分析管线/索引系统」",
+      "mechanism": null,
+      "where": "SKILL.md §2 L52–L53",
+      "disposition": "REJECT",
+      "why": "与 SourceLore 确定性 CLI 架构正面冲突，且与 UPSTREAM-01 已确立的「确定性工具算事实、模型只解释含义」路线相反。本源最主要的架构不兼容点",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[24]",
+        "where": "SKILL.md §2 L52–L53"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C26",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C26",
+      "sequence_in_source": 26,
+      "capability": "每个术语必须独立成页（含小仓库）",
+      "mechanism": null,
+      "where": "SKILL.md §7.2 L530–L559（L534、L557）",
+      "disposition": "REJECT",
+      "why": "与低 token 目标冲突：小仓库也会被迫产出大量单句页，而 §15.1 只有散文级去重无检测手段。应改为术语表条目 + 按需升格为页的两级策略",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[25]",
+        "where": "SKILL.md §7.2 L530–L559（L534、L557）"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-03::C27",
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C27",
+      "sequence_in_source": 27,
+      "capability": "百分比置信度豁免",
+      "mechanism": null,
+      "where": "SKILL.md §13.1 L1201",
+      "disposition": "REJECT",
+      "why": "允许「项目明确偏好时用百分比」但未给校准方法。SourceLore 明令禁止未校准百分比，此条必须显式覆盖（D7）",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[26]",
+        "where": "SKILL.md §13.1 L1201"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C01",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C01",
+      "sequence_in_source": 1,
+      "capability": "可变层/不可变层分离",
+      "mechanism": null,
+      "where": "SKILL.md L61–L62；report.template.md L14–L37",
+      "disposition": "REUSE",
+      "why": "全篇最强设计。`Current understanding` 就地重写（L61）、`Findings` 只追加并标 superseded（L62），两句话把矛盾需求解决了。可原样采纳为 claims 的版本链规则",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[0]",
+        "where": "SKILL.md L61–L62；report.template.md L14–L37"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C02",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C02",
+      "sequence_in_source": 2,
+      "capability": "Subject 作为知识身份单位（非 Question）",
+      "mechanism": null,
+      "where": "SKILL.md L25、L37、L67",
+      "disposition": "REUSE",
+      "why": "L37 的定义（\"a thing you can keep learning about\"）与四个举例都是可直接使用的判据。L67「不要为每次搜索建报告」是配套禁令",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[1]",
+        "where": "SKILL.md L25、L37、L67"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C03",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C03",
+      "sequence_in_source": 3,
+      "capability": "索引是派生视图，禁止手改",
+      "mechanism": null,
+      "where": "SKILL.md L88–L114（L90 理由、L114 禁令）；README L140",
+      "disposition": "REUSE",
+      "why": "L90 给出理由：\"so parallel changes never conflict on it and it cannot drift from the reports\"。这是消除并发冲突成本最低的办法，可直接采纳",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[2]",
+        "where": "SKILL.md L88–L114（L90 理由、L114 禁令）；README L140"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C04",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C04",
+      "sequence_in_source": 4,
+      "capability": "双通道检索（索引找 / 直链用）",
+      "mechanism": null,
+      "where": "SKILL.md L44、L102；README L145",
+      "disposition": "REUSE",
+      "why": "找新知识走索引、消费已有知识走 brief/spec 直链，避免每次消费扫全库。四源中唯一考虑检索成本的架构",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[3]",
+        "where": "SKILL.md L44、L102；README L145"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C05",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C05",
+      "sequence_in_source": 5,
+      "capability": "按需加载的模式指引",
+      "mechanism": null,
+      "where": "SKILL.md L78–L86（L80 \"Load only the guidance that matches the question\"）",
+      "disposition": "REUSE",
+      "why": "两个 reference 共 67 行不常驻上下文。直接对应低 token 目标，形态可直接复用",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[4]",
+        "where": "SKILL.md L78–L86（L80 \"Load only the guidance that matches the question\"）"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C06",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C06",
+      "sequence_in_source": 6,
+      "capability": "不存密钥/凭据/个人数据（全模式适用）",
+      "mechanism": null,
+      "where": "SKILL.md L72；references/external-probe.md L10、L13",
+      "disposition": "REUSE",
+      "why": "L72 双重强调\"every retained artifact, in every investigation mode\"，是四源中最完整的秘密处理规则。可直接作为硬约束",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[5]",
+        "where": "SKILL.md L72；references/external-probe.md L10、L13"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C07",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C07",
+      "sequence_in_source": 7,
+      "capability": "证据三分法（完整存 / fixture+说明 / 不存）",
+      "mechanism": null,
+      "where": "SKILL.md L37、L73、L76",
+      "disposition": "ADAPT",
+      "why": "划分实用，但缺哈希登记与「无法复现」标记。须补 `content_hash`、`reproducible` 三态、`redactions` 字段",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[6]",
+        "where": "SKILL.md L37、L73、L76"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C08",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C08",
+      "sequence_in_source": 8,
+      "capability": "外部探测的存档清单",
+      "mechanism": null,
+      "where": "references/external-probe.md L11–L15",
+      "disposition": "ADAPT",
+      "why": "五样清单（响应体/相关头/无凭据请求元数据/命令+日期+版本+输入/差异说明）很扎实。须改为强制字段而非散文要求",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[7]",
+        "where": "references/external-probe.md L11–L15"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C09",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C09",
+      "sequence_in_source": 9,
+      "capability": "Superseded 关系与保留历史",
+      "mechanism": null,
+      "where": "SKILL.md L62；report.template.md L35–L37",
+      "disposition": "ADAPT",
+      "why": "思想对，形态太弱：superseded 只写在标题文字里，无法机器查询；且只有一种关系。须升级为结构化字段并扩展状态集（见 C10）",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[8]",
+        "where": "SKILL.md L62；report.template.md L35–L37"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C10",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C10",
+      "sequence_in_source": 10,
+      "capability": "Finding 四段结构",
+      "mechanism": null,
+      "where": "report.template.md L22–L33",
+      "disposition": "ADAPT",
+      "why": "`Answer`/`Evidence`/`Artifacts`/`Limitations` 四段划分合理，L26「保持观察事实与解释可分离」是关键。须转成 schema 字段而非 Markdown 段落",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[9]",
+        "where": "report.template.md L22–L33"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C11",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C11",
+      "sequence_in_source": 11,
+      "capability": "`verified-against` 新鲜度字段",
+      "mechanism": null,
+      "where": "SKILL.md L63；report.template.md L5",
+      "disposition": "ADAPT",
+      "why": "概念正确但实现不足：五种不同生命周期混在一个自由文本串里，无法比对。须拆成 `verified_commit`、`verified_deps`、`verified_env`、`accessed_at` 四个结构化字段",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[10]",
+        "where": "SKILL.md L63；report.template.md L5"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C12",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C12",
+      "sequence_in_source": 12,
+      "capability": "优先扩展而非新建",
+      "mechanism": null,
+      "where": "SKILL.md L49",
+      "disposition": "ADAPT",
+      "why": "方向正确（\"Two reports on the same subject is the failure mode\"），但只是取向不是规则。须改为硬顺序 Reuse > Extend > Create 并给出查重键",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[11]",
+        "where": "SKILL.md L49"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C13",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C13",
+      "sequence_in_source": 13,
+      "capability": "报告粒度禁令",
+      "mechanism": null,
+      "where": "SKILL.md L67；L66（不强加固定段落）",
+      "disposition": "ADAPT",
+      "why": "L67「不要为每次搜索或次要子问题建报告」是对的，但没有可判定的粒度标准。须补 subject_key 规范化规则与最小内容门槛",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[12]",
+        "where": "SKILL.md L67；L66（不强加固定段落）"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C14",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C14",
+      "sequence_in_source": 14,
+      "capability": "产物命名与链接规范",
+      "mechanism": null,
+      "where": "SKILL.md L74–L75；external-probe.md L23–L31",
+      "disposition": "ADAPT",
+      "why": "稳定描述性命名 + 每个产物必须从 report 链接并说明证明什么，两条都实用。须加机检规则（文件存在性、链接可达）",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[13]",
+        "where": "SKILL.md L74–L75；external-probe.md L23–L31"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C15",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C15",
+      "sequence_in_source": 15,
+      "capability": "自主权分级（可自主 vs 须先问）",
+      "mechanism": null,
+      "where": "SKILL.md L104–L110",
+      "disposition": "ADAPT",
+      "why": "L106/L108 的边界（只读可不问；认证、付费、变更、批量、限流敏感须先问）清晰可用。须落成显式审批字段而非散文",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[14]",
+        "where": "SKILL.md L104–L110"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C16",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C16",
+      "sequence_in_source": 16,
+      "capability": "完成检查（三处 Completion Check）",
+      "mechanism": null,
+      "where": "external-probe.md L35；repository-impact.md L30–L32；SKILL.md L127",
+      "disposition": "ADAPT",
+      "why": "内容有价值，但全是散文要求无判据。须转成可判定的 gate 项",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[15]",
+        "where": "external-probe.md L35；repository-impact.md L30–L32；SKILL.md L127"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C17",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C17",
+      "sequence_in_source": 17,
+      "capability": "仓库影响面调查流程",
+      "mechanism": null,
+      "where": "references/repository-impact.md 全文（L12–L24 七步、L18–L22 四分类）",
+      "disposition": "ADAPT",
+      "why": "七步流程与四类判定（确定破裂/兼容风险/安全清理/看似未用）结构很好。但 L16「不要因为缺测试就认为无使用」只是提醒，须补判据",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[16]",
+        "where": "references/repository-impact.md 全文（L12–L24 七步、L18–L22 四分类）"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C18",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C18",
+      "sequence_in_source": 18,
+      "capability": "Reuse / Extend / Create 三态判定",
+      "mechanism": null,
+      "where": "SKILL.md L44–L49",
+      "disposition": "REIMPLEMENT",
+      "why": "目标正确、实现缺失：四个关键判断全是模型主观（D1）。须自建查重键与硬顺序规则",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[17]",
+        "where": "SKILL.md L44–L49"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C19",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C19",
+      "sequence_in_source": 19,
+      "capability": "知识失效检测",
+      "mechanism": null,
+      "where": "SKILL.md L46、L63（间接）",
+      "disposition": "REIMPLEMENT",
+      "why": "上游只有\"re-verification\"这个词（L46），没有任何检测机制（D3）。须自建四类失效源 + 哈希比对 + 四状态分离",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[18]",
+        "where": "SKILL.md L46、L63（间接）"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C20",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C20",
+      "sequence_in_source": 20,
+      "capability": "`Current understanding` 演进史",
+      "mechanism": null,
+      "where": "SKILL.md L61",
+      "disposition": "REIMPLEMENT",
+      "why": "上游明令就地重写，旧版本即丢失（D4）。须改为版本化保留，这是必须偏离上游的地方",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[19]",
+        "where": "SKILL.md L61"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C21",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C21",
+      "sequence_in_source": 21,
+      "capability": "冲突处理（两个报告判断不同）",
+      "mechanism": null,
+      "where": "全文缺失",
+      "disposition": "REIMPLEMENT",
+      "why": "`SKILL.md` 通篇未提如何处理互斥结论（D5）。须自建 conflict 状态与裁决流程",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[20]",
+        "where": "全文缺失"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C22",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C22",
+      "sequence_in_source": 22,
+      "capability": "并发写入保护",
+      "mechanism": null,
+      "where": "SKILL.md 全文缺失（仅 L90 间接解决索引层）",
+      "disposition": "REIMPLEMENT",
+      "why": "无锁、无原子写、无幂等、无冲突检测（D8）。须自建五件套（见 §9.6）",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[21]",
+        "where": "SKILL.md 全文缺失（仅 L90 间接解决索引层）"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C23",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C23",
+      "sequence_in_source": 23,
+      "capability": "结构化查询能力",
+      "mechanism": null,
+      "where": "SKILL.md L90–L100 索引表",
+      "disposition": "REIMPLEMENT",
+      "why": "索引只有四列且 `summary` 被要求不含结论（L4）。无法按结论/commit/证据检索（D10）。须自建多维索引",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[22]",
+        "where": "SKILL.md L90–L100 索引表"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C24",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C24",
+      "sequence_in_source": 24,
+      "capability": "无法复现的外部观察标记",
+      "mechanism": null,
+      "where": "全文缺失",
+      "disposition": "REIMPLEMENT",
+      "why": "上游假定一切皆可复现，没有针对付费/下线/随机/特定环境的标记（D7）。须补 `reproducible` 三态",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[23]",
+        "where": "全文缺失"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C25",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C25",
+      "sequence_in_source": 25,
+      "capability": "「一个仓库一个 corpus，住在仓库内」的部署模型",
+      "mechanism": null,
+      "where": "SKILL.md L23–L37；README L42–L58",
+      "disposition": "REJECT",
+      "why": "SourceLore 的语料库是跨仓库的独立知识资产，不能住在被分析仓库的 `.swe/` 里。这个前提差异会导致路径约定、worktree 不复制等一整套做法失效",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[24]",
+        "where": "SKILL.md L23–L37；README L42–L58"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C26",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C26",
+      "sequence_in_source": 26,
+      "capability": "Research 必须产报告（即使无新发现）",
+      "mechanism": null,
+      "where": "SKILL.md L21、L44–L47",
+      "disposition": "REJECT",
+      "why": "L21 已部分豁免（普通阅读不算研究），但 Reuse 分支仍要求\"return that answer and its report\"——即每次调用都产生一次写入动作。跨仓库跨会话场景下这会产生大量无价值写入",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[25]",
+        "where": "SKILL.md L21、L44–L47"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-04::C27",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C27",
+      "sequence_in_source": 27,
+      "capability": "HTML/excalidraw 等具体产物格式",
+      "mechanism": null,
+      "where": "仓库层面（README、docs/pipeline.excalidraw）",
+      "disposition": "REJECT",
+      "why": "本源 spec 用 HTML（`spec.html`）、架构图用 excalidraw。SourceLore 用 Markdown + schema，形态不兼容，无复用价值",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[26]",
+        "where": "仓库层面（README、docs/pipeline.excalidraw）"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C01",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C01",
+      "sequence_in_source": 1,
+      "capability": "脚本优先、规则先行、零token前置",
+      "mechanism": "零token确定性层，先跑规则判断是否过期，规则说没事就不花 token",
+      "where": "SKILL.md L131–L136；L306–L315",
+      "disposition": "REUSE",
+      "why": "全篇最强设计，比 UPSTREAM-04 的纯散文阶段描述强一个量级：它把「什么时候不该调模型」写成了可执行规则。SourceLore 的 freshness 判定应采用同一取向：哈希比对先行，哈希未变直接判 fresh，不启研究任务",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[0]",
+        "where": "SKILL.md L131–L136；L306–L315"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C02",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C02",
+      "sequence_in_source": 2,
+      "capability": "三级更新梯度 L1/L2/L3",
+      "mechanism": "L1 零token机械改、L2 低token受限上下文、L3 人主导AI只润色",
+      "where": "SKILL.md L138–L140；L339–L347",
+      "disposition": "REUSE",
+      "why": "把「AI 该出多少力」变成可分类的动作类，而不是模糊的「尽量少用」。可直接映射到 SourceLore 的 task execution 轴：L1 不对应任何 claim 产生，L2 产生受限 claim，L3 产生需人签字的 claim",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[1]",
+        "where": "SKILL.md L138–L140；L339–L347"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C03",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C03",
+      "sequence_in_source": 3,
+      "capability": "旁车产物与叙事页分离",
+      "mechanism": "脚本写 _generated/，永不覆盖人工维护的叙事页",
+      "where": "SKILL.md L158–L162；scripts/generated_output.py L19–L23",
+      "disposition": "REUSE",
+      "why": "唯一在我审查过的两个上游里真正被代码强制的边界。generated_output_path() 把输出目录钉死在 <doc_dir>/_generated，写侧不提供指向叙事页的分支。SourceLore 的 INDEX 与派生视图必须同构：派生层有独立命名空间，物理上写不到权威层",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[2]",
+        "where": "SKILL.md L158–L162；scripts/generated_output.py L19–L23"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C04",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C04",
+      "sequence_in_source": 4,
+      "capability": "review_status 人机权限分离",
+      "mechanism": "approved 只能人设，AI 永远 pending",
+      "where": "SKILL.md L262–L284；L372–L385（Phase C step 6）",
+      "disposition": "REUSE",
+      "why": "把「谁有权批准」编码进字段值域而不是写在文档里。这是我在五个上游里见过最干净的权限边界表达。SourceLore 的 Claim 状态机应照抄这一取向：某些迁移只能由人触发的凭证执行",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[3]",
+        "where": "SKILL.md L262–L284；L372–L385（Phase C step 6）"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C05",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C05",
+      "sequence_in_source": 5,
+      "capability": "产物必须留 [NEEDS INPUT] 而非编造",
+      "mechanism": "机械抽取遇到缺信息留标记，不补叙述",
+      "where": "SKILL.md L158–L161；L370（Phase B on fail）；generated_output.py L65",
+      "disposition": "REUSE",
+      "why": "直接对应 SourceLore 的 insufficient 是成功结果这一不变量。UPSTREAM-04 只有散文要求，这里另有代码出口（render_markdown_artifact 强制渲染 needs_input 列表）",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[4]",
+        "where": "SKILL.md L158–L161；L370（Phase B on fail）；generated_output.py L65"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C06",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C06",
+      "sequence_in_source": 6,
+      "capability": "Auto-generated 头与出处强制",
+      "mechanism": "每个脚本产物必须带生成者与 provenance",
+      "where": "SKILL.md L158–L161；generated_output.py L35–L48",
+      "disposition": "REUSE",
+      "why": "产物自证来源，使「这行字是谁写的」可机械判定。直接对应 SourceLore 的 evidence_refs 溯源要求",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[5]",
+        "where": "SKILL.md L158–L161；generated_output.py L35–L48"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C07",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C07",
+      "sequence_in_source": 7,
+      "capability": "命令族与编号页集",
+      "mechanism": "20 个 /PKB-* 命令映射到固定 00–12 编号页",
+      "where": "SKILL.md L69–L97；L194–L218",
+      "disposition": "ADAPT",
+      "why": "编号页集给出的是一份可枚举的文档清单，对 SourceLore 的 subject_key 命名有参考价值。但页集本身绑死具体项目文档结构，SourceLore 不做项目文档生成，只需要它的「可枚举优先于自由命名」这一条",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[6]",
+        "where": "SKILL.md L69–L97；L194–L218"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C08",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C08",
+      "sequence_in_source": 8,
+      "capability": "Phase 0 三分路由",
+      "mechanism": "全量发现 / 快路径 / 仅输出三类分流",
+      "where": "SKILL.md L327–L337",
+      "disposition": "ADAPT",
+      "why": "分流依据是「要不要读仓库」，与 SourceLore 的 research 成本分级同构。可借其骨架，不借其具体命令",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[7]",
+        "where": "SKILL.md L327–L337"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C09",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C09",
+      "sequence_in_source": 9,
+      "capability": "PKB_ROOT 与项目分离",
+      "mechanism": "知识库可落在项目外，显式声明根路径",
+      "where": "SKILL.md L54–L64",
+      "disposition": "ADAPT",
+      "why": "与 SourceLore「一仓库一 corpus，住在仓库内」的 REJECT 判断形成对照。可借的是显式声明根路径这一做法（避免隐式假设 cwd），不借其存放位置策略",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[8]",
+        "where": "SKILL.md L54–L64"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C10",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C10",
+      "sequence_in_source": 10,
+      "capability": "契约式 Postconditions",
+      "mechanism": "写盘后必须满足的硬条件",
+      "where": "SKILL.md L99–L118",
+      "disposition": "ADAPT",
+      "why": "与 UPSTREAM-04 的 Completion Checks 同类，但这边的 postcondition 具名、可逐条核对。SourceLore 的写入后校验可借这个形式，但必须补上可执行判据，否则重蹈 D14",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[9]",
+        "where": "SKILL.md L99–L118"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C11",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C11",
+      "sequence_in_source": 11,
+      "capability": "回滚与降级路径",
+      "mechanism": "Phase C 不达标回 Phase B；tree 不可用降级 ls -R",
+      "where": "SKILL.md L394–L396",
+      "disposition": "ADAPT",
+      "why": "少见地显式写了失败回退，多数 skill 只写成功路径。SourceLore 的 failed 不产生 claim 需要同样的显式回退定义",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[10]",
+        "where": "SKILL.md L394–L396"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C12",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C12",
+      "sequence_in_source": 12,
+      "capability": "渐进式 AI 投喂",
+      "mechanism": "三轮渐进阅读：概览→深潜→模块验收",
+      "where": "SKILL.md L414–L418；templates/sphinx/ai-guide.md",
+      "disposition": "ADAPT",
+      "why": "与 SourceLore 的按需加载同向。它的轮次划分（先全局后局部）可作为 research 任务的默认读取顺序参考",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[11]",
+        "where": "SKILL.md L414–L418；templates/sphinx/ai-guide.md"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C13",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C13",
+      "sequence_in_source": 13,
+      "capability": "C4 强制顺序",
+      "mechanism": "架构文档必须 Context→Container→Component→Code",
+      "where": "SKILL.md L120–L122；references/c4-standard.md",
+      "disposition": "ADAPT",
+      "why": "给「先看什么」定序，避免一上来扎进代码层。SourceLore 分析多模块仓库时可借这个降序粒度",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[12]",
+        "where": "SKILL.md L120–L122；references/c4-standard.md"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C14",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C14",
+      "sequence_in_source": 14,
+      "capability": "版本页脚七字段",
+      "mechanism": "last_updated/commit/updated_by/review_status/...",
+      "where": "SKILL.md L262–L284",
+      "disposition": "ADAPT",
+      "why": "字段集合本身合理，但 commit 存短 SHA、粒度不足以定位内容变化。SourceLore 可借字段名，值必须换成 content_hash",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[13]",
+        "where": "SKILL.md L262–L284"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C15",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C15",
+      "sequence_in_source": 15,
+      "capability": "发布节奏绑定",
+      "mechanism": "文档更新挂到 release/PR 检查单",
+      "where": "SKILL.md L164–L170",
+      "disposition": "ADAPT",
+      "why": "把文档维护从「想起来才做」变成流程节点。SourceLore 的 freshness 巡检可挂到同样的触发点",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[14]",
+        "where": "SKILL.md L164–L170"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C16",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C16",
+      "sequence_in_source": 16,
+      "capability": "测试用例维护触发",
+      "mechanism": "四条触发条件维护活文档",
+      "where": "SKILL.md L387–L392",
+      "disposition": "ADAPT",
+      "why": "理念可借：文档是活的质量保障清单而非一次性产物。具体四触发绑死它自己的文档体系",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[15]",
+        "where": "SKILL.md L387–L392"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C17",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C17",
+      "sequence_in_source": 17,
+      "capability": "过期检测机制",
+      "mechanism": "mtime 启发式",
+      "where": "scripts/check_pkb_staleness.py L206–L262",
+      "disposition": "REIMPLEMENT",
+      "why": "存在实现但是错误的手段：比的是文件系统修改时间与归档时间的差，不是内容。单向下界（src_mtime <= doc_mtime 直接 continue），mtime 被 reset 或文件被回退就看不见。SourceLore 必须按证据路径做内容哈希比对，这条不能采纳其实现，只能采纳其「零token先行」的取向（已在 C01）",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[16]",
+        "where": "scripts/check_pkb_staleness.py L206–L262"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C18",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C18",
+      "sequence_in_source": 18,
+      "capability": "索引生成",
+      "mechanism": "仅生成候选，不写权威索引",
+      "where": "scripts/gen_index.py L73–L112",
+      "disposition": "REIMPLEMENT",
+      "why": "gen_index.py 的输出是 _generated/index.generated.md，标题 «Index Regeneration Candidate»，并在页内标 maintained-by: human+ai。它从不写 index.md。这是把矛盾改名而不是解决：权威索引依旧靠人手写，而脚本产物不算数。另外每次全量重建，页数增长时线性劣化（与 UPSTREAM-04 D9 同类）。SourceLore 的索引必须是确定性全量生成 + 权威层由生成物提升而来，且必须支持增量",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[17]",
+        "where": "scripts/gen_index.py L73–L112"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C19",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C19",
+      "sequence_in_source": 19,
+      "capability": "人类主导的语义补充",
+      "mechanism": "L3 由人提供 why，AI 只润色",
+      "where": "SKILL.md L138–L140；templates/adr/template.md L1–L5",
+      "disposition": "REIMPLEMENT",
+      "why": "规则写得很清楚，但强制手段只是模板顶部的 HTML 注释与 Phase C 散文步骤。没有任何机制阻止 AI 自己写 Context。与 UPSTREAM-04 D14（三处完成检查全散文）同类。SourceLore 若要做这条，必须有代码级出口：人写的字段带签名，AI 写入该字段直接拒绝",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[18]",
+        "where": "SKILL.md L138–L140；templates/adr/template.md L1–L5"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C20",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C20",
+      "sequence_in_source": 20,
+      "capability": "保密切分与发布脱敏",
+      "mechanism": "L1–L5 五级，发布前强制 strip",
+      "where": "SKILL.md L286–L303；scripts/strip_confidential.py",
+      "disposition": "REIMPLEMENT",
+      "why": "这是本上游唯一有真测试背书的机制（tests/test_confidentiality.py 12 个用例覆盖三处脚本）。设计可借：分级写在元数据、strip 在构建后运行、make 依赖强制顺序。SourceLore 不需要文档投放分级，但需要同构的「产物按敏感度分级 + 发布前机械剥离」",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[19]",
+        "where": "SKILL.md L286–L303；scripts/strip_confidential.py"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C21",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C21",
+      "sequence_in_source": 21,
+      "capability": "冲突处理",
+      "mechanism": "缺失",
+      "where": "SKILL.md 全文无定义",
+      "disposition": "REIMPLEMENT",
+      "why": "全文检索未发现任何关于两条知识互相矛盾时如何处理的规则。没有裁决机制。SourceLore 必须有显式 conflict 状态与裁决权归属",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[20]",
+        "where": "SKILL.md 全文无定义"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C22",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C22",
+      "sequence_in_source": 22,
+      "capability": "并发写入保护",
+      "mechanism": "缺失",
+      "where": "无锁、无版本号、无 CAS",
+      "disposition": "REIMPLEMENT",
+      "why": "所有脚本直接 write_text_file 覆写，无锁无版本校验。多人或 AI 与人同时更新会静默丢写入。SourceLore 的写入路径必须带前置版本校验",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[21]",
+        "where": "无锁、无版本号、无 CAS"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C23",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C23",
+      "sequence_in_source": 23,
+      "capability": "结构化查询",
+      "mechanism": "缺失",
+      "where": "全文只有文件系统遍历与文本搜索",
+      "disposition": "REIMPLEMENT",
+      "why": "没有任何索引数据结构或查询接口，检索靠人或模型自己 glob。与 UPSTREAM-04 D10 同类缺口",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[22]",
+        "where": "全文只有文件系统遍历与文本搜索"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C24",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C24",
+      "sequence_in_source": 24,
+      "capability": "不可复现外部观察标记",
+      "mechanism": "缺失",
+      "where": "无字段定义",
+      "disposition": "REIMPLEMENT",
+      "why": "没有为「当时观察到、现在无法复现」的证据留字段。SourceLore 需要（与 UPSTREAM-04 D7 同源需求）",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[23]",
+        "where": "无字段定义"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C25",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C25",
+      "sequence_in_source": 25,
+      "capability": "测试覆盖作为质量证据",
+      "mechanism": "3 文件 19 方法",
+      "where": "tests/（3 文件）",
+      "disposition": "REIMPLEMENT",
+      "why": "存在测试这件事本身就是相对 UPSTREAM-04 的实质进步（那边零测试）。但覆盖严重偏斜：18 个脚本里只有 3 个被测试触及，check_pkb_staleness.py / gen_index.py 零引用。SourceLore 若建脚本层，必须以「机制必被测」为准入，而非「有 tests 目录」",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[24]",
+        "where": "tests/（3 文件）"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C26",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C26",
+      "sequence_in_source": 26,
+      "capability": "知识库住在被分析仓库内",
+      "mechanism": "PKB_ROOT 默认项目内",
+      "where": "SKILL.md L54–L64",
+      "disposition": "REJECT",
+      "why": "与 SourceLore 既有判断一致：一仓库一 corpus 会导致语料无法跨仓库复用，且污染被分析对象的 git 历史。UPSTREAM-04 已对同类方案给出 REJECT，此处维持",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[25]",
+        "where": "SKILL.md L54–L64"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C27",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C27",
+      "sequence_in_source": 27,
+      "capability": "产出面向人类的整册项目文档",
+      "mechanism": "00–12 编号页 + Sphinx 双语站点",
+      "where": "SKILL.md L69–L97；L219–L260",
+      "disposition": "REJECT",
+      "why": "这是一个面向「给团队写项目文档」的产物流水线，不是知识治理。SourceLore 的目标是可机械判定的 claim 集合，不是可读的文档册。产物形态整体不采纳",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[26]",
+        "where": "SKILL.md L69–L97；L219–L260"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-05::C28",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C28",
+      "sequence_in_source": 28,
+      "capability": "双语 Sphinx 站与 gettext 流程",
+      "mechanism": "Sphinx + myst + sphinx-intl",
+      "where": "SKILL.md L123–L125；references/sphinx-bilingual.md",
+      "disposition": "REJECT",
+      "why": "与本项目目标正交。它的存在反而说明该上游重心在文档交付，不在知识新鲜度",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[27]",
+        "where": "SKILL.md L123–L125；references/sphinx-bilingual.md"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C01",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C01",
+      "sequence_in_source": 1,
+      "capability": "两阶段信任边界（finder → judgment）",
+      "mechanism": "每个阶段跑在独立子代理里，产物是 JSON 而非对话；判断层只拿路径不拿推理",
+      "where": "SKILL.md L1035–L1122",
+      "disposition": "ADAPT",
+      "why": "抽象设计可采纳：委托与判断必须由不同上下文承担。但上游自己写明 Boundary 2 不防 Boundary 1（D4），所以这不是完整答案，只是分层的一半",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[0]",
+        "where": "SKILL.md L1035–L1122"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C02",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C02",
+      "sequence_in_source": 2,
+      "capability": "阶段间上下文卫生（下游只读上游结构字段，不读其 findings）",
+      "mechanism": "Phase 4 只读 phase2-architecture.json 的 project_overview / coverage / surface_map，明令禁读 findings、禁引用 P2-XXX",
+      "where": "references/phase4-owasp.md L36–L95",
+      "disposition": "REUSE",
+      "why": "这是可独立实现的反锚定纪律：下游阶段可以复用上游的结构事实，但不能继承上游的判断。SourceLore 的 Claim/Evidence 模型必须同样约束：证据可继承，结论不可继承",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[1]",
+        "where": "references/phase4-owasp.md L36–L95"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C03",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C03",
+      "sequence_in_source": 3,
+      "capability": "Surface Gate：非生产面确定性抑制 + 置信度分级 + 封顶",
+      "mechanism": "glob 匹配 surface_map.non_production[].pattern，{test,fixture}+high → 立即 SURFACE_NOT_PRODUCTION；{example,demo}+high → 同样；medium → 照常验证但封顶 CONFIRMED_LOW_CONFIDENCE",
+      "where": "references/phase5-validate-and-poc.md L471–L530",
+      "disposition": "REUSE",
+      "why": "确定性前置门能省掉整条验证链的开销，且明确区分「代码有漏洞」与「漏洞不在生产面」。这条不依赖任何模型判断，可原样独立实现",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[2]",
+        "where": "references/phase5-validate-and-poc.md L471–L530"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C04",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C04",
+      "sequence_in_source": 4,
+      "capability": "Boundary Gate：pre-auth 可达性门 + auth_coverage 映射",
+      "mechanism": "仅当 deployment-verification.json classification==gated 时生效；按 public/protected/unknown 分类入口点；PROTECTED+high → 覆写为 BOUNDARY_NOT_CROSSED",
+      "where": "references/phase5-validate-and-poc.md L608–L692",
+      "disposition": "ADAPT",
+      "why": "门的形状可采纳，但依赖 Phase 2 产出的 auth_coverage，而该映射本身是模型生成的（coverage_confidence none/low 时门直接跳过）。SourceLore 若采纳，必须把 auth 覆盖判定做成确定性抽取",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[3]",
+        "where": "references/phase5-validate-and-poc.md L608–L692"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C05",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C05",
+      "sequence_in_source": 5,
+      "capability": "四节点数据流契约（entrypoint → hops → sink，逐跳 file:line）",
+      "mechanism": "注入类 finding 必填 data_flow；每跨一次文件边界记一条 hop；跳数不完整即不可验证",
+      "where": "references/phase4-owasp.md L367–L460；phase5 L532–L555",
+      "disposition": "REUSE",
+      "why": "这是全篇最可迁移的证据形态：把「这里有注入」变成「这条链从哪进、经哪几跳、在哪落地」。SourceLore 的 evidence_refs 可以直接采用同构结构",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[4]",
+        "where": "references/phase4-owasp.md L367–L460；phase5 L532–L555"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C06",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C06",
+      "sequence_in_source": 6,
+      "capability": "不可验证即判否的判据",
+      "mechanism": "若无法建立逐边界的 entrypoint→sink 链，结论为 FALSE_POSITIVE；P4 记录的 hop 在所述行找不到，记为 P4 不准确并重定位",
+      "where": "references/phase5-validate-and-poc.md L532–L555",
+      "disposition": "REUSE",
+      "why": "把「说不清」显式归入否定，而不是留在悬置状态。与 SourceLore 的 insufficient evidence 语义相容，但必须区分：不可验证 ≠ 不存在",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[5]",
+        "where": "references/phase5-validate-and-poc.md L532–L555"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C07",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C07",
+      "sequence_in_source": 7,
+      "capability": "验证状态机与 report_tier 的固定映射",
+      "mechanism": "CONFIRMED / CONFIRMED_LOW_CONFIDENCE / FALSE_POSITIVE / NEEDS_RUNTIME / BOUNDARY_NOT_CROSSED / SURFACE_NOT_PRODUCTION / NEEDS_EXTERNAL_VERIFICATION / PENDING_CROSS_REPO_VALIDATION / MERGED，逐一映射到 report_tier",
+      "where": "references/phase5-validate-and-poc.md L692–L747",
+      "disposition": "ADAPT",
+      "why": "状态机粒度可借鉴，但九态偏多且与 SourceLore 的四态 verification_status 不同构。SourceLore 用自己的四态，把这里的九态压缩映射过去",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[6]",
+        "where": "references/phase5-validate-and-poc.md L692–L747"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C08",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C08",
+      "sequence_in_source": 8,
+      "capability": "动态证据升级阶梯 + 每级独立同意",
+      "mechanism": "被动 curl GET → 无头 Chromium → docker run；每级各自一道确认门，浏览器单独同意（理由是 sandbox-escape）",
+      "where": "SKILL.md L400–L618；phase5 L1003–L1075",
+      "disposition": "ADAPT",
+      "why": "阶梯本身是对的：先拿最便宜的证据，不够再升级。但默认路径包含 docker run 不受信仓库代码（D3），SourceLore 只应采纳 curl 一级，Docker 一级整体拒绝",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[7]",
+        "where": "SKILL.md L400–L618；phase5 L1003–L1075"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C09",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C09",
+      "sequence_in_source": 9,
+      "capability": "环境失败绝不改判",
+      "mechanism": "Docker/Playwright 不可用、构建失败、确认被拒，一律不改 validation_status，只记中性备注",
+      "where": "references/phase5-validate-and-poc.md L795–L833；L1421–L1444",
+      "disposition": "REUSE",
+      "why": "这是不变量级的正确性约束：工具没跑起来不是证据。SourceLore 的不变量 §9.3 已有同款，本轮确认上游独立得出同一结论",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[8]",
+        "where": "references/phase5-validate-and-poc.md L795–L833；L1421–L1444"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C10",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C10",
+      "sequence_in_source": 10,
+      "capability": "动态否证只降级到人工复核",
+      "mechanism": "clean RUNTIME_NOT_CONFIRMED 只能把 CONFIRMED 降到 NEEDS_RUNTIME，绝不直接判 FALSE_POSITIVE",
+      "where": "references/phase5-validate-and-poc.md L795–L833",
+      "disposition": "REUSE",
+      "why": "代码级证据与运行时证据冲突时，仲裁权归人。这条与 SourceLore「失败不产生 claim」同源",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[9]",
+        "where": "references/phase5-validate-and-poc.md L795–L833"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C11",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C11",
+      "sequence_in_source": 11,
+      "capability": "两份独立控制 + 结构性构造门",
+      "mechanism": "--poc 只持久化不执行；--runtime 只执行不持久化；无标志时连 pocs/ 目录都不创建（poc_skipped: true）；被拒绝的 finding 永不构造利用",
+      "where": "SKILL.md L618–L700；phase5 L120–L146",
+      "disposition": "REUSE",
+      "why": "这是本轮最强的安全设计：把「留证据」与「跑利用」拆成两个互不蕴含的开关，且构造点被钉在验证之后。SourceLore 若做任何动态验证，必须照此拆分",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[10]",
+        "where": "SKILL.md L618–L700；phase5 L120–L146"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C12",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C12",
+      "sequence_in_source": 12,
+      "capability": "失效安全门控（fail-safe gating）",
+      "mechanism": "进入 low_confidence_signals / truncated_signals 即强制 detection_confidence: reduced；A03/A08 在低置信否定下绝不跳过",
+      "where": "references/phase4-owasp.md L100–L120",
+      "disposition": "REUSE",
+      "why": "把「不确定」转成「降低覆盖面但不漏项」。可独立实现的确定性规则，不依赖模型",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[11]",
+        "where": "references/phase4-owasp.md L100–L120"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C13",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C13",
+      "sequence_in_source": 13,
+      "capability": "Semgrep 三层规则集 + 本地缓存优先 + 废弃包移除",
+      "mechanism": "常开安全规则 + 语言包 + 框架包；刻意避开 --config=auto；RESOLVED_CONFIGS 优先本地 RULES_CACHE；显式移除 p/express 等废弃包并留验证说明；gin/echo/fiber 无覆盖则诚实登记为缺口",
+      "where": "references/phase4-owasp.md L193–L363",
+      "disposition": "ADAPT",
+      "why": "规则工程的可迁移部分：不用 auto、锁规则来源、废弃包显式登记、覆盖缺口写进产物。但具体包名与缓存路径不可复用，且缓存缺失时静默回落 registry（D17）",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[12]",
+        "where": "references/phase4-owasp.md L193–L363"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C14",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C14",
+      "sequence_in_source": 14,
+      "capability": "族扫描与诚实否定",
+      "mechanism": "每个确认发现都要在同类文件族里扫同一 sink 模式，逐文件确认或排除；类级 confident negative 要求该族全部文件至少被 grep 过，否则降为 reduced 并点名未读文件",
+      "where": "references/phase4-owasp.md L801–L848",
+      "disposition": "REUSE",
+      "why": "这是对「一个文件有问题、其余文件没看」这一系统性缺陷的直接修复，且用产物字段（family_swept / class_negatives）强制留痕。SourceLore 的否定结论必须照此携带覆盖面证据",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[13]",
+        "where": "references/phase4-owasp.md L801–L848"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C15",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C15",
+      "sequence_in_source": 15,
+      "capability": "依赖可达性三态 + 保守默认 + KEV 下限",
+      "mechanism": "REACHABLE / UNREACHABLE / INDETERMINATE；transitive+runtime 默认 INDETERMINATE；路径工具失败当作 transitive+runtime；KEV 无视可达性设 HIGH 下限；降级不低于 LOW；有界搜索不得产出 UNREACHABLE",
+      "where": "references/phase3-dependencies.md L271–L364",
+      "disposition": "ADAPT",
+      "why": "三态与保守默认可采纳。但 reachable 字段在 P3 恒为 null、由 P3b 填，中间态的语义在产物里不显式，SourceLore 应把三态写进 Claim 本身就位",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[14]",
+        "where": "references/phase3-dependencies.md L271–L364"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C16",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C16",
+      "sequence_in_source": 16,
+      "capability": "P3b 有效严重度与优先级",
+      "mechanism": "effective_severity 由可达性 + CVSS + EPSS + KEV 联合决定，priority P0–P3 与报告严重度解耦",
+      "where": "references/phase3-dependencies.md L271–L364",
+      "disposition": "REUSE",
+      "why": "技术严重度与处置优先级分离，是本轮少见的正确分层。SourceLore 若做依赖风险，必须同样拆成两个字段而不是一个数字",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[15]",
+        "where": "references/phase3-dependencies.md L271–L364"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C17",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C17",
+      "sequence_in_source": 17,
+      "capability": "密钥打码与原始输出清理",
+      "mechanism": "redacted_value 取前 4 后 3；仅 HIGH 进 findings；不验证密钥；处理完删 gitleaks-raw.json",
+      "where": "references/phase1-secrets.md 全文",
+      "disposition": "ADAPT",
+      "why": "打码规则可采纳，但删除是尽力而为、失败仅告警（D11），且不覆盖 P3 的原始 JSON（D12）。SourceLore 必须把「原始扫描输出不落盘」做成结构约束而非事后删除",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[16]",
+        "where": "references/phase1-secrets.md 全文"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C18",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C18",
+      "sequence_in_source": 18,
+      "capability": "成本报告（时长 + token 估算）",
+      "mechanism": "每阶段一行，格式固定，严格限于时长与 token，不做文件读写埋点；Phase 5 按子阶段多行",
+      "where": "SKILL.md L1273–L1313；各 reference 的 Cost Report 节",
+      "disposition": "ADAPT",
+      "why": "把一个运行的代价做成可比较的结构字段，方向对。但纯 chars/4 估算、无独立核验（D15），SourceLore 只能当作自报值",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[17]",
+        "where": "SKILL.md L1273–L1313；各 reference 的 Cost Report 节"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C19",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C19",
+      "sequence_in_source": 19,
+      "capability": "多仓库拓扑与跨服务合成",
+      "mechanism": "Phase 0 产出 service-topology.json（服务、端口、入站认证、出站连接、共享环境变量、信任边界缺口）；Phase 7 按五类跨服务漏洞合成",
+      "where": "references/phase0-topology.md 全文；phase7-synthesis.md L55–L162",
+      "disposition": "REIMPLEMENT",
+      "why": "形态可借鉴，但 SourceLore 的跨源关系不是服务拓扑，而是知识单元之间的依赖与矛盾。直接搬用会产生第二套关系模型，违反 §6 单一模型约束",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[18]",
+        "where": "references/phase0-topology.md 全文；phase7-synthesis.md L55–L162"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C20",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C20",
+      "sequence_in_source": 20,
+      "capability": "延迟裁决与跨仓库解析",
+      "mechanism": "PENDING_CROSS_REPO_VALIDATION 占位，Phase 7 用其他仓库证据解析为 CONFIRMED/REJECTED/NEEDS_REVIEW；解析必须引用新增跨仓证据，不得复述原论断",
+      "where": "references/phase7-synthesis.md L162–L219",
+      "disposition": "ADAPT",
+      "why": "「单仓库无法裁决」是一种合法中间态，且解析必须引入新证据——这条纪律可直接迁移到 SourceLore 的 conflict 状态",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[19]",
+        "where": "references/phase7-synthesis.md L162–L219"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C21",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C21",
+      "sequence_in_source": 21,
+      "capability": "模型分层（Deep / Standard）",
+      "mechanism": "仅 Phase 2 用 Deep 层，其余全部 Standard；只按家族别名（opus/sonnet/haiku）派发，不固定版本",
+      "where": "SKILL.md L130–L330",
+      "disposition": "REJECT",
+      "why": "整条机制绑死在 Claude 家族与 Agent 工具上，无法迁移到 DSH；且 Phase 4b/7 明确写「moved off the Deep tier」这类只对特定供应商有意义的说明。SourceLore 不应复制模型分层，应按任务复杂度与工具能力选路",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[20]",
+        "where": "SKILL.md L130–L330"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C22",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C22",
+      "sequence_in_source": 22,
+      "capability": "Skill/Agent 指令安全（OWASP LLM Top 10）",
+      "mechanism": "对 skill/instruction 文件做 LLM01/02/05/06/07/08 检查，要求 source→transformation→sink 可追踪；无法追踪即误报",
+      "where": "references/phase-llm-security.md 全文",
+      "disposition": "ADAPT",
+      "why": "检查清单本身可采纳为 SourceLore 的自审项（SourceLore 自己就是 skill/agent 产物）。但它的激活条件是 tech-stack.json 的 is_skill_repo，上游自陈混合仓库默认不跑，覆盖面偏窄",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[21]",
+        "where": "references/phase-llm-security.md 全文"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C23",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C23",
+      "sequence_in_source": 23,
+      "capability": "供应商采纳审计模式",
+      "mechanism": "--vendor 输出采纳风险裁决 + 条件 + 工具实际行为 + 采纳方补偿控制；强制关 PoC、忽略 runtime、全部锁 Standard 层",
+      "where": "SKILL.md L733–L793；phase6 L618–L776",
+      "disposition": "ADAPT",
+      "why": "报告形态与 SourceLore 的上游审计目的最接近：不评代码质量，只评「我们敢不敢用、需要什么补偿控制」。可借鉴其裁决结构，但其中锁模型层与跳过阶段的部分不采纳",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[22]",
+        "where": "SKILL.md L733–L793；phase6 L618–L776"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C24",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C24",
+      "sequence_in_source": 24,
+      "capability": "PR diff 增量审查与移除控制回归检查",
+      "mechanism": "三点 diff 取 merge base；对每条被删除行匹配安全控制模式，若等价控制未找到则记 regression: true + removed_control",
+      "where": "references/pr-review.md L50–L250",
+      "disposition": "REUSE",
+      "why": "这是全量扫描结构性看不到的一类问题，且判据确定（删除行 + 控制模式 + 等价性核验）。SourceLore 的增量审查应直接采用这一形态",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[23]",
+        "where": "references/pr-review.md L50–L250"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C25",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C25",
+      "sequence_in_source": 25,
+      "capability": "三态分离的产物契约（run-metadata / 各阶段 JSON / 报告）",
+      "mechanism": "每个阶段写自己的 JSON，报告层只聚合；跳过阶段在输出里显式缺失而非空对象",
+      "where": "SKILL.md L1122–L1206；phase6 L7–L58",
+      "disposition": "REIMPLEMENT",
+      "why": "上游的产物契约是「一阶段一文件」，没有统一实体模型，也没有新鲜度与失效语义。SourceLore 的 Claim/Evidence 必须自建，不能沿用",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[24]",
+        "where": "SKILL.md L1122–L1206；phase6 L7–L58"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C26",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C26",
+      "sequence_in_source": 26,
+      "capability": "新鲜度与失效判定",
+      "mechanism": "无。全仓库无任何「知识/结论是否仍有效」的概念",
+      "where": "—（缺失）",
+      "disposition": "REIMPLEMENT",
+      "why": "这是本轮最重要的缺口：上游做的是「对某个 commit 扫一遍」，产物与 commit 绑定但没有回取与失效机制。SourceLore 的核心恰好在这里，必须自建",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[25]",
+        "where": "—（缺失）"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C27",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C27",
+      "sequence_in_source": 27,
+      "capability": "密钥/数据分级",
+      "mechanism": "仅分 HIGH/MEDIUM/LOW 三档，且分级依据写死在 Phase 1 的判据里，无字段化分级",
+      "where": "references/phase1-secrets.md",
+      "disposition": "REIMPLEMENT",
+      "why": "分级没有落成可配置字段，无法表达 SourceLore 需要的「哪类内容可以进报告、哪类只能留在快照」",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[26]",
+        "where": "references/phase1-secrets.md"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    },
+    {
+      "identity_key": "UPSTREAM-06::C28",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C28",
+      "sequence_in_source": 28,
+      "capability": "一键安装外部扫描器",
+      "mechanism": "scripts/setup.sh 用 brew / go install @latest / pip --break-system-packages / curl|bash 安装 gitleaks、osv-scanner、semgrep、pip-audit、jq、grype",
+      "where": "scripts/setup.sh 全文",
+      "disposition": "REJECT",
+      "why": "这是本仓库最直接的供应链风险面：无版本钉定、无校验和、部分路径是 curl 管道执行、并且用 --break-system-packages 绕过系统包管理保护。SourceLore 一律不安装、不执行",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[27]",
+        "where": "scripts/setup.sh 全文"
+      },
+      "crosswalk": {
+        "canonical_id": null,
+        "mapping_status": "UNMAPPED",
+        "batch": null,
+        "note": null
+      }
+    }
+  ]
+}
