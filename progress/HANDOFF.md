@@ -1,18 +1,22 @@
 # SourceLore 交接文档
 
 > 本文件是跨会话恢复的唯一入口。任何新会话第一件事就是读它。
-> 最后更新：2026-11-02T22:27:00+08:00
+> 最后更新：2026-11-02T22:50:00+08:00
 
 ---
 
 ## 一、现状
 
-M1-FUSION-GATE 已启动，**只完成 F0**，按执行指令停止。F1 未开始。
+M1-FUSION-GATE 已启动。**F0 完成并提交；F1 已启动但中断，未完成、未提交。**
+
+> **F1 中断原因：模型输出预算熔断（连续 6 轮未产出正文），非项目阻塞。**
+> 恢复入口：`progress/CHECKPOINT-F1.md`（含 143 项能力清单、已定约束、恢复步骤）。
 
 - 项目根：`/mnt/Server_Data_Center/Team_Flie(团队文件)/GitHub_Knowledge_Base(Gihub知识库)/SourceLore`
-- 当前里程碑：**M1-FUSION-GATE（IN_PROGRESS，F0 DONE）**
-- 当前任务：**M1-FUSION-GATE**（宿主任务）
-- 下一任务：**M1-FUSION-GATE-F1**（六源能力去重及归属，需 Owner 确认后启动）
+- 当前里程碑：**M1-FUSION-GATE（IN_PROGRESS）**
+- 当前任务：**M1-FUSION-GATE-F1**（已启动，中断待续）
+- 已完成：**M1-FUSION-GATE-F0**
+- 下一动作：手动压缩上下文 → 读 `progress/CHECKPOINT-F1.md` → 续跑 F1
 - 开发模型：`workbuddy/deepseek-v4.1-flash`（上下文 131072，务必小步走）
 
 ## 二、已通过的 Gate
@@ -53,6 +57,8 @@ FAILURES: 0
 
 ## 五、测试
 
+**F1：未执行。** §7 的 13 项验收一项都没跑，因为映射产物还没生成。没有跑过的检查不得写成通过。
+
 F0 门禁九项全部实跑，`FAILURES: 0`，`exit=0`。
 
 过程中三处判据误报并已修正，不是数据问题：能力总数误算为 120（实为 143）；
@@ -65,7 +71,11 @@ F0 门禁九项全部实跑，`FAILURES: 0`，`exit=0`。
 
 ## 七、下一步
 
-**F1 — 六源能力去重及归属。** 三条前置约束已写入 `BASELINE.md` §8：
+**续跑 F1。** 已完成：F0 状态核验、六源 143 项能力全量提取（15+18+27+27+28+28，与对照数一致）、
+字段结构确认（`id`/`capability`/`mechanism`/`where`/`disposition`/`why`，六源一致）。
+未完成：`CAPABILITY_CROSSWALK.json`、`ABILITY_DECISIONS.md`、十项冲突裁决、13 项验收、提交。
+
+详细恢复步骤见 `progress/CHECKPOINT-F1.md`。三条前置约束仍以 `BASELINE.md` §8 为准：
 
 1. 能力总数是 **143 项上游候选**，不是 143 项 SourceLore 能力。F1 Gate 要求的是原始候选全覆盖，不是去重后仍为 143。
 2. 每条记录必须带 `license_permission` 独立字段；UPSTREAM-06 的 28 项全部只能是「仅参考设计」。
@@ -534,3 +544,37 @@ E-02 值得单独说：`THIRD_PARTY_NOTICES.md` 写「本仓库不包含任何�
 ### 下一个
 
 F1（六源能力去重及归属）。需 Owner 确认后启动。
+
+## M1-FUSION-GATE / F1 中断（2026-11-02 22:50 +08:00）
+
+### 一句话
+
+F1 启动了，做完状态核验和数据提取就熔断了。**没有任何半成品被当成成果提交。**
+
+### 已完成
+
+- F0 两提交存在性核验：`c0877e0`、`bb45ab1` 均为 commit，HEAD 与历史一致，工作树干净
+- 六源能力全量提取，实测 15+18+27+27+28+28 = **143**，与指令对照数一致
+- 字段结构确认六源一致，无需适配器
+
+### 未完成
+
+- `docs/fusion/CAPABILITY_CROSSWALK.json`
+- `docs/fusion/ABILITY_DECISIONS.md`
+- 十项冲突裁决
+- §7 的 13 项验收
+- 本任务的 Git 提交
+
+### 账本状态
+
+`STATE`：`active_task=M1-FUSION-GATE-F1`、`status=IN_PROGRESS`、`next_task=M1-FUSION-GATE-F1`，
+`blockers` 记录中断原因。`TASKS` 的 F1 行为 `IN_PROGRESS`，`blocked_reason` 写明「非项目阻塞」。
+
+**没有把 F1 标成 DONE。**
+
+### 下一步
+
+手动压缩上下文 → 读 `progress/CHECKPOINT-F1.md` → 从「二、下一步是什么」第 1 步继续。
+
+检查点里已备好 143 项能力的完整清单与六条继承约束（06 全部仅参考设计、C06 记 ADAPT、
+03 的 CC BY 4.0 署名要求、名称相似语义不同不得合并等），续跑不必重读六份审计 JSON 全文。

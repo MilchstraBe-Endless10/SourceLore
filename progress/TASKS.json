@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-02T22:28:20+08:00",
+  "updated_at": "2026-11-02T22:50:00+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -324,6 +324,27 @@
       "gate_result": "PASS",
       "counts": "能力 143 项上游候选 / 缺陷 92 项；差异 6 项；勘误 6 条，全部不改历史史料",
       "completed_at": "2026-11-02T22:27:00+08:00"
+    },
+    {
+      "id": "M1-FUSION-GATE-F1",
+      "milestone": "M1",
+      "goal": "六源能力去重、冲突裁决与模块归属：143 项原始能力全量映射到统一能力 ID，唯一模块归属，独立许可证与处置字段",
+      "inputs": "六份 progress/UPSTREAM-0X-audit.json；docs/fusion/BASELINE.md；docs/fusion/ERRATA.md",
+      "expected_outputs": [
+        "docs/fusion/CAPABILITY_CROSSWALK.json",
+        "docs/fusion/ABILITY_DECISIONS.md"
+      ],
+      "status": "IN_PROGRESS",
+      "verification_commands": [],
+      "evidence_paths": [
+        "progress/CHECKPOINT-F1.md"
+      ],
+      "git_commit": null,
+      "blocked_reason": "模型输出预算熔断，非项目阻塞。已完成 F0 核验与 143 项能力提取，映射与裁决未产出。",
+      "depends_on": [
+        "M1-FUSION-GATE-F0"
+      ],
+      "progress_note": "六源能力实测 15+18+27+27+28+28=143，字段结构一致（id/capability/mechanism/where/disposition/why）。中断点与恢复步骤见 progress/CHECKPOINT-F1.md"
     }
   ]
 }
