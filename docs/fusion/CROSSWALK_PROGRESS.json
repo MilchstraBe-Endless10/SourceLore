@@ -2,7 +2,7 @@
   "artifact": "CROSSWALK_PROGRESS",
   "schema_version": 1,
   "task": "M1-FUSION-GATE-F1",
-  "phase": "F1-A_DONE / F1-B_IN_PROGRESS (Facts, Collector, Evidence-Claims, Product, Research DONE)",
+  "phase": "F1-A_DONE / F1-B_IN_PROGRESS (Facts, Collector, Evidence-Claims, Product, Research, Lifecycle DONE)",
   "updated_at": "2026-11-02T23:15:01+08:00",
   "batches": [
     {
@@ -111,9 +111,18 @@
       "status": "DONE"
     },
     "Lifecycle": {
-      "canonical_count": 0,
-      "raw_consumed": 0,
-      "status": "PENDING"
+      "canonical_count": 6,
+      "canonical_ids": [
+        "SL-CAP-0040",
+        "SL-CAP-0041",
+        "SL-CAP-0042",
+        "SL-CAP-0043",
+        "SL-CAP-0044",
+        "SL-CAP-0045"
+      ],
+      "raw_mapped": 12,
+      "raw_redirected": 5,
+      "status": "DONE"
     },
     "Security": {
       "canonical_count": 0,
@@ -137,8 +146,8 @@
     }
   },
   "next_batch_start": {
-    "module_hint": "Lifecycle",
-    "note": "Facts、Collector、Evidence-Claims、Product、Research 已完成；剩余五个模块待办。下一步从 Lifecycle 开始（U05-C17 过期检测、U04-C19 知识失效检测、U03-C08 Rerun Protocol 已定向）。"
+    "module_hint": "Security",
+    "note": "Facts、Collector、Evidence-Claims、Product、Research、Lifecycle 已完成；剩余四个模块待办。下一步从 Security 开始（U06-C18/C24 已由 Collector 分流指向 Security，U06-C04 Boundary Gate、U06-C22 OWASP、U05-C20 保密分级已定向）。"
   },
   "invariants": [
     "每个 (upstream_id, original_capability_id) 必须且只能映射一次",
@@ -148,13 +157,13 @@
     "名称相似而语义不同不得合并"
   ],
   "progress_computed_from": "docs/fusion/CAPABILITY_CROSSWALK.draft.json",
-  "last_updated": "2026-11-03T20:29:50+08:00",
+  "last_updated": "2026-11-03T21:29:23+08:00",
   "totals": {
     "raw_total": 143,
-    "mapped_count": 54,
-    "routed_pending_count": 9,
-    "unreviewed_count": 80,
-    "canonical_count": 39,
+    "mapped_count": 66,
+    "routed_pending_count": 12,
+    "unreviewed_count": 65,
+    "canonical_count": 45,
     "sum_check": 143,
     "definitions": {
       "mapped_count": "已归属某个 canonical_id 的原始身份数",

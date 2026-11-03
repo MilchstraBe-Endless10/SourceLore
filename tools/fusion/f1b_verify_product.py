@@ -171,12 +171,15 @@ def main() -> int:
         b = next((x for x in draft.get("batches", []) if x["module"] == MODULE), None)
         if b is None:
             return False, "草稿中没有 Product 批次记录"
-        # 出向分流按统计契约是现算视图（def 声明 − 已晋升）。Product 的 def 声明了 2 条
-        # 分流且尚无目标模块承接，故批次值应为 2；本批映射身份里不含这两个键。
+        # mapped 是定格历史，必须恒为 10。出向分流按统计契约是现算视图（def 声明 − 已晋升），
+        # 下游模块一旦承接就会递减（本批 Lifecycle 接手 U03-C08，故 2→1）。
+        # 判据改为「与现算自洽」，不再要求等于上一批的旧值。
+        import f1b_stats
+        recalc = {x["module"]: x for x in f1b_stats.batches_from_draft(draft)}
         ok = (b["raw_mapped_to_this_module"] == len(own_owned) == 10
               and b["canonical_ids"] == OWN_IDS
-              and b["raw_redirected_to_other_modules"] == 2
-              and len(own_owned) == 10)
+              and b["raw_redirected_to_other_modules"] ==
+                  recalc[MODULE]["raw_redirected_to_other_modules"])
         return ok, (f"mapped={b['raw_mapped_to_this_module']}（实际 {len(own_owned)}）；"
                     f"redirected={b['raw_redirected_to_other_modules']}；ids 齐备={b['canonical_ids'] == OWN_IDS}")
 
@@ -406,11 +409,14 @@ def main() -> int:
         b = next((x for x in draft["batches"] if x["module"] == MODULE), None)
         if b is None:
             return False, "Product 批次条目丢失"
+        import f1b_stats
+        recalc = {x["module"]: x for x in f1b_stats.batches_from_draft(draft)}
         ok = (b["raw_mapped_to_this_module"] == 10
               and b["canonical_ids"] == OWN_IDS
-              and b["raw_redirected_to_other_modules"] == 2)
-        return ok, (f"批次定格 mapped={b['raw_mapped_to_this_module']}（应 10）、"
-                    f"redirected={b['raw_redirected_to_other_modules']}（应 2）、"
+              and b["raw_redirected_to_other_modules"] ==
+                  recalc[MODULE]["raw_redirected_to_other_modules"])
+        return ok, (f"批次 mapped 定格={b['raw_mapped_to_this_module']}（应 10）、"
+                    f"redirected 现算一致={ok}（当前 {b['raw_redirected_to_other_modules']}）、"
                     f"ids 未漂移={b['canonical_ids'] == OWN_IDS}")
 
     def c39():
@@ -442,15 +448,27 @@ def main() -> int:
         return not bad, f"六条均带 unresolved 字段，合计 {n} 项待定"
 
     def c43():
-        # 新增分流的目标模块必须合法且不等于 Product 自身
+        # 作用域修正：本检查原意是「产品批次推出去的那两条，去向写对了没有」，
+        # 不是「它们必须永远停在路由表里」。下游承接后它们会从分流表移入 mapped，
+        # 这是晋升的正常结果。判据改为：要么仍在分流表且去向正确，要么已被目标模块
+        # 以 canonical 正式承接（有晋升记录可查）。
         bad = []
         expected = {("UPSTREAM-03", "C15"): "Renderer", ("UPSTREAM-03", "C08"): "Lifecycle"}
         for k, mod in expected.items():
             r = next((x for x in routed if (x["upstream_id"], x["original_capability_id"]) == k), None)
-            if r is None:
-                bad.append(f"{k} 未落盘为分流")
-            elif r["owner_module"] != mod:
-                bad.append(f"{k} 去向记为 {r['owner_module']}，应为 {mod}")
+            if r is not None:
+                if r["owner_module"] != mod:
+                    bad.append(f"{k} 去向记为 {r['owner_module']}，应为 {mod}")
+                continue
+            promoted = next((x for x in promos
+                             if (x.get("upstream_id"), x.get("original_capability_id")) == k), None)
+            if promoted is None:
+                bad.append(f"{k} 既不在分流表也无晋升记录")
+            else:
+                owner = next((c["owner_module"] for c in canon
+                              if c["canonical_id"] == promoted.get("to_canonical_id")), None)
+                if owner != mod:
+                    bad.append(f"{k} 被 {owner} 承接，预期去向 {mod}")
         for r in routed:
             if r["owner_module"] not in MODULES:
                 bad.append(f"{r['upstream_id']}::{r['original_capability_id']} 模块名非法")

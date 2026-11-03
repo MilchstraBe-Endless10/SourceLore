@@ -1,8 +1,8 @@
 {
   "task": "M1-FUSION-GATE-F1 / F1-B / Product",
-  "generated_at": "2026-11-03T20:34:26+08:00",
+  "generated_at": "2026-11-03T21:33:07+08:00",
   "generated_by": "tools/fusion/f1b_verify_product.py",
-  "git_head": "9b3449b98b4523c8dc4377f02cb267f2bd423849",
+  "git_head": "e6ce91f85cdc75e37e64aa954390207d85a767da",
   "summary": {
     "passed": 43,
     "total": 43,
@@ -31,25 +31,25 @@
       "id": "c4",
       "name": "canonical_id 从 0001 连续",
       "passed": true,
-      "detail": "共 39 条，从 0001 连续无断号"
+      "detail": "共 45 条，从 0001 连续无断号"
     },
     {
       "id": "c5",
       "name": "canonical_id 无重复",
       "passed": true,
-      "detail": "canonical_id 无重复（39 条）"
+      "detail": "canonical_id 无重复（45 条）"
     },
     {
       "id": "c6",
       "name": "最大编号为 0034（新 ID 从 0029 起）",
       "passed": true,
-      "detail": "Product 编号 0029-0034 连续=True；全局当前最大编号 39（后续批次会继续增长）"
+      "detail": "Product 编号 0029-0034 连续=True；全局当前最大编号 45（后续批次会继续增长）"
     },
     {
       "id": "c7",
       "name": "每个原始身份最多一个 canonical",
       "passed": true,
-      "detail": "每项原始身份最多一个 canonical，共 54 个身份"
+      "detail": "每项原始身份最多一个 canonical，共 66 个身份"
     },
     {
       "id": "c8",
@@ -73,13 +73,13 @@
       "id": "c11",
       "name": "三态互斥且合计 143",
       "passed": true,
-      "detail": "mapped 54 + routed 9 + unreviewed 80 = 143；mapped∩routed 为空=True"
+      "detail": "mapped 66 + routed 12 + unreviewed 65 = 143；mapped∩routed 为空=True"
     },
     {
       "id": "c12",
       "name": "global_state_counts 与实算一致",
       "passed": true,
-      "detail": "global_state_counts 与实算一致 mapped=54 routed=9 unreviewed=80 canonical=39；四条不变量=True"
+      "detail": "global_state_counts 与实算一致 mapped=66 routed=12 unreviewed=65 canonical=45；四条不变量=True"
     },
     {
       "id": "c13",
@@ -91,13 +91,13 @@
       "id": "c14",
       "name": "Product 批次记录与引用自洽",
       "passed": true,
-      "detail": "mapped=10（实际 10）；redirected=2；ids 齐备=True"
+      "detail": "mapped=10（实际 10）；redirected=1；ids 齐备=True"
     },
     {
       "id": "c15",
       "name": "批次按业务顺序排列",
       "passed": true,
-      "detail": "批次按业务顺序排列：['Facts', 'Collector', 'Evidence-Claims', 'Product', 'Research']"
+      "detail": "批次按业务顺序排列：['Facts', 'Collector', 'Evidence-Claims', 'Product', 'Research', 'Lifecycle']"
     },
     {
       "id": "c16",
@@ -181,7 +181,7 @@
       "id": "c29",
       "name": "决策文档与 JSON 数量及身份一致",
       "passed": true,
-      "detail": "缺失 ID=无；批次数字 [10, 6, 2] 出现=True；累计快照 44/7/92 自洽=True；raw_total=143 出现=True"
+      "detail": "缺失 ID=无；批次数字 [10, 6, 1] 出现=True；累计快照 44/7/92 自洽=True；raw_total=143 出现=True"
     },
     {
       "id": "c30",
@@ -229,13 +229,13 @@
       "id": "c37",
       "name": "增量构建可重复执行",
       "passed": true,
-      "detail": "stats 重算与草稿落盘一致 mapped=54 routed=9 unrev=80 canon=39"
+      "detail": "stats 重算与草稿落盘一致 mapped=66 routed=12 unrev=65 canon=45"
     },
     {
       "id": "c38",
       "name": "重复运行幂等（数字不变）",
       "passed": true,
-      "detail": "批次定格 mapped=10（应 10）、redirected=2（应 2）、ids 未漂移=True"
+      "detail": "批次 mapped 定格=10（应 10）、redirected 现算一致=True（当前 1）、ids 未漂移=True"
     },
     {
       "id": "c39",

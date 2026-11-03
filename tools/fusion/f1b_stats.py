@@ -124,7 +124,7 @@ def batch_entry(batch: str, module: str, canonical_ids: list[str],
 
 BATCH_NAMES = {"Facts": "F1-B/Facts", "Collector": "F1-B/Collector",
                "Evidence-Claims": "F1-B/Evidence-Claims", "Product": "F1-B/Product",
-               "Research": "F1-B/Research"}
+               "Research": "F1-B/Research", "Lifecycle": "F1-B/Lifecycle"}
 # 批次的业务顺序（不是字母序）：batch_summary 取最后一批，必须是真正最近完成的那一批。
 BATCH_ORDER = ["Facts", "Collector", "Evidence-Claims", "Product", "Research",
                "Lifecycle", "Security", "Renderer", "Storage", "DSH Adapter"]
@@ -134,7 +134,7 @@ BATCH_ORDER = ["Facts", "Collector", "Evidence-Claims", "Product", "Research",
 # 谁的分流），拿它当上限会漏数。声明再减去已被晋升消费的键，才是真正的挂起分流。
 _MODULE_DEFS = {"Facts": "f1b_facts_def", "Collector": "f1b_collector_def",
                 "Evidence-Claims": "f1b_ec_def", "Product": "f1b_product_def",
-                "Research": "f1b_research_def"}
+                "Research": "f1b_research_def", "Lifecycle": "f1b_lifecycle_def"}
 
 
 def _module_def(module: str):
