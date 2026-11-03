@@ -122,7 +122,8 @@ def batch_entry(batch: str, module: str, canonical_ids: list[str],
     }
 
 
-BATCH_NAMES = {"Facts": "F1-B/Facts", "Collector": "F1-B/Collector"}
+BATCH_NAMES = {"Facts": "F1-B/Facts", "Collector": "F1-B/Collector",
+               "Evidence-Claims": "F1-B/Evidence-Claims"}
 # 批次的业务顺序（不是字母序）：batch_summary 取最后一批，必须是真正最近完成的那一批。
 BATCH_ORDER = ["Facts", "Collector", "Evidence-Claims", "Product", "Research",
                "Lifecycle", "Security", "Renderer", "Storage", "DSH Adapter"]
@@ -130,7 +131,8 @@ BATCH_ORDER = ["Facts", "Collector", "Evidence-Claims", "Product", "Research",
 # 出向分流的权威是「各模块 def 文件的 DEFERRED_TO_OTHER_MODULE 声明」，不是草稿里
 # 的 cross_module_redirections——后者是逐批落盘的不完整记录（哪个批次后跑就只有
 # 谁的分流），拿它当上限会漏数。声明再减去已被晋升消费的键，才是真正的挂起分流。
-_MODULE_DEFS = {"Facts": "f1b_facts_def", "Collector": "f1b_collector_def"}
+_MODULE_DEFS = {"Facts": "f1b_facts_def", "Collector": "f1b_collector_def",
+                "Evidence-Claims": "f1b_ec_def"}
 
 
 def _module_def(module: str):

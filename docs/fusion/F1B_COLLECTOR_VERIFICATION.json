@@ -1,8 +1,8 @@
 {
   "task": "M1-FUSION-GATE-F1 / F1-B / Collector",
-  "generated_at": "2026-11-03T12:55:12+08:00",
+  "generated_at": "2026-11-03T18:59:05+08:00",
   "generated_by": "tools/fusion/f1b_verify_collector.py",
-  "git_head": "d3bdc6f7273c9382dfa378c1bbc9b39f283e088d",
+  "git_head": "0c1f7dd72aa5bd1ab8fcd7961d89eb5835d72a32",
   "summary": {
     "passed": 30,
     "total": 30,
@@ -37,19 +37,19 @@
       "id": "c4b",
       "name": "canonical_id 无重复",
       "passed": true,
-      "detail": "canonical_id 无重复（共 19 条）"
+      "detail": "canonical_id 无重复（共 28 条）"
     },
     {
       "id": "c4c",
       "name": "分流与晋升记录无重复",
       "passed": true,
-      "detail": "分流 14 条、晋升 2 条均无重复"
+      "detail": "分流 5 条、晋升 14 条均无重复"
     },
     {
       "id": "c5",
       "name": "canonical_id 从 0001 连续",
       "passed": true,
-      "detail": "共 19 条，从 0001 连续无断号"
+      "detail": "共 28 条，从 0001 连续无断号"
     },
     {
       "id": "c6",
@@ -79,7 +79,7 @@
       "id": "c10",
       "name": "原始身份全局唯一归属",
       "passed": true,
-      "detail": "全局无重复归属，共 22 个身份"
+      "detail": "全局无重复归属，共 34 个身份"
     },
     {
       "id": "c11",
@@ -91,13 +91,13 @@
       "id": "c12",
       "name": "三态计数之和等于 143",
       "passed": true,
-      "detail": "mapped 22 + routed 14 + unreviewed 107 = 143"
+      "detail": "mapped 34 + routed 5 + unreviewed 104 = 143"
     },
     {
       "id": "c13",
       "name": "草稿 state_counts 与实际一致",
       "passed": true,
-      "detail": "草稿 global_state_counts 与实际一致 mapped=22 routed=14 unreviewed=107"
+      "detail": "草稿 global_state_counts 与实际一致 mapped=34 routed=5 unreviewed=104"
     },
     {
       "id": "c14",

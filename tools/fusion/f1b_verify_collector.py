@@ -254,6 +254,9 @@ def main() -> int:
         for ref in c["upstream_refs"]
     }
     promos_to_collector = [r for r in promos if r.get("to_canonical_id") in COLLECTOR_IDS]
+    # 作用域收窄：ghost 判定只对「指向 Collector 的晋升」生效。其它批次（如
+    # Evidence-Claims）写入的晋升记录不属于本验证器职责，拿 Collector 的引用集
+    # 去卡它们必然报假阳性；本批只要求 Collector 自己那条晋升链无编造。
     still_routed = {
         (r["upstream_id"], r["original_capability_id"])
         for r in draft["cross_module_redirections"]
@@ -265,12 +268,14 @@ def main() -> int:
         if not promos_to_collector:
             return False, "routed_promotions 中没有指向 Collector 的记录，晋升无声发生"
         # 晋升的对象必须是 Collector 真正引用的身份，不能凭空造
-        ghost = promo_keys - collector_owned
+        ghost = { (r.get("upstream_id"), r.get("original_capability_id")) for r in promos_to_collector } - collector_owned
         if ghost:
             return False, f"晋升了 Collector 并未引用的身份：{sorted(ghost)}"
         # 同一身份不能既在分流表又在晋升表，否则同时计 ROUTED 和 MAPPED
-        if overlap:
-            return False, f"身份同时存在于分流与晋升：{sorted(overlap)}"
+        promo_overlap = {(r.get("upstream_id"), r.get("original_capability_id"))
+                         for r in promos_to_collector} & still_routed
+        if promo_overlap:
+            return False, f"Collector 晋升的身份同时仍留在分流表：{sorted(promo_overlap)}"
         return True, f"晋升 {len(promos_to_collector)} 条，全在 Collector 名下，与分流零重叠"
 
     check("c27", "晋升记录已落盘且不与分流重复计数", c27)

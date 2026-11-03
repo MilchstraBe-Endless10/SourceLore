@@ -1,0 +1,313 @@
+{
+  "task": "M1-FUSION-GATE-F1 / F1-B / Evidence-Claims",
+  "generated_at": "2026-11-03T18:59:05+08:00",
+  "generated_by": "tools/fusion/f1b_verify_ec.py",
+  "git_head": "0c1f7dd72aa5bd1ab8fcd7961d89eb5835d72a32",
+  "summary": {
+    "passed": 50,
+    "total": 50,
+    "result": "PASS"
+  },
+  "checks": [
+    {
+      "id": "c1",
+      "name": "原始索引哈希与草稿记录一致",
+      "passed": true,
+      "detail": "raw sha256=e62b68ed1658b95e 与草稿记录一致"
+    },
+    {
+      "id": "c2",
+      "name": "原始索引未被修改",
+      "passed": true,
+      "detail": "原始索引与 HEAD 逐字节一致"
+    },
+    {
+      "id": "c3",
+      "name": "原始身份总数 143 且无重复",
+      "passed": true,
+      "detail": "原始项数 143，唯一身份 143"
+    },
+    {
+      "id": "c4",
+      "name": "canonical_id 形态合法",
+      "passed": true,
+      "detail": "canonical_id 形态全部合法"
+    },
+    {
+      "id": "c5",
+      "name": "canonical_id 从 0001 连续",
+      "passed": true,
+      "detail": "共 28 条，从 0001 连续无断号"
+    },
+    {
+      "id": "c6",
+      "name": "canonical_id 无重复",
+      "passed": true,
+      "detail": "canonical_id 无重复（28 条）"
+    },
+    {
+      "id": "c7",
+      "name": "EC 编号 0020-0028 齐全",
+      "passed": true,
+      "detail": "EC 编号 9/9 全部存在"
+    },
+    {
+      "id": "c8",
+      "name": "EC owner_module 正确标注",
+      "passed": true,
+      "detail": "owner_module=Evidence-Claims 的条目 9 条，与 EC 编号集一致"
+    },
+    {
+      "id": "c9",
+      "name": "前两批编号与 owner 未被改动",
+      "passed": true,
+      "detail": "Facts 越界 无；Collector 越界 无；编号缺失 无"
+    },
+    {
+      "id": "c10",
+      "name": "owner_module 取值合法",
+      "passed": true,
+      "detail": "owner_module 取值合法，异常 无"
+    },
+    {
+      "id": "c11",
+      "name": "原始身份全局唯一归属",
+      "passed": true,
+      "detail": "全局无重复归属，共 34 个身份"
+    },
+    {
+      "id": "c12",
+      "name": "分流与归属互斥",
+      "passed": true,
+      "detail": "分流与归属互斥"
+    },
+    {
+      "id": "c13",
+      "name": "三态计数之和等于 143",
+      "passed": true,
+      "detail": "mapped 34 + routed 5 + unreviewed 104 = 143"
+    },
+    {
+      "id": "c14",
+      "name": "global_state_counts 与实算一致且不变量成立",
+      "passed": true,
+      "detail": "global_state_counts 与实算一致 mapped=34 routed=5 unreviewed=104 canonical=28；四条不变量=True"
+    },
+    {
+      "id": "c15",
+      "name": "进度统计按三态口径且与草稿同源",
+      "passed": true,
+      "detail": "缺失 无；旧口径残留 无；与草稿一致=True；sum_check=143"
+    },
+    {
+      "id": "c16",
+      "name": "EC 批次记录与实际引用自洽",
+      "passed": true,
+      "detail": "raw_mapped_to_this_module=12 与实际 12 一致；canonical_ids 齐备=True"
+    },
+    {
+      "id": "c17",
+      "name": "batch_summary 指向最近完成批次",
+      "passed": true,
+      "detail": "batch_summary 指向最近完成批次：F1-B/Evidence-Claims（module=Evidence-Claims）"
+    },
+    {
+      "id": "c18",
+      "name": "批次按业务顺序排列",
+      "passed": true,
+      "detail": "批次按业务顺序排列：['Facts', 'Collector', 'Evidence-Claims']"
+    },
+    {
+      "id": "c19",
+      "name": "前两批批次条目仍在且数字未变",
+      "passed": true,
+      "detail": "Facts 11/1，Collector 11/4；mapped 定格=True；出向与现算自洽=True"
+    },
+    {
+      "id": "c20",
+      "name": "晋升记录落盘且不编造身份",
+      "passed": true,
+      "detail": "晋升 12 条，全部落在 EC 的 canonical 名下"
+    },
+    {
+      "id": "c21",
+      "name": "9 条 canonical 均有晋升记录",
+      "passed": true,
+      "detail": "9 条 EC canonical 全部有对应晋升记录"
+    },
+    {
+      "id": "c22",
+      "name": "晋升来源声明可复核",
+      "passed": true,
+      "detail": "晋升来源声明 12 条，问题 无"
+    },
+    {
+      "id": "c23",
+      "name": "晋升记录无重复",
+      "passed": true,
+      "detail": "晋升记录无重复（共 14 条）"
+    },
+    {
+      "id": "c24",
+      "name": "EC canonical 数为 9 且编号连续",
+      "passed": true,
+      "detail": "EC canonical 数 9，编号 ['SL-CAP-0020', 'SL-CAP-0021', 'SL-CAP-0022', 'SL-CAP-0023', 'SL-CAP-0024', 'SL-CAP-0025', 'SL-CAP-0026', 'SL-CAP-0027', 'SL-CAP-0028']"
+    },
+    {
+      "id": "c25",
+      "name": "EC 来源分布信息",
+      "passed": true,
+      "detail": "（信息）EC 承接来源分布 {\"UPSTREAM-01\": 1, \"UPSTREAM-02\": 0, \"UPSTREAM-03\": 1, \"UPSTREAM-04\": 5, \"UPSTREAM-05\": 2, \"UPSTREAM-06\": 3}"
+    },
+    {
+      "id": "c26",
+      "name": "存档契约强制字段齐备",
+      "passed": true,
+      "detail": "存档契约强制字段齐备=True"
+    },
+    {
+      "id": "c27",
+      "name": "四节点数据流结构落地",
+      "passed": true,
+      "detail": "四节点数据流结构 + partial_flow 降级态已落地"
+    },
+    {
+      "id": "c28",
+      "name": "引用校验三态齐备",
+      "passed": true,
+      "detail": "引用校验三态（present/missing/unresolvable）齐备，missing 与 unresolvable 分列"
+    },
+    {
+      "id": "c29",
+      "name": "missing 与 unresolvable 禁止合并",
+      "passed": true,
+      "detail": "三态分列有显式禁止合并条款"
+    },
+    {
+      "id": "c30",
+      "name": "未支撑陈述不得以事实形态出现",
+      "passed": true,
+      "detail": "未支撑陈述不得以事实形态出现，硬规则已写入 prompt 级措辞"
+    },
+    {
+      "id": "c31",
+      "name": "缺料占位且不编造格式",
+      "passed": true,
+      "detail": "占位符与 needs_input 清单已落地，且渲染格式留 unresolved（未编造）"
+    },
+    {
+      "id": "c32",
+      "name": "产物自证出处字段齐备",
+      "passed": true,
+      "detail": "产物自证出处（auto_generated/generator/run_id/edited_by_human/evidence_refs）齐备"
+    },
+    {
+      "id": "c33",
+      "name": "Finding 四段与观察/解释分离",
+      "passed": true,
+      "detail": "四段结构 ['answer', 'evidence', 'artifacts', 'limitations'] 齐备，观察/解释分离字段存在"
+    },
+    {
+      "id": "c34",
+      "name": "新鲜度四字段 + 替代关系结构化",
+      "passed": true,
+      "detail": "新鲜度四字段 + 替代关系三字段齐备=True"
+    },
+    {
+      "id": "c35",
+      "name": "裁决状态机六态与 report_tier 映射",
+      "passed": true,
+      "detail": "六态 齐备；report_tier 映射 齐备"
+    },
+    {
+      "id": "c36",
+      "name": "不可验证不判否的硬规则已落地",
+      "passed": true,
+      "detail": "硬规则=True；不等价声明=True；决策文档级拒绝记录=True"
+    },
+    {
+      "id": "c37",
+      "name": "U06 来源复制许可全为 false",
+      "passed": true,
+      "detail": "U06 复制许可全为 false，问题 无"
+    },
+    {
+      "id": "c38",
+      "name": "许可逐源记录且义务不缺失",
+      "passed": true,
+      "detail": "逐源许可条目 12 条，问题 无"
+    },
+    {
+      "id": "c39",
+      "name": "每条 canonical 有合并/不合并理由",
+      "passed": true,
+      "detail": "9 条均有 merge_note"
+    },
+    {
+      "id": "c40",
+      "name": "处置取值合法且分布可见",
+      "passed": true,
+      "detail": "处置分布 {'ADAPT': 5, 'REIMPLEMENT': 1, 'REUSE': 3}；非法 无"
+    },
+    {
+      "id": "c41",
+      "name": "I/O 边界与 V1 scope 齐备",
+      "passed": true,
+      "detail": "I/O 边界与 V1 scope 全部齐备"
+    },
+    {
+      "id": "c42",
+      "name": "依赖模块取值合法",
+      "passed": true,
+      "detail": "依赖模块取值合法，问题 无"
+    },
+    {
+      "id": "c43",
+      "name": "原始索引逐字节未变",
+      "passed": true,
+      "detail": "原始索引逐字节未变"
+    },
+    {
+      "id": "c44",
+      "name": "六份上游审计未改动",
+      "passed": true,
+      "detail": "六份上游审计未改动"
+    },
+    {
+      "id": "c45",
+      "name": "src/tests/schemas 无改动",
+      "passed": true,
+      "detail": "src/tests/schemas 无改动"
+    },
+    {
+      "id": "c46",
+      "name": "正式交叉表未提前冻结",
+      "passed": true,
+      "detail": "正式交叉表尚未冻结（F1-D 前不得发布）"
+    },
+    {
+      "id": "c47",
+      "name": "JSON 与决策文档数字一致",
+      "passed": true,
+      "detail": "缺失 ID=无；批次数字 [12, 9, 0] 出现=True；全局数字 [143, 34, 5, 104, 143] 出现=True"
+    },
+    {
+      "id": "c48",
+      "name": "第E节六项约束逐条落章",
+      "passed": true,
+      "detail": "第E节六项约束 全部落章"
+    },
+    {
+      "id": "c49",
+      "name": "九条 ROUTED 全部承接且不再外推",
+      "passed": true,
+      "detail": "九条 ROUTED 全部承接=True（缺 无）；EC 名下残留分流 0 条"
+    },
+    {
+      "id": "c50",
+      "name": "U06::C06 拒绝语义已记录",
+      "passed": true,
+      "detail": "U06::C06 归属 SL-CAP-0028=True；文档记录拒绝语义=True"
+    }
+  ]
+}

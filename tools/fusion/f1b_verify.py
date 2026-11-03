@@ -122,14 +122,18 @@ check(9, "未映射能力仍为待处理（不视为已裁决）", c9)
 
 # 10
 def c10():
+    # 作用域收窄：只判定 Facts 自己的条目与其分流记录不越界。C03 在后续批次
+    # 被 Evidence-Claims 正式承接属于正常推进，不能因此判 Facts 越界；判据改成
+    # 「Facts 的 canonical 不得占用这两项」，而不是「全局无人引用它们」。
     allowed = {"Collector", "Facts", "Evidence-Claims", "Product", "Research", "Lifecycle",
                "Security", "Renderer", "Storage", "DSH-Adapter"}
     bad = [c["canonical_id"] for c in canon
            if c["canonical_id"] in FACTS_IDS and c["owner_module"] != "Facts"]
     bad += [r["identity_key"] for r in redir if r["owner_module"] not in allowed or r["owner_module"] == "Facts"]
     reserved = {("UPSTREAM-01", "C03"), ("UPSTREAM-01", "C10")}
-    wrong = [k for k in reserved
-             if any((r["upstream_id"], r["original_capability_id"]) == k for c in canon for r in c["upstream_refs"])]
+    facts_refs = {(r["upstream_id"], r["original_capability_id"])
+                  for c in canon if c["canonical_id"] in FACTS_IDS for r in c["upstream_refs"]}
+    wrong = [k for k in reserved if k in facts_refs]
     return not bad and not wrong, f"越界={bad or '无'}；C03/C10 未被 Facts 占用={not wrong}；跨模块去向={len(redir)} 项"
 check(10, "Facts 未与 Collector/Evidence/Renderer 混同", c10)
 
@@ -147,12 +151,19 @@ def c11():
     nums = [bs["raw_mapped_to_this_module"], len(bs["canonical_ids"]),
             bs["raw_redirected_to_other_modules"]]
     g = draft["global_state_counts"]
-    gnums = [g["raw_total"], g["mapped_count"], g["routed_pending_count"],
-             g["unreviewed_count"], g["sum_check"]]
     nums_ok = all(str(n) in txt for n in nums)
-    gnums_ok = all(str(n) in txt for n in gnums)
-    return (not missing and nums_ok and gnums_ok,
-            f"文档缺失的 ID={missing or '无'}；批次数字 {nums} 出现={nums_ok}；全局数字 {gnums} 出现={gnums_ok}")
+    # 累计口径判定改为「文档内自洽 + 原始总数正确」，不再要求等于当前全局值：
+    # Facts 决策文档记录的是该批次验收当时的快照，后续批次推进会让二者必然不等，
+    # 拿当前值去卡历史文档等于要求篡改历史，且每推进一批就要改一次旧文档。
+    def snap(label):
+        m = re.search(r"累计 " + label + r"[^|\n]*\|\s*(\d+)\s*\|", txt)
+        return int(m.group(1)) if m else None
+    sm, sr, su = snap("MAPPED"), snap("ROUTED"), snap("UNREVIEWED")
+    total_ok = str(g["raw_total"]) in txt
+    snap_ok = None not in (sm, sr, su) and (sm + sr + su == g["raw_total"])
+    return (not missing and nums_ok and total_ok and snap_ok,
+            f"文档缺失的 ID={missing or '无'}；批次数字 {nums} 出现={nums_ok}；"
+            f"累计快照 MAPPED/ROUTED/UNREVIEWED={sm}/{sr}/{su} 自洽={snap_ok}；raw_total={g['raw_total']} 出现={total_ok}")
 check(11, "JSON 与决策文档一致", c11)
 
 # 12
