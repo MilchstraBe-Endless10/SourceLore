@@ -12,13 +12,13 @@
       "no": 2,
       "title": "Facts canonical ID 唯一且形态合规",
       "ok": true,
-      "detail": "canonical 数=61, 唯一=61, 形态=True"
+      "detail": "canonical 数=67, 唯一=67, 形态=True"
     },
     {
       "no": 3,
       "title": "每项已映射原始能力只映射到一个 canonical ID",
       "ok": true,
-      "detail": "已映射原始身份=94，重复归属=无"
+      "detail": "已映射原始身份=105，重复归属=无"
     },
     {
       "no": 4,
@@ -30,13 +30,13 @@
       "no": 5,
       "title": "最终处置与许可权限独立且逐源记录",
       "ok": true,
-      "detail": "逐源许可条目=94，问题=无"
+      "detail": "逐源许可条目=105，问题=无"
     },
     {
       "no": 6,
       "title": "全部映射引用可在原始索引中定位",
       "ok": true,
-      "detail": "引用总数=107，在原始索引中不可定位=无"
+      "detail": "引用总数=116，在原始索引中不可定位=无"
     },
     {
       "no": 7,
@@ -54,13 +54,13 @@
       "no": 9,
       "title": "未映射能力仍为待处理（不视为已裁决）",
       "ok": true,
-      "detail": "未处理=36，其中索引内仍标 UNMAPPED=True"
+      "detail": "未处理=27，其中索引内仍标 UNMAPPED=True"
     },
     {
       "no": 10,
       "title": "Facts 未与 Collector/Evidence/Renderer 混同",
       "ok": true,
-      "detail": "越界=无；C03/C10 未被 Facts 占用=True；跨模块去向=13 项"
+      "detail": "越界=无；C03/C10 未被 Facts 占用=True；跨模块去向=11 项"
     },
     {
       "no": 11,

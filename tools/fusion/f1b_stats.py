@@ -125,7 +125,8 @@ def batch_entry(batch: str, module: str, canonical_ids: list[str],
 BATCH_NAMES = {"Facts": "F1-B/Facts", "Collector": "F1-B/Collector",
                "Evidence-Claims": "F1-B/Evidence-Claims", "Product": "F1-B/Product",
                "Research": "F1-B/Research", "Lifecycle": "F1-B/Lifecycle",
-               "Security": "F1-B/Security", "Renderer": "F1-B/Renderer"}
+               "Security": "F1-B/Security", "Renderer": "F1-B/Renderer",
+               "Storage": "F1-B/Storage"}
 # 批次的业务顺序（不是字母序）：batch_summary 取最后一批，必须是真正最近完成的那一批。
 BATCH_ORDER = ["Facts", "Collector", "Evidence-Claims", "Product", "Research",
                "Lifecycle", "Security", "Renderer", "Storage", "DSH Adapter"]
@@ -136,7 +137,8 @@ BATCH_ORDER = ["Facts", "Collector", "Evidence-Claims", "Product", "Research",
 _MODULE_DEFS = {"Facts": "f1b_facts_def", "Collector": "f1b_collector_def",
                 "Evidence-Claims": "f1b_ec_def", "Product": "f1b_product_def",
                 "Research": "f1b_research_def", "Lifecycle": "f1b_lifecycle_def",
-                "Security": "f1b_security_def", "Renderer": "f1b_renderer_def"}
+                "Security": "f1b_security_def", "Renderer": "f1b_renderer_def",
+                "Storage": "f1b_storage_def"}
 
 
 def _module_def(module: str):

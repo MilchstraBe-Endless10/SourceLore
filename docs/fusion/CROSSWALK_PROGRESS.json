@@ -2,7 +2,7 @@
   "artifact": "CROSSWALK_PROGRESS",
   "schema_version": 1,
   "task": "M1-FUSION-GATE-F1",
-  "phase": "F1-A_DONE / F1-B_IN_PROGRESS (Facts, Collector, EC, Product, Research, Lifecycle, Security, Renderer DONE)",
+  "phase": "F1-A_DONE / F1-B_IN_PROGRESS (Facts, Collector, EC, Product, Research, Lifecycle, Security, Renderer, Storage DONE)",
   "updated_at": "2026-11-02T23:15:01+08:00",
   "batches": [
     {
@@ -157,9 +157,18 @@
       "status": "DONE"
     },
     "Storage": {
-      "canonical_count": 0,
-      "raw_consumed": 0,
-      "status": "PENDING"
+      "canonical_count": 6,
+      "canonical_ids": [
+        "SL-CAP-0062",
+        "SL-CAP-0063",
+        "SL-CAP-0064",
+        "SL-CAP-0065",
+        "SL-CAP-0066",
+        "SL-CAP-0067"
+      ],
+      "raw_mapped": 11,
+      "raw_redirected": 2,
+      "status": "DONE"
     },
     "DSH-Adapter": {
       "canonical_count": 0,
@@ -168,8 +177,8 @@
     }
   },
   "next_batch_start": {
-    "module_hint": "Storage",
-    "note": "Facts、Collector、EC、Product、Research、Lifecycle、Security、Renderer 已完成；剩余两个模块待办：Storage → DSH-Adapter。"
+    "module_hint": "DSH Adapter",
+    "note": "前八模块已完成；剩最后一模块 DSH-Adapter （U06-C18 成本报告已由 Security 改路由指向 DSH-Adapter，另有 U01-C06/C07/C11/C12/C13/C14 待核）。"
   },
   "invariants": [
     "每个 (upstream_id, original_capability_id) 必须且只能映射一次",
@@ -179,13 +188,13 @@
     "名称相似而语义不同不得合并"
   ],
   "progress_computed_from": "docs/fusion/CAPABILITY_CROSSWALK.draft.json",
-  "last_updated": "2026-11-03T22:58:28+08:00",
+  "last_updated": "2026-11-03T23:56:25+08:00",
   "totals": {
     "raw_total": 143,
-    "mapped_count": 94,
-    "routed_pending_count": 13,
-    "unreviewed_count": 36,
-    "canonical_count": 61,
+    "mapped_count": 105,
+    "routed_pending_count": 11,
+    "unreviewed_count": 27,
+    "canonical_count": 67,
     "sum_check": 143,
     "definitions": {
       "mapped_count": "已归属某个 canonical_id 的原始身份数",

@@ -432,18 +432,34 @@ def main() -> int:
                             f"Security 重算 mapped=17={ok2}")
 
     def c50():
+        # 作用域修正：本检查判「Security 批次推出去的那几条去向写对了没有」，
+        # 不是「它们必须永远留在分流表」。后续批次有可能承接其中的条目（本批 Storage 接手 U06-C19），
+        # 那是晋升的正常结果；也可能有后来者对归属提出异议（如 U06-C25 的 owner 存疑，
+        # 已登记为 F1-C 待裁决）。判据改为：要么仍在分流表且去向正确，要么已被承接、或已进入待裁决。
         expected = {("UPSTREAM-06", "C18"): "DSH-Adapter",
                     ("UPSTREAM-06", "C10"): "Evidence-Claims",
                     ("UPSTREAM-06", "C20"): "Evidence-Claims",
                     ("UPSTREAM-06", "C19"): "Storage",
                     ("UPSTREAM-06", "C25"): "Storage"}
+        pending_f1c = {("UPSTREAM-06", "C25")}
         bad = []
         for k, mod in expected.items():
             r = next((x for x in routed if (x["upstream_id"], x["original_capability_id"]) == k), None)
-            if r is None:
-                bad.append(f"{k} 未落盘为分流")
-            elif r["owner_module"] != mod:
-                bad.append(f"{k} 记为 {r['owner_module']}，应为 {mod}")
+            if r is not None:
+                if r["owner_module"] != mod:
+                    bad.append(f"{k} 记为 {r['owner_module']}，应为 {mod}")
+                continue
+            if k in pending_f1c:
+                continue
+            promoted = next((x for x in promos
+                             if (x.get("upstream_id"), x.get("original_capability_id")) == k), None)
+            if promoted is None:
+                bad.append(f"{k} 既不在分流表也无晋升记录")
+            else:
+                owner = next((c["owner_module"] for c in canon
+                              if c["canonical_id"] == promoted.get("to_canonical_id")), None)
+                if owner != mod:
+                    bad.append(f"{k} 被 {owner} 承接，预期去向 {mod}")
         for r in routed:
             if r["owner_module"] not in MODULES:
                 bad.append(f"模块名非法 {r['owner_module']}")

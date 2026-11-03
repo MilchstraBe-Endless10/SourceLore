@@ -1,0 +1,338 @@
+{
+  "task": "M1-FUSION-GATE-F1 / F1-B / Storage",
+  "generated_at": "2026-11-03T23:59:34+08:00",
+  "generated_by": "tools/fusion/f1b_verify_storage.py",
+  "git_head": "1d5876bcd8b0536677df238e7dbd72252c3a67fe",
+  "scope_note": "F1 设计与产物验证；未测试真实数据库的事务与并发性能",
+  "summary": {
+    "passed": 54,
+    "total": 54,
+    "result": "PASS"
+  },
+  "checks": [
+    {
+      "id": "c1",
+      "name": "原始 143 项身份唯一且不变",
+      "passed": true,
+      "detail": "原始 143 项且身份唯一；sha256=e62b68ed1658b95e 一致=True"
+    },
+    {
+      "id": "c2",
+      "name": "既有 61 条 canonical 保持稳定",
+      "passed": true,
+      "detail": "既有 61 条保留=True；端点缺失=无"
+    },
+    {
+      "id": "c3",
+      "name": "Storage 编号 0062-0067 齐全",
+      "passed": true,
+      "detail": "Storage 编号 0062-0067 齐全 6/6"
+    },
+    {
+      "id": "c4",
+      "name": "Storage 编号连续自 0062 起",
+      "passed": true,
+      "detail": "Storage 编号连续自 0062 起：[62, 63, 64, 65, 66, 67]"
+    },
+    {
+      "id": "c5",
+      "name": "canonical_id 从 0001 连续",
+      "passed": true,
+      "detail": "全表共 67 条，从 0001 连续无断号"
+    },
+    {
+      "id": "c6",
+      "name": "canonical_id 无重复",
+      "passed": true,
+      "detail": "canonical_id 无重复（67 条）"
+    },
+    {
+      "id": "c7",
+      "name": "每个原始身份最多映射一次",
+      "passed": true,
+      "detail": "每项原始能力最多正式映射一次，共 105 个身份"
+    },
+    {
+      "id": "c8",
+      "name": "每条 canonical 一个 owner",
+      "passed": true,
+      "detail": "Storage 6 条 owner 均为 Storage，越界 无"
+    },
+    {
+      "id": "c9",
+      "name": "来源证据可追溯",
+      "passed": true,
+      "detail": "11 个原始来源全部可在索引定位"
+    },
+    {
+      "id": "c10",
+      "name": "ROUTED 晋升可追踪",
+      "passed": true,
+      "detail": "晋升 11 条（路由表来源 4 条），问题 无"
+    },
+    {
+      "id": "c11",
+      "name": "新增分流与映射零相交",
+      "passed": true,
+      "detail": "新增分流与映射集合零相交"
+    },
+    {
+      "id": "c12",
+      "name": "三态守恒合计 143",
+      "passed": true,
+      "detail": "mapped 105 + routed 11 + unreviewed 27 = 143；互斥=True"
+    },
+    {
+      "id": "c13",
+      "name": "global_state_counts 与实算一致",
+      "passed": true,
+      "detail": "global_state_counts 自洽 mapped=105 routed=11 unreviewed=27 canonical=67；不变量=True"
+    },
+    {
+      "id": "c14",
+      "name": "进度统计与草稿同源",
+      "passed": true,
+      "detail": "缺失 无；旧口径 无；同源=True；sum_check=143"
+    },
+    {
+      "id": "c15",
+      "name": "Storage 批次记录自洽",
+      "passed": true,
+      "detail": "mapped=11（应 11）、redirected 现算一致=True（当前 2）、ids 齐备=True"
+    },
+    {
+      "id": "c16",
+      "name": "批次按业务顺序",
+      "passed": true,
+      "detail": "批次按业务顺序：['Facts', 'Collector', 'Evidence-Claims', 'Product', 'Research', 'Lifecycle', 'Security', 'Renderer', 'Storage']"
+    },
+    {
+      "id": "c17",
+      "name": "历史八批 mapped 定格",
+      "passed": true,
+      "detail": "历史八批 mapped 全部定格未变"
+    },
+    {
+      "id": "c18",
+      "name": "四层资产与单一权威",
+      "passed": true,
+      "detail": "四层模型与单一权威契约齐备=True"
+    },
+    {
+      "id": "c19",
+      "name": "派生索引可重建且等价",
+      "passed": true,
+      "detail": "派生索引可整体删除并重建，结果等价"
+    },
+    {
+      "id": "c20",
+      "name": "当前指针不覆盖历史",
+      "passed": true,
+      "detail": "当前指针变更不覆盖历史；展示产物不回写权威层"
+    },
+    {
+      "id": "c21",
+      "name": "六标识分列不互替",
+      "passed": true,
+      "detail": "六标识分列且不得互替=True"
+    },
+    {
+      "id": "c22",
+      "name": "Subject 身份不混淆",
+      "passed": true,
+      "detail": "Subject 身份不与仓库 URL / Commit 混淆"
+    },
+    {
+      "id": "c23",
+      "name": "写入五步契约齐备",
+      "passed": true,
+      "detail": "写入五步契约齐备=True"
+    },
+    {
+      "id": "c24",
+      "name": "并发冲突显式返回",
+      "passed": true,
+      "detail": "并发冲突显式返回，不静默覆盖也不伪装空结果"
+    },
+    {
+      "id": "c25",
+      "name": "原子性范围如实证",
+      "passed": true,
+      "detail": "原子性范围如实声明，不夸大跨文件原子性"
+    },
+    {
+      "id": "c26",
+      "name": "崩溃恢复与幂等",
+      "passed": true,
+      "detail": "崩溃恢复可判定 + 不可变对象按哈希幂等"
+    },
+    {
+      "id": "c27",
+      "name": "三类查询与来源标识",
+      "passed": true,
+      "detail": "三类查询 + 结果来源与层标识=True"
+    },
+    {
+      "id": "c28",
+      "name": "检索命中不等于已验 Claim",
+      "passed": true,
+      "detail": "检索命中不等于实时状态，不自动成为已验证 Claim"
+    },
+    {
+      "id": "c29",
+      "name": "权限拒绝不伪装空结果",
+      "passed": true,
+      "detail": "权限拒绝不伪装成无数据"
+    },
+    {
+      "id": "c30",
+      "name": "不预设向量/图数据库",
+      "passed": true,
+      "detail": "不预设向量/图数据库"
+    },
+    {
+      "id": "c31",
+      "name": "五类关系分离",
+      "passed": true,
+      "detail": "五类关系分离 + 三件套字段=True"
+    },
+    {
+      "id": "c32",
+      "name": "不凭空推断影响关系",
+      "passed": true,
+      "detail": "不凭空推断影响关系；影响判定不归 Storage"
+    },
+    {
+      "id": "c33",
+      "name": "根目录四层隔离与路径安全",
+      "passed": true,
+      "detail": "四层隔离与路径安全=True"
+    },
+    {
+      "id": "c34",
+      "name": "不回写被分析仓库",
+      "passed": true,
+      "detail": "扫描结果不回写被分析仓库；不可信内容不得触及私有文件"
+    },
+    {
+      "id": "c35",
+      "name": "来源与许可证完整",
+      "passed": true,
+      "detail": "逐源许可且 U06 全 false，问题 无"
+    },
+    {
+      "id": "c36",
+      "name": "REJECT 作反例与零来源依据",
+      "passed": true,
+      "detail": "REJECT 作反例登记=True；零来源条目有内部需求依据=本条无上游来源，是内部设计能力。内部需求依据写明：SourceLore 的四层模型（SL-CAP-0062）落地必须有主键契约，而六源中没有任何一处给出「逻辑身份 / 内容哈希 / 业务版本」三者分离的存储层定义——上游的索引表只有四列且summary 被要求不含结论（U04-C23 的审计说明），既无内容哈希也无版本链。本条与 SL-CAP-0040（Subject 身份）的关系是「语义定义 vs 存储分配」：0040 说 Subject 由哪三件确定，本条说存储层怎么把它们落成不复用的主键。F0 勘误 E-01 的三字段不可互换是本条的直接前身，本条把它从「取数三字段」扩展到「全部身份标识」。"
+    },
+    {
+      "id": "c37",
+      "name": "处置分布（信息）",
+      "passed": true,
+      "detail": "（信息）Storage 处置分布 {'REIMPLEMENT': 6}"
+    },
+    {
+      "id": "c38",
+      "name": "处置/边界/理由齐备",
+      "passed": true,
+      "detail": "处置/边界/理由齐备，问题 无"
+    },
+    {
+      "id": "c39",
+      "name": "零来源能力有内部依据",
+      "passed": true,
+      "detail": "零来源条目 ['SL-CAP-0063'] 均有内部需求依据"
+    },
+    {
+      "id": "c40",
+      "name": "unresolved 显式存在",
+      "passed": true,
+      "detail": "6 条均带 unresolved，合计 18 项待定"
+    },
+    {
+      "id": "c41",
+      "name": "决策文档与 JSON 一致",
+      "passed": true,
+      "detail": "缺失 ID=无；批次数字 [11, 6, 2] 出现=True；累计快照 105/11/27 自洽=True；raw_total 出现=True"
+    },
+    {
+      "id": "c42",
+      "name": "跨模块裁决 M-A..M-H 登记",
+      "passed": true,
+      "detail": "跨模块边界裁决 M-A..M-H 逐条登记，缺 无"
+    },
+    {
+      "id": "c43",
+      "name": "F1-C 待裁决 X-1..X-7 登记",
+      "passed": true,
+      "detail": "F1-C 待裁决项 X-1..X-7 逐条登记，缺 无"
+    },
+    {
+      "id": "c44",
+      "name": "如实声明未实现引擎",
+      "passed": true,
+      "detail": "文档如实声明本轮未安装依赖、未建库、未实现引擎"
+    },
+    {
+      "id": "c45",
+      "name": "原始能力索引未改动",
+      "passed": true,
+      "detail": "原始能力索引逐字节未变"
+    },
+    {
+      "id": "c46",
+      "name": "六份上游审计未改动",
+      "passed": true,
+      "detail": "六份历史上游审计未改动"
+    },
+    {
+      "id": "c47",
+      "name": "src/tests/schemas 无改动",
+      "passed": true,
+      "detail": "src/tests/schemas 无改动"
+    },
+    {
+      "id": "c48",
+      "name": "正式交叉表未提前冻结",
+      "passed": true,
+      "detail": "正式交叉表尚未提前冻结"
+    },
+    {
+      "id": "c49",
+      "name": "承接声明与 def 一致",
+      "passed": true,
+      "detail": "承接声明 11 与引用 11 一致=True；与分流零重叠=True"
+    },
+    {
+      "id": "c50",
+      "name": "stats 重算一致且幂等",
+      "passed": true,
+      "detail": "stats 重算一致 mapped=105 routed=11 unrev=27；Storage 重算 mapped=11=True"
+    },
+    {
+      "id": "c51",
+      "name": "新增分流去向正确",
+      "passed": true,
+      "detail": "本批 2 条分流去向正确，问题 无"
+    },
+    {
+      "id": "c52",
+      "name": "四条 ROUTED 有晋升记录",
+      "passed": true,
+      "detail": "四条 ROUTED 有路由表晋升记录=True（缺 无）"
+    },
+    {
+      "id": "c53",
+      "name": "U06-C25 未擅自改归属",
+      "passed": true,
+      "detail": "U06-C25 保持原判 owner=Storage（未擅自改归属）"
+    },
+    {
+      "id": "c54",
+      "name": "不重复定义他模块状态",
+      "passed": true,
+      "detail": "未重定义他模块状态=True；影响判定不归 Storage=True"
+    }
+  ]
+}
