@@ -1,0 +1,350 @@
+{
+  "task": "M1-FUSION-GATE-F1 / F1-B / DSH-Adapter（最后一批）",
+  "generated_at": "2026-11-04T00:11:10+08:00",
+  "generated_by": "tools/fusion/f1b_verify_dsh_adapter.py",
+  "git_head": "d3f4fc1bca7da75dc67df7b5377f2e9609e590f9",
+  "scope_note": "F1 设计与产物验证；未实现正式 Skill、未跑模型性能基准",
+  "summary": {
+    "passed": 56,
+    "total": 56,
+    "result": "PASS"
+  },
+  "checks": [
+    {
+      "id": "c1",
+      "name": "原始 143 项身份唯一且不变",
+      "passed": true,
+      "detail": "原始 143 项且身份唯一；sha256=e62b68ed1658b95e 一致=True"
+    },
+    {
+      "id": "c2",
+      "name": "既有 67 条 canonical 不变",
+      "passed": true,
+      "detail": "既有 67 条保留=True；端点缺失=无"
+    },
+    {
+      "id": "c3",
+      "name": "DSH-Adapter 编号 0068-0073 齐全",
+      "passed": true,
+      "detail": "DSH-Adapter 编号 0068-0073 齐全 6/6"
+    },
+    {
+      "id": "c4",
+      "name": "DSH-Adapter 编号连续自 0068 起",
+      "passed": true,
+      "detail": "DSH-Adapter 编号连续自 0068 起：[68, 69, 70, 71, 72, 73]"
+    },
+    {
+      "id": "c5",
+      "name": "canonical_id 从 0001 连续",
+      "passed": true,
+      "detail": "全表共 73 条，从 0001 连续无断号"
+    },
+    {
+      "id": "c6",
+      "name": "canonical_id 无重复",
+      "passed": true,
+      "detail": "canonical_id 无重复（73 条）"
+    },
+    {
+      "id": "c7",
+      "name": "每个原始身份最多映射一次",
+      "passed": true,
+      "detail": "每项原始能力最多正式映射一次，共 112 个身份"
+    },
+    {
+      "id": "c8",
+      "name": "每条 canonical 一个 owner",
+      "passed": true,
+      "detail": "DSH-Adapter 6 条 owner 均为 DSH-Adapter，越界 无"
+    },
+    {
+      "id": "c9",
+      "name": "来源证据可追溯",
+      "passed": true,
+      "detail": "7 个原始来源全部可在索引定位"
+    },
+    {
+      "id": "c10",
+      "name": "ROUTED 晋升正确",
+      "passed": true,
+      "detail": "晋升 7 条（路由表来源 1 条），问题 无"
+    },
+    {
+      "id": "c11",
+      "name": "新增分流无重复",
+      "passed": true,
+      "detail": "新增分流与映射集合零相交"
+    },
+    {
+      "id": "c12",
+      "name": "三态互斥且总数 143",
+      "passed": true,
+      "detail": "mapped 112 + routed 11 + unreviewed 20 = 143；互斥=True"
+    },
+    {
+      "id": "c13",
+      "name": "global_state_counts 与实算一致",
+      "passed": true,
+      "detail": "global_state_counts 自洽 mapped=112 routed=11 unreviewed=20 canonical=73；不变量=True"
+    },
+    {
+      "id": "c14",
+      "name": "进度统计与草稿同源",
+      "passed": true,
+      "detail": "缺失 无；同源=True；sum_check=143"
+    },
+    {
+      "id": "c15",
+      "name": "DSH-Adapter 批次记录自洽",
+      "passed": true,
+      "detail": "mapped=7（应 7）、redirected 现算一致=True（当前 1）、ids 齐备=True"
+    },
+    {
+      "id": "c16",
+      "name": "十批次按业务顺序",
+      "passed": true,
+      "detail": "十批次按业务顺序：['Facts', 'Collector', 'Evidence-Claims', 'Product', 'Research', 'Lifecycle', 'Security', 'Renderer', 'Storage', 'DSH-Adapter']"
+    },
+    {
+      "id": "c17",
+      "name": "历史九批 mapped 定格",
+      "passed": true,
+      "detail": "历史九批 mapped 全部定格未变"
+    },
+    {
+      "id": "c18",
+      "name": "Skill 入口结构与运行时事实",
+      "passed": true,
+      "detail": "入口结构与运行时事实标注齐备=True"
+    },
+    {
+      "id": "c19",
+      "name": "Skill 入口与核心能力分离",
+      "passed": true,
+      "detail": "Skill 入口与核心能力定义分离（入口薄 + 按需加载）"
+    },
+    {
+      "id": "c20",
+      "name": "四类载体分离与安全红线",
+      "passed": true,
+      "detail": "四类载体分离 + 禁自主安装 + 禁提示词覆盖安全约束"
+    },
+    {
+      "id": "c21",
+      "name": "三类操作边界且能力须实测",
+      "passed": true,
+      "detail": "三类操作边界 + 能力必须实测=True"
+    },
+    {
+      "id": "c22",
+      "name": "模型可替换且事实不依赖模型",
+      "passed": true,
+      "detail": "模型可替换且核心事实不依赖模型能力"
+    },
+    {
+      "id": "c23",
+      "name": "预算与有界修复",
+      "passed": true,
+      "detail": "预算三件 + 有界修复 2 次 + 禁无界循环 + 估算非账单=True"
+    },
+    {
+      "id": "c24",
+      "name": "成本四类分列",
+      "passed": true,
+      "detail": "成本四类分列=True"
+    },
+    {
+      "id": "c25",
+      "name": "耗时分离与预算耗尽保留检查点",
+      "passed": true,
+      "detail": "工具与模型耗时分离 + 预算耗尽保留检查点"
+    },
+    {
+      "id": "c26",
+      "name": "直连 API 与多 judge 已 REJECT",
+      "passed": true,
+      "detail": "直连 API 与多模型 judge 已作 REJECT 反例登记"
+    },
+    {
+      "id": "c27",
+      "name": "任务 11 个逻辑标识齐备",
+      "passed": true,
+      "detail": "11 个逻辑标识齐备=True"
+    },
+    {
+      "id": "c28",
+      "name": "四条幂等硬规则",
+      "passed": true,
+      "detail": "四条幂等硬规则齐备=True"
+    },
+    {
+      "id": "c29",
+      "name": "检查点与知识权威分离",
+      "passed": true,
+      "detail": "任务检查点与知识资产权威分离（热记忆仅为辅助）"
+    },
+    {
+      "id": "c30",
+      "name": "三档门禁且 AI 不得自批",
+      "passed": true,
+      "detail": "三档门禁 + AI 不得自批 + 只登记不扩权=True"
+    },
+    {
+      "id": "c31",
+      "name": "拒绝显式且策略归 Security",
+      "passed": true,
+      "detail": "拒绝显式 + 外部内容不控策略 + 审批策略归 Security"
+    },
+    {
+      "id": "c32",
+      "name": "九模块调用关系齐备",
+      "passed": true,
+      "detail": "九模块最小调用关系齐备=True"
+    },
+    {
+      "id": "c33",
+      "name": "不绕过 Storage 且错误原样传播",
+      "passed": true,
+      "detail": "不绕过 Storage + 错误原样传播 + 不复制模块功能"
+    },
+    {
+      "id": "c34",
+      "name": "不重复实现他模块",
+      "passed": true,
+      "detail": "未重复实现他模块=True；依赖声明合理=True"
+    },
+    {
+      "id": "c35",
+      "name": "许可证权限独立",
+      "passed": true,
+      "detail": "逐源许可且 U06 全 false，问题 无"
+    },
+    {
+      "id": "c36",
+      "name": "处置分布（信息）",
+      "passed": true,
+      "detail": "（信息）DSH-Adapter 处置分布 {'REIMPLEMENT': 4, 'ADAPT': 2}"
+    },
+    {
+      "id": "c37",
+      "name": "处置/边界/理由齐备",
+      "passed": true,
+      "detail": "处置/边界/理由齐备，问题 无"
+    },
+    {
+      "id": "c38",
+      "name": "零来源条目有内部依据",
+      "passed": true,
+      "detail": "零来源条目 ['SL-CAP-0071', 'SL-CAP-0073'] 均有内部需求依据"
+    },
+    {
+      "id": "c39",
+      "name": "unresolved 显式存在",
+      "passed": true,
+      "detail": "6 条均带 unresolved，合计 18 项待定"
+    },
+    {
+      "id": "c40",
+      "name": "决策文档与 JSON 一致",
+      "passed": true,
+      "detail": "缺失 ID=无；批次数字 [7, 6, 1] 出现=True；累计快照 112/11/20 自洽=True；raw_total 出现=True"
+    },
+    {
+      "id": "c41",
+      "name": "运行时核验八问落章",
+      "passed": true,
+      "detail": "运行时核验八问 H-A..H-H 逐条落章，缺 无"
+    },
+    {
+      "id": "c42",
+      "name": "跨模块裁决 Y-1..Y-6 登记",
+      "passed": true,
+      "detail": "跨模块裁决 Y-1..Y-6 逐条登记，缺 无"
+    },
+    {
+      "id": "c43",
+      "name": "剩余清单覆盖 143 项",
+      "passed": true,
+      "detail": "清单覆盖 143/143 项原始身份"
+    },
+    {
+      "id": "c44",
+      "name": "清单三态与 Crosswalk 一致",
+      "passed": true,
+      "detail": "清单三态合计与 Crosswalk 一致 mapped=112 routed=11 unreviewed=20 total=143"
+    },
+    {
+      "id": "c45",
+      "name": "清单逐项状态一致",
+      "passed": true,
+      "detail": "清单逐项状态与 Crosswalk 一致，问题 无"
+    },
+    {
+      "id": "c46",
+      "name": "残留分类齐备",
+      "passed": true,
+      "detail": "残留分类（UNREVIEWED 语义分组 / ROUTED 未承接原因 / REJECT 三类）齐备=True"
+    },
+    {
+      "id": "c47",
+      "name": "REJECT 三分类齐备",
+      "passed": true,
+      "detail": "REJECT 三分类齐备=True"
+    },
+    {
+      "id": "c48",
+      "name": "清单声明批次≠全归属",
+      "passed": true,
+      "detail": "清单明确声明：批次完成不等于 143 项归属全部完成"
+    },
+    {
+      "id": "c49",
+      "name": "原始能力索引未改动",
+      "passed": true,
+      "detail": "原始能力索引逐字节未变"
+    },
+    {
+      "id": "c50",
+      "name": "六份上游审计未改动",
+      "passed": true,
+      "detail": "六份历史上游审计未改动"
+    },
+    {
+      "id": "c51",
+      "name": "src/tests/schemas 无改动",
+      "passed": true,
+      "detail": "src/tests/schemas 无改动"
+    },
+    {
+      "id": "c52",
+      "name": "正式交叉表未提前冻结",
+      "passed": true,
+      "detail": "正式交叉表尚未提前冻结"
+    },
+    {
+      "id": "c53",
+      "name": "承接声明与 def 一致",
+      "passed": true,
+      "detail": "承接声明 7 与引用 7 一致=True；与分流零重叠=True"
+    },
+    {
+      "id": "c54",
+      "name": "stats 重算一致且幂等",
+      "passed": true,
+      "detail": "stats 重算一致 mapped=112 routed=11 unrev=20；DSH-Adapter 重算 mapped=7=True"
+    },
+    {
+      "id": "c55",
+      "name": "本批分流去向正确",
+      "passed": true,
+      "detail": "本批 1 条分流去向正确，问题 无"
+    },
+    {
+      "id": "c56",
+      "name": "U06-C18 承接有晋升记录",
+      "passed": true,
+      "detail": "U06-C18（改路由后承接）有路由表晋升记录=True"
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 {
   "task": "M1-FUSION-GATE-F1 / F1-B / Product",
-  "generated_at": "2026-11-03T23:59:34+08:00",
+  "generated_at": "2026-11-04T00:11:10+08:00",
   "generated_by": "tools/fusion/f1b_verify_product.py",
-  "git_head": "1d5876bcd8b0536677df238e7dbd72252c3a67fe",
+  "git_head": "d3f4fc1bca7da75dc67df7b5377f2e9609e590f9",
   "summary": {
     "passed": 43,
     "total": 43,
@@ -31,25 +31,25 @@
       "id": "c4",
       "name": "canonical_id 从 0001 连续",
       "passed": true,
-      "detail": "共 67 条，从 0001 连续无断号"
+      "detail": "共 73 条，从 0001 连续无断号"
     },
     {
       "id": "c5",
       "name": "canonical_id 无重复",
       "passed": true,
-      "detail": "canonical_id 无重复（67 条）"
+      "detail": "canonical_id 无重复（73 条）"
     },
     {
       "id": "c6",
       "name": "最大编号为 0034（新 ID 从 0029 起）",
       "passed": true,
-      "detail": "Product 编号 0029-0034 连续=True；全局当前最大编号 67（后续批次会继续增长）"
+      "detail": "Product 编号 0029-0034 连续=True；全局当前最大编号 73（后续批次会继续增长）"
     },
     {
       "id": "c7",
       "name": "每个原始身份最多一个 canonical",
       "passed": true,
-      "detail": "每项原始身份最多一个 canonical，共 105 个身份"
+      "detail": "每项原始身份最多一个 canonical，共 112 个身份"
     },
     {
       "id": "c8",
@@ -73,13 +73,13 @@
       "id": "c11",
       "name": "三态互斥且合计 143",
       "passed": true,
-      "detail": "mapped 105 + routed 11 + unreviewed 27 = 143；mapped∩routed 为空=True"
+      "detail": "mapped 112 + routed 11 + unreviewed 20 = 143；mapped∩routed 为空=True"
     },
     {
       "id": "c12",
       "name": "global_state_counts 与实算一致",
       "passed": true,
-      "detail": "global_state_counts 与实算一致 mapped=105 routed=11 unreviewed=27 canonical=67；四条不变量=True"
+      "detail": "global_state_counts 与实算一致 mapped=112 routed=11 unreviewed=20 canonical=73；四条不变量=True"
     },
     {
       "id": "c13",
@@ -97,7 +97,7 @@
       "id": "c15",
       "name": "批次按业务顺序排列",
       "passed": true,
-      "detail": "批次按业务顺序排列：['Facts', 'Collector', 'Evidence-Claims', 'Product', 'Research', 'Lifecycle', 'Security', 'Renderer', 'Storage']"
+      "detail": "批次按业务顺序排列：['Facts', 'Collector', 'Evidence-Claims', 'Product', 'Research', 'Lifecycle', 'Security', 'Renderer', 'Storage', 'DSH-Adapter']"
     },
     {
       "id": "c16",
@@ -229,7 +229,7 @@
       "id": "c37",
       "name": "增量构建可重复执行",
       "passed": true,
-      "detail": "stats 重算与草稿落盘一致 mapped=105 routed=11 unrev=27 canon=67"
+      "detail": "stats 重算与草稿落盘一致 mapped=112 routed=11 unrev=20 canon=73"
     },
     {
       "id": "c38",

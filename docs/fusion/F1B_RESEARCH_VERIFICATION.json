@@ -1,8 +1,8 @@
 {
   "task": "M1-FUSION-GATE-F1 / F1-B / Research",
-  "generated_at": "2026-11-03T23:59:34+08:00",
+  "generated_at": "2026-11-04T00:11:10+08:00",
   "generated_by": "tools/fusion/f1b_verify_research.py",
-  "git_head": "1d5876bcd8b0536677df238e7dbd72252c3a67fe",
+  "git_head": "d3f4fc1bca7da75dc67df7b5377f2e9609e590f9",
   "summary": {
     "passed": 46,
     "total": 46,
@@ -37,19 +37,19 @@
       "id": "c5",
       "name": "canonical_id 从 0001 连续",
       "passed": true,
-      "detail": "全表共 67 条，从 0001 连续无断号"
+      "detail": "全表共 73 条，从 0001 连续无断号"
     },
     {
       "id": "c6",
       "name": "canonical_id 无重复",
       "passed": true,
-      "detail": "canonical_id 无重复（67 条）"
+      "detail": "canonical_id 无重复（73 条）"
     },
     {
       "id": "c7",
       "name": "每项原始能力最多正式映射一次",
       "passed": true,
-      "detail": "每项原始能力最多正式映射一次，共 105 个身份"
+      "detail": "每项原始能力最多正式映射一次，共 112 个身份"
     },
     {
       "id": "c8",
@@ -79,13 +79,13 @@
       "id": "c12",
       "name": "三态守恒合计 143",
       "passed": true,
-      "detail": "mapped 105 + routed 11 + unreviewed 27 = 143；mapped∩routed 空=True"
+      "detail": "mapped 112 + routed 11 + unreviewed 20 = 143；mapped∩routed 空=True"
     },
     {
       "id": "c13",
       "name": "global_state_counts 与实算一致",
       "passed": true,
-      "detail": "global_state_counts 自洽 mapped=105 routed=11 unreviewed=27 canonical=67；不变量=True"
+      "detail": "global_state_counts 自洽 mapped=112 routed=11 unreviewed=20 canonical=73；不变量=True"
     },
     {
       "id": "c14",
@@ -103,7 +103,7 @@
       "id": "c16",
       "name": "批次按业务顺序",
       "passed": true,
-      "detail": "批次按业务顺序：['Facts', 'Collector', 'Evidence-Claims', 'Product', 'Research', 'Lifecycle', 'Security', 'Renderer', 'Storage']"
+      "detail": "批次按业务顺序：['Facts', 'Collector', 'Evidence-Claims', 'Product', 'Research', 'Lifecycle', 'Security', 'Renderer', 'Storage', 'DSH-Adapter']"
     },
     {
       "id": "c17",
@@ -271,7 +271,7 @@
       "id": "c44",
       "name": "stats 重算与落盘一致且幂等",
       "passed": true,
-      "detail": "stats 重算与落盘一致 mapped=105 routed=11 unrev=27；Research 批次重算 mapped=10 成立=True"
+      "detail": "stats 重算与落盘一致 mapped=112 routed=11 unrev=20；Research 批次重算 mapped=10 成立=True"
     },
     {
       "id": "c45",

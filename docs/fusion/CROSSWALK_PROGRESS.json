@@ -2,7 +2,7 @@
   "artifact": "CROSSWALK_PROGRESS",
   "schema_version": 1,
   "task": "M1-FUSION-GATE-F1",
-  "phase": "F1-A_DONE / F1-B_IN_PROGRESS (Facts, Collector, EC, Product, Research, Lifecycle, Security, Renderer, Storage DONE)",
+  "phase": "F1-A_DONE / F1-B_ALL_BATCHES_DONE",
   "updated_at": "2026-11-02T23:15:01+08:00",
   "batches": [
     {
@@ -171,14 +171,23 @@
       "status": "DONE"
     },
     "DSH-Adapter": {
-      "canonical_count": 0,
-      "raw_consumed": 0,
-      "status": "PENDING"
+      "canonical_count": 6,
+      "canonical_ids": [
+        "SL-CAP-0068",
+        "SL-CAP-0069",
+        "SL-CAP-0070",
+        "SL-CAP-0071",
+        "SL-CAP-0072",
+        "SL-CAP-0073"
+      ],
+      "raw_mapped": 7,
+      "raw_redirected": 1,
+      "status": "DONE"
     }
   },
   "next_batch_start": {
-    "module_hint": "DSH Adapter",
-    "note": "前八模块已完成；剩最后一模块 DSH-Adapter （U06-C18 成本报告已由 Security 改路由指向 DSH-Adapter，另有 U01-C06/C07/C11/C12/C13/C14 待核）。"
+    "module_hint": "F1-C",
+    "note": "F1-B 十个模块批次全部完成。剩余待裁决项进入 F1-C：十项冲突裁决、27 项 UNREVIEWED 归属、11 项 ROUTED 去向、以及各批次登记的跨模块 owner 争议（U06-C25、SL-CAP-0009 等）。"
   },
   "invariants": [
     "每个 (upstream_id, original_capability_id) 必须且只能映射一次",
@@ -188,13 +197,13 @@
     "名称相似而语义不同不得合并"
   ],
   "progress_computed_from": "docs/fusion/CAPABILITY_CROSSWALK.draft.json",
-  "last_updated": "2026-11-03T23:56:25+08:00",
+  "last_updated": "2026-11-04T00:07:31+08:00",
   "totals": {
     "raw_total": 143,
-    "mapped_count": 105,
+    "mapped_count": 112,
     "routed_pending_count": 11,
-    "unreviewed_count": 27,
-    "canonical_count": 67,
+    "unreviewed_count": 20,
+    "canonical_count": 73,
     "sum_check": 143,
     "definitions": {
       "mapped_count": "已归属某个 canonical_id 的原始身份数",

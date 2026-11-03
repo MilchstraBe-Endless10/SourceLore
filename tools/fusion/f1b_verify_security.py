@@ -475,12 +475,22 @@ def main() -> int:
         return not missing, f"两条 ROUTED 均有路由表晋升记录={not missing}（缺 {sorted(missing) or '无'}）"
 
     def c52():
-        # U06-C18 改路由必须有理由留痕
-        r = next((x for x in routed if (x["upstream_id"], x["original_capability_id"]) == ("UPSTREAM-06", "C18")), None)
-        if r is None:
-            return False, "U06-C18 改路由记录不存在"
-        ok = "改路由" in r["reason"] and "不属安全" in r["reason"]
-        return ok, "U06-C18 改路由理由留痕（含原归类与本次重新裁决原因）"
+        # U06-C18 改路由必须有理由留痕。但本批之后它已被 DSH-Adapter 承接、移入 mapped，
+        # 分流记录不再是它唯一的存在形态。判据改为：要么仍在路由表且理由含改路由，
+        # 要么已被 DSH-Adapter 以 canonical 承接（晋升记录可查，改路由理由保留在该批 def 与文档中）。
+        k = ("UPSTREAM-06", "C18")
+        r = next((x for x in routed if (x["upstream_id"], x["original_capability_id"]) == k), None)
+        if r is not None:
+            ok = "改路由" in r["reason"] and "不属安全" in r["reason"]
+            return ok, "U06-C18 仍在路由表，改路由理由留痕"
+        promoted = next((x for x in promos
+                         if (x.get("upstream_id"), x.get("original_capability_id")) == k), None)
+        if promoted is None:
+            return False, "U06-C18 既不在路由表也无晋升记录"
+        owner = next((c["owner_module"] for c in canon
+                      if c["canonical_id"] == promoted.get("to_canonical_id")), None)
+        ok = owner == "DSH-Adapter"
+        return ok, f"U06-C18 已被 {owner} 承接（改路由理由记录在 DSH-Adapter 批次）"
 
     def c53():
         # 未在 EC 中重复占用：U06-C05/C06/C07 仍归 EC

@@ -3,8 +3,8 @@
   "schema_version": 1,
   "task": "M1-FUSION-GATE-F1 / F1-B",
   "status": "DRAFT — 未冻结，F1-D 全量验收前不得发布为 CAPABILITY_CROSSWALK.json",
-  "generated_at": "2026-11-03T23:56:25+08:00",
-  "generator": "tools/fusion/f1b_build_storage.py（增量：前八模块由各自构建器产出）",
+  "generated_at": "2026-11-04T00:07:31+08:00",
+  "generator": "tools/fusion/f1b_build_dsh_adapter.py（增量：前九模块由各自构建器产出）",
   "source_index": "docs/fusion/RAW_CAPABILITY_INDEX.json",
   "source_index_sha256": "e62b68ed1658b95ebe73b37d8c991c995b1a18201faabbde81e41214c03a2f11",
   "id_policy": {
@@ -29,7 +29,8 @@
     "Lifecycle",
     "Security",
     "Renderer",
-    "Storage"
+    "Storage",
+    "DSH-Adapter"
   ],
   "canonical_capabilities": [
     {
@@ -5885,6 +5886,461 @@
         "路径穿越防护的具体实现（realpath 校验 vs 沙箱）待 F2"
       ],
       "merge_note": "合并依据：U05-C09（PKB_ROOT 与项目分离）给「显式声明根路径」的正面做法；U04-C25 与 U05-C26 是同一错误模型的两次独立 REJECT——「一个仓库一个 corpus，住在仓库内」会导致语料无法跨仓库复用、污染被分析对象的 git 历史，且 worktree 不复制等一整套做法失效。三者合起来才构成完整裁决：正的取「显式根路径」，反的取「绝不写在仓库内」。U05-C09 判 ADAPT：可借的是显式声明根路径这一做法（避免隐式假设 cwd），不借其存放位置策略。U04-C25 与 U05-C26 均判 REJECT 并作为反面约束登记在本条 refs 中——这是本条唯一包含 REJECT verdict 的地方，因为它们确实被本条用来约束设计（硬规则三）。该 U05-C09 身份来自既有未审项，非分流。"
+    },
+    {
+      "canonical_id": "SL-CAP-0068",
+      "name": "Skill 入口与渐进加载契约（入口薄、能力按需读）",
+      "description": "SourceLore Skill 的入口只有一个薄文件：YAML frontmatter（name + description 触发语）+ Markdown 正文，只承载「何时用、先做什么、去哪里读细节」三件事。具体模块约束、字段契约、检查清单一律放在按需加载的独立文件中，由入口按当前任务指向对应文件，**不把全部 canonical 约束复制进入口提示词**。已核实的运行时事实（只读调查结果）：\nV-1 Skill 由 `<root>/<name>/SKILL.md` 承载，frontmatter 的 name 与 description 决定发现与触发。\nV-2 同目录可放多个 Markdown 子文件（如 omarchy skill 的 capture.md / hyprland.md / theming.md），构成渐进加载的天然载体。\nV-3 项目内 `skills/sourcelore/` 目前是空目录——**尚未实现**，本批只定契约不建 Skill。\n硬规则一：四类内容不可互相替代——给模型读的说明、给程序校验的结构化契约、给运行时调用的工具接口、需要人类审批的操作，各有独立载体。硬规则二：入口文件的行数应随模块数量线性增长而非乘积增长：只增「读哪个文件」，不增「读什么内容」。硬规则三：Skill 文档不得要求自主安装未知脚本；不得通过提示词覆盖系统级安全约束。",
+      "owner_module": "DSH-Adapter",
+      "upstream_refs": [
+        {
+          "upstream_id": "UPSTREAM-01",
+          "original_capability_id": "C11",
+          "identity_key": "UPSTREAM-01::C11",
+          "upstream_capability": "prompt assets as markdown knowledge",
+          "upstream_where": "skill/prompts/*, llm/prompts.py:103",
+          "upstream_disposition": "ADAPT",
+          "verdict": "ADAPT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-01-audit.json",
+            "pointer": "capability_matrix[10]",
+            "where": "skill/prompts/*, llm/prompts.py:103"
+          },
+          "license": {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false
+          }
+        }
+      ],
+      "disposition": "REIMPLEMENT",
+      "license_permission": {
+        "per_upstream": [
+          {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "upstream_id": "UPSTREAM-01"
+          }
+        ],
+        "copy_permitted": true,
+        "constraint": "按各来源许可逐项履行署名/许可链接/修改声明/notice 义务"
+      },
+      "dependencies": [],
+      "overlaps": "与 EC 的 SL-CAP-0025（产物自证出处）无关：那条管生成产物，本条管 Skill 入口结构。与 Renderer 的 SL-CAP-0055（视图契约）分界：本条面向「模型读什么」，0055 面向「人读什么」",
+      "v1_scope": "V1_REQUIRED",
+      "input_boundary": [
+        "skill_entry_payload",
+        "task_kind"
+      ],
+      "output_boundary": [
+        "skill_entry{frontmatter{name, description}, body_sections[], load_pointers[]}",
+        "load_pointer{module, file, when}",
+        "runtime_capability_claim{capability, status: verified|UNVERIFIED_RUNTIME_CAPABILITY}"
+      ],
+      "evidence": {
+        "raw_index_sha256": "e62b68ed1658b95ebe73b37d8c991c995b1a18201faabbde81e41214c03a2f11",
+        "ref_count": 1,
+        "sources": [
+          "UPSTREAM-01"
+        ]
+      },
+      "unresolved": [
+        "Skill 的正式目录与命名约定待 F2；本批只定「入口薄 + 按需加载」结构",
+        "description 触发语的写法规范（何时触发、何时不触发）待 F2",
+        "BotHarness 对 Skill 的发现是否与 DSH 完全一致，未经实测，标 UNVERIFIED_RUNTIME_CAPABILITY"
+      ],
+      "merge_note": "U01-C11 判 ADAPT：上游把 prompt 资产当 markdown 知识组织，方向正确，但它没有「入口薄、能力按需读」的约束——上游倾向于把说明堆进单一文件。本条把该取向收紧为结构的硬规则：入口只放路由指针，约束下沉到独立文件。运行时事实 V-1/V-2 来自本机只读调查（~/.agents/skills/omarchy 的实际结构），V-3 是本项目的真实状态（skills/sourcelore 为空）。未实测的部分一律标 UNVERIFIED_RUNTIME_CAPABILITY，不写成平台现有功能。"
+    },
+    {
+      "canonical_id": "SL-CAP-0069",
+      "name": "模型适配接口与确定性/模型辅助边界",
+      "description": "模型调用必须经由单一适配接口，接口契约不绑定任何具体模型或供应商：输入 {system_prompt, task_context, tools_allowed, budget}，输出 {text, tool_calls[], usage, finish_reason}。**核心事实与知识存储契约不依赖模型能力**——更换模型只改变「谁来解释」，不改变「解释什么、存成什么形状」。\n三类操作的边界必须显式：\nD-1 必须确定性执行：哈希计算、路径解析、集合运算、结构校验——不经模型。\nD-2 允许模型辅助分析：语义解释、产品含义推断、研究结论——必须标 claim_type。\nD-3 必须交 Evidence-Claims 校验：任何被当作结论输出的主张。\n硬规则一：能力要求必须来自实际运行时验证，不得默认所有模型都有视觉、工具调用或结构化输出。未知能力一律标 UNVERIFIED_RUNTIME_CAPABILITY。\n硬规则二：模型输出格式错误只允许有界修复（见 SL-CAP-0070），且修复失败必须报错而非降级为猜测。\n硬规则三：不得因更换模型而重写已有 canonical 的事实或存储契约。",
+      "owner_module": "DSH-Adapter",
+      "upstream_refs": [
+        {
+          "upstream_id": "UPSTREAM-01",
+          "original_capability_id": "C06",
+          "identity_key": "UPSTREAM-01::C06",
+          "upstream_capability": "LLM provider decoupling via Protocol",
+          "upstream_where": "llm/base.py",
+          "upstream_disposition": "REUSE",
+          "verdict": "REUSE",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-01-audit.json",
+            "pointer": "capability_matrix[5]",
+            "where": "llm/base.py"
+          },
+          "license": {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false
+          }
+        }
+      ],
+      "disposition": "REIMPLEMENT",
+      "license_permission": {
+        "per_upstream": [
+          {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "upstream_id": "UPSTREAM-01"
+          }
+        ],
+        "copy_permitted": true,
+        "constraint": "按各来源许可逐项履行署名/许可链接/修改声明/notice 义务"
+      },
+      "dependencies": [
+        "Evidence-Claims",
+        "Facts"
+      ],
+      "overlaps": "与 Facts 的 SL-CAP-0001（确定性事实抽取）分界：0001 说「抽取必须零模型」，本条说「调用层怎么把确定性操作与模型操作分开」。与 EC 的 SL-CAP-0023 分界：0023 管 claim 措辞，本条管操作分类",
+      "v1_scope": "V1_REQUIRED",
+      "input_boundary": [
+        "adapter_request{system_prompt, task_context, tools_allowed, budget}",
+        "model_capability_profile{verified[], unverified[]}"
+      ],
+      "output_boundary": [
+        "adapter_response{text, tool_calls[], usage, finish_reason}",
+        "operation_class{operation, class: deterministic|model_assisted|requires_ec}",
+        "capability_gap{capability, status: UNVERIFIED_RUNTIME_CAPABILITY}"
+      ],
+      "evidence": {
+        "raw_index_sha256": "e62b68ed1658b95ebe73b37d8c991c995b1a18201faabbde81e41214c03a2f11",
+        "ref_count": 1,
+        "sources": [
+          "UPSTREAM-01"
+        ]
+      },
+      "unresolved": [
+        "适配接口的具体形态（命令行 / 库函数 / MCP 工具）待 F2",
+        "当前模型的能力画像（是否支持结构化输出、工具调用）未经实测，标 UNVERIFIED",
+        "多模型并存时的选择策略待 F1-C"
+      ],
+      "merge_note": "U01-C06 判 REUSE：上游用 Protocol 把 LLM provider 解耦，是本轮少见可直接沿用的设计——接口与实现分离，换供应商不改调用方。本条沿用该结构，并补上 SourceLore 需要的「三类操作边界」与「能力必须实测」两条约束（上游没有）。注意：解耦的是**适配层**，不是把 REJECT 的直连外部 API 重新引入（见 SL-CAP-0070 的反例登记）。"
+    },
+    {
+      "canonical_id": "SL-CAP-0070",
+      "name": "调用预算、有界修复与成本核算（估算与实测分离）",
+      "description": "每次模型调用必须声明预算并在超限时安全停止，禁止无界循环。预算三件：max_calls（调用次数上限）、max_context（单次上下文上限）、max_repairs（修复次数上限，**硬上限 2 次，且不得自增**）。\n有界修复：输出格式校验失败时允许至多 2 次重试，每次必须携带「上一次错在哪」的具体反馈；2 次仍失败即报错终止，**不得降级为猜测、不得跳过校验**。禁止 while(true) 式修复循环。\n成本四类必须分列，不得混为一谈：\nC-1 measured_tokens——运行时实际获得的 token 用量（有则记）。\nC-2 billed_cost——供应商返回的计费信息（有则记）。\nC-3 estimated_tokens——本地按字数估算（可用的近似值，**不是账单**）。\nC-4 unavailable_cost——无法取得的成本信息（必须显式登记，不得省略）。\n硬规则一：**不得把估算值描述为供应商实测账单**。estimated_tokens 与 billed_cost 是不同字段。\n硬规则二：预算耗尽后必须保留可恢复检查点（见 SL-CAP-0071），不得丢弃已完成的有效产物。\n硬规则三：工具执行耗时与模型调用耗时分别记录——两者是不同的成本来源。\n明确拒绝继承：上游的「直连外部模型 API」（自建 client、自带 token 通道）与「多模型 judge 集成」——后者需要多个付费 API 且无校准依据。本条只保留「成本必须可观测」的取向。",
+      "owner_module": "DSH-Adapter",
+      "upstream_refs": [
+        {
+          "upstream_id": "UPSTREAM-01",
+          "original_capability_id": "C07",
+          "identity_key": "UPSTREAM-01::C07",
+          "upstream_capability": "single-call reasoning + bounded repair",
+          "upstream_where": "pipeline/analyze.py:103,195",
+          "upstream_disposition": "ADAPT",
+          "verdict": "ADAPT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-01-audit.json",
+            "pointer": "capability_matrix[6]",
+            "where": "pipeline/analyze.py:103,195"
+          },
+          "license": {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false
+          }
+        },
+        {
+          "upstream_id": "UPSTREAM-06",
+          "original_capability_id": "C18",
+          "identity_key": "UPSTREAM-06::C18",
+          "upstream_capability": "成本报告（时长 + token 估算）",
+          "upstream_where": "SKILL.md L1273–L1313；各 reference 的 Cost Report 节",
+          "upstream_disposition": "ADAPT",
+          "verdict": "ADAPT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-06-audit.json",
+            "pointer": "capability_matrix[17]",
+            "where": "SKILL.md L1273–L1313；各 reference 的 Cost Report 节"
+          },
+          "license": {
+            "spdx": null,
+            "copy_permitted": false,
+            "attribution_required": false,
+            "license_link_required": false,
+            "modification_notice_required": false
+          }
+        },
+        {
+          "upstream_id": "UPSTREAM-01",
+          "original_capability_id": "C13",
+          "identity_key": "UPSTREAM-01::C13",
+          "upstream_capability": "direct external LLM API client",
+          "upstream_where": "llm/openai_client.py, config.py, .env.example",
+          "upstream_disposition": "REJECT",
+          "verdict": "REJECT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-01-audit.json",
+            "pointer": "capability_matrix[12]",
+            "where": "llm/openai_client.py, config.py, .env.example"
+          },
+          "license": {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false
+          }
+        },
+        {
+          "upstream_id": "UPSTREAM-01",
+          "original_capability_id": "C14",
+          "identity_key": "UPSTREAM-01::C14",
+          "upstream_capability": "multi-model judge ensemble",
+          "upstream_where": "evals.py, .env.example JUDGE_*",
+          "upstream_disposition": "REJECT",
+          "verdict": "REJECT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-01-audit.json",
+            "pointer": "capability_matrix[13]",
+            "where": "evals.py, .env.example JUDGE_*"
+          },
+          "license": {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false
+          }
+        }
+      ],
+      "disposition": "ADAPT",
+      "license_permission": {
+        "per_upstream": [
+          {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "upstream_id": "UPSTREAM-01"
+          },
+          {
+            "spdx": null,
+            "copy_permitted": false,
+            "attribution_required": false,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "upstream_id": "UPSTREAM-06"
+          },
+          {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "upstream_id": "UPSTREAM-01"
+          },
+          {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "upstream_id": "UPSTREAM-01"
+          }
+        ],
+        "copy_permitted": false,
+        "constraint": "任一来源不允许复制，实现必须独立完成；仅可取非著作权的一般思想"
+      },
+      "dependencies": [],
+      "overlaps": "与 Lifecycle 的 SL-CAP-0043 分界：0043 管「知识该不该重做」，本条管「这次调用花了多少、够不够」。与 DSH Adapter 自身的 SL-CAP-0071 是配合关系：预算耗尽产出恢复检查点",
+      "v1_scope": "V1_REQUIRED",
+      "input_boundary": [
+        "budget{max_calls, max_context, max_repairs}",
+        "call_record{model, tokens, duration}"
+      ],
+      "output_boundary": [
+        "budget_state{used_calls, used_context, repairs_done, exhausted: bool}",
+        "repair_attempt{attempt_no, prior_error, outcome}",
+        "cost_record{measured_tokens?, billed_cost?, estimated_tokens?, unavailable_cost?, tool_duration_ms, model_duration_ms}"
+      ],
+      "evidence": {
+        "raw_index_sha256": "e62b68ed1658b95ebe73b37d8c991c995b1a18201faabbde81e41214c03a2f11",
+        "ref_count": 4,
+        "sources": [
+          "UPSTREAM-01",
+          "UPSTREAM-06"
+        ]
+      },
+      "unresolved": [
+        "max_context 的具体数值待 F2（按模型窗口定）",
+        "estimated_tokens 的估算方法（字数比 vs tokenizer）待 F2",
+        "工具耗时的采集粒度（单工具 vs 阶段）待 F2"
+      ],
+      "merge_note": "合并依据：U01-C07（单次推理 + 有界修复）给「怎么限制调用次数」，U06-C18（运行成本与可观测性）给「怎么记录花了多少」——两者是同一预算体系的两面：一面限制、一面记账。拆开会出现「限制了但不知道花了多少」或反之。U01-C07 判 ADAPT：上游的有界修复取向正确，但未规定次数上限与失败后的确定行为。U06-C18 判 ADAPT：上游把运行代价做成可比较的结构字段，方向对；但纯 chars/4 估算、无独立核验（审计 D15），SourceLore 只能当自报值——这正是本条要把 estimated_tokens 与 billed_cost 分成两个字段的原因。U01-C13（直连外部 LLM API 客户端）与 U01-C14（多模型 judge 集成）判 REJECT 并登记为本条反例——它们是本批唯一的两处 REJECT，用来约束「不得通过重命名把被拒方案重新引入」。U06-C18 该身份来自 Security 批次的改路由分流，本批建 canonical 正式承接。"
+    },
+    {
+      "canonical_id": "SL-CAP-0071",
+      "name": "任务执行状态、检查点与幂等调用",
+      "description": "每个任务携带一组逻辑标识，用于恢复与幂等判定：task_id、run_id、workspace_id、subject_id、requested_action、current_stage、checkpoint_ref、input_snapshot_ref、authorization_scope、attempt_count、error_category。（逻辑字段候选，Schema 留 F2。）\n四条硬规则：\nI-1 同一任务恢复时不得重复提交已成功的知识写入——幂等依据是 checkpoint_ref 记录了「哪些写入已确认提交」，而不是「上次好像成功了」。\nI-2 工具执行成功与模型生成成功必须分开记录：模型说「我完成了」不构成执行证据。\nI-3 超时不得自动解释为工具未执行——超时可能是执行成功但回传失败，必须按 unknown 处理并核对。\nI-4 重试必须有明确的幂等依据（checkpoint 或内容哈希），无依据的重试等于重复写入。\n权威分离（硬规则五）：**Storage 是知识资产权威；执行检查点是任务恢复依据；模型上下文或热记忆只是辅助检索，不是唯一事实来源。** 不得把记忆系统的检索命中当作当前任务状态的权威依据。需要人工批准的操作不能由 Agent 自批（见 SL-CAP-0072）。",
+      "owner_module": "DSH-Adapter",
+      "upstream_refs": [],
+      "disposition": "REIMPLEMENT",
+      "license_permission": {
+        "per_upstream": [],
+        "copy_permitted": true,
+        "constraint": "无上游来源，本条为独立架构设计，不涉及第三方著作权"
+      },
+      "dependencies": [
+        "Storage"
+      ],
+      "overlaps": "与 Storage 的 SL-CAP-0064（写入五步与 CAS）分界：0064 管单次写入的原子性，本条管跨多次调用的任务级恢复与幂等。与 Research 的 SL-CAP-0035 分界：0035 管研究阶段跑到哪，本条管任意任务的外部调用如何恢复",
+      "v1_scope": "V1_REQUIRED",
+      "input_boundary": [
+        "task_context{task_id, run_id, workspace_id, subject_id}",
+        "checkpoint_ref"
+      ],
+      "output_boundary": [
+        "task_state{current_stage, attempt_count, error_category, checkpoint_ref}",
+        "commit_ledger{committed_writes[], pending_writes[], unknown_writes[]}",
+        "resume_plan{from_checkpoint, skip_writes[], redo_actions[]}"
+      ],
+      "evidence": {
+        "raw_index_sha256": "e62b68ed1658b95ebe73b37d8c991c995b1a18201faabbde81e41214c03a2f11",
+        "ref_count": 0,
+        "sources": []
+      },
+      "unresolved": [
+        "checkpoint 的物理存放位置（属 Storage 的权威资产还是独立执行日志）待 F1-C",
+        "attempt_count 的上限与退避策略待 F2",
+        "任务级标识与 Storage 主键的映射关系待 F2"
+      ],
+      "merge_note": "本条无上游来源，是内部设计能力。内部需求依据：DSH Adapter 要跨多次模型调用与工具调用，必须能在中断后恢复；六源中没有任何一处给出「任务级检查点 + 幂等依据」的运行时契约（U04 有知识层的版本链，U05 有脚本级写盘，但都不是任务执行层的恢复语义）。四条硬规则的共同点是**区分「看起来成功」与「证据上成功」**：模型自称完成不算、超时不算未执行、无依据的重试不算幂等。权威分离那条是对本项目已有教训的固化：热记忆曾多次被误当作事实源。"
+    },
+    {
+      "canonical_id": "SL-CAP-0072",
+      "name": "权限门禁的运行时执行与人工审批（AI 不得自批）",
+      "description": "DSH Adapter 负责**执行**权限门禁，不负责**定义**审批策略（策略归 Security 的 SL-CAP-0053）。门禁三档：\nG-A 自主执行——只读查询、确定性计算、本地分析，无需审批。\nG-B 需声明后执行——写入知识资产、生成产物，必须携带 authorization_scope 且可追溯。\nG-C 必须人工批准——发布、扩大工具权限、执行不受信代码、任何不可逆操作。硬规则一：G-C 类操作的批准只能由人的动作产生；AI 可以把状态置为 pending_review，**不得自行转换为 approved**。\n硬规则二：权限被拒必须显式返回 denied 并带原因，不得吞掉变成空结果（与 Storage 的 SL-CAP-0065 同源）。\n硬规则三：外部仓库内容不得修改执行策略——被分析仓库的 README/SKILL.md/Issue 中的指令性文本不改变门禁档位，也不扩大工具权限。\n硬规则四：工具权限最小化；不记录 Token / Cookie / API Key；不读取无关本地私有文件。\n硬规则五：需要扩展 Harness 权限时，当前批次只登记需求，**不实际扩大授权**。",
+      "owner_module": "DSH-Adapter",
+      "upstream_refs": [
+        {
+          "upstream_id": "UPSTREAM-04",
+          "original_capability_id": "C15",
+          "identity_key": "UPSTREAM-04::C15",
+          "upstream_capability": "自主权分级（可自主 vs 须先问）",
+          "upstream_where": "SKILL.md L104–L110",
+          "upstream_disposition": "ADAPT",
+          "verdict": "ADAPT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-04-audit.json",
+            "pointer": "capability_matrix[14]",
+            "where": "SKILL.md L104–L110"
+          },
+          "license": {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true
+          }
+        }
+      ],
+      "disposition": "ADAPT",
+      "license_permission": {
+        "per_upstream": [
+          {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true,
+            "upstream_id": "UPSTREAM-04"
+          }
+        ],
+        "copy_permitted": true,
+        "constraint": "按各来源许可逐项履行署名/许可链接/修改声明/notice 义务"
+      },
+      "dependencies": [
+        "Security",
+        "Storage"
+      ],
+      "overlaps": "与 Security 的 SL-CAP-0053（分级与发布门禁）分界：0053 定义「哪级内容、谁能批」，本条定义「运行时怎么拦、怎么记」。与 Storage 的 SL-CAP-0065 分界：那条管查询侧的拒绝语义，本条管执行侧的门禁",
+      "v1_scope": "V1_REQUIRED",
+      "input_boundary": [
+        "requested_action",
+        "authorization_scope",
+        "approval_state"
+      ],
+      "output_boundary": [
+        "gate_decision{gate: G-A|G-B|G-C, verdict: allow|deny|pending_human}",
+        "approval_record{action, requested_by: agent, approved_by: human, scope}",
+        "permission_request{capability, reason, status: registered_not_granted}"
+      ],
+      "evidence": {
+        "raw_index_sha256": "e62b68ed1658b95ebe73b37d8c991c995b1a18201faabbde81e41214c03a2f11",
+        "ref_count": 1,
+        "sources": [
+          "UPSTREAM-04"
+        ]
+      },
+      "unresolved": [
+        "审批在 BotHarness 侧的传递机制（是否有真实可用的审批通道）未经实测，标 UNVERIFIED",
+        "G-B 的 authorization_scope 表示形式待 F2",
+        "权限扩展需求的登记表存放位置待 F2"
+      ],
+      "merge_note": "U04-C15 判 ADAPT：上游的「自主权分级（可自主 vs 须先问）」方向正确，但只是散文描述、无运行时拦截机制。本条把它落成 G-A/G-B/G-C 三档门禁 + 显式拒绝 + 审批留痕。关键区分：**审批策略归 Security，执行归本条**——这与用户第 2 节的提示一致（U04-C15 的审批策略属于 Security，DSH Adapter 负责执行权限门禁）。BotHarness 侧是否有真实审批通道未经实测，标 UNVERIFIED_RUNTIME_CAPABILITY。"
+    },
+    {
+      "canonical_id": "SL-CAP-0073",
+      "name": "与九模块的能力编排接口（逻辑契约，不复制实现）",
+      "description": "DSH Adapter 对每个模块只定义**最小逻辑调用关系**，不复制其实现、不代其裁决：\nCollector——请求「某仓库某固定版本」的数据，不回传采集细节。\nFacts——请求确定性事实抽取，不掺模型判断。\nEvidence-Claims——提交 claim 候选与验证请求，**不由本模块判定真伪**。\nProduct——请求产品语义分析，不代其推断业务含义。\nResearch——委派有界研究计划，不代其定研究范围。\nLifecycle——查询「某知识是否需要重新验证」，不自定失效。\nSecurity——查询安全约束与权限要求，不改其策略。\nRenderer——请求生成指定派生视图，不自造排版。\nStorage——查询、登记与提交权威资产。\n硬规则一：**禁止 DSH Adapter 绕过 Storage 直接改写知识资产目录**。\n硬规则二：错误必须原样向上传播并保留来源模块标识，不得把上游失败吞成空结果或改写成成功（与各模块的失败语义一致）。\n硬规则三：编排只决定「调谁、按什么顺序」，不决定「结论是什么」。\n硬规则四：不得把其他模块的全部功能复制进 Skill 提示词——能力通过调用获得，不通过描述获得。",
+      "owner_module": "DSH-Adapter",
+      "upstream_refs": [],
+      "disposition": "REIMPLEMENT",
+      "license_permission": {
+        "per_upstream": [],
+        "copy_permitted": true,
+        "constraint": "无上游来源，本条为独立架构设计，不涉及第三方著作权"
+      },
+      "dependencies": [
+        "Collector",
+        "Facts",
+        "Evidence-Claims",
+        "Product",
+        "Research",
+        "Lifecycle",
+        "Security",
+        "Renderer",
+        "Storage"
+      ],
+      "overlaps": "与 Research 的 SL-CAP-0035（研究阶段流水线）分界：0035 是研究内部的阶段，本条是「跨模块编排」的调度。与 Lifecycle 的 SL-CAP-0043 分界：0043 决定知识动作序列，本条决定模块调用序列",
+      "v1_scope": "V1_REQUIRED",
+      "input_boundary": [
+        "orchestration_plan{stages[], modules[]}",
+        "module_request{module, payload}"
+      ],
+      "output_boundary": [
+        "orchestration_state{stage, module, status}",
+        "module_response{module, payload, status: ok|failed|denied}",
+        "error_propagation{origin_module, error_category, preserved: true}"
+      ],
+      "evidence": {
+        "raw_index_sha256": "e62b68ed1658b95ebe73b37d8c991c995b1a18201faabbde81e41214c03a2f11",
+        "ref_count": 0,
+        "sources": []
+      },
+      "unresolved": [
+        "调用形态（进程内函数 / 子进程 / MCP 工具）待 F2",
+        "并行编排的可行性（哪些模块可并发）待 F1-C",
+        "错误码在各模块间的统一表示待 F2"
+      ],
+      "merge_note": "本条无上游来源，是内部设计能力。内部需求依据：SourceLore 有九个职责模块，而六源中的任何一个都不是「多模块编排器」——它们要么是单脚本、要么是单提示词流水线。本条把九个模块的调用契约集中定义，并钉死两条最容易出事的边界：**不绕过 Storage 改数据**、**不吞上游错误**。硬规则四是对「Skill 提示词膨胀」的直接防护：能力靠调用获得，不靠描述获得（与 SL-CAP-0068 的渐进加载互为表里）。"
     }
   ],
   "cross_module_redirections": [
@@ -5922,15 +6378,6 @@
       "upstream_capability": "动态否证只降级到人工复核",
       "owner_module": "Evidence-Claims",
       "reason": "动态否证只降级到人工复核——这是通用 claim 状态机的人工复核分支，已由 EC 的 SL-CAP-0028（裁决状态机，含 insufficient_evidence 与人工确认）承接语义",
-      "status": "DEFERRED_TO_MODULE"
-    },
-    {
-      "upstream_id": "UPSTREAM-06",
-      "original_capability_id": "C18",
-      "identity_key": "UPSTREAM-06::C18",
-      "upstream_capability": "成本报告（时长 + token 估算）",
-      "owner_module": "DSH-Adapter",
-      "reason": "改路由：本条是运行成本与可观测性报告（时长 + token 估算），本质是 Agent 运行成本的自报字段，不属安全。此前 Collector 批次判给 Security 是按「成本报告是安全审查运行的自报字段」归类，本批按实际内容重新裁决，保留原始理由以便追溯",
       "status": "DEFERRED_TO_MODULE"
     },
     {
@@ -5986,29 +6433,38 @@
       "owner_module": "Evidence-Claims",
       "reason": "人类主导的语义补充（人写的字段带签名、AI 写入该字段直接拒绝）本质是「谁有权写哪个字段」的权限语义，已由 EC 的 SL-CAP-0028（裁决状态机，含人工确认分支）与 Security 的 SL-CAP-0053（发布门禁，P-3/P-4 只能由人触发）承接；Storage 只执行访问控制，不定义权限语义",
       "status": "DEFERRED_TO_MODULE"
+    },
+    {
+      "upstream_id": "UPSTREAM-01",
+      "original_capability_id": "C12",
+      "identity_key": "UPSTREAM-01::C12",
+      "upstream_capability": "eval baseline (gold + deterministic metrics + judge)",
+      "owner_module": "Evidence-Claims",
+      "reason": "Eval Baseline（gold + 确定性指标 + judge）的核心是「质量如何判定」，其确定性指标与 judge 的裁决语义已由 EC 的 SL-CAP-0028（裁决状态机）与 SL-CAP-0034（可判定终止条件与置信度）覆盖；DSH Adapter 只记录评测运行的执行证据与成本，不定义质量判据",
+      "status": "DEFERRED_TO_MODULE"
     }
   ],
   "batch_summary": {
-    "batch": "F1-B/Storage",
-    "module": "Storage",
+    "batch": "F1-B/DSH-Adapter",
+    "module": "DSH-Adapter",
     "canonical_ids": [
-      "SL-CAP-0062",
-      "SL-CAP-0063",
-      "SL-CAP-0064",
-      "SL-CAP-0065",
-      "SL-CAP-0066",
-      "SL-CAP-0067"
+      "SL-CAP-0068",
+      "SL-CAP-0069",
+      "SL-CAP-0070",
+      "SL-CAP-0071",
+      "SL-CAP-0072",
+      "SL-CAP-0073"
     ],
-    "raw_mapped_to_this_module": 11,
-    "raw_redirected_to_other_modules": 2,
-    "dedup_ratio": 1.833,
+    "raw_mapped_to_this_module": 7,
+    "raw_redirected_to_other_modules": 1,
+    "dedup_ratio": 1.167,
     "dedup_ratio_definition": "raw_mapped_to_this_module / canonical_count",
     "per_source_mapped": {
-      "UPSTREAM-01": 0,
+      "UPSTREAM-01": 5,
       "UPSTREAM-02": 0,
       "UPSTREAM-03": 0,
-      "UPSTREAM-04": 5,
-      "UPSTREAM-05": 5,
+      "UPSTREAM-04": 1,
+      "UPSTREAM-05": 0,
       "UPSTREAM-06": 1
     }
   },
@@ -6135,7 +6591,7 @@
         "SL-CAP-0019"
       ],
       "raw_mapped_to_this_module": 11,
-      "raw_redirected_to_other_modules": 1,
+      "raw_redirected_to_other_modules": 0,
       "dedup_ratio": 1.222,
       "dedup_ratio_definition": "raw_mapped_to_this_module / canonical_count",
       "per_source_mapped": {
@@ -6260,7 +6716,7 @@
         "SL-CAP-0054"
       ],
       "raw_mapped_to_this_module": 17,
-      "raw_redirected_to_other_modules": 4,
+      "raw_redirected_to_other_modules": 3,
       "dedup_ratio": 1.889,
       "dedup_ratio_definition": "raw_mapped_to_this_module / canonical_count",
       "per_source_mapped": {
@@ -6318,6 +6774,30 @@
         "UPSTREAM-03": 0,
         "UPSTREAM-04": 5,
         "UPSTREAM-05": 5,
+        "UPSTREAM-06": 1
+      }
+    },
+    {
+      "batch": "F1-B/DSH-Adapter",
+      "module": "DSH-Adapter",
+      "canonical_ids": [
+        "SL-CAP-0068",
+        "SL-CAP-0069",
+        "SL-CAP-0070",
+        "SL-CAP-0071",
+        "SL-CAP-0072",
+        "SL-CAP-0073"
+      ],
+      "raw_mapped_to_this_module": 7,
+      "raw_redirected_to_other_modules": 1,
+      "dedup_ratio": 1.167,
+      "dedup_ratio_definition": "raw_mapped_to_this_module / canonical_count",
+      "per_source_mapped": {
+        "UPSTREAM-01": 5,
+        "UPSTREAM-02": 0,
+        "UPSTREAM-03": 0,
+        "UPSTREAM-04": 1,
+        "UPSTREAM-05": 0,
         "UPSTREAM-06": 1
       }
     }
@@ -7085,6 +7565,69 @@
       "promoted_in_batch": "F1-B/Storage",
       "reason": "上游批次判定该身份属持久化语义而挂起（指向 Storage），本批建 canonical 正式承接",
       "was_in_redirection_table": false
+    },
+    {
+      "upstream_id": "UPSTREAM-01",
+      "original_capability_id": "C06",
+      "from": "unreviewed_adopted",
+      "to_canonical_id": "SL-CAP-0069",
+      "promoted_in_batch": "F1-B/DSH-Adapter",
+      "reason": "第2节候选核验后判定归入 DSH-Adapter，本批直接承接（草稿路表中无此分流记录）",
+      "was_in_redirection_table": false
+    },
+    {
+      "upstream_id": "UPSTREAM-01",
+      "original_capability_id": "C07",
+      "from": "unreviewed_adopted",
+      "to_canonical_id": "SL-CAP-0070",
+      "promoted_in_batch": "F1-B/DSH-Adapter",
+      "reason": "第2节候选核验后判定归入 DSH-Adapter，本批直接承接（草稿路表中无此分流记录）",
+      "was_in_redirection_table": false
+    },
+    {
+      "upstream_id": "UPSTREAM-01",
+      "original_capability_id": "C11",
+      "from": "unreviewed_adopted",
+      "to_canonical_id": "SL-CAP-0068",
+      "promoted_in_batch": "F1-B/DSH-Adapter",
+      "reason": "第2节候选核验后判定归入 DSH-Adapter，本批直接承接（草稿路表中无此分流记录）",
+      "was_in_redirection_table": false
+    },
+    {
+      "upstream_id": "UPSTREAM-01",
+      "original_capability_id": "C13",
+      "from": "unreviewed_adopted",
+      "to_canonical_id": "SL-CAP-0070",
+      "promoted_in_batch": "F1-B/DSH-Adapter",
+      "reason": "第2节候选核验后判定归入 DSH-Adapter，本批直接承接（草稿路表中无此分流记录）",
+      "was_in_redirection_table": false
+    },
+    {
+      "upstream_id": "UPSTREAM-01",
+      "original_capability_id": "C14",
+      "from": "unreviewed_adopted",
+      "to_canonical_id": "SL-CAP-0070",
+      "promoted_in_batch": "F1-B/DSH-Adapter",
+      "reason": "第2节候选核验后判定归入 DSH-Adapter，本批直接承接（草稿路表中无此分流记录）",
+      "was_in_redirection_table": false
+    },
+    {
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C15",
+      "from": "unreviewed_adopted",
+      "to_canonical_id": "SL-CAP-0072",
+      "promoted_in_batch": "F1-B/DSH-Adapter",
+      "reason": "第2节候选核验后判定归入 DSH-Adapter，本批直接承接（草稿路表中无此分流记录）",
+      "was_in_redirection_table": false
+    },
+    {
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C18",
+      "from": "cross_module_redirections",
+      "to_canonical_id": "SL-CAP-0070",
+      "promoted_in_batch": "F1-B/DSH-Adapter",
+      "reason": "Security 批次判定该身份属运行可观测性、改路由指向 DSH-Adapter，本批建 canonical 正式承接",
+      "was_in_redirection_table": false
     }
   ],
   "global_state_counts": {
@@ -7095,12 +7638,12 @@
     ],
     "raw_total": 143,
     "raw_unique": 143,
-    "mapped_count": 105,
+    "mapped_count": 112,
     "routed_pending_count": 11,
-    "unreviewed_count": 27,
+    "unreviewed_count": 20,
     "sum_check": 143,
-    "canonical_count": 67,
-    "routed_promotions_count": 85,
+    "canonical_count": 73,
+    "routed_promotions_count": 92,
     "state_invariants": {
       "mutually_exclusive": true,
       "union_equals_total": true,
@@ -7109,9 +7652,9 @@
     },
     "by_upstream": {
       "UPSTREAM-01": {
-        "mapped": 9,
-        "routed": 0,
-        "unreviewed": 6
+        "mapped": 14,
+        "routed": 1,
+        "unreviewed": 0
       },
       "UPSTREAM-02": {
         "mapped": 18,
@@ -7124,9 +7667,9 @@
         "unreviewed": 4
       },
       "UPSTREAM-04": {
-        "mapped": 19,
+        "mapped": 20,
         "routed": 2,
-        "unreviewed": 6
+        "unreviewed": 5
       },
       "UPSTREAM-05": {
         "mapped": 13,
@@ -7134,8 +7677,8 @@
         "unreviewed": 10
       },
       "UPSTREAM-06": {
-        "mapped": 23,
-        "routed": 4,
+        "mapped": 24,
+        "routed": 3,
         "unreviewed": 1
       }
     }
@@ -7156,6 +7699,19 @@
         "SL-CAP-0019"
       ],
       "raw_mapped": 11
+    },
+    {
+      "module": "DSH-Adapter",
+      "canonical_count": 6,
+      "canonical_ids": [
+        "SL-CAP-0068",
+        "SL-CAP-0069",
+        "SL-CAP-0070",
+        "SL-CAP-0071",
+        "SL-CAP-0072",
+        "SL-CAP-0073"
+      ],
+      "raw_mapped": 7
     },
     {
       "module": "Evidence-Claims",
