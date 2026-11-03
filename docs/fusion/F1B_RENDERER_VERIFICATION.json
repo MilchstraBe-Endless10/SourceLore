@@ -1,0 +1,301 @@
+{
+  "task": "M1-FUSION-GATE-F1 / F1-B / Renderer",
+  "generated_at": "2026-11-03T23:01:40+08:00",
+  "generated_by": "tools/fusion/f1b_verify_renderer.py",
+  "git_head": "21482339e8cda502713ffdbc7e9a5e6659b63837",
+  "summary": {
+    "passed": 48,
+    "total": 48,
+    "result": "PASS"
+  },
+  "checks": [
+    {
+      "id": "c1",
+      "name": "原始 143 项身份唯一且不变",
+      "passed": true,
+      "detail": "原始 143 项且身份唯一；sha256=e62b68ed1658b95e 一致=True"
+    },
+    {
+      "id": "c2",
+      "name": "既有 54 条 canonical 保留",
+      "passed": true,
+      "detail": "既有 54 条保留=True；端点缺失=无"
+    },
+    {
+      "id": "c3",
+      "name": "Renderer 编号 0055-0061 齐全",
+      "passed": true,
+      "detail": "Renderer 编号 0055-0061 齐全 7/7"
+    },
+    {
+      "id": "c4",
+      "name": "Renderer 编号连续自 0055 起",
+      "passed": true,
+      "detail": "Renderer 编号连续自 0055 起：[55, 56, 57, 58, 59, 60, 61]"
+    },
+    {
+      "id": "c5",
+      "name": "canonical_id 从 0001 连续",
+      "passed": true,
+      "detail": "全表共 61 条，从 0001 连续无断号"
+    },
+    {
+      "id": "c6",
+      "name": "canonical_id 无重复",
+      "passed": true,
+      "detail": "canonical_id 无重复（61 条）"
+    },
+    {
+      "id": "c7",
+      "name": "每个原始身份最多映射一次",
+      "passed": true,
+      "detail": "每项原始能力最多正式映射一次，共 94 个身份"
+    },
+    {
+      "id": "c8",
+      "name": "每条 canonical 一个 owner",
+      "passed": true,
+      "detail": "Renderer 7 条 owner 均为 Renderer，越界 无"
+    },
+    {
+      "id": "c9",
+      "name": "来源证据可追溯",
+      "passed": true,
+      "detail": "11 个原始来源全部可在索引定位"
+    },
+    {
+      "id": "c10",
+      "name": "ROUTED 承接有晋升记录",
+      "passed": true,
+      "detail": "晋升 11 条（路由表来源 3 条），问题 无"
+    },
+    {
+      "id": "c11",
+      "name": "新增分流与映射零相交",
+      "passed": true,
+      "detail": "新增分流与映射集合零相交"
+    },
+    {
+      "id": "c12",
+      "name": "三态守恒合计 143",
+      "passed": true,
+      "detail": "mapped 94 + routed 13 + unreviewed 36 = 143；互斥=True"
+    },
+    {
+      "id": "c13",
+      "name": "global_state_counts 与实算一致",
+      "passed": true,
+      "detail": "global_state_counts 自洽 mapped=94 routed=13 unreviewed=36 canonical=61；不变量=True"
+    },
+    {
+      "id": "c14",
+      "name": "进度统计与草稿同源",
+      "passed": true,
+      "detail": "缺失 无；旧口径 无；同源=True；sum_check=143"
+    },
+    {
+      "id": "c15",
+      "name": "Renderer 批次记录自洽",
+      "passed": true,
+      "detail": "mapped=11（应 11）、redirected 现算一致=True（当前 2）、ids 齐备=True"
+    },
+    {
+      "id": "c16",
+      "name": "批次按业务顺序",
+      "passed": true,
+      "detail": "批次按业务顺序：['Facts', 'Collector', 'Evidence-Claims', 'Product', 'Research', 'Lifecycle', 'Security', 'Renderer']"
+    },
+    {
+      "id": "c17",
+      "name": "历史七批 mapped 定格",
+      "passed": true,
+      "detail": "历史七批 mapped 全部定格未变"
+    },
+    {
+      "id": "c18",
+      "name": "未建立第二套 Claim/Evidence",
+      "passed": true,
+      "detail": "未重复实现 Collector/EC，问题 无"
+    },
+    {
+      "id": "c19",
+      "name": "引用存在性与支持关系分离",
+      "passed": true,
+      "detail": "引用存在性与引用支持关系已分离（支持关系归 EC）"
+    },
+    {
+      "id": "c20",
+      "name": "不覆盖不可变历史",
+      "passed": true,
+      "detail": "重生成不覆盖历史=True；人工文档不被覆盖=True"
+    },
+    {
+      "id": "c21",
+      "name": "生成数据与人工内容分离",
+      "passed": true,
+      "detail": "三层隔离（目录/标识/覆盖边界）齐备=True"
+    },
+    {
+      "id": "c22",
+      "name": "脱敏与发布授权分离",
+      "passed": true,
+      "detail": "三级门禁互不推导 + AI 不得自批=True"
+    },
+    {
+      "id": "c23",
+      "name": "未验证结论不渲染成已确认",
+      "passed": true,
+      "detail": "六条忠实呈现纪律齐备=True"
+    },
+    {
+      "id": "c24",
+      "name": "U02-C17 强制 Mermaid 未被采纳",
+      "passed": true,
+      "detail": "拒绝强制出图机制但保留可选图表；假图禁令与完成判据解耦"
+    },
+    {
+      "id": "c25",
+      "name": "卡片非第二份权威副本",
+      "passed": true,
+      "detail": "卡片为派生视图，不得创造新主张"
+    },
+    {
+      "id": "c26",
+      "name": "多视图共享事实源",
+      "passed": true,
+      "detail": "四类视图共享事实源且数值一致"
+    },
+    {
+      "id": "c27",
+      "name": "九节结构未成全局模板",
+      "passed": true,
+      "detail": "九节结构未被提升为全局模板"
+    },
+    {
+      "id": "c28",
+      "name": "受众密度不改变确认等级",
+      "passed": true,
+      "detail": "三档受众 + 密度不改变等级 + 最小完整性=True"
+    },
+    {
+      "id": "c29",
+      "name": "静态校验有 rule_id 与处置",
+      "passed": true,
+      "detail": "三类规则与 rule_id/处置/覆盖缺口=True"
+    },
+    {
+      "id": "c30",
+      "name": "呈现安全转义齐备",
+      "passed": true,
+      "detail": "四类安全处理齐备=True"
+    },
+    {
+      "id": "c31",
+      "name": "来源与许可证权限完整",
+      "passed": true,
+      "detail": "逐源许可且 U06 全 false，问题 无"
+    },
+    {
+      "id": "c32",
+      "name": "处置分布（信息）",
+      "passed": true,
+      "detail": "（信息）Renderer 处置分布 {'REIMPLEMENT': 6, 'ADAPT': 1}"
+    },
+    {
+      "id": "c33",
+      "name": "处置/边界/理由齐备",
+      "passed": true,
+      "detail": "处置/边界/理由齐备，问题 无"
+    },
+    {
+      "id": "c34",
+      "name": "零来源条目有独立理由",
+      "passed": true,
+      "detail": "零来源条目 ['SL-CAP-0060', 'SL-CAP-0061'] 均有独立设计理由"
+    },
+    {
+      "id": "c35",
+      "name": "unresolved 显式存在",
+      "passed": true,
+      "detail": "7 条均带 unresolved，合计 21 项待定"
+    },
+    {
+      "id": "c36",
+      "name": "决策文档与 JSON 一致",
+      "passed": true,
+      "detail": "缺失 ID=无；批次数字 [11, 7, 2] 出现=True；累计快照 94/13/36 自洽=True；raw_total 出现=True"
+    },
+    {
+      "id": "c37",
+      "name": "Markdown 八问 D-A..D-H 落章",
+      "passed": true,
+      "detail": "Markdown 生成八问 D-A..D-H 逐条落章，缺 无"
+    },
+    {
+      "id": "c38",
+      "name": "跨模块裁决 K-1..K-8 登记",
+      "passed": true,
+      "detail": "跨模块裁决 K-1..K-8 逐条登记，缺 无"
+    },
+    {
+      "id": "c39",
+      "name": "原始能力索引未改动",
+      "passed": true,
+      "detail": "原始能力索引逐字节未变"
+    },
+    {
+      "id": "c40",
+      "name": "六份上游审计未改动",
+      "passed": true,
+      "detail": "六份历史上游审计未改动"
+    },
+    {
+      "id": "c41",
+      "name": "src/tests/schemas 无改动",
+      "passed": true,
+      "detail": "src/tests/schemas 无改动"
+    },
+    {
+      "id": "c42",
+      "name": "正式交叉表未提前冻结",
+      "passed": true,
+      "detail": "正式交叉表尚未提前冻结"
+    },
+    {
+      "id": "c43",
+      "name": "承接声明与 def 一致",
+      "passed": true,
+      "detail": "承接声明 11 与引用 11 一致=True；与分流零重叠=True"
+    },
+    {
+      "id": "c44",
+      "name": "stats 重算一致且幂等",
+      "passed": true,
+      "detail": "stats 重算一致 mapped=94 routed=13 unrev=36；Renderer 重算 mapped=11=True"
+    },
+    {
+      "id": "c45",
+      "name": "新增分流去向正确",
+      "passed": true,
+      "detail": "本批 2 条分流去向正确，问题 无"
+    },
+    {
+      "id": "c46",
+      "name": "三条 ROUTED 有路由表晋升记录",
+      "passed": true,
+      "detail": "三条 ROUTED 均有路由表晋升记录=True（缺 无）"
+    },
+    {
+      "id": "c47",
+      "name": "未重复占用已映射身份",
+      "passed": true,
+      "detail": "U02-C13/C16、U05-C06 仍归原模块且未被重复占用=True"
+    },
+    {
+      "id": "c48",
+      "name": "与 Storage 边界清楚",
+      "passed": true,
+      "detail": "声明依赖 Storage=True；访问控制归 Storage=True"
+    }
+  ]
+}

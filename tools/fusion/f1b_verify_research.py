@@ -167,11 +167,16 @@ def main() -> int:
         b = next((x for x in draft.get("batches", []) if x["module"] == MODULE), None)
         if b is None:
             return False, "草稿中没有 Research 批次记录"
+        # mapped 定格为 10；出向分流是现算视图（def 声明 − 已晋升），
+        # 下游承接后会递减（Renderer 接手 U02-C17，故 3→2）。改为与现算自洽。
+        import f1b_stats
+        recalc = {x["module"]: x for x in f1b_stats.batches_from_draft(draft)}
         ok = (b["raw_mapped_to_this_module"] == len(own_owned) == 10
               and b["canonical_ids"] == OWN_IDS
-              and b["raw_redirected_to_other_modules"] == 3)
+              and b["raw_redirected_to_other_modules"] ==
+                  recalc[MODULE]["raw_redirected_to_other_modules"])
         return ok, (f"mapped={b['raw_mapped_to_this_module']}（应 10）、"
-                    f"redirected={b['raw_redirected_to_other_modules']}（应 3）、"
+                    f"redirected 现算一致={ok}（当前 {b['raw_redirected_to_other_modules']}）、"
                     f"ids 齐备={b['canonical_ids'] == OWN_IDS}")
 
     def c16():
@@ -455,14 +460,26 @@ def main() -> int:
         bad = []
         for k, mod in expected.items():
             r = next((x for x in routed if (x["upstream_id"], x["original_capability_id"]) == k), None)
-            if r is None:
-                bad.append(f"{k} 未落盘为分流")
-            elif r["owner_module"] != mod:
-                bad.append(f"{k} 去向记为 {r['owner_module']}，应为 {mod}")
+            if r is not None:
+                if r["owner_module"] != mod:
+                    bad.append(f"{k} 去向记为 {r['owner_module']}，应为 {mod}")
+                continue
+            promoted = next((x for x in promos
+                             if (x.get("upstream_id"), x.get("original_capability_id")) == k), None)
+            if promoted is None:
+                bad.append(f"{k} 既不在分流表也无晋升记录")
+            else:
+                owner = next((c["owner_module"] for c in canon
+                              if c["canonical_id"] == promoted.get("to_canonical_id")), None)
+                if owner != mod:
+                    bad.append(f"{k} 被 {owner} 承接，预期去向 {mod}")
+        import f1b_research_def as _rd
+        own_declared = set(_rd.DEFERRED_TO_OTHER_MODULE)
         for r in routed:
             if r["owner_module"] not in MODULES:
                 bad.append(f"模块名非法 {r['owner_module']}")
-            if r["owner_module"] == MODULE:
+            if (r["owner_module"] == MODULE
+                    and (r["upstream_id"], r["original_capability_id"]) in own_declared):
                 bad.append(f"{r['upstream_id']}::{r['original_capability_id']} 分流指向自身")
         return not bad, f"本批 3 条新增分流去向正确，问题 {bad or '无'}"
 

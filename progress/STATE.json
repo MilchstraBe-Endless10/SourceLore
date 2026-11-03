@@ -6,13 +6,13 @@
   "status": "IN_PROGRESS",
   "last_verified_commit": "58e9b3739698068a8b0cdb98f6d82ca7b40f5cf6",
   "last_revision_commit": "58e9b3739698068a8b0cdb98f6d82ca7b40f5cf6",
-  "last_revision_note": "F1-B Security 批次（9 canonical / 17 raw 承接 / 5 raw 出向分流；七个验证器 12+30+50+43+46+48+53 全绿）",
-  "last_test_summary": "F1 未完成。F1-B 七批次验证器全绿：f1b_verify.py 12/12、collector 30/30、ec 50/50、product 43/43、research 46/46、lifecycle 48/48、security 53/53。三态实测 83+14+46=143 且 MAPPED∩ROUTED=∅。晋升记录 23 条、分流 14 条零重复、无幽灵晋升、无 ID 漂移；build_security 重跑六字段逐字节一致。",
+  "last_revision_note": "F1-B Renderer 批次（7 canonical / 11 raw 承接 / 2 raw 出向分流；八个验证器全绿）",
+  "last_test_summary": "F1 未完成。F1-B 八批次验证器全绿：12/12、30/30、50/50、43/43、46/46、48/48、53/53、48/48。三态实测 94+13+36=143 且 MAPPED∩ROUTED=∅。晋升 26 条、分流 13 条零重复、无幽灵晋升、无 ID 漂移；build_renderer 重跑六字段逐字节一致。",
   "blockers": [],
-  "notes": "M1 六源审计全部完成（DONE 8 / PENDING 0）。F1-B 已完成 Facts（SL-CAP-0001~0010）与 Collector（SL-CAP-0011~0019）两个模块批次。Collector 架构裁决：唯一逻辑入口 + 传输适配层（当前 gh api）+ 可验证原始数据 + 传输可替换；数据契约不绑定 GitHub CLI 输出格式。分批构建器均幂等，且写入延后到校验通过之后；Facts 构建器已加防误跑闸（检测到其它模块条目即 exit 2 且不写盘）。 F1-B 第三批 Evidence-Claims 完成（SL-CAP-0020~0028）：证据存档契约、逐跳数据流定位、引用三态校验、显式未知、缺料占位、产物自证出处、四段结构与观察/解释分离、结论生命周期与新鲜度、裁决状态机。核心裁决：显式拒绝「不可验证即判否」（不可验证只产生 insufficient_evidence，禁止落成 refuted）。 F1-B 第四批 Product 完成（SL-CAP-0029~0034）：产品语义八要素（每字段强制 claim_type+evidence_refs）、外部集成三态（有配置≠在运行）、业务实体建模、渐进构建序、未知项与来源冲突登记、可判定终止条件与字段置信度。核心裁决：声明不可替代实现证据——空 evidence_refs 的字段只能是 inference 或 unknown，不得是 fact 或 declaration。 F1-B 第五批 Research 完成（SL-CAP-0035~0039）：有界研究阶段流水线 R0-R4、查询策略与来源去重、来源类型标记与覆盖记录、研究质量三态与结论边界、内联引用校验器执行。核心裁决：来源类型不构成真伪排序，优先级降级为字段；阶段完成≠结论正确、读全≠研究完成。 F1-B 第六批 Lifecycle 完成（SL-CAP-0040~0045）：Subject 稳定身份与复用判定、可变/不可变层分离、内容哈希驱动的精确失效检测、变更分类与增量重建调度、影响面双路径分析、外部来源新鲜度与不可复现观察保留。核心裁决：三轴正交（任务执行/知识有效性/Claim 验证）；旧结论对旧版本成立与对新版本成立是两个问题；路径 A 与路径 B 不得合并。 F1-B 第七批 Security 完成（SL-CAP-0046~0054）：两阶段信任边界与上下文卫生、安全发现九字段与四项独立检查、确定性前置门与失效安全、依赖五级分离与可达性三态、族扫描与诚实否定、动态验证双重控制、Agent/Skill 指令安全、保密分级与发布门禁、PR Diff 增量审查。核心裁决：没有足够证据只能停 unconfirmed、无法验证停 inconclusive（继承 F0 与 EC 对 can't prove→FALSE_POSITIVE 的拒绝）；脱敏通过≠允许发布；U06-C18 改路由至 DSH-Adapter。",
-  "updated_at": "2026-11-03T22:10:15+08:00",
-  "next_task": "M1-FUSION-GATE-F1 / F1-B 剩余模块（从 Renderer 起）",
-  "current_batch": "F1-B (Security) DONE — 9 canonical / 17 raw mapped / 5 redirected-pending / 累计 54 canonical、MAPPED 83 / ROUTED 14 / UNREVIEWED 46 = 143",
+  "notes": "M1 六源审计全部完成（DONE 8 / PENDING 0）。F1-B 已完成 Facts（SL-CAP-0001~0010）与 Collector（SL-CAP-0011~0019）两个模块批次。Collector 架构裁决：唯一逻辑入口 + 传输适配层（当前 gh api）+ 可验证原始数据 + 传输可替换；数据契约不绑定 GitHub CLI 输出格式。分批构建器均幂等，且写入延后到校验通过之后；Facts 构建器已加防误跑闸（检测到其它模块条目即 exit 2 且不写盘）。 F1-B 第三批 Evidence-Claims 完成（SL-CAP-0020~0028）：证据存档契约、逐跳数据流定位、引用三态校验、显式未知、缺料占位、产物自证出处、四段结构与观察/解释分离、结论生命周期与新鲜度、裁决状态机。核心裁决：显式拒绝「不可验证即判否」（不可验证只产生 insufficient_evidence，禁止落成 refuted）。 F1-B 第四批 Product 完成（SL-CAP-0029~0034）：产品语义八要素（每字段强制 claim_type+evidence_refs）、外部集成三态（有配置≠在运行）、业务实体建模、渐进构建序、未知项与来源冲突登记、可判定终止条件与字段置信度。核心裁决：声明不可替代实现证据——空 evidence_refs 的字段只能是 inference 或 unknown，不得是 fact 或 declaration。 F1-B 第五批 Research 完成（SL-CAP-0035~0039）：有界研究阶段流水线 R0-R4、查询策略与来源去重、来源类型标记与覆盖记录、研究质量三态与结论边界、内联引用校验器执行。核心裁决：来源类型不构成真伪排序，优先级降级为字段；阶段完成≠结论正确、读全≠研究完成。 F1-B 第六批 Lifecycle 完成（SL-CAP-0040~0045）：Subject 稳定身份与复用判定、可变/不可变层分离、内容哈希驱动的精确失效检测、变更分类与增量重建调度、影响面双路径分析、外部来源新鲜度与不可复现观察保留。核心裁决：三轴正交（任务执行/知识有效性/Claim 验证）；旧结论对旧版本成立与对新版本成立是两个问题；路径 A 与路径 B 不得合并。 F1-B 第七批 Security 完成（SL-CAP-0046~0054）：两阶段信任边界与上下文卫生、安全发现九字段与四项独立检查、确定性前置门与失效安全、依赖五级分离与可达性三态、族扫描与诚实否定、动态验证双重控制、Agent/Skill 指令安全、保密分级与发布门禁、PR Diff 增量审查。核心裁决：没有足够证据只能停 unconfirmed、无法验证停 inconclusive（继承 F0 与 EC 对 can't prove→FALSE_POSITIVE 的拒绝）；脱敏通过≠允许发布；U06-C18 改路由至 DSH-Adapter。 F1-B 第八批 Renderer 完成（SL-CAP-0055~0061）：多类型视图统一呈现契约、受众密度、可选图表与追溯、生成/人工物理隔离、静态校验规则集、确认等级忠实呈现、呈现安全与发布门禁。核心裁决：卡片非第二份权威副本；九节结构不得成全局模板；拒绝强制出图但保留可选图表；生成完成≠脱敏通过≠发布授权。",
+  "updated_at": "2026-11-03T23:02:22+08:00",
+  "next_task": "M1-FUSION-GATE-F1 / F1-B 剩余模块（Storage → DSH-Adapter）",
+  "current_batch": "F1-B (Renderer) DONE — 7 canonical / 11 raw mapped / 2 redirected-pending / 累计 61 canonical、MAPPED 94 / ROUTED 13 / UNREVIEWED 36 = 143",
   "f1_batches": {
     "F1-A": "DONE",
     "F1-B-Facts": "DONE",
@@ -24,7 +24,8 @@
     "F1-B-Product": "DONE",
     "F1-B-Research": "DONE",
     "F1-B-Lifecycle": "DONE",
-    "F1-B-Security": "DONE"
+    "F1-B-Security": "DONE",
+    "F1-B-Renderer": "DONE"
   },
-  "note": "F1-A 与 F1-B 前七批（Facts/Collector/EC/Product/Research/Lifecycle/Security）已 DONE；剩 Renderer/Storage/DSH-Adapter 三模块。CAPABILITY_CROSSWALK.json 尚未冻结。"
+  "note": "F1-A 与 F1-B 前八批已 DONE；剩 Storage、DSH-Adapter 两模块。CAPABILITY_CROSSWALK.json 尚未冻结。"
 }

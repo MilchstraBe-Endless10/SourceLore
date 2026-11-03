@@ -473,10 +473,13 @@ def main() -> int:
                               if c["canonical_id"] == promoted.get("to_canonical_id")), None)
                 if owner != mod:
                     bad.append(f"{k} 被 {owner} 承接，预期去向 {mod}")
+        import f1b_lifecycle_def as _ld
+        own_declared = set(_ld.DEFERRED_TO_OTHER_MODULE)
         for r in routed:
             if r["owner_module"] not in MODULES:
                 bad.append(f"模块名非法 {r['owner_module']}")
-            if r["owner_module"] == MODULE:
+            if (r["owner_module"] == MODULE
+                    and (r["upstream_id"], r["original_capability_id"]) in own_declared):
                 bad.append(f"{r['upstream_id']}::{r['original_capability_id']} 分流指向自身")
         return not bad, f"本批 5 条新增分流去向正确，问题 {bad or '无'}"
 

@@ -1,8 +1,8 @@
 {
   "task": "M1-FUSION-GATE-F1 / F1-B / Research",
-  "generated_at": "2026-11-03T22:09:40+08:00",
+  "generated_at": "2026-11-03T23:01:40+08:00",
   "generated_by": "tools/fusion/f1b_verify_research.py",
-  "git_head": "92346475afd81ce20f3613e9e154040958f31d22",
+  "git_head": "21482339e8cda502713ffdbc7e9a5e6659b63837",
   "summary": {
     "passed": 46,
     "total": 46,
@@ -37,19 +37,19 @@
       "id": "c5",
       "name": "canonical_id 从 0001 连续",
       "passed": true,
-      "detail": "全表共 54 条，从 0001 连续无断号"
+      "detail": "全表共 61 条，从 0001 连续无断号"
     },
     {
       "id": "c6",
       "name": "canonical_id 无重复",
       "passed": true,
-      "detail": "canonical_id 无重复（54 条）"
+      "detail": "canonical_id 无重复（61 条）"
     },
     {
       "id": "c7",
       "name": "每项原始能力最多正式映射一次",
       "passed": true,
-      "detail": "每项原始能力最多正式映射一次，共 83 个身份"
+      "detail": "每项原始能力最多正式映射一次，共 94 个身份"
     },
     {
       "id": "c8",
@@ -79,13 +79,13 @@
       "id": "c12",
       "name": "三态守恒合计 143",
       "passed": true,
-      "detail": "mapped 83 + routed 14 + unreviewed 46 = 143；mapped∩routed 空=True"
+      "detail": "mapped 94 + routed 13 + unreviewed 36 = 143；mapped∩routed 空=True"
     },
     {
       "id": "c13",
       "name": "global_state_counts 与实算一致",
       "passed": true,
-      "detail": "global_state_counts 自洽 mapped=83 routed=14 unreviewed=46 canonical=54；不变量=True"
+      "detail": "global_state_counts 自洽 mapped=94 routed=13 unreviewed=36 canonical=61；不变量=True"
     },
     {
       "id": "c14",
@@ -97,13 +97,13 @@
       "id": "c15",
       "name": "Research 批次记录自洽",
       "passed": true,
-      "detail": "mapped=10（应 10）、redirected=3（应 3）、ids 齐备=True"
+      "detail": "mapped=10（应 10）、redirected 现算一致=True（当前 2）、ids 齐备=True"
     },
     {
       "id": "c16",
       "name": "批次按业务顺序",
       "passed": true,
-      "detail": "批次按业务顺序：['Facts', 'Collector', 'Evidence-Claims', 'Product', 'Research', 'Lifecycle', 'Security']"
+      "detail": "批次按业务顺序：['Facts', 'Collector', 'Evidence-Claims', 'Product', 'Research', 'Lifecycle', 'Security', 'Renderer']"
     },
     {
       "id": "c17",
@@ -217,7 +217,7 @@
       "id": "c35",
       "name": "决策文档与 JSON 一致",
       "passed": true,
-      "detail": "缺失 ID=无；批次数字 [10, 5, 3] 出现=True；累计快照 54/9/80 自洽=True；raw_total 出现=True"
+      "detail": "缺失 ID=无；批次数字 [10, 5, 2] 出现=True；累计快照 54/9/80 自洽=True；raw_total 出现=True"
     },
     {
       "id": "c36",
@@ -271,7 +271,7 @@
       "id": "c44",
       "name": "stats 重算与落盘一致且幂等",
       "passed": true,
-      "detail": "stats 重算与落盘一致 mapped=83 routed=14 unrev=46；Research 批次重算 mapped=10 成立=True"
+      "detail": "stats 重算与落盘一致 mapped=94 routed=13 unrev=36；Research 批次重算 mapped=10 成立=True"
     },
     {
       "id": "c45",

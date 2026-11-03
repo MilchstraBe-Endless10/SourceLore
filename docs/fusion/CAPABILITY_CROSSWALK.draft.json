@@ -3,8 +3,8 @@
   "schema_version": 1,
   "task": "M1-FUSION-GATE-F1 / F1-B",
   "status": "DRAFT — 未冻结，F1-D 全量验收前不得发布为 CAPABILITY_CROSSWALK.json",
-  "generated_at": "2026-11-03T22:06:02+08:00",
-  "generator": "tools/fusion/f1b_build_security.py（增量：Facts/Collector/EC/Product/Research/Lifecycle 由各自构建器产出）",
+  "generated_at": "2026-11-03T22:58:28+08:00",
+  "generator": "tools/fusion/f1b_build_renderer.py（增量：Facts/Collector/EC/Product/Research/Lifecycle/Security 由各自构建器产出）",
   "source_index": "docs/fusion/RAW_CAPABILITY_INDEX.json",
   "source_index_sha256": "e62b68ed1658b95ebe73b37d8c991c995b1a18201faabbde81e41214c03a2f11",
   "id_policy": {
@@ -27,7 +27,8 @@
     "Product",
     "Research",
     "Lifecycle",
-    "Security"
+    "Security",
+    "Renderer"
   ],
   "canonical_capabilities": [
     {
@@ -4684,36 +4685,628 @@
         "Security 发现的对象粒度（文件级 vs hunk 级 vs 行级）待 F2"
       ],
       "merge_note": "U06-C24 判 REUSE：这是全量扫描结构性看不到的一类问题，且判据确定（删除行 + 控制模式 + 等价性核验），SourceLore 的增量审查应直接采用这一形态。本批把它与 SL-CAP-0047 分开是因为二者的对象不同：0047 判单条发现成立与否，本条判「这次变更有没有削弱既有防护」——后者不看新增只看删除，是完全不同的证据形态。该身份来自 Collector 批次的既有分流（routed_promotions 记 cross_module_redirections）。UPSTREAM-06 无复制授权，只取抽象思想。"
+    },
+    {
+      "canonical_id": "SL-CAP-0055",
+      "name": "知识视图的统一呈现契约（多类型视图共享同一事实源）",
+      "description": "呈现层对外只暴露一种能力：把上游权威数据渲染成可阅读视图。视图类型至少四种，共享同一份事实来源，但布局各自独立：完整报告（跨 Subject 的综合）、摘要视图（一页概览）、单条 Subject 卡片（结构化知识资产）、导航索引（派生视图）。四类视图必须从同一份上游数据生成——同一事实在不同视图里不得出现不同数值。硬规则一：卡片不是 Claim 的第二份权威副本。卡片所有内容都从上游权威数据派生，不得在卡片里创造未经验证的新主张；发现需要新主张时应回到上游产出 claim 候选，而不是在渲染阶段顺手补一句。硬规则二：卡片可以被重新生成，但不得覆盖不可变的历史 Claim 或 Evidence。重生成产出的是新视图，不是历史改写。硬规则三：视图必须自行声明它展示了什么范围的权威数据（source_snapshot），使读者能判断「这张卡片依据的是哪个快照」。硬规则四：不得把 UPSTREAM-02 的九节结构规定为所有输出的统一模板。九节结构只作报告类视图的内容槽位来源之一；卡片与导航视图允许完全不同的布局。",
+      "owner_module": "Renderer",
+      "upstream_refs": [
+        {
+          "upstream_id": "UPSTREAM-01",
+          "original_capability_id": "C10",
+          "identity_key": "UPSTREAM-01::C10",
+          "upstream_capability": "report schema + markdown render",
+          "upstream_where": "report/schema.py(362), report/render.py(329), schemas/analysis_report.schema.json",
+          "upstream_disposition": "REUSE",
+          "verdict": "REIMPLEMENT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-01-audit.json",
+            "pointer": "capability_matrix[9]",
+            "where": "report/schema.py(362), report/render.py(329), schemas/analysis_report.schema.json"
+          },
+          "license": {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false
+          }
+        }
+      ],
+      "disposition": "REIMPLEMENT",
+      "license_permission": {
+        "per_upstream": [
+          {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "upstream_id": "UPSTREAM-01"
+          }
+        ],
+        "copy_permitted": true,
+        "constraint": "按各来源许可逐项履行署名/许可链接/修改声明/notice 义务"
+      },
+      "dependencies": [
+        "Evidence-Claims",
+        "Product",
+        "Research",
+        "Storage"
+      ],
+      "overlaps": "与 Research 的 SL-CAP-0038 分界：0038 定义「报告必须包含哪些内容项」，本条定义「这些项在不同视图里怎么组织」。内容槽位归 Research，布局归本条。与 Product 的 SL-CAP-0029 分界：0029 定义产品语义八要素，本条只决定八要素在卡片上怎么摆",
+      "v1_scope": "V1_REQUIRED",
+      "input_boundary": [
+        "authoritative_bundle{claims[], evidence[], product_model, research_report, subject}",
+        "view_type: report|summary|card|index",
+        "source_snapshot{commit_sha}"
+      ],
+      "output_boundary": [
+        "view{view_type, source_snapshot, content_slots[], layout_id, generated_at}",
+        "content_slot{slot_id, populated_by, upstream_ref}",
+        "view_regeneration_record{prev_view_id, reason}"
+      ],
+      "evidence": {
+        "raw_index_sha256": "e62b68ed1658b95ebe73b37d8c991c995b1a18201faabbde81e41214c03a2f11",
+        "ref_count": 1,
+        "sources": [
+          "UPSTREAM-01"
+        ]
+      },
+      "unresolved": [
+        "四类视图的槽位清单与必填项待 F2；本批只要求「共享事实源 + 各自布局」这一结构",
+        "九节结构作为报告类槽位来源是否保留全部九节，待 F1-C",
+        "source_snapshot 引用 commit_sha 还是 Bundle manifest 哈希，取决于 F2 的 Bundle 契约"
+      ],
+      "merge_note": "合并依据：U01-C10 提供「report schema + markdown render」的呈现骨架，U02-C13 提供九节报告的内容槽位——两者一个是渲染机制、一个是内容划分，合起来才构成「同一事实源、多类型布局」的统一契约。U02-C13（九节报告结构）已在 Research 批次由 SL-CAP-0038 正式承接，同一原始身份只能映射一次，故本条的 refs 里只有 U01-C10；对九节结构的引用是跨模块依赖（「报告类视图的槽位来源之一」），不是身份复用。U01-C10 判 REIMPLEMENT 而非审计建议的 REUSE：上游的 13 顶层键结构确实合理，但它把 schema 与 render 焊在一个模块里，且 evidence 字段太窄（审计 D5 已记）。本条只取「结构化 schema 驱动渲染」的取向，四类视图的分层结构是自建。U02-C13 的正确归属是 Research 的 SL-CAP-0038（内容槽位），本条只作为跨模块依赖引用其槽位定义，不重复占用原始身份。"
+    },
+    {
+      "canonical_id": "SL-CAP-0056",
+      "name": "受众差异化信息密度与呈现风格",
+      "description": "同一份事实按受众调整信息密度，而不改变事实本身。至少三档受众画像：决策者（要结论与影响面，不要实现细节）、维护者（要关键路径与风险，不要完整调用链）、审计者（要完整证据链与限制说明）。信息密度由三个可调参数表达：展开深度（摘要 / 标准 / 完整）、证据可见度（只引 ID / 引 ID 与摘要 / 内联证据片段）、术语密度（白话 / 混合 / 专业）。硬规则一：密度调整只允许裁剪与改写，不允许改变结论的确认等级。降密度不得把 insufficient 写成「未发现问题」，也不得省略限制说明。硬规则二：无论如何裁剪，唯一不可省略的四项是：结论、确认等级、覆盖缺口、生成快照。这四项构成视图的最小完整性。硬规则三：受众画像只是调整参数，不是推断读者身份的依据；不得因为某受众「不需要细节」就删掉否定性证据。",
+      "owner_module": "Renderer",
+      "upstream_refs": [
+        {
+          "upstream_id": "UPSTREAM-03",
+          "original_capability_id": "C15",
+          "identity_key": "UPSTREAM-03::C15",
+          "upstream_capability": "写作风格与受众定义",
+          "upstream_where": "SKILL.md §10.3 L987–L996",
+          "upstream_disposition": "ADAPT",
+          "verdict": "ADAPT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-03-audit.json",
+            "pointer": "capability_matrix[14]",
+            "where": "SKILL.md §10.3 L987–L996"
+          },
+          "license": {
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true
+          }
+        }
+      ],
+      "disposition": "ADAPT",
+      "license_permission": {
+        "per_upstream": [
+          {
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "upstream_id": "UPSTREAM-03"
+          }
+        ],
+        "copy_permitted": true,
+        "constraint": "按各来源许可逐项履行署名/许可链接/修改声明/notice 义务"
+      },
+      "dependencies": [
+        "Product"
+      ],
+      "overlaps": "与 Product 的 SL-CAP-0034（字段置信度）分界：0034 判「这条字段有多可信」，本条判「这条字段该以多少细节呈现」。两者是证据强度与呈现粒度的不同轴",
+      "v1_scope": "V1_REQUIRED",
+      "input_boundary": [
+        "audience_profile{role}",
+        "density_params{depth, evidence_visibility, jargon}"
+      ],
+      "output_boundary": [
+        "render_profile{audience, depth, evidence_visibility, jargon}",
+        "omitted_items[]（被裁剪项及其类别，用于审计）",
+        "minimal_completeness_check{passed, missing[]}"
+      ],
+      "evidence": {
+        "raw_index_sha256": "e62b68ed1658b95ebe73b37d8c991c995b1a18201faabbde81e41214c03a2f11",
+        "ref_count": 1,
+        "sources": [
+          "UPSTREAM-03"
+        ]
+      },
+      "unresolved": [
+        "三档受众画像是否足够（是否需要面向终端用户的第四档），待 F1-C",
+        "omitted_items 是否需要在产物里显式列出，V1 取必须列出",
+        "术语密度的判定（哪些词算专业术语）待 F2"
+      ],
+      "merge_note": "U03-C15 判 ADAPT：L995 的受众清单可直接用于卡片层与渲染层的信息密度决策，其余风格条款（句式偏好、语气建议）价值不大且不可判定，本批只取受众清单这一条实质内容，改造成三档画像 + 三个可调参数。该身份来自 Product 批次的既有分流（Product 判定「受众清单用于信息密度决策、属渲染层」），本批建 canonical 正式承接。硬规则二的四项最小完整性是本条自建的约束——上游只说「按受众调整」，没说「调整时哪些不能删」，而那正是密度调整最容易出问题的地方。"
+    },
+    {
+      "canonical_id": "SL-CAP-0057",
+      "name": "可选图表呈现与数据追溯（拒绝强制出图）",
+      "description": "图表是可选的呈现手段，不是完成分析的门禁。触发条件必须由数据决定：存在明确的关系结构（实体间的归属/引用/调用/数据流）且该结构在文本里表达笨拙时，才生成图表。三条硬规则：其一，无法可靠提取关系时不生成图表——不得为凑齐「有架构图」而编造节点或边。其二，图表内容必须可追溯：每个节点与每条边都要指向上游数据项（entity / flow_evidence / relation），无上游来源的视觉元素一律不得出现。其三，图表不是完成判据。没有生成图表的报告与生成了图表、报告在完成标准上等价；不得以「缺图」判报告不完整。明确拒绝继承的是上游的强制图表机制（固定 4 节点 flowchart 必须填写、与实际架构无关也照画），而不是拒绝图表功能本身。图表格式（Mermaid / SVG / 其他）属实现选择，由渲染目标决定，不在本能力内锁定。",
+      "owner_module": "Renderer",
+      "upstream_refs": [
+        {
+          "upstream_id": "UPSTREAM-02",
+          "original_capability_id": "C17",
+          "identity_key": "UPSTREAM-02::C17",
+          "upstream_capability": "Mermaid 图表硬要求",
+          "upstream_where": "SKILL.md L91-121, assets/report_template.md L74-83",
+          "upstream_disposition": "REJECT",
+          "verdict": "REIMPLEMENT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-02-audit.json",
+            "pointer": "capability_matrix[16]",
+            "where": "SKILL.md L91-121, assets/report_template.md L74-83"
+          },
+          "license": {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false
+          }
+        }
+      ],
+      "disposition": "REIMPLEMENT",
+      "license_permission": {
+        "per_upstream": [
+          {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "upstream_id": "UPSTREAM-02"
+          }
+        ],
+        "copy_permitted": true,
+        "constraint": "按各来源许可逐项履行署名/许可链接/修改声明/notice 义务"
+      },
+      "dependencies": [
+        "Product",
+        "Evidence-Claims"
+      ],
+      "overlaps": "与 Product 的 SL-CAP-0031（业务实体与关系）是数据来源关系：图表节点只能来自该能力产出的实体与关系，不在渲染阶段新增。与 EC 的 SL-CAP-0021（四节点数据流）是同一数据来源的另一形态",
+      "v1_scope": "V1_REQUIRED",
+      "input_boundary": [
+        "relation_structure{entities[], relations[], flows[]}",
+        "render_target"
+      ],
+      "output_boundary": [
+        "diagram_decision{generate: bool, trigger_basis, relation_source}",
+        "diagram_spec{nodes[]{id, upstream_ref}, edges[]{from, to, kind, upstream_ref}}",
+        "diagram_omission_reason{why_not_generated}"
+      ],
+      "evidence": {
+        "raw_index_sha256": "e62b68ed1658b95ebe73b37d8c991c995b1a18201faabbde81e41214c03a2f11",
+        "ref_count": 1,
+        "sources": [
+          "UPSTREAM-02"
+        ]
+      },
+      "unresolved": [
+        "「结构在文本里表达笨拙」的判定标准无法机械化，待 F1-C；V1 取「有明确结构即允许生成」",
+        "图表格式中立性如何落到具体渲染目标，待 F2",
+        "生成图表是否需要单独的发布审查（与 SL-CAP-0061 的门禁关系）待 F1-C"
+      ],
+      "merge_note": "U02-C17 在原始索引中判 REJECT，理由是「为出图而出图：模板固定 4 节点 flowchart，与真实架构无关时也必须填，是形式驱动虚构的直接来源」。本批保留这一 REJECT 证据，并把它的处置改为 REIMPLEMENT——因为要拒绝的是**强制出图机制**，不是图表功能本身。把二者混为一谈会导致 SourceLore 连「有真实关系时画个图」都不敢做，那是另一个极端。本条把触发条件交给数据、把内容追溯钉到上游引用、把完成判据与图表解耦，三条硬规则正好对应上游的三处失误。该身份来自 Research 批次的既有分流（Research 判定「Mermaid 硬要求属呈现决策」）。"
+    },
+    {
+      "canonical_id": "SL-CAP-0058",
+      "name": "生成产物与人工维护内容物理隔离（旁车机制）",
+      "description": "自动生成内容与人工维护内容必须物理隔离，隔离靠目录与命名强制，不靠人记得别覆盖。三层约束：L-1 目录级隔离：自动生成产物一律写入独立命名空间（候选约定 _generated/），写侧代码不得提供指向人工维护目录的分支——这是结构约束，不是流程提醒。L-2 标识级隔离：每个生成产物头部必须带 auto_generated 标识，含生成器名与版本、run_id、source_snapshot、生成时间四项。L-3 覆盖边界：重生成只允许覆盖同一命名空间内的旧生成产物；人工维护文档永不被覆盖，即使内容看起来过时——过时由人工或 Lifecycle 判，不由渲染器判。硬规则一：局部生成失败时，保留该产物的上一份有效版本，不得用半成品替换。同时必须在生成清单里标注该项为 failed，使「有清单但某页是旧的」可被察觉。硬规则二：生成内容与权威数据版本绑定——每个产物记录其 source_snapshot，版本不一致的产物不得与新版产物混排在同一导航里而不加标注。硬规则三：具体原子写入与文件锁归 Storage；本条只定义「哪些文件可被覆盖」的语义边界。",
+      "owner_module": "Renderer",
+      "upstream_refs": [
+        {
+          "upstream_id": "UPSTREAM-05",
+          "original_capability_id": "C03",
+          "identity_key": "UPSTREAM-05::C03",
+          "upstream_capability": "旁车产物与叙事页分离",
+          "upstream_where": "SKILL.md L158–L162；scripts/generated_output.py L19–L23",
+          "upstream_disposition": "REUSE",
+          "verdict": "REUSE",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-05-audit.json",
+            "pointer": "capability_matrix[2]",
+            "where": "SKILL.md L158–L162；scripts/generated_output.py L19–L23"
+          },
+          "license": {
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true
+          }
+        },
+        {
+          "upstream_id": "UPSTREAM-04",
+          "original_capability_id": "C14",
+          "identity_key": "UPSTREAM-04::C14",
+          "upstream_capability": "产物命名与链接规范",
+          "upstream_where": "SKILL.md L74–L75；external-probe.md L23–L31",
+          "upstream_disposition": "ADAPT",
+          "verdict": "ADAPT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-04-audit.json",
+            "pointer": "capability_matrix[13]",
+            "where": "SKILL.md L74–L75；external-probe.md L23–L31"
+          },
+          "license": {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true
+          }
+        }
+      ],
+      "disposition": "REIMPLEMENT",
+      "license_permission": {
+        "per_upstream": [
+          {
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "upstream_id": "UPSTREAM-05"
+          },
+          {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true,
+            "upstream_id": "UPSTREAM-04"
+          }
+        ],
+        "copy_permitted": true,
+        "constraint": "按各来源许可逐项履行署名/许可链接/修改声明/notice 义务"
+      },
+      "dependencies": [
+        "Storage",
+        "Evidence-Claims"
+      ],
+      "overlaps": "与 EC 的 SL-CAP-0025（产物自证出处）相邻但不同：0025 要求产物头部声明生成者与快照，本条要求「写入位置被结构强制隔离」——前者是标识，后者是空间边界。两者互补不重复",
+      "v1_scope": "V1_REQUIRED",
+      "input_boundary": [
+        "generated_artifact{path, content}",
+        "authoritative_snapshot",
+        "prev_artifact?"
+      ],
+      "output_boundary": [
+        "artifact_namespace{root, pattern, writable_scope}",
+        "artifact_header{auto_generated, generator, run_id, source_snapshot, generated_at}",
+        "render_failure_record{artifact_id, kept_prev_version, failed_reason}"
+      ],
+      "evidence": {
+        "raw_index_sha256": "e62b68ed1658b95ebe73b37d8c991c995b1a18201faabbde81e41214c03a2f11",
+        "ref_count": 2,
+        "sources": [
+          "UPSTREAM-04",
+          "UPSTREAM-05"
+        ]
+      },
+      "unresolved": [
+        "正式目录契约（是否确为 _generated/）待 F2；本批只要求「独立命名空间 + 写侧无分支」",
+        "哪些文档必须人工审阅的清单待 F1-C",
+        "人工维护文档的局部更新是否允许自动插入片段（而非整篇覆盖）待 F1-C"
+      ],
+      "merge_note": "合并依据：U05-C03 给「旁车产物与叙事页分离」的空间约束，U04-C14 给「产物命名与链接规范」——前者决定写在哪，后者决定怎么写名、怎么被引用，合起来才是可执行的隔离。U05-C03 在原始索引判 REUSE，理由写得准：「唯一在两个上游里真正被代码强制的边界」。但本批判 REIMPLEMENT：上游那套 generated_output_path() 是 Python 函数级强制，SourceLore 要的是同样的语义在不同实现里重做，且必须补上「重生成时的覆盖边界」与「局部失败保留上一版」两条上游没有的规则。U04-C14 判 ADAPT：稳定描述性命名 + 每个产物必须从 report 链接并说明证明什么，两条都实用；须加机检规则（文件存在性、链接可达）。"
+    },
+    {
+      "canonical_id": "SL-CAP-0059",
+      "name": "呈现层静态校验（结构一致性、链接完整性与措辞规则）",
+      "description": "生成的视图在交付前必须过静态校验，校验必须是可执行的规则集，不是散文提醒。三类规则：V-1 结构一致性：每个视图必须声明并满足其类型要求的槽位集合（缺槽即失败，不得用占位空段填充）；导航视图的每条链接都必须指向真实存在的产物（文件存在性 + 链接可达）。V-2 措辞规则：陈述句的措辞必须与其确认等级匹配——insufficient 不得写成肯定句，inference 不得写成事实陈述，conflict 必须同时呈现双方。措辞规则以文本扫描器实现，每条带 rule_id 与检测模式。V-3 反模式检测：为二十条反模式清单提供可判定检测条件，每条反模式映射为至少一条 rule_id；不可判定的反模式不得进入校验集（宁可少检，不检伪）。硬规则一：校验规则必须有 rule_id，且失败必须有明确处置（阻断 / 降级 / 仅告警），不得只记录「发现问题」而无动作。硬规则二：校验未跑或部分未跑时，必须在产物里标注 coverage_gap，禁止声称「已通过全部校验」。硬规则三：五十五问类自检清单只作规则来源，不被渲染进产物——自检是内部质量门，不是交付内容。",
+      "owner_module": "Renderer",
+      "upstream_refs": [
+        {
+          "upstream_id": "UPSTREAM-03",
+          "original_capability_id": "C18",
+          "identity_key": "UPSTREAM-03::C18",
+          "upstream_capability": "十八条结构一致性检查",
+          "upstream_where": "SKILL.md §8 L707–L782（检查项 L764–L781）",
+          "upstream_disposition": "REIMPLEMENT",
+          "verdict": "REIMPLEMENT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-03-audit.json",
+            "pointer": "capability_matrix[17]",
+            "where": "SKILL.md §8 L707–L782（检查项 L764–L781）"
+          },
+          "license": {
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true
+          }
+        },
+        {
+          "upstream_id": "UPSTREAM-03",
+          "original_capability_id": "C19",
+          "identity_key": "UPSTREAM-03::C19",
+          "upstream_capability": "Obsidian wiki link 校验",
+          "upstream_where": "SKILL.md §10.4 L997–L1021（L1020）",
+          "upstream_disposition": "REIMPLEMENT",
+          "verdict": "REIMPLEMENT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-03-audit.json",
+            "pointer": "capability_matrix[18]",
+            "where": "SKILL.md §10.4 L997–L1021（L1020）"
+          },
+          "license": {
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true
+          }
+        },
+        {
+          "upstream_id": "UPSTREAM-03",
+          "original_capability_id": "C20",
+          "identity_key": "UPSTREAM-03::C20",
+          "upstream_capability": "五条一致性规则（命名/链接/主张/置信度/未知项）",
+          "upstream_where": "SKILL.md §15.1–§15.5 L1287–L1321",
+          "upstream_disposition": "REIMPLEMENT",
+          "verdict": "REIMPLEMENT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-03-audit.json",
+            "pointer": "capability_matrix[19]",
+            "where": "SKILL.md §15.1–§15.5 L1287–L1321"
+          },
+          "license": {
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true
+          }
+        },
+        {
+          "upstream_id": "UPSTREAM-03",
+          "original_capability_id": "C21",
+          "identity_key": "UPSTREAM-03::C21",
+          "upstream_capability": "五十五问自检清单",
+          "upstream_where": "SKILL.md §17 L1349–L1439（7 组）",
+          "upstream_disposition": "REIMPLEMENT",
+          "verdict": "REIMPLEMENT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-03-audit.json",
+            "pointer": "capability_matrix[20]",
+            "where": "SKILL.md §17 L1349–L1439（7 组）"
+          },
+          "license": {
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true
+          }
+        },
+        {
+          "upstream_id": "UPSTREAM-03",
+          "original_capability_id": "C22",
+          "identity_key": "UPSTREAM-03::C22",
+          "upstream_capability": "主张措辞规则",
+          "upstream_where": "SKILL.md §13.4 L1229–L1239",
+          "upstream_disposition": "REIMPLEMENT",
+          "verdict": "REIMPLEMENT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-03-audit.json",
+            "pointer": "capability_matrix[21]",
+            "where": "SKILL.md §13.4 L1229–L1239"
+          },
+          "license": {
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true
+          }
+        },
+        {
+          "upstream_id": "UPSTREAM-03",
+          "original_capability_id": "C12",
+          "identity_key": "UPSTREAM-03::C12",
+          "upstream_capability": "二十条反模式清单",
+          "upstream_where": "SKILL.md §16 L1322–L1348",
+          "upstream_disposition": "ADAPT",
+          "verdict": "ADAPT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-03-audit.json",
+            "pointer": "capability_matrix[11]",
+            "where": "SKILL.md §16 L1322–L1348"
+          },
+          "license": {
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true
+          }
+        }
+      ],
+      "disposition": "REIMPLEMENT",
+      "license_permission": {
+        "per_upstream": [
+          {
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "upstream_id": "UPSTREAM-03"
+          },
+          {
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "upstream_id": "UPSTREAM-03"
+          },
+          {
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "upstream_id": "UPSTREAM-03"
+          },
+          {
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "upstream_id": "UPSTREAM-03"
+          },
+          {
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "upstream_id": "UPSTREAM-03"
+          },
+          {
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "upstream_id": "UPSTREAM-03"
+          }
+        ],
+        "copy_permitted": true,
+        "constraint": "按各来源许可逐项履行署名/许可链接/修改声明/notice 义务"
+      },
+      "dependencies": [
+        "Evidence-Claims"
+      ],
+      "overlaps": "与 EC 的 SL-CAP-0022（引用三态校验）分界：0022 校验「引用能不能定位到快照中的节点」，本条校验「产物里的链接能不能指向存在的产物」——对象不同：一个是源码位置，一个是产物文件。与 Security 的 SL-CAP-0047（四项独立检查）无关：那条判安全发现成立与否，本条判呈现是否完整",
+      "v1_scope": "V1_REQUIRED",
+      "input_boundary": [
+        "rendered_view",
+        "view_type_slot_spec",
+        "artifact_registry{paths[]}"
+      ],
+      "output_boundary": [
+        "rule_definition{rule_id, category: structure|wording|antipattern, condition, failure_action}",
+        "rule_result{rule_id, status: passed|failed|skipped, detail}",
+        "validation_gap{rule_id, reason}"
+      ],
+      "evidence": {
+        "raw_index_sha256": "e62b68ed1658b95ebe73b37d8c991c995b1a18201faabbde81e41214c03a2f11",
+        "ref_count": 6,
+        "sources": [
+          "UPSTREAM-03"
+        ]
+      },
+      "unresolved": [
+        "三类规则的完整条目集待 F2",
+        "「不可判定的反模式」是否允许部分机械化，待 F1-C",
+        "校验失败时的默认处置（阻断 vs 降级）按视图类型区分，待 F2"
+      ],
+      "merge_note": "合并依据：C18（十八条结构一致性检查）、C19（wiki link 校验）、C20（五条一致性规则）、C21（五十五问自检）、C22（主张措辞规则）、C12（二十条反模式清单）六项讲的是同一件事：「产物交付前怎么机械检查」。它们分别对应结构、链接、规则仲裁、自检、措辞、反模式，拆成六条 canonical 会得到六套各自为政的校验器，而实际需要的是一个带 rule_id 的规则集。C18 判 REIMPLEMENT：上游 L712 自称必需质量门却无 schema、无 linter、无失败处置（审计 D6），检查项内容有价值，须自行实现为带 rule id 的 linter。C19 判 REIMPLEMENT：真可机器检查，但上游无页面清单可对照、无校验算法，须先有 registry 才能实现。C20 判 REIMPLEMENT：§15.1/§15.2 部分可机检，§15.4 因 evidence strength 未定义不可执行（D9），§15.5 三种处置无仲裁顺序；须重写为可判定规则集。C21 判 REIMPLEMENT：问题质量不低但无通过标准、无计分、无阈值、无产物（D16）；改造为结构化 gate，且明确「自检不渲染进产物」。C22 判 REIMPLEMENT：全文最强的可机检措辞规则，但未附任何检测器；可实现为文本扫描器，成本低收益直接。C12 判 ADAPT：条目具体，可作 linter 检查项来源；须为每条补可判定检测条件，否则只是警告语。"
+    },
+    {
+      "canonical_id": "SL-CAP-0060",
+      "name": "确认等级与限制的忠实呈现（禁止视觉掩盖）",
+      "description": "Renderer 的核心纪律是「忠实呈现上游判断，不自行改写」：R-1 有引用不等于引用支持结论。引用完整性由本条校验（链接能不能点、ID 存不存在），但「这条引用是否支持该结论」归 Evidence-Claims，Renderer 不得代为判断，也不得因为「有引用」就把措辞写得更确定。R-2 状态必须显式呈现：claim 处于 insufficient / conflict / 等待重新验证 / detection_incomplete 时，视图必须在正文可见位置呈现该状态，不得只在元数据里写。R-3 禁止把 facts_only 渲染成完整研究报告——facts_only 的视图必须自述「只有事实、没有解释性结论」，且不得填充解释性段落。R-4 禁止使用视觉样式掩盖数据缺失：不得用空白、省略号、「暂缺」之外的任何装饰替代明确的不完整标注；不得用颜色/图标暗示比数据更强的确定性。R-5 禁止使用未经校准的百分比表达真实性。R-6 不允许 Renderer 私自提高任何结论的确认等级；上游给的等级是渲染输入，不是可优化项。",
+      "owner_module": "Renderer",
+      "upstream_refs": [],
+      "disposition": "REIMPLEMENT",
+      "license_permission": {
+        "per_upstream": [],
+        "copy_permitted": true,
+        "constraint": "无上游来源，本条为独立架构设计，不涉及第三方著作权"
+      },
+      "dependencies": [
+        "Evidence-Claims",
+        "Research"
+      ],
+      "overlaps": "与 EC 的 SL-CAP-0023（显式未知优于自信猜测）分界：0023 管「写这句话时的措辞层级」，本条管「渲染时有没有把这个层级忠实带出来」。0023 是产出侧，本条是呈现侧。与 Research 的 SL-CAP-0038 分界：0038 定义质量三态，本条定义三态怎么显示",
+      "v1_scope": "V1_REQUIRED",
+      "input_boundary": [
+        "claim{validation_status, report_tier}",
+        "evidence_refs[]",
+        "coverage_record"
+      ],
+      "output_boundary": [
+        "rendered_claim{text, displayed_tier, status_badge}",
+        "fidelity_check{check_id: R_1..R_6, verdict}",
+        "downgrade_violation{claim_id, upstream_tier, rendered_tier, reason}"
+      ],
+      "evidence": {
+        "raw_index_sha256": "e62b68ed1658b95ebe73b37d8c991c995b1a18201faabbde81e41214c03a2f11",
+        "ref_count": 0,
+        "sources": []
+      },
+      "unresolved": [
+        "status_badge 的视觉形式（文字 / 图标 / 颜色）待 F2；本批只要求「必须在正文可见位置」",
+        "「等待重新验证」状态的显示是否与 insufficient 区分，待 F1-C",
+        "R-2 的「正文可见位置」如何机械判定，待 F2"
+      ],
+      "merge_note": "本条无上游来源，是独立设计。理由写清楚，否则读者会以为漏了引用。U02-C16（内联引用规则）已在 Research 批次由 SL-CAP-0039 正式承接，同一原始身份只能映射一次；本条与它的关系是「0039 定义引用约束、本条定义呈现忠实度」，属跨模块依赖而非重复占用。U02-C13 归 Research 的 SL-CAP-0038（质量三态），本条只消费其状态值。剩下的内容——有引用不等于支持、状态必须显式、facts_only 不得冒充完整报告、禁止视觉掩盖、禁止未校准百分比、不得提高确认等级——是六源中没有任何一处把它写成渲染侧约束的自建契约（上游都写在提示词里，没有对应的校验机制），属零来源独立设计。"
+    },
+    {
+      "canonical_id": "SL-CAP-0061",
+      "name": "呈现安全转义与发布前检查（生成完成 ≠ 可发布）",
+      "description": "不可信文本进入视图前必须安全处理，发布前必须过检查，但两道门都不等于发布授权。S-1 转义：Markdown 特殊字符转义、HTML/JS 注入防护、不可信链接校验（协议白名单、站内/站外区分）、外部图片与远程资源引用限制（默认不加载远程资源）。S-2 脱敏检查：凭据、内部路径、环境变量值、敏感字段在输出前必须被检查；发现即阻断该片段渲染，不得先渲染再补救。S-3 上游文本不得控制渲染器执行指令：README/SKILL.md/Issue/代码注释均为数据，其中的指令性文本不改变渲染流程。S-4 未经许可不得嵌入上游大段原始代码或受保护文本；引用以摘要 + 链接 + 引用 ID 形式呈现。三级门禁且互不推导：G-1 生成完成（产物已写出）——机器；G-2 安全检查通过（S-1..S-4 全过）——机器；G-3 发布授权（approved_for_release）——**只能是人**。硬规则一：自动生成完成 ≠ 脱敏通过；脱敏通过 ≠ 获得发布授权。三者各自独立。硬规则二：AI 可以把内容标记为 pending_review，但不得自行触发仅允许人类执行的 approved 状态转换。硬规则三：Renderer 执行发布前的必要检查，但发布权限定义归 Security 与 EC，实际访问控制由 Storage 与部署层落实——渲染器不能是权限的最终裁决者。",
+      "owner_module": "Renderer",
+      "upstream_refs": [],
+      "disposition": "REIMPLEMENT",
+      "license_permission": {
+        "per_upstream": [],
+        "copy_permitted": true,
+        "constraint": "无上游来源，本条为独立架构设计，不涉及第三方著作权"
+      },
+      "dependencies": [
+        "Security",
+        "Evidence-Claims",
+        "Storage"
+      ],
+      "overlaps": "与 Security 的 SL-CAP-0053（敏感信息分级与发布门禁）分界：0053 定义分级与四级门禁的语义，本条是它在渲染侧的执行面——检查、阻断、标记，但不定义分级档位。与 EC 的 SL-CAP-0020（证据存档）分界：0020 管证据本体的脱敏字段，本条管呈现文本的转义",
+      "v1_scope": "V1_REQUIRED",
+      "input_boundary": [
+        "rendered_text",
+        "sensitive_scan_result",
+        "release_target"
+      ],
+      "output_boundary": [
+        "escaping_record{field, escape_kind, applied}",
+        "sensitive_block{field, category, blocked: true}",
+        "gate_status{gate: G_1|G_2|G_3, status, actor: machine|human}"
+      ],
+      "evidence": {
+        "raw_index_sha256": "e62b68ed1658b95ebe73b37d8c991c995b1a18201faabbde81e41214c03a2f11",
+        "ref_count": 0,
+        "sources": []
+      },
+      "unresolved": [
+        "远程资源默认策略（全禁 vs 白名单）待 F2",
+        "S-2 的敏感字段清单来源（Security 分级 vs 独立检测）待 F1-C",
+        "G-3 的凭证形式（字段值 vs 人工签名）待 F1-C"
+      ],
+      "merge_note": "本条无上游来源，是独立设计。说明白，否则看起来像漏引：U05-C20 已在 Lifecycle 批次由 Security 的 SL-CAP-0053 承接（分级与发布门禁语义），U06-C17 同样归 0053。本条不重复占用，只声明「0053 的语义如何在渲染侧执行」。U05-C06（Auto-generated 头）已在 EC 批次由 SL-CAP-0025 承接，本条的空间隔离由 SL-CAP-0058 承担，亦不重复。剩下的内容——Markdown/HTML 转义、链接协议白名单、远程资源限制、上游文本不得控流程、三段门禁互不推导、AI 不得自批 approved——六源里没有任何一处把它写成渲染器契约（上游的安全关注点都在被分析仓库一侧，没有一个讨论「渲染器自己会不会被注入」），属零来源独立设计。"
     }
   ],
   "cross_module_redirections": [
-    {
-      "upstream_id": "UPSTREAM-01",
-      "original_capability_id": "C10",
-      "identity_key": "UPSTREAM-01::C10",
-      "upstream_capability": "report schema + markdown render",
-      "owner_module": "Renderer",
-      "reason": "report schema + markdown render 是渲染层产物契约，属 Renderer。按指令保留给后续模块。",
-      "status": "DEFERRED_TO_MODULE"
-    },
-    {
-      "upstream_id": "UPSTREAM-03",
-      "original_capability_id": "C15",
-      "identity_key": "UPSTREAM-03::C15",
-      "upstream_capability": "写作风格与受众定义",
-      "owner_module": "Renderer",
-      "reason": "受众清单（L995）的用途是决定卡片与报告的信息密度，属渲染层决策；Product 只产出要素内容，不决定呈现形态",
-      "status": "DEFERRED_TO_MODULE"
-    },
-    {
-      "upstream_id": "UPSTREAM-02",
-      "original_capability_id": "C17",
-      "identity_key": "UPSTREAM-02::C17",
-      "upstream_capability": "Mermaid 图表硬要求",
-      "owner_module": "Renderer",
-      "reason": "Mermaid 图表硬要求属呈现决策；Research 只决定结论内容，图表是否生成由 Renderer 按数据触发",
-      "status": "DEFERRED_TO_MODULE"
-    },
     {
       "upstream_id": "UPSTREAM-04",
       "original_capability_id": "C24",
@@ -4812,33 +5405,49 @@
       "owner_module": "Storage",
       "reason": "三态分离的产物契约（run-metadata / 各阶段 JSON / 报告）是持久化产物模型，归 Storage 的写入与契约职责；上游该契约无新鲜度与失效语义，需自建",
       "status": "DEFERRED_TO_MODULE"
+    },
+    {
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C16",
+      "identity_key": "UPSTREAM-04::C16",
+      "upstream_capability": "完成检查（三处 Completion Check）",
+      "owner_module": "Lifecycle",
+      "reason": "完成检查（三处 Completion Check）是「任务何时算完成」的判定，属 Lifecycle 的变更调度与调度完成语义，不属呈现层",
+      "status": "DEFERRED_TO_MODULE"
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C10",
+      "identity_key": "UPSTREAM-05::C10",
+      "upstream_capability": "契约式 Postconditions",
+      "owner_module": "Lifecycle",
+      "reason": "契约式 Postconditions（写入后校验）属变更动作的后置条件，归 Lifecycle 的增量调度与 Storage 的写入校验",
+      "status": "DEFERRED_TO_MODULE"
     }
   ],
   "batch_summary": {
-    "batch": "F1-B/Security",
-    "module": "Security",
+    "batch": "F1-B/Renderer",
+    "module": "Renderer",
     "canonical_ids": [
-      "SL-CAP-0046",
-      "SL-CAP-0047",
-      "SL-CAP-0048",
-      "SL-CAP-0049",
-      "SL-CAP-0050",
-      "SL-CAP-0051",
-      "SL-CAP-0052",
-      "SL-CAP-0053",
-      "SL-CAP-0054"
+      "SL-CAP-0055",
+      "SL-CAP-0056",
+      "SL-CAP-0057",
+      "SL-CAP-0058",
+      "SL-CAP-0059",
+      "SL-CAP-0060",
+      "SL-CAP-0061"
     ],
-    "raw_mapped_to_this_module": 17,
-    "raw_redirected_to_other_modules": 5,
-    "dedup_ratio": 1.889,
+    "raw_mapped_to_this_module": 11,
+    "raw_redirected_to_other_modules": 2,
+    "dedup_ratio": 1.571,
     "dedup_ratio_definition": "raw_mapped_to_this_module / canonical_count",
     "per_source_mapped": {
-      "UPSTREAM-01": 0,
-      "UPSTREAM-02": 0,
-      "UPSTREAM-03": 0,
-      "UPSTREAM-04": 0,
+      "UPSTREAM-01": 1,
+      "UPSTREAM-02": 1,
+      "UPSTREAM-03": 7,
+      "UPSTREAM-04": 1,
       "UPSTREAM-05": 1,
-      "UPSTREAM-06": 16
+      "UPSTREAM-06": 0
     }
   },
   "invariants_asserted": [
@@ -4896,7 +5505,17 @@
     "脱敏通过不等于允许发布；分级完成 / 脱敏完成 / 人工审查 / 发布批准 四级互不推导",
     "AI 不得自行把需要人工批准的产物标记为 approved",
     "原始扫描输出不落盘是结构约束，不是事后删除",
-    "PR Diff 审查的核心证据在删除侧；只看新增不得判「本次 PR 无安全影响」"
+    "PR Diff 审查的核心证据在删除侧；只看新增不得判「本次 PR 无安全影响」",
+    "卡片不是 Claim 的第二份权威副本：所有内容从上游权威数据派生，不得在渲染阶段创造新主张",
+    "多类型视图（报告/摘要/卡片/索引）共享同一事实源，但布局各自独立",
+    "重生成只产出新视图，不得覆盖不可变的历史 Claim 或 Evidence",
+    "图表可选且必须可追溯；无法可靠提取关系时不生成假图；缺图不构成报告不完整",
+    "自动生成产物必须写入独立命名空间，写侧不得提供指向人工维护目录的分支",
+    "生成完成 / 安全检查通过 / 发布授权 三级门禁互不推导，只有人可触发发布授权",
+    "有引用不等于引用支持结论；支持关系归 EC，Renderer 只校验链接完整性",
+    "禁止把 facts_only 渲染成完整研究报告；禁止视觉样式掩盖数据缺失",
+    "Renderer 不得私自提高任何结论的确认等级；上游等级是输入不是可优化项",
+    "不可信文本必须转义；上游内容不得控制渲染器执行指令"
   ],
   "batches": [
     {
@@ -4915,7 +5534,7 @@
         "SL-CAP-0010"
       ],
       "raw_mapped_to_this_module": 11,
-      "raw_redirected_to_other_modules": 1,
+      "raw_redirected_to_other_modules": 0,
       "dedup_ratio": 1.1,
       "dedup_ratio_definition": "raw_mapped_to_this_module / canonical_count",
       "per_source_mapped": {
@@ -4993,7 +5612,7 @@
         "SL-CAP-0034"
       ],
       "raw_mapped_to_this_module": 10,
-      "raw_redirected_to_other_modules": 1,
+      "raw_redirected_to_other_modules": 0,
       "dedup_ratio": 1.667,
       "dedup_ratio_definition": "raw_mapped_to_this_module / canonical_count",
       "per_source_mapped": {
@@ -5016,7 +5635,7 @@
         "SL-CAP-0039"
       ],
       "raw_mapped_to_this_module": 10,
-      "raw_redirected_to_other_modules": 3,
+      "raw_redirected_to_other_modules": 2,
       "dedup_ratio": 2.0,
       "dedup_ratio_definition": "raw_mapped_to_this_module / canonical_count",
       "per_source_mapped": {
@@ -5077,6 +5696,31 @@
         "UPSTREAM-04": 0,
         "UPSTREAM-05": 1,
         "UPSTREAM-06": 16
+      }
+    },
+    {
+      "batch": "F1-B/Renderer",
+      "module": "Renderer",
+      "canonical_ids": [
+        "SL-CAP-0055",
+        "SL-CAP-0056",
+        "SL-CAP-0057",
+        "SL-CAP-0058",
+        "SL-CAP-0059",
+        "SL-CAP-0060",
+        "SL-CAP-0061"
+      ],
+      "raw_mapped_to_this_module": 11,
+      "raw_redirected_to_other_modules": 2,
+      "dedup_ratio": 1.571,
+      "dedup_ratio_definition": "raw_mapped_to_this_module / canonical_count",
+      "per_source_mapped": {
+        "UPSTREAM-01": 1,
+        "UPSTREAM-02": 1,
+        "UPSTREAM-03": 7,
+        "UPSTREAM-04": 1,
+        "UPSTREAM-05": 1,
+        "UPSTREAM-06": 0
       }
     }
   ],
@@ -5645,6 +6289,105 @@
       "promoted_in_batch": "F1-B/Security",
       "reason": "第2节候选核验后判定归入 Security，本批直接承接（草稿路表中无此分流记录）",
       "was_in_redirection_table": false
+    },
+    {
+      "upstream_id": "UPSTREAM-01",
+      "original_capability_id": "C10",
+      "from": "cross_module_redirections",
+      "to_canonical_id": "SL-CAP-0055",
+      "promoted_in_batch": "F1-B/Renderer",
+      "reason": "上游批次判定该身份属呈现层语义而挂起（指向 Renderer），本批建 canonical 正式承接",
+      "was_in_redirection_table": false
+    },
+    {
+      "upstream_id": "UPSTREAM-02",
+      "original_capability_id": "C17",
+      "from": "cross_module_redirections",
+      "to_canonical_id": "SL-CAP-0057",
+      "promoted_in_batch": "F1-B/Renderer",
+      "reason": "上游批次判定该身份属呈现层语义而挂起（指向 Renderer），本批建 canonical 正式承接",
+      "was_in_redirection_table": false
+    },
+    {
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C12",
+      "from": "unreviewed_adopted",
+      "to_canonical_id": "SL-CAP-0059",
+      "promoted_in_batch": "F1-B/Renderer",
+      "reason": "第2节候选核验后判定归入 Renderer，本批直接承接（草稿路表中无此分流记录）",
+      "was_in_redirection_table": false
+    },
+    {
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C15",
+      "from": "cross_module_redirections",
+      "to_canonical_id": "SL-CAP-0056",
+      "promoted_in_batch": "F1-B/Renderer",
+      "reason": "上游批次判定该身份属呈现层语义而挂起（指向 Renderer），本批建 canonical 正式承接",
+      "was_in_redirection_table": false
+    },
+    {
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C18",
+      "from": "unreviewed_adopted",
+      "to_canonical_id": "SL-CAP-0059",
+      "promoted_in_batch": "F1-B/Renderer",
+      "reason": "第2节候选核验后判定归入 Renderer，本批直接承接（草稿路表中无此分流记录）",
+      "was_in_redirection_table": false
+    },
+    {
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C19",
+      "from": "unreviewed_adopted",
+      "to_canonical_id": "SL-CAP-0059",
+      "promoted_in_batch": "F1-B/Renderer",
+      "reason": "第2节候选核验后判定归入 Renderer，本批直接承接（草稿路表中无此分流记录）",
+      "was_in_redirection_table": false
+    },
+    {
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C20",
+      "from": "unreviewed_adopted",
+      "to_canonical_id": "SL-CAP-0059",
+      "promoted_in_batch": "F1-B/Renderer",
+      "reason": "第2节候选核验后判定归入 Renderer，本批直接承接（草稿路表中无此分流记录）",
+      "was_in_redirection_table": false
+    },
+    {
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C21",
+      "from": "unreviewed_adopted",
+      "to_canonical_id": "SL-CAP-0059",
+      "promoted_in_batch": "F1-B/Renderer",
+      "reason": "第2节候选核验后判定归入 Renderer，本批直接承接（草稿路表中无此分流记录）",
+      "was_in_redirection_table": false
+    },
+    {
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C22",
+      "from": "unreviewed_adopted",
+      "to_canonical_id": "SL-CAP-0059",
+      "promoted_in_batch": "F1-B/Renderer",
+      "reason": "第2节候选核验后判定归入 Renderer，本批直接承接（草稿路表中无此分流记录）",
+      "was_in_redirection_table": false
+    },
+    {
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C14",
+      "from": "unreviewed_adopted",
+      "to_canonical_id": "SL-CAP-0058",
+      "promoted_in_batch": "F1-B/Renderer",
+      "reason": "第2节候选核验后判定归入 Renderer，本批直接承接（草稿路表中无此分流记录）",
+      "was_in_redirection_table": false
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C03",
+      "from": "unreviewed_adopted",
+      "to_canonical_id": "SL-CAP-0058",
+      "promoted_in_batch": "F1-B/Renderer",
+      "reason": "第2节候选核验后判定归入 Renderer，本批直接承接（草稿路表中无此分流记录）",
+      "was_in_redirection_table": false
     }
   ],
   "global_state_counts": {
@@ -5655,12 +6398,12 @@
     ],
     "raw_total": 143,
     "raw_unique": 143,
-    "mapped_count": 83,
-    "routed_pending_count": 14,
-    "unreviewed_count": 46,
+    "mapped_count": 94,
+    "routed_pending_count": 13,
+    "unreviewed_count": 36,
     "sum_check": 143,
-    "canonical_count": 54,
-    "routed_promotions_count": 63,
+    "canonical_count": 61,
+    "routed_promotions_count": 74,
     "state_invariants": {
       "mutually_exclusive": true,
       "union_equals_total": true,
@@ -5669,29 +6412,29 @@
     },
     "by_upstream": {
       "UPSTREAM-01": {
-        "mapped": 8,
-        "routed": 1,
+        "mapped": 9,
+        "routed": 0,
         "unreviewed": 6
       },
       "UPSTREAM-02": {
-        "mapped": 17,
-        "routed": 1,
+        "mapped": 18,
+        "routed": 0,
         "unreviewed": 0
       },
       "UPSTREAM-03": {
-        "mapped": 16,
-        "routed": 1,
-        "unreviewed": 10
+        "mapped": 23,
+        "routed": 0,
+        "unreviewed": 4
       },
       "UPSTREAM-04": {
-        "mapped": 13,
-        "routed": 4,
-        "unreviewed": 10
+        "mapped": 14,
+        "routed": 5,
+        "unreviewed": 8
       },
       "UPSTREAM-05": {
-        "mapped": 7,
-        "routed": 2,
-        "unreviewed": 19
+        "mapped": 8,
+        "routed": 3,
+        "unreviewed": 17
       },
       "UPSTREAM-06": {
         "mapped": 22,
@@ -5775,6 +6518,20 @@
         "SL-CAP-0034"
       ],
       "raw_mapped": 10
+    },
+    {
+      "module": "Renderer",
+      "canonical_count": 7,
+      "canonical_ids": [
+        "SL-CAP-0055",
+        "SL-CAP-0056",
+        "SL-CAP-0057",
+        "SL-CAP-0058",
+        "SL-CAP-0059",
+        "SL-CAP-0060",
+        "SL-CAP-0061"
+      ],
+      "raw_mapped": 11
     },
     {
       "module": "Research",
