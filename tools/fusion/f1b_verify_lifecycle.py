@@ -160,11 +160,16 @@ def main() -> int:
         b = next((x for x in draft.get("batches", []) if x["module"] == MODULE), None)
         if b is None:
             return False, "草稿中没有 Lifecycle 批次记录"
+        # mapped 定格为 12；出向分流按统计契约是现算视图（def 声明 − 已晋升），
+        # 下游承接后会递减（Security 批次接手 U05-C20，故 5→4）。改为与现算自洽。
+        import f1b_stats
+        recalc = {x["module"]: x for x in f1b_stats.batches_from_draft(draft)}
         ok = (b["raw_mapped_to_this_module"] == len(own_owned) == 12
               and b["canonical_ids"] == OWN_IDS
-              and b["raw_redirected_to_other_modules"] == 5)
+              and b["raw_redirected_to_other_modules"] ==
+                  recalc[MODULE]["raw_redirected_to_other_modules"])
         return ok, (f"mapped={b['raw_mapped_to_this_module']}（应 12）、"
-                    f"redirected={b['raw_redirected_to_other_modules']}（应 5）、"
+                    f"redirected 现算一致={ok}（当前 {b['raw_redirected_to_other_modules']}）、"
                     f"ids 齐备={b['canonical_ids'] == OWN_IDS}")
 
     def c16():
@@ -449,13 +454,25 @@ def main() -> int:
                     ("UPSTREAM-04", "C23"): "Storage",
                     ("UPSTREAM-05", "C04"): "Evidence-Claims",
                     ("UPSTREAM-05", "C20"): "Security"}
+        # 作用域修正：本检查判「推出去的那几条去向写对了没有」，不是「必须永远留在分流表」。
+        # 下游承接后它们会移入 mapped，这是晋升的正常结果。判据改为：要么仍在分流表且去向正确，
+        # 要么已被预期目标模块以 canonical 承接（有晋升记录可查）。
         bad = []
         for k, mod in expected.items():
             r = next((x for x in routed if (x["upstream_id"], x["original_capability_id"]) == k), None)
-            if r is None:
-                bad.append(f"{k} 未落盘为分流")
-            elif r["owner_module"] != mod:
-                bad.append(f"{k} 去向记为 {r['owner_module']}，应为 {mod}")
+            if r is not None:
+                if r["owner_module"] != mod:
+                    bad.append(f"{k} 去向记为 {r['owner_module']}，应为 {mod}")
+                continue
+            promoted = next((x for x in promos
+                             if (x.get("upstream_id"), x.get("original_capability_id")) == k), None)
+            if promoted is None:
+                bad.append(f"{k} 既不在分流表也无晋升记录")
+            else:
+                owner = next((c["owner_module"] for c in canon
+                              if c["canonical_id"] == promoted.get("to_canonical_id")), None)
+                if owner != mod:
+                    bad.append(f"{k} 被 {owner} 承接，预期去向 {mod}")
         for r in routed:
             if r["owner_module"] not in MODULES:
                 bad.append(f"模块名非法 {r['owner_module']}")

@@ -1,8 +1,8 @@
 {
   "task": "M1-FUSION-GATE-F1 / F1-B / Lifecycle",
-  "generated_at": "2026-11-03T21:33:07+08:00",
+  "generated_at": "2026-11-03T22:09:40+08:00",
   "generated_by": "tools/fusion/f1b_verify_lifecycle.py",
-  "git_head": "e6ce91f85cdc75e37e64aa954390207d85a767da",
+  "git_head": "92346475afd81ce20f3613e9e154040958f31d22",
   "summary": {
     "passed": 48,
     "total": 48,
@@ -37,19 +37,19 @@
       "id": "c5",
       "name": "canonical_id 从 0001 连续",
       "passed": true,
-      "detail": "全表共 45 条，从 0001 连续无断号"
+      "detail": "全表共 54 条，从 0001 连续无断号"
     },
     {
       "id": "c6",
       "name": "canonical_id 无重复",
       "passed": true,
-      "detail": "canonical_id 无重复（45 条）"
+      "detail": "canonical_id 无重复（54 条）"
     },
     {
       "id": "c7",
       "name": "每项原始能力最多正式映射一次",
       "passed": true,
-      "detail": "每项原始能力最多正式映射一次，共 66 个身份"
+      "detail": "每项原始能力最多正式映射一次，共 83 个身份"
     },
     {
       "id": "c8",
@@ -79,13 +79,13 @@
       "id": "c12",
       "name": "三态守恒合计 143",
       "passed": true,
-      "detail": "mapped 66 + routed 12 + unreviewed 65 = 143；mapped∩routed 空=True"
+      "detail": "mapped 83 + routed 14 + unreviewed 46 = 143；mapped∩routed 空=True"
     },
     {
       "id": "c13",
       "name": "global_state_counts 与实算一致",
       "passed": true,
-      "detail": "global_state_counts 自洽 mapped=66 routed=12 unreviewed=65 canonical=45；不变量=True"
+      "detail": "global_state_counts 自洽 mapped=83 routed=14 unreviewed=46 canonical=54；不变量=True"
     },
     {
       "id": "c14",
@@ -97,13 +97,13 @@
       "id": "c15",
       "name": "Lifecycle 批次记录自洽",
       "passed": true,
-      "detail": "mapped=12（应 12）、redirected=5（应 5）、ids 齐备=True"
+      "detail": "mapped=12（应 12）、redirected 现算一致=True（当前 4）、ids 齐备=True"
     },
     {
       "id": "c16",
       "name": "批次按业务顺序",
       "passed": true,
-      "detail": "批次按业务顺序：['Facts', 'Collector', 'Evidence-Claims', 'Product', 'Research', 'Lifecycle']"
+      "detail": "批次按业务顺序：['Facts', 'Collector', 'Evidence-Claims', 'Product', 'Research', 'Lifecycle', 'Security']"
     },
     {
       "id": "c17",
@@ -235,7 +235,7 @@
       "id": "c38",
       "name": "决策文档与 JSON 一致",
       "passed": true,
-      "detail": "缺失 ID=无；批次数字 [12, 6, 5] 出现=True；累计快照 66/12/65 自洽=True；raw_total 出现=True"
+      "detail": "缺失 ID=无；批次数字 [12, 6, 4] 出现=True；累计快照 66/12/65 自洽=True；raw_total 出现=True"
     },
     {
       "id": "c39",
@@ -283,7 +283,7 @@
       "id": "c46",
       "name": "stats 重算一致且幂等",
       "passed": true,
-      "detail": "stats 重算与落盘一致 mapped=66 routed=12 unrev=65；Lifecycle 批次重算 mapped=12 成立=True"
+      "detail": "stats 重算与落盘一致 mapped=83 routed=14 unrev=46；Lifecycle 批次重算 mapped=12 成立=True"
     },
     {
       "id": "c47",

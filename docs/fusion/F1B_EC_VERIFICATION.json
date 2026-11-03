@@ -1,8 +1,8 @@
 {
   "task": "M1-FUSION-GATE-F1 / F1-B / Evidence-Claims",
-  "generated_at": "2026-11-03T21:33:07+08:00",
+  "generated_at": "2026-11-03T22:09:40+08:00",
   "generated_by": "tools/fusion/f1b_verify_ec.py",
-  "git_head": "e6ce91f85cdc75e37e64aa954390207d85a767da",
+  "git_head": "92346475afd81ce20f3613e9e154040958f31d22",
   "summary": {
     "passed": 50,
     "total": 50,
@@ -37,13 +37,13 @@
       "id": "c5",
       "name": "canonical_id 从 0001 连续",
       "passed": true,
-      "detail": "共 45 条，从 0001 连续无断号"
+      "detail": "共 54 条，从 0001 连续无断号"
     },
     {
       "id": "c6",
       "name": "canonical_id 无重复",
       "passed": true,
-      "detail": "canonical_id 无重复（45 条）"
+      "detail": "canonical_id 无重复（54 条）"
     },
     {
       "id": "c7",
@@ -73,7 +73,7 @@
       "id": "c11",
       "name": "原始身份全局唯一归属",
       "passed": true,
-      "detail": "全局无重复归属，共 66 个身份"
+      "detail": "全局无重复归属，共 83 个身份"
     },
     {
       "id": "c12",
@@ -85,13 +85,13 @@
       "id": "c13",
       "name": "三态计数之和等于 143",
       "passed": true,
-      "detail": "mapped 66 + routed 12 + unreviewed 65 = 143"
+      "detail": "mapped 83 + routed 14 + unreviewed 46 = 143"
     },
     {
       "id": "c14",
       "name": "global_state_counts 与实算一致且不变量成立",
       "passed": true,
-      "detail": "global_state_counts 与实算一致 mapped=66 routed=12 unreviewed=65 canonical=45；四条不变量=True"
+      "detail": "global_state_counts 与实算一致 mapped=83 routed=14 unreviewed=46 canonical=54；四条不变量=True"
     },
     {
       "id": "c15",
@@ -109,19 +109,19 @@
       "id": "c17",
       "name": "batch_summary 指向最近完成批次",
       "passed": true,
-      "detail": "EC 批次条目存在=True；batch_summary=F1-B/Lifecycle 可在 batches 中定位=True；确为业务顺序最后一批=True"
+      "detail": "EC 批次条目存在=True；batch_summary=F1-B/Security 可在 batches 中定位=True；确为业务顺序最后一批=True"
     },
     {
       "id": "c18",
       "name": "批次按业务顺序排列",
       "passed": true,
-      "detail": "批次按业务顺序排列：['Facts', 'Collector', 'Evidence-Claims', 'Product', 'Research', 'Lifecycle']"
+      "detail": "批次按业务顺序排列：['Facts', 'Collector', 'Evidence-Claims', 'Product', 'Research', 'Lifecycle', 'Security']"
     },
     {
       "id": "c19",
       "name": "前两批批次条目仍在且数字未变",
       "passed": true,
-      "detail": "Facts 11/1，Collector 11/2；mapped 定格=True；出向与现算自洽=True"
+      "detail": "Facts 11/1，Collector 11/1；mapped 定格=True；出向与现算自洽=True"
     },
     {
       "id": "c20",
@@ -145,7 +145,7 @@
       "id": "c23",
       "name": "晋升记录无重复",
       "passed": true,
-      "detail": "晋升记录无重复（共 46 条）"
+      "detail": "晋升记录无重复（共 63 条）"
     },
     {
       "id": "c24",
@@ -301,7 +301,7 @@
       "id": "c49",
       "name": "九条 ROUTED 全部承接且不再外推",
       "passed": true,
-      "detail": "九条 ROUTED 全部承接=True（缺 无）；EC 自声明分流残留 0 条；后续批次新推入 EC 3 条（不计失败）"
+      "detail": "九条 ROUTED 全部承接=True（缺 无）；EC 自声明分流残留 0 条；后续批次新推入 EC 5 条（不计失败）"
     },
     {
       "id": "c50",

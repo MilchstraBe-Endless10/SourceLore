@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-03T21:33:32+08:00",
+  "updated_at": "2026-11-03T22:10:15+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -501,6 +501,42 @@
       "blocked_reason": null,
       "depends_on": [
         "M1-FUSION-GATE-F1B-RESEARCH"
+      ]
+    },
+    {
+      "id": "M1-FUSION-GATE-F1B-SECURITY",
+      "milestone": "M1-FUSION-GATE",
+      "goal": "F1-B 第八批次：Security 模块的能力归并（SL-CAP-0046~0054）与独立验收",
+      "inputs": [
+        "docs/fusion/RAW_CAPABILITY_INDEX.json",
+        "docs/fusion/CAPABILITY_CROSSWALK.draft.json",
+        "tools/fusion/f1b_security_def.py",
+        "tools/fusion/f1b_build_security.py"
+      ],
+      "expected_outputs": [
+        "docs/fusion/CAPABILITY_CROSSWALK.draft.json（增量）",
+        "docs/fusion/F1B_SECURITY_DECISIONS.md",
+        "docs/fusion/F1B_SECURITY_VERIFICATION.json"
+      ],
+      "status": "DONE",
+      "verification_commands": [
+        "python3 tools/fusion/f1b_build_security.py",
+        "python3 tools/fusion/f1b_verify.py",
+        "python3 tools/fusion/f1b_verify_collector.py",
+        "python3 tools/fusion/f1b_verify_ec.py",
+        "python3 tools/fusion/f1b_verify_product.py",
+        "python3 tools/fusion/f1b_verify_research.py",
+        "python3 tools/fusion/f1b_verify_lifecycle.py",
+        "python3 tools/fusion/f1b_verify_security.py"
+      ],
+      "evidence_paths": [
+        "docs/fusion/F1B_SECURITY_DECISIONS.md",
+        "docs/fusion/F1B_SECURITY_VERIFICATION.json"
+      ],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": [
+        "M1-FUSION-GATE-F1B-LIFECYCLE"
       ]
     }
   ]

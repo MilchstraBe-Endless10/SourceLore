@@ -2,7 +2,7 @@
   "artifact": "CROSSWALK_PROGRESS",
   "schema_version": 1,
   "task": "M1-FUSION-GATE-F1",
-  "phase": "F1-A_DONE / F1-B_IN_PROGRESS (Facts, Collector, Evidence-Claims, Product, Research, Lifecycle DONE)",
+  "phase": "F1-A_DONE / F1-B_IN_PROGRESS (Facts, Collector, EC, Product, Research, Lifecycle, Security DONE)",
   "updated_at": "2026-11-02T23:15:01+08:00",
   "batches": [
     {
@@ -125,9 +125,21 @@
       "status": "DONE"
     },
     "Security": {
-      "canonical_count": 0,
-      "raw_consumed": 0,
-      "status": "PENDING"
+      "canonical_count": 9,
+      "canonical_ids": [
+        "SL-CAP-0046",
+        "SL-CAP-0047",
+        "SL-CAP-0048",
+        "SL-CAP-0049",
+        "SL-CAP-0050",
+        "SL-CAP-0051",
+        "SL-CAP-0052",
+        "SL-CAP-0053",
+        "SL-CAP-0054"
+      ],
+      "raw_mapped": 17,
+      "raw_redirected": 5,
+      "status": "DONE"
     },
     "Renderer": {
       "canonical_count": 0,
@@ -146,8 +158,8 @@
     }
   },
   "next_batch_start": {
-    "module_hint": "Security",
-    "note": "Facts、Collector、Evidence-Claims、Product、Research、Lifecycle 已完成；剩余四个模块待办。下一步从 Security 开始（U06-C18/C24 已由 Collector 分流指向 Security，U06-C04 Boundary Gate、U06-C22 OWASP、U05-C20 保密分级已定向）。"
+    "module_hint": "Renderer",
+    "note": "Facts、Collector、EC、Product、Research、Lifecycle、Security 已完成；剩余三个模块待办。下一步从 Renderer 开始（U01-C10 已由 Facts 分流指向 Renderer，U02-C17 与 U03-C15 已由 Research/Product 分流指向 Renderer）。"
   },
   "invariants": [
     "每个 (upstream_id, original_capability_id) 必须且只能映射一次",
@@ -157,13 +169,13 @@
     "名称相似而语义不同不得合并"
   ],
   "progress_computed_from": "docs/fusion/CAPABILITY_CROSSWALK.draft.json",
-  "last_updated": "2026-11-03T21:29:23+08:00",
+  "last_updated": "2026-11-03T22:06:02+08:00",
   "totals": {
     "raw_total": 143,
-    "mapped_count": 66,
-    "routed_pending_count": 12,
-    "unreviewed_count": 65,
-    "canonical_count": 45,
+    "mapped_count": 83,
+    "routed_pending_count": 14,
+    "unreviewed_count": 46,
+    "canonical_count": 54,
     "sum_check": 143,
     "definitions": {
       "mapped_count": "已归属某个 canonical_id 的原始身份数",
