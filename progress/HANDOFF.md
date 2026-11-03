@@ -1144,3 +1144,87 @@ Research 10/1、Lifecycle 12/4、Security 17/3、Renderer 11/2、Storage 11/2、
 5. 处理 8 项待裁 REJECT
 
 F1-D（全量验收 + 交叉表冻结）在 F1-C 之后。
+
+
+## M1-FUSION-GATE / F1-C-A 完成（2026-11-04 01:19 +08:00）
+
+### 一句话
+
+F1-C 第一批完成：两处归属争议已裁（结论都是「保持原判」），31 项遗留身份基线已现算核清，
+终态模型建议已提出。F1-C 总体仍 IN_PROGRESS。
+
+### 裁决一：U06-C25 三态产物契约 → Storage（保持）
+
+依据是 mechanism 逐字原文：「每个阶段写自己的 JSON，报告层只聚合；跳过阶段在输出里显式缺失而非空对象」。
+三件事（一阶段一文件的落地形态、报告层聚合、跳过阶段显式缺失）全是产物存在性与完整性，
+无一字涉及证据充分性判定。第三条尤其关键——它防的是「用空值冒充已完成」，
+与 Storage 的 SL-CAP-0071「工具成功与模型生成成功分开记录」同属执行证据完整性。
+
+否决「迁至 EC」：仅凭「三态」二字联想，原文无证据裁决语义，属误判风险。
+
+**注意**：该身份仍是 ROUTED、**尚未被任何 canonical 承接**。SL-CAP-0062 只覆盖四层资产模型，
+未显式定义「阶段产物一阶段一文件 + 跳过阶段显式缺失」。承接形态留 F1-C-B。
+
+### 裁决二：SL-CAP-0009 Canonical Knowledge Registry → Facts（保持）
+
+依据四项字段：input 是 SL-CAP-0001 的文件与符号清单（Facts 自己的产出），
+output 是 `registry.json: entries[] + aliases + merge/split 记录`（决策留痕，不是存储布局），
+description 全句讲「名字/别名如何归一、冲突如何留痕、不够格的去哪里」。
+
+否决「迁至 Storage」：与 SL-CAP-0062/0064 大面积重叠，会造成一条事实两个 owner。
+否决「拆分」：现有 Storage canonical 已完整承接持久化面，拆分只是重复造卡。
+
+边界一句话：**Registry 定义「什么叫同一个实体」；Storage 定义「这条记录怎么安全落地」。**
+
+### 遗留基线（现算，无人工录入固定数）
+
+| 项 | 值 |
+|---|---|
+| 原始身份 | 143 |
+| MAPPED | 112 |
+| ROUTED | 11 |
+| UNREVIEWED | 20 |
+| 遗留合计 | 31 |
+
+ROUTED 分布：Evidence-Claims 5、Lifecycle 4、Renderer 4、Storage 1。
+**四个目标模块的批次都已完成，但这些身份没被承接**——这是 F1-C-B 要处理的实质问题。
+
+UNREVIEWED 分 4 组：分析与评估 4、研究报告与外部资料 2、知识页面与质量门 3、知识库维护流程 11。
+
+待裁 REJECT 8 项，**全部落在 31 项遗留集合内**，不额外新增；另有 13 项 REJECT 已绑 canonical（属 MAPPED，单列）。
+
+### 终态模型建议
+
+现有三态只表达「映射进度」，无法表达处置性质。建议**新增正交的 `terminal_disposition` 字段**
+（ADOPTED / ADOPTED_AS_COUNTEREXAMPLE / REJECTED_WITH_REASON / DEFERRED_WITH_REASON / INTERNAL_DESIGN_ONLY），
+`state` 继续表达「进没进 canonical」（守恒仍按 143）。这样十个既有验证器读 `state` 的断言不受影响。
+
+**本批未实施**，须由 F1-C 后续批次统一做。
+
+### 本批未做
+
+未改动任何 owner / ID / ROUTED / UNREVIEWED；未重跑 F1-B 构建器；未启动 F1-C-B/C/D、F1-D、F2；
+Crosswalk 逐字节未改（机检 `applied_changes_this_batch` 为空）。
+
+### 验证证据（全部 exit 0）
+
+`f1c_a_verify.py` 16/16；十个 F1-B 验证器 12/30/50/43/46/48/53/48/54/56 全绿；
+基线重跑逐项一致（`f1c_a_baseline.py` 幂等）。
+
+### 本批修掉的问题
+
+**★ 元组换行写法踩坑四次。** `return (expr),` 后换行接 `f"..."` 会被解析成单元素元组而非二元组，
+报 `ValueError: not enough values to unpack`。正确写法是先算 `detail = (...)` 再 `return (cond), detail`。
+（上一批已记录「多行 return 元组是语法雷区」，本批又在同一处摔了四次 —— 说明这条要写进验证器模板本身。）
+
+**c15 断言措辞**：文档写「唯一建议 owner：Storage」，断言查「保持 Storage」，已对齐。
+
+### 下一步
+
+**F1-C-B 最小执行起点**：
+1. 先处理 11 项 ROUTED 的「已完成未承接」——逐条二选一：建卡承接或改判去向
+2. 先定 U06-C25 的承接形态（Storage 已定，但未落 canonical）
+3. 按语义组处理 20 项 UNREVIEWED（建议从 U05 系 11 项开始）
+4. 8 项待裁 REJECT 逐条定性
+5. 十项冲突裁决（F1 原定任务）
+6. 实施终态模型扩展 + 配套验证器

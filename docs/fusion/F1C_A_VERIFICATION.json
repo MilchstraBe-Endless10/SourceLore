@@ -1,0 +1,110 @@
+{
+  "task": "M1-FUSION-GATE-F1 / F1-C-A（归属争议裁决与遗留基线核对）",
+  "generated_at": "2026-11-04T01:18:20+08:00",
+  "generated_by": "tools/fusion/f1c_a_verify.py",
+  "git_head": "9b969ca92834351cb6ffa62a55e07fca9b17633a",
+  "scope_note": "只读分析批次：未重跑 F1-B 构建器、未改动 Crosswalk、未启动 F1-C-B",
+  "summary": {
+    "passed": 16,
+    "total": 16,
+    "result": "PASS"
+  },
+  "checks": [
+    {
+      "id": "c1",
+      "name": "143 项原始身份完整",
+      "passed": true,
+      "detail": "原始身份 143 项，identity_key 唯一=True"
+    },
+    {
+      "id": "c2",
+      "name": "已映射 112 项保持不变",
+      "passed": true,
+      "detail": "已映射 112 = Crosswalk 112 = 基线 112"
+    },
+    {
+      "id": "c3",
+      "name": "73 条 canonical 完整保留",
+      "passed": true,
+      "detail": "canonical 73 条，0001 起连续无断号"
+    },
+    {
+      "id": "c4",
+      "name": "ROUTED 与 UNREVIEWED 不重叠",
+      "passed": true,
+      "detail": "ROUTED 11 与 UNREVIEWED 20 不重叠=True"
+    },
+    {
+      "id": "c5",
+      "name": "待裁 REJECT 与遗留集合关系已明确",
+      "passed": true,
+      "detail": "待裁 REJECT 8 项全部落在遗留集合内=True；交集字段齐备=True；越界=无"
+    },
+    {
+      "id": "c6",
+      "name": "U06-C25 裁决有证据支持",
+      "passed": true,
+      "detail": "U06-C25 裁决有原文证据=True、竞争解释 2 条、owner=Storage、影响说明=True"
+    },
+    {
+      "id": "c7",
+      "name": "SL-CAP-0009 裁决有证据支持",
+      "passed": true,
+      "detail": "SL-CAP-0009 裁决有字段级证据=True、竞争解释 2 条、owner=Facts"
+    },
+    {
+      "id": "c8",
+      "name": "两项裁决说明后续如何应用",
+      "passed": true,
+      "detail": "decision_state=['adjudicated', 'adjudicated']；applied 为空=True（本批无迁移）；否决替代方案 3 条"
+    },
+    {
+      "id": "c9",
+      "name": "无未经记录的 owner 修改",
+      "passed": true,
+      "detail": "Crosswalk 逐字节未改（无任何 owner 变更）"
+    },
+    {
+      "id": "c10",
+      "name": "许可证与原始处置未被改写",
+      "passed": true,
+      "detail": "31 项遗留身份的原始处置与许可逐项未变，问题 无"
+    },
+    {
+      "id": "c11",
+      "name": "原始索引与六份审计未改动",
+      "passed": true,
+      "detail": "原始索引与六份审计未改动"
+    },
+    {
+      "id": "c12",
+      "name": "正式引擎/Schema/测试未改动",
+      "passed": true,
+      "detail": "src/tests/schemas 无改动"
+    },
+    {
+      "id": "c13",
+      "name": "基线与 Crosswalk 一致",
+      "passed": true,
+      "detail": "基线三态 112/11/20=143，pending=31，逐项一致=True"
+    },
+    {
+      "id": "c14",
+      "name": "三态守恒检查未削弱",
+      "passed": true,
+      "detail": "三态守恒未削弱，sum=143，不变量=True"
+    },
+    {
+      "id": "c15",
+      "name": "裁决文档完整",
+      "passed": true,
+      "detail": "文档含两项裁决与终态建议，缺 无"
+    },
+    {
+      "id": "c16",
+      "name": "未提前进入 F1-C-B / F1-D",
+      "passed": true,
+      "detail": "未改动 Crosswalk、未冻结正式交叉表"
+    }
+  ]
+}

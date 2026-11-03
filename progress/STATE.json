@@ -6,13 +6,13 @@
   "status": "IN_PROGRESS",
   "last_verified_commit": "58e9b3739698068a8b0cdb98f6d82ca7b40f5cf6",
   "last_revision_commit": "58e9b3739698068a8b0cdb98f6d82ca7b40f5cf6",
-  "last_revision_note": "F1-B DSH-Adapter 批次（最后一批）：6 canonical / 7 raw 承接 / 1 出向分流；十个验证器全绿；产出全量剩余能力清单",
-  "last_test_summary": "F1-B 全部十批次验证器全绿：12/12、30/30、50/50、43/43、46/46、48/48、53/53、48/48、54/54、56/56。三态实测 112+11+20=143 且 MAPPED∩ROUTED=∅。晋升 31 条、分流 11 条零重复、无幽灵晋升、无 ID 漂移。F1B_REMAINDER_INVENTORY.json 覆盖 143 项且逐项状态与 Crosswalk 一致。边界：仅 F1 设计与产物验证；未实现正式 Skill、未跑模型基准、未建库。",
+  "last_revision_note": "F1-C-A 完成：两处归属争议裁决（U06-C25 保持 Storage、SL-CAP-0009 保持 Facts）+ 31 项遗留基线现算 + 终态模型建议",
+  "last_test_summary": "F1-C-A 验收 16/16 PASS。四个 F1-B 验证器链式回归全绿（12/30/50/43/46/48/53/48/54/56）。遗留基线现算 112 MAPPED + 11 ROUTED + 20 UNREVIEWED = 143，pending 31；待裁 REJECT 8 项全部在遗留集合内；基线重跑结果逐项一致（幂等）。Crosswalk 逐字节未改，无任何 owner 变更。",
   "blockers": [],
-  "notes": "M1 六源审计全部完成（DONE 8 / PENDING 0）。F1-B 已完成 Facts（SL-CAP-0001~0010）与 Collector（SL-CAP-0011~0019）两个模块批次。Collector 架构裁决：唯一逻辑入口 + 传输适配层（当前 gh api）+ 可验证原始数据 + 传输可替换；数据契约不绑定 GitHub CLI 输出格式。分批构建器均幂等，且写入延后到校验通过之后；Facts 构建器已加防误跑闸（检测到其它模块条目即 exit 2 且不写盘）。 F1-B 第三批 Evidence-Claims 完成（SL-CAP-0020~0028）：证据存档契约、逐跳数据流定位、引用三态校验、显式未知、缺料占位、产物自证出处、四段结构与观察/解释分离、结论生命周期与新鲜度、裁决状态机。核心裁决：显式拒绝「不可验证即判否」（不可验证只产生 insufficient_evidence，禁止落成 refuted）。 F1-B 第四批 Product 完成（SL-CAP-0029~0034）：产品语义八要素（每字段强制 claim_type+evidence_refs）、外部集成三态（有配置≠在运行）、业务实体建模、渐进构建序、未知项与来源冲突登记、可判定终止条件与字段置信度。核心裁决：声明不可替代实现证据——空 evidence_refs 的字段只能是 inference 或 unknown，不得是 fact 或 declaration。 F1-B 第五批 Research 完成（SL-CAP-0035~0039）：有界研究阶段流水线 R0-R4、查询策略与来源去重、来源类型标记与覆盖记录、研究质量三态与结论边界、内联引用校验器执行。核心裁决：来源类型不构成真伪排序，优先级降级为字段；阶段完成≠结论正确、读全≠研究完成。 F1-B 第六批 Lifecycle 完成（SL-CAP-0040~0045）：Subject 稳定身份与复用判定、可变/不可变层分离、内容哈希驱动的精确失效检测、变更分类与增量重建调度、影响面双路径分析、外部来源新鲜度与不可复现观察保留。核心裁决：三轴正交（任务执行/知识有效性/Claim 验证）；旧结论对旧版本成立与对新版本成立是两个问题；路径 A 与路径 B 不得合并。 F1-B 第七批 Security 完成（SL-CAP-0046~0054）：两阶段信任边界与上下文卫生、安全发现九字段与四项独立检查、确定性前置门与失效安全、依赖五级分离与可达性三态、族扫描与诚实否定、动态验证双重控制、Agent/Skill 指令安全、保密分级与发布门禁、PR Diff 增量审查。核心裁决：没有足够证据只能停 unconfirmed、无法验证停 inconclusive（继承 F0 与 EC 对 can't prove→FALSE_POSITIVE 的拒绝）；脱敏通过≠允许发布；U06-C18 改路由至 DSH-Adapter。 F1-B 第八批 Renderer 完成（SL-CAP-0055~0061）：多类型视图统一呈现契约、受众密度、可选图表与追溯、生成/人工物理隔离、静态校验规则集、确认等级忠实呈现、呈现安全与发布门禁。核心裁决：卡片非第二份权威副本；九节结构不得成全局模板；拒绝强制出图但保留可选图表；生成完成≠脱敏通过≠发布授权。 F1-B 第九批 Storage 完成（SL-CAP-0062~0067）：四层资产模型与单一权威、身份层级与版本标识、原子写入与乐观并发、可重建派生索引与跨模块查询、多仓库关系持久化、根目录隔离与路径安全。核心裁决：四层读写权限分明且单一权威；派生索引可整体重建；并发冲突显式返回不得静默覆盖；多文件重命名不得宣称跨文件原子事务；知识根目录不得位于被分析仓库内。U06-C25 保持原判 Storage 不改归属。 F1-B 第十批（最后）DSH-Adapter 完成（SL-CAP-0068~0073）：Skill 入口与渐进加载、模型适配与确定性边界、预算/有界修复/成本四类分列、任务检查点与幂等、权限门禁执行、九模块编排接口。核心裁决：Skill 入口薄、能力按需加载；能力必须实测（UNVERIFIED 不得写成平台功能）；有界修复硬上限 2 次；超时不得自动解释为工具未执行；AI 不得自批 approved；不绕过 Storage 改数据。已产出 F1B_REMAINDER_INVENTORY.json（143 项，明确声明批次完成≠归属全部完成）。",
-  "updated_at": "2026-11-04T00:11:47+08:00",
-  "next_task": "F1-C（十项冲突裁决 + 剩余归属裁决），需 Owner 明确批准",
-  "current_batch": "F1-B ALL BATCHES DONE — 累计 73 canonical、MAPPED 112 / ROUTED 11 / UNREVIEWED 20 = 143",
+  "notes": "M1 六源审计全部完成（DONE 8 / PENDING 0）。F1-B 已完成 Facts（SL-CAP-0001~0010）与 Collector（SL-CAP-0011~0019）两个模块批次。Collector 架构裁决：唯一逻辑入口 + 传输适配层（当前 gh api）+ 可验证原始数据 + 传输可替换；数据契约不绑定 GitHub CLI 输出格式。分批构建器均幂等，且写入延后到校验通过之后；Facts 构建器已加防误跑闸（检测到其它模块条目即 exit 2 且不写盘）。 F1-B 第三批 Evidence-Claims 完成（SL-CAP-0020~0028）：证据存档契约、逐跳数据流定位、引用三态校验、显式未知、缺料占位、产物自证出处、四段结构与观察/解释分离、结论生命周期与新鲜度、裁决状态机。核心裁决：显式拒绝「不可验证即判否」（不可验证只产生 insufficient_evidence，禁止落成 refuted）。 F1-B 第四批 Product 完成（SL-CAP-0029~0034）：产品语义八要素（每字段强制 claim_type+evidence_refs）、外部集成三态（有配置≠在运行）、业务实体建模、渐进构建序、未知项与来源冲突登记、可判定终止条件与字段置信度。核心裁决：声明不可替代实现证据——空 evidence_refs 的字段只能是 inference 或 unknown，不得是 fact 或 declaration。 F1-B 第五批 Research 完成（SL-CAP-0035~0039）：有界研究阶段流水线 R0-R4、查询策略与来源去重、来源类型标记与覆盖记录、研究质量三态与结论边界、内联引用校验器执行。核心裁决：来源类型不构成真伪排序，优先级降级为字段；阶段完成≠结论正确、读全≠研究完成。 F1-B 第六批 Lifecycle 完成（SL-CAP-0040~0045）：Subject 稳定身份与复用判定、可变/不可变层分离、内容哈希驱动的精确失效检测、变更分类与增量重建调度、影响面双路径分析、外部来源新鲜度与不可复现观察保留。核心裁决：三轴正交（任务执行/知识有效性/Claim 验证）；旧结论对旧版本成立与对新版本成立是两个问题；路径 A 与路径 B 不得合并。 F1-B 第七批 Security 完成（SL-CAP-0046~0054）：两阶段信任边界与上下文卫生、安全发现九字段与四项独立检查、确定性前置门与失效安全、依赖五级分离与可达性三态、族扫描与诚实否定、动态验证双重控制、Agent/Skill 指令安全、保密分级与发布门禁、PR Diff 增量审查。核心裁决：没有足够证据只能停 unconfirmed、无法验证停 inconclusive（继承 F0 与 EC 对 can't prove→FALSE_POSITIVE 的拒绝）；脱敏通过≠允许发布；U06-C18 改路由至 DSH-Adapter。 F1-B 第八批 Renderer 完成（SL-CAP-0055~0061）：多类型视图统一呈现契约、受众密度、可选图表与追溯、生成/人工物理隔离、静态校验规则集、确认等级忠实呈现、呈现安全与发布门禁。核心裁决：卡片非第二份权威副本；九节结构不得成全局模板；拒绝强制出图但保留可选图表；生成完成≠脱敏通过≠发布授权。 F1-B 第九批 Storage 完成（SL-CAP-0062~0067）：四层资产模型与单一权威、身份层级与版本标识、原子写入与乐观并发、可重建派生索引与跨模块查询、多仓库关系持久化、根目录隔离与路径安全。核心裁决：四层读写权限分明且单一权威；派生索引可整体重建；并发冲突显式返回不得静默覆盖；多文件重命名不得宣称跨文件原子事务；知识根目录不得位于被分析仓库内。U06-C25 保持原判 Storage 不改归属。 F1-B 第十批（最后）DSH-Adapter 完成（SL-CAP-0068~0073）：Skill 入口与渐进加载、模型适配与确定性边界、预算/有界修复/成本四类分列、任务检查点与幂等、权限门禁执行、九模块编排接口。核心裁决：Skill 入口薄、能力按需加载；能力必须实测（UNVERIFIED 不得写成平台功能）；有界修复硬上限 2 次；超时不得自动解释为工具未执行；AI 不得自批 approved；不绕过 Storage 改数据。已产出 F1B_REMAINDER_INVENTORY.json（143 项，明确声明批次完成≠归属全部完成）。 F1-C-A 完成：U06-C25 依据 mechanism 逐字原文（阶段写各自 JSON、报告层聚合、跳过阶段显式缺失而非空对象）判为产物存在性/完整性，唯一建议 owner=Storage，不改路由；SL-CAP-0009 依据四项字段（输入是 Facts 文件清单、输出是 entries+aliases+merge/split 记录）判为语义身份消解规则，唯一建议 owner=Facts，不迁移不拆分；边界一句话：Registry 定义「什么叫同一个实体」，Storage 定义「这条记录怎么安全落地」。提出终态模型扩展建议（正交 terminal_disposition 五类），留 F1-C 后续实施。",
+  "updated_at": "2026-11-04T01:18:57+08:00",
+  "next_task": "F1-C-B（11 项 ROUTED 未承接 + 20 项 UNREVIEWED 归属裁决），需 Owner 明确批准",
+  "current_batch": "F1-C-A DONE — F1-C IN_PROGRESS；MAPPED 112 / ROUTED 11 / UNREVIEWED 20 = 143，canonical 73，遗留待裁 31",
   "f1_batches": {
     "F1-A": "DONE",
     "F1-B-Facts": "DONE",
@@ -27,7 +27,8 @@
     "F1-B-Security": "DONE",
     "F1-B-Renderer": "DONE",
     "F1-B-Storage": "DONE",
-    "F1-B-DSH-Adapter": "DONE"
+    "F1-B-DSH-Adapter": "DONE",
+    "F1-C-A": "DONE"
   },
-  "note": "F1-A 与 F1-B 全部十批次 DONE。剩待裁决：20 UNREVIEWED、11 ROUTED、跨模块 owner 争议。F1-C/F1-D 未启动，CAPABILITY_CROSSWALK.json 未冻结。"
+  "note": "F1-A 与 F1-B 十批次 DONE；F1-C-A DONE（两处归属争议已裁、基线已核）。剩 F1-C-B/C/D 与 F1-D 未启动，CAPABILITY_CROSSWALK.json 未冻结。"
 }

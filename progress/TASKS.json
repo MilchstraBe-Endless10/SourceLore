@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-04T00:11:47+08:00",
+  "updated_at": "2026-11-04T01:18:57+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -655,6 +655,38 @@
       "blocked_reason": null,
       "depends_on": [
         "M1-FUSION-GATE-F1B-STORAGE"
+      ]
+    },
+    {
+      "id": "M1-FUSION-GATE-F1C-A",
+      "milestone": "M1-FUSION-GATE",
+      "goal": "F1-C 第一批：两处归属争议裁决（U06-C25、SL-CAP-0009）+ 31 项遗留身份基线核对 + 终态模型预审",
+      "inputs": [
+        "docs/fusion/RAW_CAPABILITY_INDEX.json",
+        "docs/fusion/CAPABILITY_CROSSWALK.draft.json",
+        "docs/fusion/F1B_REMAINDER_INVENTORY.json"
+      ],
+      "expected_outputs": [
+        "docs/fusion/F1C_DECISION_REGISTER.json",
+        "docs/fusion/F1C_A_OWNERSHIP_DECISIONS.md",
+        "docs/fusion/F1C_REMAINDER_BASELINE.json",
+        "docs/fusion/F1C_A_VERIFICATION.json"
+      ],
+      "status": "DONE",
+      "verification_commands": [
+        "python3 tools/fusion/f1c_a_baseline.py",
+        "python3 tools/fusion/f1c_a_verify.py",
+        "python3 tools/fusion/f1b_verify_dsh_adapter.py"
+      ],
+      "evidence_paths": [
+        "docs/fusion/F1C_A_OWNERSHIP_DECISIONS.md",
+        "docs/fusion/F1C_A_VERIFICATION.json",
+        "docs/fusion/F1C_REMAINDER_BASELINE.json"
+      ],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": [
+        "M1-FUSION-GATE-F1B-DSH-ADAPTER"
       ]
     }
   ]

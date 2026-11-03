@@ -1,0 +1,171 @@
+{
+  "artifact": "F1C_DECISION_REGISTER",
+  "schema_version": 1,
+  "created_by_batch": "F1-C-A",
+  "generated_at": "2026-11-04T01:16:41+08:00",
+  "generator": "tools/fusion/f1c_a_register.py",
+  "purpose": "F1-C 全批次的裁决登记表（F1-C-A/B/C/D 共用），不得每轮重建为不兼容格式。",
+  "conventions": {
+    "decision_state": "adjudicated=裁决已作出但未落地；applied=裁决已在 Crosswalk 中实际生效；proposed=仅提出未定谳",
+    "owner_change_policy": "任何 owner 变更必须先在本表登记，再由 F1-C-B 统一执行；不得在后续批次就地覆盖",
+    "one_owner_rule": "一个 canonical 只能有一个 owner；不得让两个模块各自维护可独立修改的权威登记表"
+  },
+  "field_spec": [
+    "decision_id",
+    "batch",
+    "affected_identity",
+    "affected_canonical_id",
+    "current_owner",
+    "proposed_owner",
+    "source_evidence",
+    "competing_interpretations",
+    "decision",
+    "rationale",
+    "affected_modules",
+    "implementation_required",
+    "remaining_uncertainty",
+    "verification_status",
+    "decision_state"
+  ],
+  "decisions": [
+    {
+      "decision_id": "F1C-A-001",
+      "batch": "F1-C-A",
+      "affected_identity": "UPSTREAM-06::C25",
+      "affected_canonical_id": null,
+      "current_owner": "Storage",
+      "proposed_owner": "Storage",
+      "source_evidence": {
+        "raw_index": "docs/fusion/RAW_CAPABILITY_INDEX.json → items[UPSTREAM-06::C25]",
+        "upstream_audit": "progress/UPSTREAM-06-audit.json → capability_matrix[24]",
+        "upstream_where": "SKILL.md L1122–L1206；phase6 L7–L58",
+        "original_disposition": "REIMPLEMENT",
+        "original_why": "上游的产物契约是「一阶段一文件」，没有统一实体模型，也没有新鲜度与失效语义。SourceLore 的 Claim/Evidence 必须自建，不能沿用",
+        "mechanism_verbatim": "每个阶段写自己的 JSON，报告层只聚合；跳过阶段在输出里显式缺失而非空对象",
+        "license": {
+          "spdx": null,
+          "copy_permitted": false
+        },
+        "cross_batch_records": [
+          "docs/fusion/F1B_SECURITY_DECISIONS.md（Security 批次判定：应落在 Storage，登为 Z-2 相邻项）",
+          "docs/fusion/F1B_STORAGE_DECISIONS.md → X-3（Storage 批复核倾向 EC，但按不擅自改归属保留原判）"
+        ]
+      },
+      "competing_interpretations": [
+        {
+          "interpretation": "产物可用性 / 完整性契约（存在性、聚合方式、跳过阶段的显式缺失）",
+          "supports_owner": "Storage",
+          "evidence": "mechanism 原文只谈「每个阶段写自己的 JSON、报告层只聚合、跳过阶段显式缺失而非空对象」——全部是产物的存在形态与完整性，不涉及任何证据充分性判断"
+        },
+        {
+          "interpretation": "产物证据充分性的语义裁决（某阶段产物能否支撑结论）",
+          "supports_owner": "Evidence-Claims",
+          "evidence": "仅凭「三态」二字联想；但原文 mechanism 与 why 均无「证据是否充分」的判定语义。why 说的是「没有统一实体模型，也没有新鲜度与失效语义」——指的是产物模型缺失，不是证据裁决缺失"
+        }
+      ],
+      "decision": "保持 Storage。本批不迁移、不改动既有路由记录。",
+      "rationale": "裁决依据是 mechanism 与 why 的逐字内容，而非「三态」这个措辞。该能力定义的是：阶段产物如何各自落地（一阶段一 JSON）、报告层如何聚合、以及**跳过阶段必须显式缺失而不是留空对象**。这三件事都是产物存在性与完整性问题。其中「跳过阶段显式缺失而非空对象」这一条尤其关键：它防的是「用空值冒充已完成」，属于完整性/可用性约束，本质与 Storage 的 SL-CAP-0062 D 层（展示产物不得回写权威层）与 SL-CAP-0071 的「工具成功与模型生成成功分开记录」同族，均属执行证据完整性。EC 的既有 canonical（SL-CAP-0020 证据存档、SL-CAP-0023 显式未知、SL-CAP-0028 裁决状态机）覆盖的是「证据够不够支撑结论」，与该身份定义的「产物在不在」是不同问题。因此不存在语义重叠，无需搬迁。",
+      "affected_modules": [
+        "Storage",
+        "Evidence-Claims",
+        "Lifecycle"
+      ],
+      "implementation_required": false,
+      "remaining_uncertainty": [
+        "该身份仍未建 canonical 承接——Storage 批次的 SL-CAP-0062 只覆盖了四层资产模型，未显式定义「阶段产物一阶段一文件 + 跳过阶段显式缺失」这一具体契约。是否需要在 F1-C-B 新建一条 canonical，还是由 SL-CAP-0062 的 A 层追加语义覆盖，待裁。",
+        "与 Lifecycle 的 SL-CAP-0043（增量调度）的「阶段」概念是否同一，未逐条比对。"
+      ],
+      "verification_status": "evidence_reviewed",
+      "decision_state": "adjudicated",
+      "note_on_state": "裁决已作出（保持 Storage），但 Crosswalk 未做任何改动——原判本就如此，故无迁移动作。"
+    },
+    {
+      "decision_id": "F1C-A-002",
+      "batch": "F1-C-A",
+      "affected_identity": "UPSTREAM-03::C05",
+      "affected_canonical_id": "SL-CAP-0009",
+      "current_owner": "Facts",
+      "proposed_owner": "Facts",
+      "source_evidence": {
+        "raw_index": "docs/fusion/RAW_CAPABILITY_INDEX.json → items[UPSTREAM-03::C05]",
+        "upstream_audit": "progress/UPSTREAM-03-audit.json → capability_matrix[4]",
+        "upstream_where": "SKILL.md §6.4 L352–L384",
+        "original_disposition": "ADAPT",
+        "license": {
+          "spdx": "CC-BY-4.0",
+          "copy_permitted": true,
+          "attribution_required": true
+        },
+        "canonical_fields": {
+          "name": "Canonical Knowledge Registry（实体消解权威清单）",
+          "description": "维护机器可读的实体权威清单：名字、别名、类型、路径、来源。所有事实引用必须指向注册表中的条目，别名冲突与合并必须留痕；无法归入现有条目且不足以新建条目的，进入受控的待定出口而非静默丢弃。",
+          "input_boundary": [
+            "SL-CAP-0001 的文件与符号清单"
+          ],
+          "output_boundary": [
+            "registry.json: entries[] + aliases + merge/split 记录"
+          ],
+          "dependencies": [
+            "Evidence-Claims",
+            "Storage"
+          ],
+          "overlaps": [
+            "SL-CAP-0008"
+          ],
+          "unresolved": [
+            "上游允许内部草稿，SourceLore 必须落成机器可读文件（U03-C05 why）；「不够格当 Unknown」的补充出口（合并/待定）尚未定义，留待 F1-C。"
+          ]
+        },
+        "cross_batch_records": [
+          "docs/fusion/F1B_STORAGE_DECISIONS.md → M-A / X-1（建议保持 Facts）"
+        ]
+      },
+      "competing_interpretations": [
+        {
+          "interpretation": "Facts 的语义规范化职责——实体识别、别名归并、冲突留痕、身份消解规则",
+          "supports_owner": "Facts",
+          "evidence": "description 全句都在讲「名字/别名/类型/路径/来源如何归一，冲突如何留痕，不够格的去哪里」；input 是 SL-CAP-0001 的文件与符号清单（Facts 的产出）；output 是 registry.json 的 entries+aliases+merge/split 记录——即**规则与决策产物**，不是存储布局。其 unresolved 也是「上游允许内部草稿、必须落成机器可读文件」这类语义裁定问题"
+        },
+        {
+          "interpretation": "Storage 的权威登记职责——持久化、唯一性约束、并发写入、权威读取",
+          "supports_owner": "Storage",
+          "evidence": "「权威清单」「所有事实引用必须指向注册表中的条目」确实带权威语气。但 Storage 的 SL-CAP-0062 已把这层完全覆盖（A 层不可变历史、四层单一权威、并发 CAS），若迁移则本条与 0062 大面积重叠，等于重复造卡"
+        }
+      ],
+      "decision": "保持 Facts，但把 Registry 的语义边界钉死为「只定义语义身份消解规则」。Storage 承接其持久化，不新增 canonical、不迁移 ID、不改 owner。",
+      "rationale": "该 canonical 的四个字段（description / input_boundary / output_boundary / unresolved）全部指向「规则与决策」而非「存储与约束」：输入是 Facts 自己的文件与符号清单，输出是 entries+aliases+merge/split **记录**（即决策留痕），unresolved 是「上游允许内部草稿，必须落成机器可读文件」这类语义裁定。Storage 侧的四层模型（SL-CAP-0062）已独立覆盖持久化权威、单一副本、并发写入；把 0009 迁过去会造成两条 canonical 描述同一件事，违反单一权威原则。反过来，Facts 如果没有 0009，就没有「同一实体在不同文件里叫什么」的裁决规则——这是事实归并的必要前提。因此保留 Facts，并在描述中显式划界：**Registry 定义「什么叫同一个实体」；Storage 定义「这条实体记录怎么安全落地」。**",
+      "affected_modules": [
+        "Facts",
+        "Storage",
+        "Evidence-Claims"
+      ],
+      "implementation_required": false,
+      "remaining_uncertainty": [
+        "描述中「所有事实引用必须指向注册表中的条目」这句容易被读成持久化约束。是否需要在 F1-C-B 修订 0009 的 description 增加一句边界声明，待裁（本批不改内容）。",
+        "0009 的 unresolved 提到「不够格当 Unknown 的补充出口」尚未定义——这是独立待办，不属归属争议。"
+      ],
+      "verification_status": "evidence_reviewed",
+      "decision_state": "adjudicated",
+      "note_on_state": "裁决已作出（保持 Facts），Crosswalk 未改动。"
+    }
+  ],
+  "rejected_alternatives": [
+    {
+      "decision_id": "F1C-A-001",
+      "alternative": "迁 U06-C25 至 Evidence-Claims",
+      "rejected_because": "原文 mechanism 无任何证据充分性判定语义；仅凭「三态」措辞联想，属误判风险"
+    },
+    {
+      "decision_id": "F1C-A-002",
+      "alternative": "迁 SL-CAP-0009 至 Storage",
+      "rejected_because": "与 Storage 的 SL-CAP-0062 大面积语义重叠，会造成一条事实两个 owner；且 Facts 需其作为归并前提"
+    },
+    {
+      "decision_id": "F1C-A-002",
+      "alternative": "拆分 SL-CAP-0009 为「语义消解（Facts）」+「登记持久化（Storage）」两条 canonical",
+      "rejected_because": "现有 Storage canonical（0062 四层模型 + 0063 身份层级 + 0064 原子写入）已完整承接持久化一面，拆分只会重复造卡"
+    }
+  ],
+  "pending_migrations": [],
+  "applied_changes_this_batch": []
+}

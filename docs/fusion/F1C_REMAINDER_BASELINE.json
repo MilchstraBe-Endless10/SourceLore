@@ -1,0 +1,973 @@
+{
+  "artifact": "F1C_REMAINDER_BASELINE",
+  "schema_version": 1,
+  "generated_at": "2026-11-04T01:18:28+08:00",
+  "generated_by": "tools/fusion/f1c_a_baseline.py（只读计算，不重跑任何构建器）",
+  "computed_from": [
+    "docs/fusion/RAW_CAPABILITY_INDEX.json",
+    "docs/fusion/CAPABILITY_CROSSWALK.draft.json"
+  ],
+  "source_index_sha256": "e62b68ed1658b95ebe73b37d8c991c995b1a18201faabbde81e41214c03a2f11",
+  "totals": {
+    "raw_total": 143,
+    "mapped": 112,
+    "routed": 11,
+    "unreviewed": 20,
+    "pending_total": 31,
+    "sum_check": 143
+  },
+  "computation_note": "所有数字由集合运算现算；不存在人工录入的固定总数。",
+  "routed_by_module": {
+    "Evidence-Claims": {
+      "module": "Evidence-Claims",
+      "count": 7,
+      "items": [
+        "UPSTREAM-01::C12",
+        "UPSTREAM-04::C24",
+        "UPSTREAM-05::C04",
+        "UPSTREAM-05::C19",
+        "UPSTREAM-05::C24",
+        "UPSTREAM-06::C10",
+        "UPSTREAM-06::C20"
+      ],
+      "module_batch_done": true
+    },
+    "Lifecycle": {
+      "module": "Lifecycle",
+      "count": 2,
+      "items": [
+        "UPSTREAM-04::C16",
+        "UPSTREAM-05::C10"
+      ],
+      "module_batch_done": true
+    },
+    "Renderer": {
+      "module": "Renderer",
+      "count": 1,
+      "items": [
+        "UPSTREAM-05::C14"
+      ],
+      "module_batch_done": true
+    },
+    "Storage": {
+      "module": "Storage",
+      "count": 1,
+      "items": [
+        "UPSTREAM-06::C25"
+      ],
+      "module_batch_done": true
+    }
+  },
+  "unreviewed_by_class": {
+    "知识页面与质量门（页面结构 / 一致性 / 措辞 / 反模式）": {
+      "count": 4,
+      "items": [
+        "UPSTREAM-03::C23",
+        "UPSTREAM-03::C24",
+        "UPSTREAM-03::C25",
+        "UPSTREAM-03::C26"
+      ]
+    },
+    "知识库语义与生命周期（Subject / 复用 / 冲突 / 部署模型）": {
+      "count": 5,
+      "items": [
+        "UPSTREAM-04::C05",
+        "UPSTREAM-04::C06",
+        "UPSTREAM-04::C13",
+        "UPSTREAM-04::C21",
+        "UPSTREAM-04::C27"
+      ]
+    },
+    "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）": {
+      "count": 10,
+      "items": [
+        "UPSTREAM-05::C07",
+        "UPSTREAM-05::C08",
+        "UPSTREAM-05::C12",
+        "UPSTREAM-05::C13",
+        "UPSTREAM-05::C15",
+        "UPSTREAM-05::C16",
+        "UPSTREAM-05::C21",
+        "UPSTREAM-05::C25",
+        "UPSTREAM-05::C27",
+        "UPSTREAM-05::C28"
+      ]
+    },
+    "安全审查（信任边界 / 依赖 / 脱敏 / 供应链）": {
+      "count": 1,
+      "items": [
+        "UPSTREAM-06::C21"
+      ]
+    }
+  },
+  "reject_audit": {
+    "note": "待裁 REJECT 全部落在 31 项遗留集合之内，不额外新增；已被 canonical 引用的 REJECT 属 MAPPED，单列以示区分。",
+    "pending_reject_count": 8,
+    "pending_reject_items": [
+      "UPSTREAM-03::C23",
+      "UPSTREAM-03::C24",
+      "UPSTREAM-03::C25",
+      "UPSTREAM-03::C26",
+      "UPSTREAM-04::C27",
+      "UPSTREAM-05::C27",
+      "UPSTREAM-05::C28",
+      "UPSTREAM-06::C21"
+    ],
+    "pending_reject_inside_remainder": true,
+    "reject_already_bound_to_canonical": [
+      {
+        "identity_key": "UPSTREAM-01::C13",
+        "canonical_id": "SL-CAP-0070",
+        "note": "已作为反例或负向约束登记在 canonical 的 upstream_refs 中"
+      },
+      {
+        "identity_key": "UPSTREAM-01::C14",
+        "canonical_id": "SL-CAP-0070",
+        "note": "已作为反例或负向约束登记在 canonical 的 upstream_refs 中"
+      },
+      {
+        "identity_key": "UPSTREAM-01::C15",
+        "canonical_id": "SL-CAP-0011",
+        "note": "已作为反例或负向约束登记在 canonical 的 upstream_refs 中"
+      },
+      {
+        "identity_key": "UPSTREAM-02::C08",
+        "canonical_id": "SL-CAP-0017",
+        "note": "已作为反例或负向约束登记在 canonical 的 upstream_refs 中"
+      },
+      {
+        "identity_key": "UPSTREAM-02::C09",
+        "canonical_id": "SL-CAP-0015",
+        "note": "已作为反例或负向约束登记在 canonical 的 upstream_refs 中"
+      },
+      {
+        "identity_key": "UPSTREAM-02::C15",
+        "canonical_id": "SL-CAP-0038",
+        "note": "已作为反例或负向约束登记在 canonical 的 upstream_refs 中"
+      },
+      {
+        "identity_key": "UPSTREAM-02::C17",
+        "canonical_id": "SL-CAP-0057",
+        "note": "已作为反例或负向约束登记在 canonical 的 upstream_refs 中"
+      },
+      {
+        "identity_key": "UPSTREAM-02::C18",
+        "canonical_id": "SL-CAP-0011",
+        "note": "已作为反例或负向约束登记在 canonical 的 upstream_refs 中"
+      },
+      {
+        "identity_key": "UPSTREAM-03::C27",
+        "canonical_id": "SL-CAP-0038",
+        "note": "已作为反例或负向约束登记在 canonical 的 upstream_refs 中"
+      },
+      {
+        "identity_key": "UPSTREAM-04::C25",
+        "canonical_id": "SL-CAP-0067",
+        "note": "已作为反例或负向约束登记在 canonical 的 upstream_refs 中"
+      },
+      {
+        "identity_key": "UPSTREAM-04::C26",
+        "canonical_id": "SL-CAP-0038",
+        "note": "已作为反例或负向约束登记在 canonical 的 upstream_refs 中"
+      },
+      {
+        "identity_key": "UPSTREAM-05::C26",
+        "canonical_id": "SL-CAP-0067",
+        "note": "已作为反例或负向约束登记在 canonical 的 upstream_refs 中"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C28",
+        "canonical_id": "SL-CAP-0051",
+        "note": "已作为反例或负向约束登记在 canonical 的 upstream_refs 中"
+      }
+    ],
+    "reject_intersection_with_routed": [],
+    "reject_intersection_with_unreviewed": [
+      "UPSTREAM-03::C23",
+      "UPSTREAM-03::C24",
+      "UPSTREAM-03::C25",
+      "UPSTREAM-03::C26",
+      "UPSTREAM-04::C27",
+      "UPSTREAM-05::C27",
+      "UPSTREAM-05::C28",
+      "UPSTREAM-06::C21"
+    ]
+  },
+  "items": [
+    {
+      "upstream_id": "UPSTREAM-01",
+      "original_capability_id": "C12",
+      "identity_key": "UPSTREAM-01::C12",
+      "capability": "eval baseline (gold + deterministic metrics + judge)",
+      "state": "ROUTED",
+      "suggested_owner": "Evidence-Claims",
+      "original_disposition": "ADAPT",
+      "original_why": "确定性指标零成本可用；judge 依赖外部 provider 需替换；click 案例 F1=0.00 说明不可作单一门槛",
+      "upstream_where": "evals/",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-01-audit.json",
+        "pointer": "capability_matrix[11]",
+        "where": "evals/"
+      },
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "semantic_class": "分析与评估（LLM 调用栈 / 评测基线 / 提示词资产）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C23",
+      "identity_key": "UPSTREAM-03::C23",
+      "capability": "五档证据优先级",
+      "state": "UNREVIEWED",
+      "suggested_owner": null,
+      "original_disposition": "REJECT",
+      "original_why": "五档无权重不构成全序；L1152–L1153 又允许源码处任意层级，唯一排序机制自我消解（D10）。SourceLore 已有 source_type 四值与确定性事实，再叠一套优先级会产生两套互不兼容证据体系",
+      "upstream_where": "SKILL.md §12.2 L1142–L1154",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[22]",
+        "where": "SKILL.md §12.2 L1142–L1154"
+      },
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识页面与质量门（页面结构 / 一致性 / 措辞 / 反模式）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C24",
+      "identity_key": "UPSTREAM-03::C24",
+      "capability": "D2 图规范（强制 D2）",
+      "state": "UNREVIEWED",
+      "suggested_owner": null,
+      "original_disposition": "REJECT",
+      "original_why": "L1046 强制 D2 却无工具链、无语法校验、无法检测装饰性图表（§11.2 L1069）与一图一意（§11.6）（D12）。图形态应由渲染层决定，不应被锁定为 D2",
+      "upstream_where": "SKILL.md §11.1–§11.6 L1044–L1113",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[23]",
+        "where": "SKILL.md §11.1–§11.6 L1044–L1113"
+      },
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识页面与质量门（页面结构 / 一致性 / 措辞 / 反模式）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C25",
+      "identity_key": "UPSTREAM-03::C25",
+      "capability": "「不得依赖 AST 解析器/图数据库/静态分析管线/索引系统」",
+      "state": "UNREVIEWED",
+      "suggested_owner": null,
+      "original_disposition": "REJECT",
+      "original_why": "与 SourceLore 确定性 CLI 架构正面冲突，且与 UPSTREAM-01 已确立的「确定性工具算事实、模型只解释含义」路线相反。本源最主要的架构不兼容点",
+      "upstream_where": "SKILL.md §2 L52–L53",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[24]",
+        "where": "SKILL.md §2 L52–L53"
+      },
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识页面与质量门（页面结构 / 一致性 / 措辞 / 反模式）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C26",
+      "identity_key": "UPSTREAM-03::C26",
+      "capability": "每个术语必须独立成页（含小仓库）",
+      "state": "UNREVIEWED",
+      "suggested_owner": null,
+      "original_disposition": "REJECT",
+      "original_why": "与低 token 目标冲突：小仓库也会被迫产出大量单句页，而 §15.1 只有散文级去重无检测手段。应改为术语表条目 + 按需升格为页的两级策略",
+      "upstream_where": "SKILL.md §7.2 L530–L559（L534、L557）",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-03-audit.json",
+        "pointer": "capability_matrix[25]",
+        "where": "SKILL.md §7.2 L530–L559（L534、L557）"
+      },
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识页面与质量门（页面结构 / 一致性 / 措辞 / 反模式）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C05",
+      "identity_key": "UPSTREAM-04::C05",
+      "capability": "按需加载的模式指引",
+      "state": "UNREVIEWED",
+      "suggested_owner": null,
+      "original_disposition": "REUSE",
+      "original_why": "两个 reference 共 67 行不常驻上下文。直接对应低 token 目标，形态可直接复用",
+      "upstream_where": "SKILL.md L78–L86（L80 \"Load only the guidance that matches the question\"）",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[4]",
+        "where": "SKILL.md L78–L86（L80 \"Load only the guidance that matches the question\"）"
+      },
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识库语义与生命周期（Subject / 复用 / 冲突 / 部署模型）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C06",
+      "identity_key": "UPSTREAM-04::C06",
+      "capability": "不存密钥/凭据/个人数据（全模式适用）",
+      "state": "UNREVIEWED",
+      "suggested_owner": null,
+      "original_disposition": "REUSE",
+      "original_why": "L72 双重强调\"every retained artifact, in every investigation mode\"，是四源中最完整的秘密处理规则。可直接作为硬约束",
+      "upstream_where": "SKILL.md L72；references/external-probe.md L10、L13",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[5]",
+        "where": "SKILL.md L72；references/external-probe.md L10、L13"
+      },
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识库语义与生命周期（Subject / 复用 / 冲突 / 部署模型）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C13",
+      "identity_key": "UPSTREAM-04::C13",
+      "capability": "报告粒度禁令",
+      "state": "UNREVIEWED",
+      "suggested_owner": null,
+      "original_disposition": "ADAPT",
+      "original_why": "L67「不要为每次搜索或次要子问题建报告」是对的，但没有可判定的粒度标准。须补 subject_key 规范化规则与最小内容门槛",
+      "upstream_where": "SKILL.md L67；L66（不强加固定段落）",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[12]",
+        "where": "SKILL.md L67；L66（不强加固定段落）"
+      },
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识库语义与生命周期（Subject / 复用 / 冲突 / 部署模型）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C16",
+      "identity_key": "UPSTREAM-04::C16",
+      "capability": "完成检查（三处 Completion Check）",
+      "state": "ROUTED",
+      "suggested_owner": "Lifecycle",
+      "original_disposition": "ADAPT",
+      "original_why": "内容有价值，但全是散文要求无判据。须转成可判定的 gate 项",
+      "upstream_where": "external-probe.md L35；repository-impact.md L30–L32；SKILL.md L127",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[15]",
+        "where": "external-probe.md L35；repository-impact.md L30–L32；SKILL.md L127"
+      },
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识库语义与生命周期（Subject / 复用 / 冲突 / 部署模型）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C21",
+      "identity_key": "UPSTREAM-04::C21",
+      "capability": "冲突处理（两个报告判断不同）",
+      "state": "UNREVIEWED",
+      "suggested_owner": null,
+      "original_disposition": "REIMPLEMENT",
+      "original_why": "`SKILL.md` 通篇未提如何处理互斥结论（D5）。须自建 conflict 状态与裁决流程",
+      "upstream_where": "全文缺失",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[20]",
+        "where": "全文缺失"
+      },
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识库语义与生命周期（Subject / 复用 / 冲突 / 部署模型）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C24",
+      "identity_key": "UPSTREAM-04::C24",
+      "capability": "无法复现的外部观察标记",
+      "state": "ROUTED",
+      "suggested_owner": "Evidence-Claims",
+      "original_disposition": "REIMPLEMENT",
+      "original_why": "上游假定一切皆可复现，没有针对付费/下线/随机/特定环境的标记（D7）。须补 `reproducible` 三态",
+      "upstream_where": "全文缺失",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[23]",
+        "where": "全文缺失"
+      },
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识库语义与生命周期（Subject / 复用 / 冲突 / 部署模型）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C27",
+      "identity_key": "UPSTREAM-04::C27",
+      "capability": "HTML/excalidraw 等具体产物格式",
+      "state": "UNREVIEWED",
+      "suggested_owner": null,
+      "original_disposition": "REJECT",
+      "original_why": "本源 spec 用 HTML（`spec.html`）、架构图用 excalidraw。SourceLore 用 Markdown + schema，形态不兼容，无复用价值",
+      "upstream_where": "仓库层面（README、docs/pipeline.excalidraw）",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-04-audit.json",
+        "pointer": "capability_matrix[26]",
+        "where": "仓库层面（README、docs/pipeline.excalidraw）"
+      },
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": false,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识库语义与生命周期（Subject / 复用 / 冲突 / 部署模型）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C04",
+      "identity_key": "UPSTREAM-05::C04",
+      "capability": "review_status 人机权限分离",
+      "state": "ROUTED",
+      "suggested_owner": "Evidence-Claims",
+      "original_disposition": "REUSE",
+      "original_why": "把「谁有权批准」编码进字段值域而不是写在文档里。这是我在五个上游里见过最干净的权限边界表达。SourceLore 的 Claim 状态机应照抄这一取向：某些迁移只能由人触发的凭证执行",
+      "upstream_where": "SKILL.md L262–L284；L372–L385（Phase C step 6）",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[3]",
+        "where": "SKILL.md L262–L284；L372–L385（Phase C step 6）"
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C07",
+      "identity_key": "UPSTREAM-05::C07",
+      "capability": "命令族与编号页集",
+      "state": "UNREVIEWED",
+      "suggested_owner": null,
+      "original_disposition": "ADAPT",
+      "original_why": "编号页集给出的是一份可枚举的文档清单，对 SourceLore 的 subject_key 命名有参考价值。但页集本身绑死具体项目文档结构，SourceLore 不做项目文档生成，只需要它的「可枚举优先于自由命名」这一条",
+      "upstream_where": "SKILL.md L69–L97；L194–L218",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[6]",
+        "where": "SKILL.md L69–L97；L194–L218"
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C08",
+      "identity_key": "UPSTREAM-05::C08",
+      "capability": "Phase 0 三分路由",
+      "state": "UNREVIEWED",
+      "suggested_owner": null,
+      "original_disposition": "ADAPT",
+      "original_why": "分流依据是「要不要读仓库」，与 SourceLore 的 research 成本分级同构。可借其骨架，不借其具体命令",
+      "upstream_where": "SKILL.md L327–L337",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[7]",
+        "where": "SKILL.md L327–L337"
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C10",
+      "identity_key": "UPSTREAM-05::C10",
+      "capability": "契约式 Postconditions",
+      "state": "ROUTED",
+      "suggested_owner": "Lifecycle",
+      "original_disposition": "ADAPT",
+      "original_why": "与 UPSTREAM-04 的 Completion Checks 同类，但这边的 postcondition 具名、可逐条核对。SourceLore 的写入后校验可借这个形式，但必须补上可执行判据，否则重蹈 D14",
+      "upstream_where": "SKILL.md L99–L118",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[9]",
+        "where": "SKILL.md L99–L118"
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C12",
+      "identity_key": "UPSTREAM-05::C12",
+      "capability": "渐进式 AI 投喂",
+      "state": "UNREVIEWED",
+      "suggested_owner": null,
+      "original_disposition": "ADAPT",
+      "original_why": "与 SourceLore 的按需加载同向。它的轮次划分（先全局后局部）可作为 research 任务的默认读取顺序参考",
+      "upstream_where": "SKILL.md L414–L418；templates/sphinx/ai-guide.md",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[11]",
+        "where": "SKILL.md L414–L418；templates/sphinx/ai-guide.md"
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C13",
+      "identity_key": "UPSTREAM-05::C13",
+      "capability": "C4 强制顺序",
+      "state": "UNREVIEWED",
+      "suggested_owner": null,
+      "original_disposition": "ADAPT",
+      "original_why": "给「先看什么」定序，避免一上来扎进代码层。SourceLore 分析多模块仓库时可借这个降序粒度",
+      "upstream_where": "SKILL.md L120–L122；references/c4-standard.md",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[12]",
+        "where": "SKILL.md L120–L122；references/c4-standard.md"
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C14",
+      "identity_key": "UPSTREAM-05::C14",
+      "capability": "版本页脚七字段",
+      "state": "ROUTED",
+      "suggested_owner": "Renderer",
+      "original_disposition": "ADAPT",
+      "original_why": "字段集合本身合理，但 commit 存短 SHA、粒度不足以定位内容变化。SourceLore 可借字段名，值必须换成 content_hash",
+      "upstream_where": "SKILL.md L262–L284",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[13]",
+        "where": "SKILL.md L262–L284"
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C15",
+      "identity_key": "UPSTREAM-05::C15",
+      "capability": "发布节奏绑定",
+      "state": "UNREVIEWED",
+      "suggested_owner": null,
+      "original_disposition": "ADAPT",
+      "original_why": "把文档维护从「想起来才做」变成流程节点。SourceLore 的 freshness 巡检可挂到同样的触发点",
+      "upstream_where": "SKILL.md L164–L170",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[14]",
+        "where": "SKILL.md L164–L170"
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C16",
+      "identity_key": "UPSTREAM-05::C16",
+      "capability": "测试用例维护触发",
+      "state": "UNREVIEWED",
+      "suggested_owner": null,
+      "original_disposition": "ADAPT",
+      "original_why": "理念可借：文档是活的质量保障清单而非一次性产物。具体四触发绑死它自己的文档体系",
+      "upstream_where": "SKILL.md L387–L392",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[15]",
+        "where": "SKILL.md L387–L392"
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C19",
+      "identity_key": "UPSTREAM-05::C19",
+      "capability": "人类主导的语义补充",
+      "state": "ROUTED",
+      "suggested_owner": "Evidence-Claims",
+      "original_disposition": "REIMPLEMENT",
+      "original_why": "规则写得很清楚，但强制手段只是模板顶部的 HTML 注释与 Phase C 散文步骤。没有任何机制阻止 AI 自己写 Context。与 UPSTREAM-04 D14（三处完成检查全散文）同类。SourceLore 若要做这条，必须有代码级出口：人写的字段带签名，AI 写入该字段直接拒绝",
+      "upstream_where": "SKILL.md L138–L140；templates/adr/template.md L1–L5",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[18]",
+        "where": "SKILL.md L138–L140；templates/adr/template.md L1–L5"
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C21",
+      "identity_key": "UPSTREAM-05::C21",
+      "capability": "冲突处理",
+      "state": "UNREVIEWED",
+      "suggested_owner": null,
+      "original_disposition": "REIMPLEMENT",
+      "original_why": "全文检索未发现任何关于两条知识互相矛盾时如何处理的规则。没有裁决机制。SourceLore 必须有显式 conflict 状态与裁决权归属",
+      "upstream_where": "SKILL.md 全文无定义",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[20]",
+        "where": "SKILL.md 全文无定义"
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C24",
+      "identity_key": "UPSTREAM-05::C24",
+      "capability": "不可复现外部观察标记",
+      "state": "ROUTED",
+      "suggested_owner": "Evidence-Claims",
+      "original_disposition": "REIMPLEMENT",
+      "original_why": "没有为「当时观察到、现在无法复现」的证据留字段。SourceLore 需要（与 UPSTREAM-04 D7 同源需求）",
+      "upstream_where": "无字段定义",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[23]",
+        "where": "无字段定义"
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C25",
+      "identity_key": "UPSTREAM-05::C25",
+      "capability": "测试覆盖作为质量证据",
+      "state": "UNREVIEWED",
+      "suggested_owner": null,
+      "original_disposition": "REIMPLEMENT",
+      "original_why": "存在测试这件事本身就是相对 UPSTREAM-04 的实质进步（那边零测试）。但覆盖严重偏斜：18 个脚本里只有 3 个被测试触及，check_pkb_staleness.py / gen_index.py 零引用。SourceLore 若建脚本层，必须以「机制必被测」为准入，而非「有 tests 目录」",
+      "upstream_where": "tests/（3 文件）",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[24]",
+        "where": "tests/（3 文件）"
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C27",
+      "identity_key": "UPSTREAM-05::C27",
+      "capability": "产出面向人类的整册项目文档",
+      "state": "UNREVIEWED",
+      "suggested_owner": null,
+      "original_disposition": "REJECT",
+      "original_why": "这是一个面向「给团队写项目文档」的产物流水线，不是知识治理。SourceLore 的目标是可机械判定的 claim 集合，不是可读的文档册。产物形态整体不采纳",
+      "upstream_where": "SKILL.md L69–L97；L219–L260",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[26]",
+        "where": "SKILL.md L69–L97；L219–L260"
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C28",
+      "identity_key": "UPSTREAM-05::C28",
+      "capability": "双语 Sphinx 站与 gettext 流程",
+      "state": "UNREVIEWED",
+      "suggested_owner": null,
+      "original_disposition": "REJECT",
+      "original_why": "与本项目目标正交。它的存在反而说明该上游重心在文档交付，不在知识新鲜度",
+      "upstream_where": "SKILL.md L123–L125；references/sphinx-bilingual.md",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-05-audit.json",
+        "pointer": "capability_matrix[27]",
+        "where": "SKILL.md L123–L125；references/sphinx-bilingual.md"
+      },
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true,
+        "attribution_required": true,
+        "license_link_required": true,
+        "modification_notice_required": true
+      },
+      "semantic_class": "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C10",
+      "identity_key": "UPSTREAM-06::C10",
+      "capability": "动态否证只降级到人工复核",
+      "state": "ROUTED",
+      "suggested_owner": "Evidence-Claims",
+      "original_disposition": "REUSE",
+      "original_why": "代码级证据与运行时证据冲突时，仲裁权归人。这条与 SourceLore「失败不产生 claim」同源",
+      "upstream_where": "references/phase5-validate-and-poc.md L795–L833",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[9]",
+        "where": "references/phase5-validate-and-poc.md L795–L833"
+      },
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "semantic_class": "安全审查（信任边界 / 依赖 / 脱敏 / 供应链）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C20",
+      "identity_key": "UPSTREAM-06::C20",
+      "capability": "延迟裁决与跨仓库解析",
+      "state": "ROUTED",
+      "suggested_owner": "Evidence-Claims",
+      "original_disposition": "ADAPT",
+      "original_why": "「单仓库无法裁决」是一种合法中间态，且解析必须引入新证据——这条纪律可直接迁移到 SourceLore 的 conflict 状态",
+      "upstream_where": "references/phase7-synthesis.md L162–L219",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[19]",
+        "where": "references/phase7-synthesis.md L162–L219"
+      },
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "semantic_class": "安全审查（信任边界 / 依赖 / 脱敏 / 供应链）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C21",
+      "identity_key": "UPSTREAM-06::C21",
+      "capability": "模型分层（Deep / Standard）",
+      "state": "UNREVIEWED",
+      "suggested_owner": null,
+      "original_disposition": "REJECT",
+      "original_why": "整条机制绑死在 Claude 家族与 Agent 工具上，无法迁移到 DSH；且 Phase 4b/7 明确写「moved off the Deep tier」这类只对特定供应商有意义的说明。SourceLore 不应复制模型分层，应按任务复杂度与工具能力选路",
+      "upstream_where": "SKILL.md L130–L330",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[20]",
+        "where": "SKILL.md L130–L330"
+      },
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "semantic_class": "安全审查（信任边界 / 依赖 / 脱敏 / 供应链）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    },
+    {
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C25",
+      "identity_key": "UPSTREAM-06::C25",
+      "capability": "三态分离的产物契约（run-metadata / 各阶段 JSON / 报告）",
+      "state": "ROUTED",
+      "suggested_owner": "Storage",
+      "original_disposition": "REIMPLEMENT",
+      "original_why": "上游的产物契约是「一阶段一文件」，没有统一实体模型，也没有新鲜度与失效语义。SourceLore 的 Claim/Evidence 必须自建，不能沿用",
+      "upstream_where": "SKILL.md L1122–L1206；phase6 L7–L58",
+      "evidence": {
+        "audit_file": "progress/UPSTREAM-06-audit.json",
+        "pointer": "capability_matrix[24]",
+        "where": "SKILL.md L1122–L1206；phase6 L7–L58"
+      },
+      "license": {
+        "spdx": null,
+        "copy_permitted": false,
+        "attribution_required": false,
+        "license_link_required": false,
+        "modification_notice_required": false
+      },
+      "semantic_class": "安全审查（信任边界 / 依赖 / 脱敏 / 供应链）",
+      "original_disposition_note": "此字段是上游审计时的原始处置，不是 F1-C 的最终设计决策"
+    }
+  ]
+}
