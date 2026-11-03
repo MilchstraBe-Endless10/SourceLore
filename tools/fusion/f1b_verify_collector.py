@@ -113,7 +113,8 @@ def main() -> int:
         return ok, f"mapped {len(mapped)} + routed {len(rted)} + unreviewed {len(unrev)} = {total}"
 
     def c13():
-        sc = draft.get("state_counts", {})
+        # 统计契约修订后 state_counts 已废除，累计视图改由 global_state_counts 承载
+        sc = draft.get("global_state_counts", {})
         mapped = {(r["upstream_id"], r["original_capability_id"]) for c in canon for r in c["upstream_refs"]}
         rted = {(r["upstream_id"], r["original_capability_id"]) for r in routed}
         unrev = set(by_key) - mapped - rted
@@ -121,7 +122,7 @@ def main() -> int:
               sc.get("routed_pending_count") == len(rted) and
               sc.get("unreviewed_count") == len(unrev) and
               sc.get("canonical_count") == len(canon))
-        return ok, f"草稿 state_counts 与实际一致 mapped={len(mapped)} routed={len(rted)} unreviewed={len(unrev)}"
+        return ok, f"草稿 global_state_counts 与实际一致 mapped={len(mapped)} routed={len(rted)} unreviewed={len(unrev)}"
 
     def c14():
         t = prog["totals"]
@@ -281,12 +282,13 @@ def main() -> int:
         )
         if batch is None:
             return False, "草稿中没有 F1-B/Collector 批次记录"
-        recorded = batch.get("raw_mapped")
+        # 新契约字段名：raw_mapped_to_this_module（不再是 raw_mapped）
+        recorded = batch.get("raw_mapped_to_this_module")
         if recorded != len(collector_owned):
-            return False, f"批次记录 raw_mapped={recorded}，实际引用身份 {len(collector_owned)} 条"
-        return True, f"raw_mapped={recorded} 与实际引用身份 {len(collector_owned)} 条一致"
+            return False, f"批次记录 raw_mapped_to_this_module={recorded}，实际引用身份 {len(collector_owned)} 条"
+        return True, f"raw_mapped_to_this_module={recorded} 与实际引用身份 {len(collector_owned)} 条一致"
 
-    check("c28", "raw_mapped 与实际引用身份数一致", c28)
+    check("c28", "批次 mapped 计数与实际引用身份数一致", c28)
 
     passed = sum(1 for r in results if r["passed"])
     total = len(results)

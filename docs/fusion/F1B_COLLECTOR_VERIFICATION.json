@@ -1,8 +1,8 @@
 {
   "task": "M1-FUSION-GATE-F1 / F1-B / Collector",
-  "generated_at": "2026-11-03T06:00:06+08:00",
+  "generated_at": "2026-11-03T12:55:12+08:00",
   "generated_by": "tools/fusion/f1b_verify_collector.py",
-  "git_head": "d1ab78799bc5249f2b47c0a4b578e63e67096515",
+  "git_head": "d3bdc6f7273c9382dfa378c1bbc9b39f283e088d",
   "summary": {
     "passed": 30,
     "total": 30,
@@ -97,7 +97,7 @@
       "id": "c13",
       "name": "草稿 state_counts 与实际一致",
       "passed": true,
-      "detail": "草稿 state_counts 与实际一致 mapped=22 routed=14 unreviewed=107"
+      "detail": "草稿 global_state_counts 与实际一致 mapped=22 routed=14 unreviewed=107"
     },
     {
       "id": "c14",
@@ -185,9 +185,9 @@
     },
     {
       "id": "c28",
-      "name": "raw_mapped 与实际引用身份数一致",
+      "name": "批次 mapped 计数与实际引用身份数一致",
       "passed": true,
-      "detail": "raw_mapped=11 与实际引用身份 11 条一致"
+      "detail": "raw_mapped_to_this_module=11 与实际引用身份 11 条一致"
     }
   ]
 }

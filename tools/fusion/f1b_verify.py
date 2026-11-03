@@ -140,10 +140,19 @@ def c11():
     txt = DOC.read_text(encoding="utf-8")
     missing = [c["canonical_id"] for c in canon
                if c["canonical_id"] in FACTS_IDS and c["canonical_id"] not in txt]
-    bs = draft["batch_summary"]
-    nums = [bs["raw_mapped_to_facts"], bs["canonical_count"], bs["raw_remaining_unmapped"]]
+    # 统计契约修订后：batch_summary 只是「最后完成的批次」，对本文档（Facts）必须
+    # 取 batches[] 里 module==Facts 的条目；raw_mapped_to_facts / raw_remaining_unmapped
+    # 已废除。全局口径从 global_state_counts 取（累计视图，随批次推进）。
+    bs = next(b for b in draft["batches"] if b["module"] == "Facts")
+    nums = [bs["raw_mapped_to_this_module"], len(bs["canonical_ids"]),
+            bs["raw_redirected_to_other_modules"]]
+    g = draft["global_state_counts"]
+    gnums = [g["raw_total"], g["mapped_count"], g["routed_pending_count"],
+             g["unreviewed_count"], g["sum_check"]]
     nums_ok = all(str(n) in txt for n in nums)
-    return not missing and nums_ok, f"文档缺失的 ID={missing or '无'}；关键数字 {nums} 均出现={nums_ok}"
+    gnums_ok = all(str(n) in txt for n in gnums)
+    return (not missing and nums_ok and gnums_ok,
+            f"文档缺失的 ID={missing or '无'}；批次数字 {nums} 出现={nums_ok}；全局数字 {gnums} 出现={gnums_ok}")
 check(11, "JSON 与决策文档一致", c11)
 
 # 12

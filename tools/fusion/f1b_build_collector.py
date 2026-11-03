@@ -29,6 +29,7 @@ FIRST_ID = "SL-CAP-0011"
 
 sys.path.insert(0, str(ROOT / "tools" / "fusion"))
 from f1b_collector_def import CANON, DEFERRED_TO_OTHER_MODULE, PROMOTED_FROM_FACTS
+import f1b_stats
 
 SOURCES = ["UPSTREAM-01", "UPSTREAM-02", "UPSTREAM-03",
            "UPSTREAM-04", "UPSTREAM-05", "UPSTREAM-06"]
@@ -261,25 +262,16 @@ def main() -> int:
     # 晋升记录必须落盘：这是「ROUTED -> MAPPED」的唯二证据之一，
     # 只算不写等同于没有发生过晋升
     draft["routed_promotions"] = _prev_promotions + promotions
-    draft["batches"] = draft.get("batches", []) if isinstance(draft.get("batches"), list) else []
-    draft["batches"] = [b for b in draft["batches"] if b.get("batch") != "F1-B/Collector"]
-    draft["batches"].append({
-        "batch": "F1-B/Collector",
-        "module": MODULE,
-        "canonical_ids": new_ids,
-        "raw_mapped": len(col_mapped),
-        "raw_redirected": len(routed_out),
-        "dedup_ratio": round(len(col_mapped) / len(collector_out), 3) if collector_out else None,
-        "per_source_mapped": {u: sum(1 for k in col_mapped if k[0] == u) for u in SOURCES},
-    })
-    draft["state_counts"] = {
-        "note": "三态互斥；routed_pending 不得计入 mapped",
-        "raw_total": len(by_key),
-        "mapped_count": len(mapped),
-        "routed_pending_count": len(routed),
-        "unreviewed_count": len(unreviewed),
-        "canonical_count": len(all_canon),
-    }
+    # 批次视图统一从草稿现算：任何单个构建器只持有自己那一批的数字，
+    # 各自 append 会导致后跑的覆盖先跑的（实测 Facts 批次条目被 Collector 重建抹掉）。
+    draft["batches"] = f1b_stats.batches_from_draft(draft)
+    _b_collector = next(b for b in draft["batches"] if b["module"] == MODULE)
+    # batch_summary 指向最近完成的批次（同一对象，不复制），保持向后兼容。
+    draft["batch_summary"] = _b_collector
+    # 累计视图：与 f1b_build_facts.py 同一实现，全部从草稿真实身份状态现算。
+    draft["global_state_counts"] = f1b_stats.global_state_counts(draft, raw)
+    draft["module_rollup"] = f1b_stats.module_rollup(draft)
+    draft.pop("state_counts", None)  # 旧口径名，已由 global_state_counts 取代
     draft["invariants_asserted"] = list(dict.fromkeys(draft["invariants_asserted"] + [
         "ROUTED 不等于 MAPPED：分流只表示去向已裁决，能力尚未被该模块真正承接",
         "commit_sha / root_tree_sha / tree_query_ref 是三个独立字段，禁止互相替代",
@@ -304,13 +296,14 @@ def main() -> int:
     }
     prog["progress_computed_from"] = "docs/fusion/CAPABILITY_CROSSWALK.draft.json"
     prog["last_updated"] = datetime.now(TZ).isoformat(timespec="seconds")
+    _g = draft["global_state_counts"]
     prog["totals"] = {
-        "raw_total": len(by_key),
-        "mapped_count": len(mapped),
-        "routed_pending_count": len(routed),
-        "unreviewed_count": len(unreviewed),
-        "canonical_count": len(all_canon),
-        "sum_check": len(mapped) + len(routed) + len(unreviewed),
+        "raw_total": _g["raw_total"],
+        "mapped_count": _g["mapped_count"],
+        "routed_pending_count": _g["routed_pending_count"],
+        "unreviewed_count": _g["unreviewed_count"],
+        "canonical_count": _g["canonical_count"],
+        "sum_check": _g["sum_check"],
         "definitions": {
             "mapped_count": "已归属某个 canonical_id 的原始身份数",
             "routed_pending_count": "去向已裁决但尚未被目标模块承接，不计入 mapped",
