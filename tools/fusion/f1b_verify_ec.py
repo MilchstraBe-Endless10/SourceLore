@@ -443,15 +443,26 @@ def main() -> int:
 
     def c49():
         # 9 条 ROUTED 必须全部被承接，且 EC 不再外推分流给别的模块
-        routed_to_ec = [r for r in routed if r["owner_module"] == MODULE]
+        # 作用域修正：本检查的语义是「EC 批次推出去了什么、那些去向后来有没有被接手」，
+        # 不是「EC 名下永远不许再出现分流」。后续批次（如 Research）可以把新身份推给 EC，
+        # 那是正常的职责裁决，不是 EC 批次的遗留。因此只校验 EC 自己 def 声明的那批
+        # 在接手后不得残留——而不是数 owner=EC 的总数。
+        import f1b_ec_def as _ecd
+        ec_declared = set(_ecd.DEFERRED_TO_OTHER_MODULE)
+        routed_to_ec = [r for r in routed
+                        if r["owner_module"] == MODULE
+                        and (r["upstream_id"], r["original_capability_id"]) in ec_declared]
         consumed = {(p.get("upstream_id"), p.get("original_capability_id")) for p in promos_to_ec}
         nine = {("UPSTREAM-01", "C03"), ("UPSTREAM-03", "C03"), ("UPSTREAM-04", "C07"),
                 ("UPSTREAM-04", "C08"), ("UPSTREAM-04", "C10"), ("UPSTREAM-04", "C11"),
                 ("UPSTREAM-05", "C05"), ("UPSTREAM-05", "C06"), ("UPSTREAM-06", "C05")}
         missing = nine - consumed
+        # 新推入 EC 的分流（非 EC 自己声明的那批）单独报告，不计入失败
+        incoming = [r for r in routed if r["owner_module"] == MODULE
+                    and (r["upstream_id"], r["original_capability_id"]) not in ec_declared]
         leftover = len(routed_to_ec)
         detail = (f"九条 ROUTED 全部承接={not missing}（缺 {missing or '无'}）；"
-                  f"EC 名下残留分流 {leftover} 条")
+                  f"EC 自声明分流残留 {leftover} 条；后续批次新推入 EC {len(incoming)} 条（不计失败）")
         return (not missing and leftover == 0), detail
 
     def c50():

@@ -749,3 +749,63 @@ integration_unknown 三态，检测到 provider 配置或依赖声明即必须�
 
 F1-B 剩余六模块：Research → Lifecycle → Security → Renderer → Storage → DSH Adapter。
 新 ID 从 `SL-CAP-0035` 起。F1-C、F1-D 仍未启动。
+
+
+## M1-FUSION-GATE / F1-B Research 批次完成（2026-11-03 20:35 +08:00）
+
+### 一句话
+
+F1-B 第五批次（Research）完成：5 条 canonical（`SL-CAP-0035`~`0039`）、10 个原始身份正式归属、
+3 个身份外推。五个验证器全绿。F1 整体仍未完成。
+
+### 本批做了什么
+
+- 核验用户点名的六项优先候选，并按关键词全库检索补充（命中 13 个候选，人工逐条确认）
+- 其中一个候选 `U02::C11` 原本由 Collector 判定「属研究流程」而挂起，本批建 canonical 正式承接
+- 归并为 5 条 canonical，三处合并：C14+C12（分桶与优先级是同一件事正反两面）、
+  C13+C15+U03C27+U06C23+U04C26（结论形态与「什么叫够了」，含两处 REJECT）
+
+### 核心裁决
+
+**来源类型不构成真伪排序。** U02-C12 的五层优先级被显式降级为 `source_type` 字段——
+不因为来自 GitHub API 就认定内容为真，Issue 可能是用户报告、README 可能是维护者声明。
+成立与否只能由 Evidence-Claims 的裁决状态机判。
+
+第二条：**阶段完成 ≠ 结论正确，资料读完 ≠ 研究完成。** R3 只产 claim 候选不裁决；
+R4 必须列出 remaining_questions。
+
+第三：**缺失资料不得写成空结果。** partial / truncated / unavailable / empty 四态分列。
+
+### 统计口径（三态互斥，磁盘实算）
+
+| 状态 | 数量 |
+|---|---|
+| MAPPED | 54 |
+| ROUTED | 9 |
+| UNREVIEWED | 80 |
+| **合计** | **143** |
+
+`canonical_count = 39`。批次视图：Facts 11/1、Collector 11/4、EC 12/0、Product 10/2、Research 10/3。
+
+### 验证证据
+
+- `f1b_verify.py` → 12/12 PASS (exit 0)
+- `f1b_verify_collector.py` → 30/30 PASS (exit 0)
+- `f1b_verify_ec.py` → 50/50 PASS (exit 0)
+- `f1b_verify_product.py` → 43/43 PASS (exit 0)
+- `f1b_verify_research.py` → 46/46 PASS (exit 0)
+- `f1b_build_research.py` 重跑后六个核心字段逐字节一致
+
+### 本批修掉的问题
+
+1. **五处既有验证器作用域过时**（非数据缺陷）：EC c49 把「后续批次合法推给 EC 的分流」
+   当成残留；Product c6 要求全局最大编号恒为 34；Product c29 拿当前全局数卡历史文档；
+   Product c37 重跑历史构建器会触发其编号起点保护；Product c38 的「重跑前后一致」对历史批次不适用。
+   全部按「历史批次判历史事实」修正，核心不变量一条未放宽。
+2. **自写验证器一处正则转义退化**：`\n` 在字符类里被当成字面反斜杠与 n，改为逐行扫描。
+3. **def 漏写了一处引用**：U02-C15 在承接声明里但不在 canonical refs 里，构建器一致性断言直接抓出。
+
+### 下一步
+
+F1-B 剩余五模块：Lifecycle → Security → Renderer → Storage → DSH Adapter。
+新 ID 从 `SL-CAP-0040` 起。F1-C、F1-D 仍未启动。

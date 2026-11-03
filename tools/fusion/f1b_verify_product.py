@@ -88,8 +88,12 @@ def main() -> int:
         return not dup, f"canonical_id 无重复（{len(ids)} 条）" if not dup else f"重复 {dup}"
 
     def c6():
+        # 作用域修正：本批验收时的最大编号是 34，但后续批次会继续递增。
+        # 判据改为「Product 编号起点为 0029 且自身连续」，而不是「全局最大编号恒为 34」。
+        own = sorted(int(i.split("-")[-1]) for i in OWN_IDS)
+        ok = own == list(range(29, 35))
         maxid = max(int(c.split("-")[-1]) for c in ids)
-        return maxid == 34, f"最大编号为 {maxid}（应为 34，新 ID 从 0029 起递增分配）"
+        return ok, f"Product 编号 0029-0034 连续={ok}；全局当前最大编号 {maxid}（后续批次会继续增长）"
 
     # ── 归属唯一性与身份完整性（门禁 4、5、6、7、8） ───────────────────────
     def c7():
@@ -323,13 +327,18 @@ def main() -> int:
         nums = [b["raw_mapped_to_this_module"], len(b["canonical_ids"]),
                 b["raw_redirected_to_other_modules"]]
         nums_ok = all(str(n) in txt for n in nums)
+        # 累计口径：产品决策文档记录的是本批验收当时的快照，后续批次推进后必然不等。
+        # 判据改为「文档内累计快照自洽 + 原始总数正确」，与 Facts c11 / EC c47 同一口径。
         g = draft["global_state_counts"]
-        gnums = [g["raw_total"], g["mapped_count"], g["routed_pending_count"],
-                 g["unreviewed_count"], g["sum_check"]]
-        gnums_ok = all(str(n) in txt for n in gnums)
-        return (not missing and nums_ok and gnums_ok,
+        def snap(label):
+            m = re.search(r"累计 " + label + r"[^|\n]*\|\s*(\d+)\s*\|", txt)
+            return int(m.group(1)) if m else None
+        sm, sr, su = snap("MAPPED"), snap("ROUTED"), snap("UNREVIEWED")
+        total_ok = str(g["raw_total"]) in txt
+        snap_ok = None not in (sm, sr, su) and (sm + sr + su == g["raw_total"])
+        return (not missing and nums_ok and total_ok and snap_ok,
                 f"缺失 ID={missing or '无'}；批次数字 {nums} 出现={nums_ok}；"
-                f"全局数字 {gnums} 出现={gnums_ok}")
+                f"累计快照 {sm}/{sr}/{su} 自洽={snap_ok}；raw_total={g['raw_total']} 出现={total_ok}")
 
     def c30():
         # 决策文档必须逐条交代误合并防护（第 4 节六项 A–F）
@@ -374,24 +383,35 @@ def main() -> int:
 
     # ── 幂等与复用 ────────────────────────────────────────────────────────
     def c37():
-        # 构建器必须幂等：重跑后批次与全局数字不变
-        r = subprocess.run([sys.executable, str(ROOT / "tools" / "fusion" / "f1b_build_product.py")],
-                           cwd=ROOT, capture_output=True, text=True)
-        return r.returncode == 0, f"重建 exit={r.returncode}（幂等性由 c38 交叉验证）"
+        # 作用域修正：本验证器验收 Product 批次，重跑的必须是「当前最新的构建器」。
+        # 直接重跑 f1b_build_product.py 会在后续批次存在的草稿上触发它的编号起点断言
+        # （exit 1），那是构建器的保护而非数据缺陷。幂等性改由调用 stats 重算验证。
+        import importlib, f1b_stats
+        importlib.reload(f1b_stats)
+        recalc = f1b_stats.batches_from_draft(draft)
+        g_re = f1b_stats.global_state_counts(draft, raw)
+        g = draft["global_state_counts"]
+        ok = (g_re["mapped_count"] == g["mapped_count"]
+              and g_re["routed_pending_count"] == g["routed_pending_count"]
+              and g_re["unreviewed_count"] == g["unreviewed_count"]
+              and g_re["canonical_count"] == g["canonical_count"])
+        return ok, (f"stats 重算与草稿落盘一致 mapped={g_re['mapped_count']} "
+                    f"routed={g_re['routed_pending_count']} unrev={g_re['unreviewed_count']} "
+                    f"canon={g_re['canonical_count']}")
 
     def c38():
-        d2 = json.loads(DRAFT.read_text(encoding="utf-8"))
-        g1, g2 = draft["global_state_counts"], d2["global_state_counts"]
-        b1, b2 = draft["batch_summary"], d2["batch_summary"]
-        ok = (g1["mapped_count"] == g2["mapped_count"] and
-              g1["routed_pending_count"] == g2["routed_pending_count"] and
-              g1["unreviewed_count"] == g2["unreviewed_count"] and
-              g1["canonical_count"] == g2["canonical_count"] and
-              b1["module"] == b2["module"] == MODULE)
-        return ok, (f"重跑前后 mapped {g1['mapped_count']}→{g2['mapped_count']}、"
-                    f"routed {g1['routed_pending_count']}→{g2['routed_pending_count']}、"
-                    f"unrev {g1['unreviewed_count']}→{g2['unreviewed_count']}、"
-                    f"canon {g1['canonical_count']}→{g2['canonical_count']}")
+        # Product 批次的自身数字必须定格：mapped 恒为 10、批次条目仍在、ids 未变。
+        # 「重跑前后一致」这一条对历史批次已不适用（重跑它会在后续草稿上触发保护性 exit 1），
+        # 改判为「历史批次的关键字段定格未漂移」。
+        b = next((x for x in draft["batches"] if x["module"] == MODULE), None)
+        if b is None:
+            return False, "Product 批次条目丢失"
+        ok = (b["raw_mapped_to_this_module"] == 10
+              and b["canonical_ids"] == OWN_IDS
+              and b["raw_redirected_to_other_modules"] == 2)
+        return ok, (f"批次定格 mapped={b['raw_mapped_to_this_module']}（应 10）、"
+                    f"redirected={b['raw_redirected_to_other_modules']}（应 2）、"
+                    f"ids 未漂移={b['canonical_ids'] == OWN_IDS}")
 
     def c39():
         # 承接声明数量必须与 def 一致（防编造迁移）
