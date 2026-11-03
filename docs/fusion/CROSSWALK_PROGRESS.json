@@ -2,7 +2,7 @@
   "artifact": "CROSSWALK_PROGRESS",
   "schema_version": 1,
   "task": "M1-FUSION-GATE-F1",
-  "phase": "F1-A_DONE / F1-B_IN_PROGRESS (Facts DONE, Collector DONE, Evidence-Claims DONE)",
+  "phase": "F1-A_DONE / F1-B_IN_PROGRESS (Facts, Collector, Evidence-Claims, Product DONE)",
   "updated_at": "2026-11-02T23:15:01+08:00",
   "batches": [
     {
@@ -84,9 +84,18 @@
       "status": "DONE"
     },
     "Product": {
-      "canonical_count": 0,
-      "raw_consumed": 0,
-      "status": "PENDING"
+      "canonical_count": 6,
+      "canonical_ids": [
+        "SL-CAP-0029",
+        "SL-CAP-0030",
+        "SL-CAP-0031",
+        "SL-CAP-0032",
+        "SL-CAP-0033",
+        "SL-CAP-0034"
+      ],
+      "raw_mapped": 10,
+      "raw_redirected": 2,
+      "status": "DONE"
     },
     "Research": {
       "canonical_count": 0,
@@ -120,8 +129,8 @@
     }
   },
   "next_batch_start": {
-    "module_hint": "Product",
-    "note": "Facts、Collector、Evidence-Claims 已完成；剩余七个模块待办。下一步从 Product 开始（U03-C01 边界三分类、U03-C06 产品八要素已定向到 Product）。"
+    "module_hint": "Research",
+    "note": "Facts、Collector、Evidence-Claims、Product 已完成；剩余六个模块待办。下一步从 Research 开始（U02-C10 四轮研究流程、U02-C12/C13/C14/C16 报告与来源结构）。"
   },
   "invariants": [
     "每个 (upstream_id, original_capability_id) 必须且只能映射一次",
@@ -131,13 +140,13 @@
     "名称相似而语义不同不得合并"
   ],
   "progress_computed_from": "docs/fusion/CAPABILITY_CROSSWALK.draft.json",
-  "last_updated": "2026-11-03T18:53:02+08:00",
+  "last_updated": "2026-11-03T20:19:37+08:00",
   "totals": {
     "raw_total": 143,
-    "mapped_count": 34,
-    "routed_pending_count": 5,
-    "unreviewed_count": 104,
-    "canonical_count": 28,
+    "mapped_count": 44,
+    "routed_pending_count": 7,
+    "unreviewed_count": 92,
+    "canonical_count": 34,
     "sum_check": 143,
     "definitions": {
       "mapped_count": "已归属某个 canonical_id 的原始身份数",

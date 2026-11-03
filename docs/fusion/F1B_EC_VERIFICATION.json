@@ -1,8 +1,8 @@
 {
   "task": "M1-FUSION-GATE-F1 / F1-B / Evidence-Claims",
-  "generated_at": "2026-11-03T18:59:05+08:00",
+  "generated_at": "2026-11-03T20:19:37+08:00",
   "generated_by": "tools/fusion/f1b_verify_ec.py",
-  "git_head": "0c1f7dd72aa5bd1ab8fcd7961d89eb5835d72a32",
+  "git_head": "1845b37e04a219fed33ca17070d6c4caa1a13a84",
   "summary": {
     "passed": 50,
     "total": 50,
@@ -37,13 +37,13 @@
       "id": "c5",
       "name": "canonical_id 从 0001 连续",
       "passed": true,
-      "detail": "共 28 条，从 0001 连续无断号"
+      "detail": "共 34 条，从 0001 连续无断号"
     },
     {
       "id": "c6",
       "name": "canonical_id 无重复",
       "passed": true,
-      "detail": "canonical_id 无重复（28 条）"
+      "detail": "canonical_id 无重复（34 条）"
     },
     {
       "id": "c7",
@@ -73,7 +73,7 @@
       "id": "c11",
       "name": "原始身份全局唯一归属",
       "passed": true,
-      "detail": "全局无重复归属，共 34 个身份"
+      "detail": "全局无重复归属，共 44 个身份"
     },
     {
       "id": "c12",
@@ -85,13 +85,13 @@
       "id": "c13",
       "name": "三态计数之和等于 143",
       "passed": true,
-      "detail": "mapped 34 + routed 5 + unreviewed 104 = 143"
+      "detail": "mapped 44 + routed 7 + unreviewed 92 = 143"
     },
     {
       "id": "c14",
       "name": "global_state_counts 与实算一致且不变量成立",
       "passed": true,
-      "detail": "global_state_counts 与实算一致 mapped=34 routed=5 unreviewed=104 canonical=28；四条不变量=True"
+      "detail": "global_state_counts 与实算一致 mapped=44 routed=7 unreviewed=92 canonical=34；四条不变量=True"
     },
     {
       "id": "c15",
@@ -109,13 +109,13 @@
       "id": "c17",
       "name": "batch_summary 指向最近完成批次",
       "passed": true,
-      "detail": "batch_summary 指向最近完成批次：F1-B/Evidence-Claims（module=Evidence-Claims）"
+      "detail": "EC 批次条目存在=True；batch_summary=F1-B/Product 可在 batches 中定位=True；确为业务顺序最后一批=True"
     },
     {
       "id": "c18",
       "name": "批次按业务顺序排列",
       "passed": true,
-      "detail": "批次按业务顺序排列：['Facts', 'Collector', 'Evidence-Claims']"
+      "detail": "批次按业务顺序排列：['Facts', 'Collector', 'Evidence-Claims', 'Product']"
     },
     {
       "id": "c19",
@@ -145,7 +145,7 @@
       "id": "c23",
       "name": "晋升记录无重复",
       "passed": true,
-      "detail": "晋升记录无重复（共 14 条）"
+      "detail": "晋升记录无重复（共 24 条）"
     },
     {
       "id": "c24",
@@ -289,7 +289,7 @@
       "id": "c47",
       "name": "JSON 与决策文档数字一致",
       "passed": true,
-      "detail": "缺失 ID=无；批次数字 [12, 9, 0] 出现=True；全局数字 [143, 34, 5, 104, 143] 出现=True"
+      "detail": "缺失 ID=无；批次数字 [12, 9, 0] 出现=True；累计快照 MAPPED/ROUTED/UNREVIEWED=34/5/104 自洽=True；raw_total=143 出现=True"
     },
     {
       "id": "c48",

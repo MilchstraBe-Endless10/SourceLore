@@ -692,3 +692,60 @@ F1-B 第三批次（Evidence-Claims）完成：9 条 canonical（`SL-CAP-0020`~`
 
 F1-B 剩余七模块：Product → Research → Lifecycle → Security → Renderer → Storage → DSH Adapter。
 新 ID 从 `SL-CAP-0029` 起。F1-C、F1-D 仍未启动。
+
+## M1-FUSION-GATE / F1-B Product 批次完成（2026-11-03 20:20 +08:00）
+
+### 一句话
+
+F1-B 第四批次（Product）完成：6 条 canonical（`SL-CAP-0029`~`0034`）、10 个原始身份正式归属、
+2 个身份外推。四个验证器全绿。F1 整体仍未完成。
+
+### 本批做了什么
+
+- 逐一核验用户列出的九项优先候选，再对 143 项做全库关键词检索，确认无遗漏
+- 12 个候选中 10 个进本批、2 个转给 Renderer/Lifecycle、7 个明确留给后续批次（仍是 UNREVIEWED）
+- 归并为 6 条 canonical，三处合并：C07+C13+C14（构建序的依赖顺序/分轮原则/精修动作）、
+  C09+C10（未知项的「无资料」与「资料矛盾」两源）、C17+C11（终止条件与进展度量）
+
+### 核心裁决
+
+**声明不可替代实现证据。** `claim_type` 四值（fact/declaration/inference/unknown）+ 硬规则：
+`evidence_refs` 为空时只能是 inference 或 unknown，不得是 fact 或 declaration。
+这是防止「README 声称的功能被当成已实现功能」的唯一机械闸门。
+
+第二硬规则：**有配置 ≠ 在运行。** 外部集成必须落在 confirmed_runtime / configured_boundary /
+integration_unknown 三态，检测到 provider 配置或依赖声明即必须产出条目，哪怕状态是 unknown。
+
+### 统计口径（三态互斥，磁盘实算）
+
+| 状态 | 数量 |
+|---|---|
+| MAPPED | 44 |
+| ROUTED | 7 |
+| UNREVIEWED | 92 |
+| **合计** | **143** |
+
+`canonical_count = 34`。批次视图：Facts 11/1、Collector 11/4、EC 12/0、Product 10/2。
+
+### 验证证据
+
+- `f1b_verify.py` → 12/12 PASS (exit 0)
+- `f1b_verify_collector.py` → 30/30 PASS (exit 0)
+- `f1b_verify_ec.py` → 50/50 PASS (exit 0)
+- `f1b_verify_product.py` → 43/43 PASS (exit 0)
+- `f1b_build_product.py` 重跑后六个核心字段逐字节一致（幂等成立）
+
+### 本批修掉的问题
+
+1. **构建器自有键集合漏了本批分流键。** 导致推给 Renderer/Lifecycle 的两条分流每跑一次追加一份，
+   累积成 5 份重复，由 Collector c4c 抓到。修正为 `own_keys = 承接键 ∪ 本批分流键`——
+   分离两件事必须用同一个键集合，否则幂等在映射侧成立、分流侧失效。
+2. **EC 验证器两处作用域过时**（batch_summary 指向、全局数字一致），与本轮第 7 节同类问题，
+   已按「历史批次判历史事实」修正，核心不变量未放宽。
+3. **自写验证器两个 bug**：批次 redirected 断言漏括号、分流去向 `mod[0]` 误取字符串首字符——
+   属我自己的写法错误，非数据问题。
+
+### 下一步
+
+F1-B 剩余六模块：Research → Lifecycle → Security → Renderer → Storage → DSH Adapter。
+新 ID 从 `SL-CAP-0035` 起。F1-C、F1-D 仍未启动。

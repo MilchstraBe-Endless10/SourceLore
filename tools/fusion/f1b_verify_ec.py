@@ -168,9 +168,17 @@ def main() -> int:
                     f"canonical_ids 齐备={b['canonical_ids'] == EC_IDS}")
 
     def c17():
+        # 作用域修正：batch_summary 按统计契约指向「业务顺序上最后完成的那一批」，
+        # 后续批次推进后它必然不再指向 EC。要求它等于自己，等于让历史批次禁止推进。
+        # 本批的正确判据是：EC 在 batches[] 里存在，且 batch_summary 确实是 batches
+        # 的最后一项（契约本身成立），而不是「最后一批必须是我」。
         bs = draft["batch_summary"]
-        ok = bs["module"] == MODULE and bs.get("batch") == "F1-B/Evidence-Claims"
-        return ok, f"batch_summary 指向最近完成批次：{bs.get('batch')}（module={bs['module']}）"
+        bs_in = next((b for b in draft.get("batches", []) if b.get("batch") == bs.get("batch")), None)
+        is_last = draft["batches"][-1]["batch"] == bs.get("batch") if draft.get("batches") else False
+        mine = next((b for b in draft.get("batches", []) if b["module"] == MODULE), None)
+        return ((mine is not None and bs_in is not None and is_last),
+                f"EC 批次条目存在={mine is not None}；batch_summary={bs.get('batch')} "
+                f"可在 batches 中定位={bs_in is not None}；确为业务顺序最后一批={is_last}")
 
     def c18():
         names = [b["module"] for b in draft.get("batches", [])]
@@ -409,12 +417,20 @@ def main() -> int:
         nums = [b["raw_mapped_to_this_module"], len(b["canonical_ids"]),
                 b["raw_redirected_to_other_modules"]]
         nums_ok = all(str(n) in txt for n in nums)
+        # 累计口径：EC 决策文档记录的是本批验收当时的快照，后续批次推进会让它与
+        # 当前全局值必然不等。判据改为「文档内累计快照自洽 + 原始总数正确」，
+        # 与 Facts c11 的处理保持一致（见 EC 决策文档 §9 的口径修正说明）。
         g = draft["global_state_counts"]
-        gnums = [g["raw_total"], g["mapped_count"], g["routed_pending_count"],
-                 g["unreviewed_count"], g["sum_check"]]
-        gnums_ok = all(str(n) in txt for n in gnums)
-        return (not missing and nums_ok and gnums_ok,
-                f"缺失 ID={missing or '无'}；批次数字 {nums} 出现={nums_ok}；全局数字 {gnums} 出现={gnums_ok}")
+        def snap(label):
+            m = re.search(r"累计 " + label + r"[^|\n]*\|\s*(\d+)\s*\|", txt)
+            return int(m.group(1)) if m else None
+        sm, sr, su = snap("MAPPED"), snap("ROUTED"), snap("UNREVIEWED")
+        total_ok = str(g["raw_total"]) in txt
+        snap_ok = None not in (sm, sr, su) and (sm + sr + su == g["raw_total"])
+        return (not missing and nums_ok and total_ok and snap_ok,
+                f"缺失 ID={missing or '无'}；批次数字 {nums} 出现={nums_ok}；"
+                f"累计快照 MAPPED/ROUTED/UNREVIEWED={sm}/{sr}/{su} 自洽={snap_ok}；"
+                f"raw_total={g['raw_total']} 出现={total_ok}")
 
     def c48():
         # 六项 E 约束必须逐条落章（第E节要求）
