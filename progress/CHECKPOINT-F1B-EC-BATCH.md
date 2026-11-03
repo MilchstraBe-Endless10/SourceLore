@@ -1,41 +1,74 @@
-# F1-B / Evidence-Claims 批次 · 检查点（2026-11-03 12:59）
+# F1-B / Evidence-Claims 批次 · 检查点（已完成并提交）
 
 ## 做到哪
 
-第B节（统计契约修订）已完成并提交 `0c1f7dd`；第C–F节（Evidence-Claims）处于「候选提取完成、裁决进行中」。
+**本批已 DONE 并提交 `9e0f5ae`。** 三个验证器全绿。下一个批次是 Product。
 
-### 已完成（本段会话）
+### 交付物（全部已入库）
 
-1. **第B节全部完成**，提交 `0c1f7dd`（F1-B 统计契约修订：分批视图与累计视图分离）：
-   - `f1b_stats.py` 出向分流 = def 声明 − 晋升；Facts 11/9、Collector 11/5；全局 22/14/107=143。
-   - `f1b_verify.py` c11 → 12/12 PASS (exit 0)；`f1b_verify_collector.py` c13/c28 → 30/30 PASS (exit 0)。
-   - `F1B_FACTS_DECISIONS.md` 数字表已同步新契约。
-2. **第D节候选提取已完成（磁盘实算）**：
-   - ROUTED→EC 共 9 条：`U01::C03`(citation existence check)、`U03::C03`(显式未知优于自信猜测/无证据降级为假设)、`U04::C07`(证据三分法)、`U04::C08`(外部探测存档清单)、`U04::C10`(Finding 四段结构)、`U04::C11`(verified-against 新鲜度)、`U05::C05`([NEEDS INPUT] 不编造)、`U05::C06`(Auto-generated 头与出处)、`U06::C05`(四节点数据流逐跳 file:line)。
-   - 未审语义命中 5 条：`U03::C01`(边界三分类——偏 Product)、`U03::C06`(产品八要素——偏 Product)、`U04::C09`(Superseded 关系与保留历史)、`U06::C04`(Boundary Gate——偏 Security)、`U06::C07`(验证状态机与 report_tier 映射)。
-   - **U06::C06「不可验证即判否」当前 UNREVIEWED**——第E节要求它最终裁决 ADAPT（只取逐跳证据定位设计）并记录「can't prove → FALSE_POSITIVE」语义被拒绝。
-3. 已通读 `f1b_build_collector.py`（357 行）与 `f1b_collector_def.py` 结构：def 三件套模式（CANON 列表含 refs 三元组 + DEFERRED_TO_OTHER_MODULE + 可选 PROMOTED_FROM_FACTS）、构建器幂等预剥离、晋升落盘、license per_upstream 聚合、`batches_from_draft` 现算——EC 构建器照此模板写。
+| 文件 | 作用 |
+|---|---|
+| `tools/fusion/f1b_ec_def.py` | 9 条 canonical 定义 + `CONSUMED_THIS_BATCH`（12 个身份承接声明） |
+| `tools/fusion/f1b_build_ec.py` | 增量构建器，幂等，写入延后到校验通过 |
+| `tools/fusion/f1b_verify_ec.py` | 50 条独立检查，只写 `F1B_EC_VERIFICATION.json` |
+| `docs/fusion/F1B_EVIDENCE_CLAIMS_DECISIONS.md` | 设计裁决，第 E 节六项约束逐条落章 |
+| `docs/fusion/F1B_EC_VERIFICATION.json` | 机读验收证据 |
+| `tools/fusion/f1b_stats.py` | 已登记 `Evidence-Claims` 到 `_MODULE_DEFS` 与 `BATCH_NAMES` |
 
-## 下一步（按顺序）
+### 实测数字（磁盘实算，非声明）
 
-1. **语义裁决**（第D/E节），产出 9 条 canonical（新 ID 从 `SL-CAP-0020` 起）：
-   - 建议：U03::C01/U03::C06 判给 Product 不进本批；U06::C04 判给 Security；`U04::C09`(Superseded/历史) 归 EC（第C节职责含 historical vs current claim）；`U06::C07`(状态机/report_tier) 归 EC（claim status 与 adjudication 规则）+ U06::C06 以 ADAPT 并入同一或相邻条目，且显式拒绝「不可验证→FALSE_POSITIVE」。
-   - U05::C05 的 reason 带 `[NEEDS INPUT]`——承接时不得编造内容，只登记「占位语义」，具体格式留 unresolved。
-   - 每条 canonical 需：稳定 ID、唯一 owner_module、来源列表、合并/不合并理由、设计处置、逐源 licence、I/O 边界、V1 scope、unresolved、与 Facts/Collector 的依赖。
-2. 写 `tools/fusion/f1b_ec_def.py`（MODULE="Evidence-Claims"，CANON 9 条，无 PROMOTED——9 条 live redirects 直接消费）。
-3. 写 `tools/fusion/f1b_build_ec.py`（参照 Collector 构建器；COLLECTOR_IDS 类似改为 EC_IDS=SL-CAP-0020..0028；预剥离本批 9 键分流；晋升 `from:"cross_module_redirections"` 因 live redirects 存在；重建链 Facts→Collector→EC）。
-4. 写 `tools/fusion/f1b_verify_ec.py`（30 条左右检查，限 EC ID 范围 + 本批不变量）。
-5. 写 `docs/fusion/F1B_EVIDENCE_CLAIMS_DECISIONS.md`（六项 E 约束逐条落章）。
-6. 跑构建链 + 三个验证器；第G节十七项验收；更新 PROGRESS/STATE/TASKS/HANDOFF；提交（统计修订已单独提交 0c1f7dd，本批第二提交）；第H节报告。
+- 本批承接 12 个身份、合成 9 条 canonical（`SL-CAP-0020`…`0028`）、出向分流 0
+- 累计：MAPPED 34 / ROUTED 5 / UNREVIEWED 104 = 143，canonical 28
+- 批次视图：Facts 11/1、Collector 11/4、EC 12/0（出向按契约现算，下游承接后自然递减）
+- 晋升记录 14 条全在盘
 
-## 卡在哪
+### 验证
 
-不卡。上下文额度再次熔断（本轮已两次触发换气），非项目阻塞。
+```
+python3 tools/fusion/f1b_verify.py            → 12/12 PASS
+python3 tools/fusion/f1b_verify_collector.py  → 30/30 PASS
+python3 tools/fusion/f1b_verify_ec.py         → 50/50 PASS
+```
 
-## 关键不变量提醒
+重建链（幂等，已实测重复运行结果一致）：`f1b_build_collector.py` → `f1b_build_ec.py` → 三个验证器。
+`f1b_build_facts.py` 有防误跑闸，草稿含其它模块条目时 exit 2 不写盘，所以整表重建不能从 Facts 起。
 
-- 9 条 ROUTED→EC 消费后：MAPPED 22→31，ROUTED 14→5，UNREVIEWED 107 不变（若 U06::C06 ADAPT 并入则再 +1 MAPPED），总数 143 恒定。
-- 新 ID `SL-CAP-0020`…起，不重排既有 19 条；`SL-CAP-0007/0008/0009` 的 owner 本轮不动。
-- def 文件头部 docstring 要列全导出符号（Collector def 的遗漏是已知 polish 项，不要复制这个缺陷）。
-- f1b_stats `_MODULE_DEFS` 需加 `"Evidence-Claims": "f1b_ec_def"`，否则新批次的出向分流计数为 0。
-- 检索词：F1B stats revision checkpoint（热记忆已有索引条目）。
+## 本批核心裁决
+
+**显式拒绝「不可验证即判否」。** 上游 U06::C06 原文是 can't prove → FALSE_POSITIVE，
+把「说不清」直接归入否定。本批取其「必须给悬置一个确定去向」的取向，把去向改为
+`insufficient_evidence`，并写成硬规则：不可验证只产生 insufficient_evidence，禁止落成 refuted；
+无法证明不等于已被证伪。U06::C06 判 ADAPT，拒绝语义记入 `merge_note` 与决策文档。
+
+## 本批踩的坑（下一批别再踩）
+
+1. **验证器基线写死会假阳性。** Facts c10 断言「全局无人引用 C03/C10」，EC 一批就红；
+   Facts c11 拿当前全局数去卡历史文档，每推进一批必然不等；Collector c27 用 Collector 的引用集
+   去卡其它批次的晋升。三处都已收窄作用域。判据收窄不降强度，只是去掉「历史必须等于现在」。
+2. **批次出向分流是现算视图，不是定格历史。** 下游承接后数字会减（Facts 9→1、Collector 5→4）。
+   校验只能查「与现算自洽」，不能查「等于上一批的旧值」。mapped 才是定格的（11/11/12）。
+3. **`from` 字段必须与磁盘事实核对。** U06::C07 起初被我误标 `cross_module_redirections`，
+   实际它不在路由表里（是未审命中），构建器的复核断言直接抓出来了。声明来自哪，磁盘得有证据。
+4. **多行 `return (a,` + `b)` 一旦括号错位就是语法灾难。** 本批连改三轮才把 6 处补齐。
+   写法改成先算 `detail` 变量再 `return cond, detail`，不再跨行元组。
+5. **验证器 `check()` 只接受返回 `(ok, detail)` 的函数。** 返回单值会 TypeError——
+   本批第一轮 7 条 FAIL 里有 6 条是这个，不是数据问题。
+
+## 下一步
+
+**F1-B 下一批：Product。** 候选已定向：`U03::C01`（边界三分类）、`U03::C06`（产品八要素）。
+流程照本批：检索候选 → 归并 → 裁决 → def → 幂等构建器 → 独立验证器 → 决策文档 → 进度记录 → 独立提交。
+新 ID 从 `SL-CAP-0029` 起。
+
+其余待办批次：Research → Lifecycle → Security → Renderer → Storage → DSH-Adapter。
+F1-C（十项冲突裁决）、F1-D（全量验收与 `CAPABILITY_CROSSWALK.json` 冻结）仍未启动。
+
+## 恢复命令
+
+```bash
+cd '/mnt/Server_Data_Center/Team_Flie(团队文件)/GitHub_Knowledge_Base(Gihub知识库)/SourceLore' \
+  && git log --oneline -3 && git status --short \
+  && python3 tools/fusion/f1b_verify_ec.py | tail -2
+```
+
+检索词：F1B EC batch checkpoint（本文件为完成版）。

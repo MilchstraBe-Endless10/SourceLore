@@ -640,3 +640,55 @@ MAPPED ∩ ROUTED = ∅。`canonical_count = 19`（不是 143）。
 
 F1-B 剩余模块：Evidence-Claims → Product → Research → Lifecycle → Security → Renderer → Storage → DSH Adapter。
 每批照本批流程：检索候选 → 归并 → 裁决 → 幂等构建器 → 独立验证器 → 进度记录 → 独立提交。
+
+## M1-FUSION-GATE / F1-B Evidence-Claims 批次完成（2026-11-03 19:00 +08:00）
+
+### 一句话
+
+F1-B 第三批次（Evidence-Claims）完成：9 条 canonical（`SL-CAP-0020`~`0028`）、12 个原始身份正式归属、
+0 个身份外推。三个验证器全绿，已提交 `9e0f5ae`。F1 整体仍未完成。
+
+### 本批做了什么
+
+- 从草稿路由表与未审命中中确认 12 个身份的归属，不是凭聊天记忆补的
+- 归并为 9 条 canonical，三组合并各有硬理由：C07+C08（形态面+元数据面）、
+  C09+C11（同一条 claim 的「还算不算数」两维）、C06+C07（状态机的骨与边）
+- U06::C05 独立成 SL-CAP-0021（证据结构 ≠ 状态机）
+- 判给 Product 的 2 条、判给 Security 的 1 条不进本批
+
+### 核心裁决
+
+**显式拒绝「不可验证即判否」。** 上游 U06::C06 原文 can't prove → FALSE_POSITIVE。
+本批取其「必须给悬置一个确定去向」的取向，去向改为 `insufficient_evidence`，硬规则：
+不可验证只产生 insufficient_evidence，禁止落成 refuted；无法证明不等于已被证伪。
+
+### 统计口径（三态互斥，磁盘实算）
+
+| 状态 | 数量 |
+|---|---|
+| MAPPED | 34 |
+| ROUTED | 5 |
+| UNREVIEWED | 104 |
+| **合计** | **143** |
+
+`canonical_count = 28`。批次视图：Facts 11/1、Collector 11/4、EC 12/0。
+
+### 验证证据
+
+- `f1b_verify.py` → 12/12 PASS
+- `f1b_verify_collector.py` → 30/30 PASS
+- `f1b_verify_ec.py` → 50/50 PASS
+- 重建链 `f1b_build_collector.py` → `f1b_build_ec.py` 幂等，重复运行结果一致
+
+### 本批修掉的坑
+
+1. 验证器基线写死会假阳性：Facts c10/c11、Collector c27 三处判据已收窄作用域
+   （判据收窄不降强度，只是去掉「历史必须等于现在」）。
+2. 批次出向分流是现算视图：Facts 9→1、Collector 5→4 是下游承接的自然结果，不是数据漂移。
+3. `from` 字段必须与磁盘核对：U06::C07 起初误标来自路由表，实际是未审命中，构建器断言抓出。
+4. 多行 return 元组括号易错，改写成先算 `detail` 再 `return cond, detail`。
+
+### 下一步
+
+F1-B 剩余七模块：Product → Research → Lifecycle → Security → Renderer → Storage → DSH Adapter。
+新 ID 从 `SL-CAP-0029` 起。F1-C、F1-D 仍未启动。
