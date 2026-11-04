@@ -28,8 +28,9 @@ ASSESS_RULE_VERSION = "freshness-eval/v1"
 
 
 def assess(*, watch, observation, observed_at: str = "",
-           assessed_at: str = "", rule_version: str = ASSESS_RULE_VERSION
-           ) -> L.FreshnessAssessment:
+           assessed_at: str = "", rule_version: str = ASSESS_RULE_VERSION,
+           source_evidence_conflict: str = L.CONFLICT_UNKNOWN,
+           conflict_fact_ids=()) -> L.FreshnessAssessment:
     """对一条 watch + 一次观测产出新鲜度评估。"""
     base = dict(
         watch_id=watch.watch_id, claim_id=watch.claim_id,
@@ -38,7 +39,9 @@ def assess(*, watch, observation, observed_at: str = "",
         baseline_commit_sha=watch.baseline_commit_sha,
         rule_version=rule_version,
         applicability_scope=watch.applicability_scope,
-        observed_at=observed_at, assessed_at=assessed_at)
+        observed_at=observed_at, assessed_at=assessed_at,
+        conflict=source_evidence_conflict,
+        conflict_fact_ids=tuple(conflict_fact_ids))
 
     # F1：固定版本不追踪移动 Ref
     if watch.applicability_scope == L.PINNED_COMMIT:
@@ -103,13 +106,16 @@ def _assess_id(**kw) -> str:
 def _build(*, watch_id, claim_id, repository_id, requested_ref,
            baseline_commit_sha, rule_version, applicability_scope,
            observed_commit_sha, state, reason, evidence_refs,
-           observed_at="", assessed_at="", detail="") -> L.FreshnessAssessment:
+           observed_at="", assessed_at="", detail="",
+           conflict=L.CONFLICT_UNKNOWN,
+           conflict_fact_ids=()) -> L.FreshnessAssessment:
     aid = L.make_assessment_id(
         watch_id=watch_id, claim_id=claim_id, repository_id=repository_id,
         requested_ref=requested_ref, baseline_commit_sha=baseline_commit_sha,
         observed_commit_sha=observed_commit_sha, freshness_state=state,
         reason_code=reason, rule_version=rule_version,
-        applicability_scope=applicability_scope)
+        applicability_scope=applicability_scope,
+        source_evidence_conflict=conflict)
     digest = L.sha256_of({"kind": "freshness", "id": aid,
                           "baseline": baseline_commit_sha,
                           "observed": observed_commit_sha,
@@ -122,13 +128,16 @@ def _build(*, watch_id, claim_id, repository_id, requested_ref,
         reason_code=reason, evidence_refs=list(evidence_refs),
         rule_version=rule_version, input_digest=digest,
         applicability_scope=applicability_scope,
-        observed_at=observed_at, assessed_at=assessed_at, detail=detail)
+        observed_at=observed_at, assessed_at=assessed_at, detail=detail,
+        source_evidence_conflict=conflict,
+        conflict_fact_ids=list(conflict_fact_ids))
 
 
 def _unknown(*, watch_id, claim_id, repository_id, requested_ref,
              baseline_commit_sha, rule_version, applicability_scope,
              reason, observed, observed_at="", assessed_at="",
-             detail="", evidence=()) -> L.FreshnessAssessment:
+             detail="", evidence=(), conflict=L.CONFLICT_UNKNOWN,
+             conflict_fact_ids=()) -> L.FreshnessAssessment:
     if reason not in L.UNKNOWN_REASONS:
         reason = L.U_OBSERVATION_FAILED
     return _build(watch_id=watch_id, claim_id=claim_id,
@@ -138,4 +147,5 @@ def _unknown(*, watch_id, claim_id, repository_id, requested_ref,
                   applicability_scope=applicability_scope,
                   observed_commit_sha=observed, state=L.UNKNOWN, reason=reason,
                   evidence_refs=list(evidence), observed_at=observed_at,
-                  assessed_at=assessed_at, detail=detail)
+                  assessed_at=assessed_at, detail=detail, conflict=conflict,
+                  conflict_fact_ids=conflict_fact_ids)

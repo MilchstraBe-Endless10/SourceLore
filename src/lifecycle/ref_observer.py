@@ -223,7 +223,10 @@ def _ok_observation(*, repository_id, requested_ref, ref_kind, retrieval_scope,
         retrieval_scope=retrieval_scope, observation_status=L.OBS_OK,
         evidence_refs=[{"kind": "ref_resolution", "ref": evidence_ref,
                         "requested_ref": requested_ref,
-                        "resolved_commit_sha": resolved_commit_sha, "at": observed_at}],
+                        "resolved_commit_sha": resolved_commit_sha,
+                        "provenance_level": provenance,
+                        "synthetic_provenance": (provenance == PROV_SYNTHETIC),
+                        "at": observed_at}],
         collector_version=collector_version, input_digest=digest,
         observed_at=observed_at, provenance_level=provenance)
 

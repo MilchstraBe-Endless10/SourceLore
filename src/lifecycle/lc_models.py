@@ -73,6 +73,14 @@ UNKNOWN_REASONS = frozenset({
 R_REF_MOVED = "TRACKED_REF_MOVED"
 R_REF_MOVED_FORCE = "TRACKED_REF_MOVED_NO_ANCESTRY_EVIDENCE"
 
+# ── 来源证据冲突（三态，不是布尔）──────────────────────────
+# ★ P3A 的 FreshnessAssessment **没有** conflict_detected（它只存在于 EC 的 Verification）。
+# 缺失不等于"无冲突" —— 所以这里用三态，默认 UNKNOWN 而不是 NONE。
+CONFLICT_NONE = "CONFLICT_NONE"            # 已核验：无冲突
+CONFLICT_DETECTED = "CONFLICT_DETECTED"    # 已核验：确有冲突
+CONFLICT_UNKNOWN = "CONFLICT_UNKNOWN"      # 未核验（不得当作无冲突）
+CONFLICT_STATES = frozenset({CONFLICT_NONE, CONFLICT_DETECTED, CONFLICT_UNKNOWN})
+
 SAFE_WATCH_ID = re.compile(r"^SL-WATCH-[0-9a-f]{32}$")
 SAFE_OBS_ID = re.compile(r"^SL-REFOBS-[0-9a-f]{32}$")
 SAFE_ASSESS_ID = re.compile(r"^SL-FRESH-[0-9a-f]{32}$")
@@ -260,6 +268,9 @@ class FreshnessAssessment:
     observed_at: str = ""
     assessed_at: str = ""
     detail: str = ""
+    # 向后兼容：旧记录没有这个字段 → 读出时按 CONFLICT_UNKNOWN 处理
+    source_evidence_conflict: str = CONFLICT_UNKNOWN
+    conflict_fact_ids: list = field(default_factory=list)
 
     def __post_init__(self):
         if not SAFE_ASSESS_ID.match(self.assessment_id):
@@ -282,6 +293,13 @@ class FreshnessAssessment:
         else:
             if self.reason_code is not None:
                 raise ValueError("非 UNKNOWN/POSSIBLY_STALE 不得带 reason_code")
+        if self.source_evidence_conflict not in CONFLICT_STATES:
+            raise ValueError(
+                f"非法 source_evidence_conflict: {self.source_evidence_conflict!r}")
+        if (self.source_evidence_conflict == CONFLICT_NONE
+                and self.conflict_fact_ids):
+            raise ValueError("判无冲突时不得带冲突事实")
+
         if self.freshness_state == VERSION_ALIGNED:
             if not is_commit_sha(self.observed_commit_sha):
                 raise ValueError("VERSION_ALIGNED 必须有可信观测 commit")
@@ -300,11 +318,12 @@ class FreshnessAssessment:
             "reason_code": self.reason_code,
             "rule_version": self.rule_version,
             "applicability_scope": self.applicability_scope,
+            "source_evidence_conflict": self.source_evidence_conflict,
         }
 
     def to_dict(self) -> dict:
         d = self.identity_payload()
-        d.update({"assessment_id": self.assessment_id,
+        d.update({"assessment_id": self.assessment_id, "conflict_fact_ids": self.conflict_fact_ids,
                   "evidence_refs": self.evidence_refs,
                   "input_digest": self.input_digest,
                   "observed_at": self.observed_at,
@@ -316,7 +335,8 @@ class FreshnessAssessment:
 def make_assessment_id(*, watch_id, claim_id, repository_id, requested_ref,
                        baseline_commit_sha, observed_commit_sha,
                        freshness_state, reason_code, rule_version,
-                       applicability_scope) -> str:
+                       applicability_scope,
+                       source_evidence_conflict=CONFLICT_UNKNOWN) -> str:
     return _sid("SL-FRESH-", {
         "watch_id": watch_id, "claim_id": claim_id,
         "repository_id": str(repository_id), "requested_ref": requested_ref,
@@ -324,4 +344,5 @@ def make_assessment_id(*, watch_id, claim_id, repository_id, requested_ref,
         "observed_commit_sha": observed_commit_sha,
         "freshness_state": freshness_state, "reason_code": reason_code,
         "rule_version": rule_version,
-        "applicability_scope": applicability_scope})
+        "applicability_scope": applicability_scope,
+        "source_evidence_conflict": source_evidence_conflict})

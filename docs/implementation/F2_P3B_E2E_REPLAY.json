@@ -1,0 +1,75 @@
+{
+  "artifact": "F2_P3B_E2E_REPLAY",
+  "data_provenance": "HISTORICAL_REAL_DATA",
+  "live_github_refetch": false,
+  "note": "本轮**未重新访问 GitHub**。基线来自 P1C 真实采集记录；新 Commit 是 SYNTHETIC_FIXTURE，**不是实时 Ref 更新**",
+  "replayed_at": "2026-11-04T23:22:26+08:00",
+  "baseline_commit_sha": "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",
+  "baseline": {
+    "state": "VERSION_ALIGNED",
+    "candidate": "NOT_POSSIBLY_STALE"
+  },
+  "synthetic_new_commit": {
+    "freshness": "POSSIBLY_STALE",
+    "provenance": "SYNTHETIC_FIXTURE",
+    "candidate_state": "VERSION_ADDED",
+    "candidate_status": "BLOCKED",
+    "state_reason": "SYNTHETIC_SOURCE_NOT_DISPATCHABLE",
+    "candidate_id": "SL-REVAL-a5c7b3d83ab2491ce2146e26d914f375",
+    "plan_gate": "CANDIDATE_NOT_PROPOSED"
+  },
+  "real_source_new_commit": {
+    "freshness": "POSSIBLY_STALE",
+    "provenance": "REAL_LIVE_API",
+    "candidate_state": "SUPERSEDED_EXISTING_ACTIVE",
+    "candidate_status": "PROPOSED",
+    "superseded": "SL-REVAL-a5c7b3d83ab2491ce2146e26d914f375",
+    "candidate_id": "SL-REVAL-a31e63151430a2d7daba4eeebab1f22c",
+    "plan_gate": "PLAN_READY"
+  },
+  "plan": {
+    "gate": "PLAN_READY",
+    "events": {
+      "PLAN_READY": true,
+      "EXECUTION_AUTHORIZED": false,
+      "EXECUTION_COMPLETED": false
+    },
+    "side_effects": {
+      "called_collector": false,
+      "called_github": false,
+      "extracted_facts": false,
+      "adjudicated_claims": false,
+      "modified_verification": false,
+      "modified_review_status": false
+    },
+    "target_claim_identity": "SL-CLAIM-caf15e5f481b7baabf7e0e5b66847c26bb89ba22"
+  },
+  "queue": {
+    "active": "SL-REVAL-a31e63151430a2d7daba4eeebab1f22c",
+    "history_count": 2,
+    "history": [
+      "SL-REVAL-a31e63151430a2d7daba4eeebab1f22c",
+      "SL-REVAL-a5c7b3d83ab2491ce2146e26d914f375"
+    ]
+  },
+  "active_count": {
+    "ok": true,
+    "active_by_watch": {
+      "SL-WATCH-141aa4a23767f43230f0d02b1ca11177": [
+        "SL-REVAL-a31e63151430a2d7daba4eeebab1f22c"
+      ]
+    },
+    "total_active": 1,
+    "multi_active_watches": []
+  },
+  "counts": {
+    "repository_snapshot": 1,
+    "extracted_fact": 1,
+    "claim_candidate": 1,
+    "claim_verification": 1,
+    "lifecycle_watch": 1,
+    "freshness_assessment": 3,
+    "revalidation_queue": 2,
+    "revalidation_candidate": 2
+  }
+}

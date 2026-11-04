@@ -99,3 +99,86 @@ def make_pinned_watch():
                 baseline_commit_sha=COMMIT_A,
                 claim_id="SL-CLAIM-" + "1" * 40,
                 applicability_scope=L.PINNED_COMMIT)
+
+
+# ── P3B：真实 EC 对象 + 可生成候选的完整栈 ──────────────────
+import importlib.util as _ilu
+_s = _ilu.spec_from_file_location(
+    "ec_fx_for_lc", str(ROOT / "tests" / "evidence_claims" / "fixtures.py"))
+EF = _ilu.module_from_spec(_s); _s.loader.exec_module(EF)
+
+
+import ec_models as EM
+import verifier as ECV
+import verification_store as VS
+
+
+def make_full_stack(ks, *, repo=REPO, commit=COMMIT_A, ref="master",
+                    target=None, provenance_real=True, conflict=None,
+                    path="README", expected_exists=True):
+    """建出 EC Claim/Verification + watch + assessment 的完整栈。
+
+    返回 dict，含所有 id，供 P3B 测试直接使用。
+    """
+    import freshness_evaluator as FE
+    import ref_observer as RO
+    import lifecycle_store as LS
+
+    snap = EF.make_snapshot(ks, repo=repo, commit=commit)
+    fact = EF.make_fact(ks, snap["asset_id"], path)
+    claim = EM.build_path_claim(repository_id=repo, commit_sha=commit,
+                                target_path=path, expected_exists=expected_exists,
+                                claim_origin="human_specified")
+    verif = ECV.verify_path_claim(ks, claim, [fact["fact_id"]])
+    VS.ingest_claim(ks, claim)
+    VS.ingest_verification(ks, verif, repository_id=repo)
+
+    watch = L.build_watch(repository_id=repo, requested_ref=ref,
+                          ref_kind=L.REF_KIND_BRANCH, retrieval_scope=SCOPE,
+                          baseline_commit_sha=commit,
+                          claim_id=claim.claim_id)
+    LS.ingest_watch(ks, watch)
+
+    tgt = target or COMMIT_B
+    if provenance_real:
+        class _C:
+            def commit_for_ref(self, o, n, r):
+                class R:
+                    ok = True
+                    error = None
+                    data = {"sha": tgt, "commit": {"tree": {"sha": "1" * 40}}}
+                return R()
+        obs = RO.observe_ref_via_collector(
+            _C(), owner="octocat", name="Hello-World",
+            repository_id=repo, requested_ref=ref)
+    else:
+        obs = RO.observe_ref_from_snapshot(
+            snapshot_asset={"asset_id": "synth", "payload": {
+                "repository_id": repo, "commit_sha": tgt, "requested_ref": ref,
+                "retrieval_scope": SCOPE,
+                "collector_version": "sourcelore-collector/1.0.0"}},
+            repository_id=repo, requested_ref=ref,
+            provenance_level=RO.PROV_SYNTHETIC)
+
+    assess = FE.assess(watch=watch, observation=obs,
+                       source_evidence_conflict=(conflict if conflict is not None
+                                                 else L.CONFLICT_NONE))
+    LS.ingest_assessment(ks, assess)
+
+    return {"snapshot": snap, "fact": fact, "claim": claim, "verification": verif,
+            "watch": watch, "observation": obs, "assessment": assess,
+            "claim_id": claim.claim_id, "verification_id": verif.verification_id,
+            "watch_id": watch.watch_id, "assessment_id": assess.assessment_id,
+            "snapshot_asset_id": snap["asset_id"], "fact_id": fact["fact_id"]}
+
+
+def make_pinned_stack(ks, *, repo=REPO, commit=COMMIT_A):
+    """只建 EC 对象 + 固定版本语义（不建 watch）。"""
+    snap = EF.make_snapshot(ks, repo=repo, commit=commit)
+    fact = EF.make_fact(ks, snap["asset_id"], "README")
+    claim = EM.build_path_claim(repository_id=repo, commit_sha=commit,
+                                target_path="README", expected_exists=True)
+    verif = ECV.verify_path_claim(ks, claim, [fact["fact_id"]])
+    VS.ingest_claim(ks, claim)
+    VS.ingest_verification(ks, verif, repository_id=repo)
+    return {"claim": claim, "verification": verif, "snapshot": snap}

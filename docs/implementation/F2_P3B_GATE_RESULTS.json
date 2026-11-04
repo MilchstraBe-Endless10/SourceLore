@@ -1,0 +1,93 @@
+{
+  "artifact": "F2_P3B_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-04T23:25:14+08:00",
+  "generated_by": "F2-P3B 实测回填",
+  "principle": "叠加观测，不覆盖 F1-D 冻结快照",
+  "revalidation_component": {
+    "verdict": "DONE",
+    "evidence": "docs/implementation/F2_P3B_VERIFICATION.json (22/22)",
+    "tests": {
+      "runtime": 45,
+      "storage": 53,
+      "collector": 48,
+      "facts": 44,
+      "evidence_claims": 36,
+      "lifecycle": 77
+    },
+    "total_tests": 303,
+    "candidate_states": [
+      "PROPOSED",
+      "BLOCKED",
+      "SUPERSEDED",
+      "CANCELLED"
+    ],
+    "not_implemented": [
+      "AUTHORIZED"
+    ]
+  },
+  "p3a_audit": {
+    "finding": "FreshnessAssessment 没有 conflict_detected（它只在 EC 的 Verification 上）",
+    "action": "补向后兼容三态 source_evidence_conflict，默认 CONFLICT_UNKNOWN",
+    "note": "缺失未被解释成 false"
+  },
+  "source_isolation": {
+    "dispatchable": [
+      "REAL_LIVE_API"
+    ],
+    "non_dispatchable": [
+      "HISTORICAL_REAL_DATA",
+      "SYNTHETIC_FIXTURE"
+    ],
+    "synthetic_candidate_status": "BLOCKED",
+    "synthetic_plan_gate": "CANDIDATE_NOT_PROPOSED"
+  },
+  "dispatch": {
+    "max_gate_reached": "PLAN_READY",
+    "execution_authorized": false,
+    "execution_completed": false,
+    "side_effects": {
+      "called_collector": false,
+      "called_github": false,
+      "extracted_facts": false,
+      "adjudicated_claims": false,
+      "modified_verification": false,
+      "modified_review_status": false
+    }
+  },
+  "real_data": {
+    "provenance": "HISTORICAL_REAL_DATA",
+    "live_github_refetch": false,
+    "note": "未重新联网；新 Commit 是 SYNTHETIC_FIXTURE"
+  },
+  "concurrency": {
+    "single_active_per_watch": true,
+    "real_multiprocess": true,
+    "real_sigkill": true,
+    "active_count": 1
+  },
+  "still_open": [
+    {
+      "gate": "F2-P3C 受控重新验证执行",
+      "status": "NOT_STARTED"
+    },
+    {
+      "gate": "Y6-P3 审批传递",
+      "status": "UNVERIFIED"
+    },
+    {
+      "gate": "Y6-P6 BotHarness 端到端",
+      "status": "OPEN"
+    },
+    {
+      "gate": "B-1/B-2/B-3 分发门禁",
+      "status": "OPEN"
+    }
+  ],
+  "explicitly_not_claimed": [
+    "候选入队不等于重新验证完成",
+    "未调用 Collector/GitHub/Facts/EC 执行任何真实工作",
+    "未实现 AUTHORIZED 状态",
+    "未修改任何旧 Verification 或 review_status"
+  ]
+}

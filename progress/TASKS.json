@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-04T22:45:41+08:00",
+  "updated_at": "2026-11-04T23:27:29+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -1169,6 +1169,42 @@
       "blocked_reason": null,
       "depends_on": [
         "M2-F2-P2B"
+      ]
+    },
+    {
+      "id": "M2-F2-P3B",
+      "milestone": "M2",
+      "goal": "F2-P3B：重新验证候选队列、幂等调度与受控授权边界",
+      "inputs": [
+        "docs/implementation/F2_P3A_LIFECYCLE_ARCHITECTURE.md"
+      ],
+      "expected_outputs": [
+        "src/lifecycle/revalidation_models.py",
+        "src/lifecycle/revalidation_planner.py",
+        "src/lifecycle/revalidation_queue.py",
+        "src/lifecycle/revalidation_dispatch_gate.py",
+        "tests/lifecycle/test_revalidation_queue.py",
+        "tests/lifecycle/test_revalidation_concurrency.py",
+        "tools/f2p3b_verify.py",
+        "tools/f2p3b_e2e_replay.py",
+        "docs/implementation/F2_P3B_REVALIDATION_ARCHITECTURE.md",
+        "docs/implementation/F2_P3B_EXECUTION_REPORT.md",
+        "docs/implementation/F2_P3B_VERIFICATION.json"
+      ],
+      "status": "DONE",
+      "verification_commands": [
+        "python3 -m unittest discover -s tests/lifecycle",
+        "python3 tools/f2p3b_verify.py"
+      ],
+      "evidence_paths": [
+        "docs/implementation/F2_P3B_VERIFICATION.json",
+        "docs/implementation/F2_P3B_E2E_REPLAY.json",
+        "docs/implementation/F2_P3B_P3A_IMPLEMENTATION_AUDIT.json"
+      ],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": [
+        "M2-F2-P3A"
       ]
     }
   ]

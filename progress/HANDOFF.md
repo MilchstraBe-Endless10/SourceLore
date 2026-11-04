@@ -2520,3 +2520,129 @@ f2p3a 18/18  f2p2b 17/17  f2p2a 15/15  f2p1c 22/22  f2p1b 16/16  f2p1a 22/22  f1
 4. 重新验证走 Collector→Facts→EC 独立工作流，产出新 `verification_id`，**旧 verification 保留**
 5. 幂等键 `claim_id + observed_commit_sha + rule_version`；每 watch 同时只允许一条 pending
 6. 必测：不自动 approved；不把 `POSSIBLY_STALE` 当 refuted；重复入队幂等
+
+## M2 / F2-P3B 完成（2026-11-03 23:26 +08:00）
+
+### 结论：重新验证候选队列与受控授权边界 DONE
+
+---
+
+## ★ §1 核验抓到一处实质不符
+
+**`conflict_detected` 不存在于 `FreshnessAssessment`。**
+它只在 **EC 的 `Verification`** 上（`src/evidence_claims/ec_models.py`），
+`src/lifecycle/*.py` 里 grep 命中 **0 次**。
+
+按题面「缺失不能解释成 false」，补了**三态**字段：
+
+```
+CONFLICT_NONE       已核验：无冲突
+CONFLICT_DETECTED   已核验：确有冲突
+CONFLICT_UNKNOWN    未核验（默认值）
+```
+
+默认 `CONFLICT_UNKNOWN` → **旧记录读出来不会被误认为"无冲突"**。
+门禁对 `DETECTED` 与 `UNKNOWN` **分别拒绝**，原因码不同。
+
+---
+
+## 候选语义（严格限定）
+
+候选**只**表示"某历史 Claim 对新观测 Commit 可能不再适用，建议重查"。
+**不**表示旧 Claim 已 false / 旧 Verification 已 refuted / 新 Commit 已 supported /
+用户已批准 / 已执行 / 可发布。
+
+---
+
+## 15 条门禁 + 20 原因码
+
+| 触发 | 返回 |
+|---|---|
+| 非 POSSIBLY_STALE | `NOT_POSSIBLY_STALE` |
+| 非 TRACKING_REF | `NOT_TRACKING_REF` |
+| PINNED_COMMIT | 构造 watch 即抛错（无评估可查） |
+| 冲突已检测 / 未核验 | `UNRESOLVED_CONFLICT` / `CONFLICT_NOT_VERIFIED` |
+| watch / 仓库 / baseline 不符 | `WATCH_NOT_FOUND` / `REPOSITORY_MISMATCH` / `BASELINE_COMMIT_MISMATCH` |
+| 目标不合法 / 等于基线 | `TARGET_COMMIT_INVALID` / `TARGET_EQUALS_BASELINE` |
+
+**缺失、冲突、损坏都没有被转换成"没有待办"。**
+
+---
+
+## 单活动候选（§7 方案 A）
+
+候选历史与活动槽位放在**同一个** `WatchQueueState` payload，
+**一次 CAS** 完成"加候选 + 推槽位"。Storage `BEGIN IMMEDIATE` + 事务内 K4。
+
+**结构上不可能有两个活动候选** —— 只有一个 `active_candidate_id` 字段。
+
+实测：4 进程并发只产生 1 个活动候选、候选资产数 1。
+
+**真缺陷**：`count_active` 初版把 A 层历史版本也算进去 → 误报多活动。
+改为**只取每个 watch 最新版本**后正确。
+
+---
+
+## 来源隔离
+
+| 等级 | 可调度 | 实测 |
+|---|---|---|
+| `REAL_LIVE_API` | **是** | `PROPOSED` → `PLAN_READY` |
+| `HISTORICAL_REAL_DATA` | 否 | `BLOCKED` |
+| `SYNTHETIC_FIXTURE` | 否 | `BLOCKED` + `CANDIDATE_NOT_PROPOSED` |
+
+合成候选**入队保留可追溯**，但明确标 `BLOCKED`，不冒充可执行。
+
+---
+
+## A→B→C 与 Ref 回退
+
+- B 保留在 `history`；C 成活动候选；返回 `SUPERSEDED_EXISTING` + 被取代 ID
+- `mark_superseded` 走新版本，旧版本仍可读（实测 2 个版本）
+- Ref 回 A → 评估 `VERSION_ALIGNED` 不产候选，**历史候选不删除**
+- 授权不转移：新目标 `candidate_id` 与 `target_commit_sha` 都不同
+
+---
+
+## Dry-Run
+
+`prepare_revalidation_plan` 最高只到 `PLAN_READY`：
+
+```
+"events_distinguished": {PLAN_READY: true,
+                         EXECUTION_AUTHORIZED: false,
+                         EXECUTION_COMPLETED: false}
+"side_effects": 全部 false
+```
+
+独立测试断言 Dry-Run **前后资产总数不变**。
+
+---
+
+## 人工授权状态
+
+**本轮未获得任何真实人工授权，也未制造平台批准回执。**
+`AUTHORIZED` 状态**未实现**。Y6-P3 仍 **UNVERIFIED**。
+
+---
+
+## 验证
+
+```
+tests/runtime 45 / storage 53 / collector 48 / facts 44 / EC 36 / lifecycle 77   全 OK
+f2p3b 22/22  f2p3a 18/18  f2p2b 17/17  f2p2a 15/15  f2p1c 22/22  f2p1b 16/16  f2p1a 22/22  f1d 26/26
+```
+
+303 项 unittest + 159 项验收断言，失败 0。冻结哈希 `42841207…` 未变。
+
+---
+
+## 下一步：F2-P3C 受控重新验证执行（**未启动，需独立批准**）
+
+1. 只消费 `PROPOSED` 候选 + `PLAN_READY` 计划，不重判资格
+2. **前置硬门禁**：可追溯到人的授权，范围**精确覆盖** `candidate_id + target_commit_sha`
+3. 执行顺序：Collector(target) → Facts → 新 Claim（校验 `expected_target_claim_identity`）→ EC
+4. **旧 Verification 一律不动**，新结果写新 `verification_id`
+5. 执行状态写 Runtime，**不回写候选状态**
+6. 执行中目标又变 → 保留正在执行的真实状态，不得未经协调替换
+7. 必测：无授权/过期/范围不匹配均被拒；执行成功不自动 approved；失败不把旧 Claim 标 refuted

@@ -1,0 +1,50 @@
+{
+  "artifact": "F2_P3B_P3A_IMPLEMENTATION_AUDIT",
+  "generated_at": "2026-11-04T23:13:35+08:00",
+  "purpose": "题面 §1：核验 P3A 的真实实现，不得按交接里的字段名假定已实现",
+  "checks": {
+    "1_freshness_assessment_schema": {
+      "measured_keys": [
+        "applicability_scope",
+        "assessed_at",
+        "assessment_id",
+        "baseline_commit_sha",
+        "claim_id",
+        "detail",
+        "evidence_refs",
+        "freshness_state",
+        "input_digest",
+        "observed_at",
+        "observed_commit_sha",
+        "reason_code",
+        "repository_id",
+        "requested_ref",
+        "rule_version",
+        "watch_id"
+      ],
+      "verdict": "OK，可通过 Storage API 读写"
+    },
+    "2_possibly_stale_has_trusted_evidence": {
+      "field": "evidence_refs",
+      "verdict": "OK（来自 observation.evidence_refs）"
+    },
+    "3_conflict_detected": {
+      "finding": "**不存在于 FreshnessAssessment**",
+      "where_it_actually_lives": "src/evidence_claims/ec_models.py 的 Verification",
+      "grep_result": "src/lifecycle/*.py 中 0 次命中；src/evidence_claims 中 3 次命中",
+      "why": "P3A 的设计：POSSIBLY_STALE 表示'可能要重查'，与 EC 的同范围证据冲突是两个不同层面的问题",
+      "required_action": "按题面要求，**不得把缺失解释成 false**。必须补充向后兼容的结构化状态契约：新增 source_evidence_conflict 三态字段，默认 CONFLICT_UNKNOWN 而非 CONFLICT_NONE",
+      "implemented_in_this_batch": "FreshnessAssessment 增加 source_evidence_conflict（三态）"
+    },
+    "4_watch_associates_claim": "watch_id 由 (repo, ref, ref_kind, scope, baseline_commit, claim_id) 派生",
+    "5_old_new_commit": "baseline_commit_sha 与 observed_commit_sha 均为独立字段",
+    "6_observation_id": "存在（SL-REFOBS- 前缀）",
+    "7_source_evidence_refs": "evidence_refs 存在于 assessment 与 observation",
+    "8_readable_via_storage": "read_assessment_versions / current_freshness 均可读",
+    "9_idempotency": "时间戳不进身份，重复评估 IDEMPOTENT（P3A 用例覆盖）",
+    "10_concurrency_cas_fix": "仍在：lifecycle_store._write 检查 res.get('idempotent')",
+    "11_pinned_guard": "PINNED_COMMIT 构造 watch 时抛 ValueError",
+    "12_kill_recovery": "P3A test_recovery_and_mutation.py 的 SIGKILL 用例通过"
+  },
+  "conclusion": "P3A 实现与交接描述基本一致，但有一处**实质不符**：FreshnessAssessment 没有 conflict_detected。本批按题面要求补三态字段，并把'未核验'与'无冲突'严格区分。"
+}
