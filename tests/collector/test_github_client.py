@@ -294,13 +294,42 @@ class TestErrorClassification(unittest.TestCase):
     def test_retry_after_capped(self):
         slept = []
         c = G.GitHubClient(max_retries=2)
-        c._sleep = lambda s: slept.append(s)
         c.limits["max_retry_after"] = 5
         def route(path, params):
             return 429, {"message": "slow"}, {"retry-after": "9999"}
         F.install_fake(c, route)
+        # ★ 必须在 install_fake **之后**设置，否则会被其默认的 no-op 覆盖，
+        # 导致 slept 恒空、断言空跑假通过（本批发现的真实测试缺陷）。
+        c._sleep = lambda s: slept.append(s)
+        c._sleep_override_set = True
         c.repo("o", "r")
+        self.assertTrue(slept, f"必须发生退避，否则该断言无意义: {slept}")
         self.assertTrue(all(s <= 5 for s in slept), f"等待必须被上限约束: {slept}")
+
+    def test_default_retry_after_cap_is_120(self):
+        """P1C 口径勘误：生产默认上限是 120 秒。
+
+        原测试把 limits["max_retry_after"] 覆盖成 5（测试专用，避免真等待），
+        文档里写的却是 120 —— 两者并不矛盾：5 是**测试覆盖**，120 是**默认值**。
+        这里显式断言默认值，防止有人误以为生产上限就是 5。
+        """
+        from github_client import DEFAULT_LIMITS as D
+        self.assertEqual(D["max_retry_after"], 120)
+
+    def test_retry_after_uses_default_cap_when_not_overridden(self):
+        """不覆盖时，9999 秒必须被截到 120 秒。"""
+        slept = []
+        c = G.GitHubClient(max_retries=1)
+        def route(path, params):
+            return 429, {"message": "slow"}, {"retry-after": "9999"}
+        F.install_fake(c, route)
+        c._sleep = lambda s: slept.append(s)
+        c._sleep_override_set = True
+        c.repo("o", "r")
+        self.assertTrue(slept, "应发生一次退避")
+        self.assertTrue(all(s <= 120 for s in slept), f"默认上限 120: {slept}")
+        self.assertGreaterEqual(max(slept), 120,
+                                "服务端建议 9999 应被截到 120（而非更小的值）")
 
     def test_max_requests_budget(self):
         c = G.GitHubClient(max_retries=0)

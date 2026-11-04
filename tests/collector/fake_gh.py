@@ -113,5 +113,8 @@ def install_fake(client, router):
                                             retry_after=ra, http_status=status,
                                             detail=detail))
     client._do_request = _fake_do_request
-    client._sleep = lambda s: None   # 不真等待
+    # 默认不真等待；但**不要**覆盖调用方已设置的 _sleep ——
+    # 曾因此让"退避时间被上限截断"的断言变成空跑假通过（本批实测发现）。
+    if not getattr(client, "_sleep_override_set", False):
+        client._sleep = lambda s: None
     return client

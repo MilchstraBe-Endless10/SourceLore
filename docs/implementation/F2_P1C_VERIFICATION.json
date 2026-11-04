@@ -2,7 +2,7 @@
   "task": "M2 / F2-P1C（固定版本 GitHub Collector 与权威资产入库）",
   "generated_by": "tools/f2p1c_verify.py",
   "independent": true,
-  "git_head": "670267e591566f47d1ebef079e84328f8371247d",
+  "git_head": "a15e47d04a0fe6ccb2032ce6732217f94103dc81",
   "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
   "real_github": {
     "result": "REAL_GITHUB_OK",
@@ -21,7 +21,7 @@
       "id": "c1",
       "name": "Collector 确定性测试全过",
       "passed": true,
-      "detail": "Collector 确定性套件 43 项，失败 0、错误 0"
+      "detail": "Collector 确定性套件 45 项，失败 0、错误 0"
     },
     {
       "id": "c2",
@@ -123,7 +123,7 @@
       "id": "c18",
       "name": "T-21 P1A/P1B 全部回归",
       "passed": true,
-      "detail": "P1B 53 项 exit=0、P1A 45 项 exit=0、P1C 46 项 exit=0"
+      "detail": "P1B 53 项 exit=0、P1A 45 项 exit=0、P1C 48 项 exit=0"
     },
     {
       "id": "c19",

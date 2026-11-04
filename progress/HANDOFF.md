@@ -2162,3 +2162,115 @@ f2p1a_verify 22/22  f2p1b_verify 16/16  f1d_verify 26/26
 3. `fact_id` 派生自 `(snapshot_logical_identity, 规则版本, 抽取参数)` —— 同快照同规则稳定身份
 4. Facts 仍不写 verified；验证是 Evidence-Claims 的事
 5. PARTIAL 快照的抽取策略必须明确并有测试
+
+## M2 / F2-P2A 完成（2026-11-04 21:28 +08:00）
+
+### 结论：确定性 Facts 抽取引擎 DONE
+
+---
+
+## §1 检查结论（最重要的一条）
+
+**原 Collector 的持久化清单不足**，不能凭空抽事实。实测确认：
+
+- 只存 `tree_entry_count` + `blob_refs`
+- `blob_refs` 只覆盖 `type=blob`，**没有目录/submodule/symlink 语义，没有 mode 原值**
+- 因而**无法做"不存在"判定**——没有全量清单就没有反证
+
+按题面授权做**最小、向后兼容**补齐：
+
+```
+manifest_version=1  旧契约（只有 blob_refs）
+manifest_version=2  新契约（加完整 tree_entries）
+```
+
+**向后兼容已实测**：P1C 输入走 `manifest_v1=True` 重建，哈希与身份**逐字一致**：
+
+```
+P1C 记录 hash : c15ea91f8d2e561987b8ba1943d52729c28e9a88ef31e9c8c5f18825a739e61f
+v1 重建 hash  : 同
+P1C 记录 ident: SL-SNAP-f6a274fe1dbf2cedf71c4cc2492b207b806ec5b8
+v1 重建 ident : 同
+```
+
+---
+
+## 三态语义（不是布尔）
+
+| 状态 | 何时 |
+|---|---|
+| `OBSERVED_PRESENT` | 命中真实条目（PARTIAL 下也可，但带 `local_coverage_only=true`） |
+| `OBSERVED_ABSENT_IN_COVERED_SCOPE` | **仅 COMPLETE** 且清单完整且范围覆盖时未命中 |
+| `UNKNOWN` | 其余一切，**必带 10 个原因码之一** |
+
+**关键边界：PARTIAL 下未命中 → UNKNOWN，绝不推成不存在。**
+
+`ABSENT` 的 `observed_value` 带两句话，防止被读歪：
+
+```
+"scope_statement": "在指定 Commit 的已完整覆盖范围内未发现该路径"
+"not_a_claim":     "这不表示仓库现在不存在该文件，也不表示项目没有相关功能"
+```
+
+---
+
+## 四种身份不可混淆
+
+`fact_id`（规则+参数+快照身份）≠ `content_hash`（观测结论）≠ `input_digest`（输入）≠ `asset_id`（物理）。
+
+`observed_at` **不进任何哈希** —— 抽取时间不是身份。有测试覆盖。
+
+---
+
+## 真实数据回放（HISTORICAL_REAL_DATA，非本轮实时 API）
+
+```
+octocat/Hello-World @ 7fd1a60b…，root tree b4eecafa…
+snapshot_assets=1  fact_assets=1
+README       → OBSERVED_PRESENT
+package.json → OBSERVED_ABSENT_IN_COVERED_SCOPE
+ingest: INGESTED → IDEMPOTENT_ALREADY_PRESENT
+```
+
+三者分开报告：Mock（44 项）/ 真实数据回放（本条）/ 实时 GitHub 请求（沿用 P1C 记录，本轮未重跑）。
+
+---
+
+## §11 P1C 重试上限勘误
+
+`120` 是生产默认，`5` 是测试显式覆盖，**不矛盾**。
+
+但顺带查出**更严重的问题**：原退避测试先设 `_sleep` 再调 `install_fake`，
+后者把它覆盖成 `lambda s: None` → `slept` 恒空 → `all(...)` 对空列表**永真**。
+**那条断言是空跑假通过。** 已修：`install_fake` 不再覆盖 `_sleep`；两处测试改为之后设置并加非空断言；
+新增两条测试固化「默认 120」与「9999 截到 120」。**未改任何限流安全行为。**
+
+---
+
+## 本轮三个坑
+
+1. `extracted_fact` 不在 Storage `ASSET_TYPES` → 入库全 `REJECTED`（已登记为最小等价类型）
+2. **哈希空间混用两次**：用 Storage 的 payload 哈希去比 fact 的语义 `content_hash`，
+   两空间必然不等 → 幂等被误判 CONFLICT（`operation_log.result_hash` 也犯同样错）
+3. 验收脚本又踩 tuple-newline
+
+---
+
+## 验证
+
+```
+tests/runtime 45 / tests/storage 53 / tests/collector 45 / tests/facts 44   全 OK
+f2p2a 15/15   f2p1c 22/22   f2p1b 16/16   f2p1a 22/22   f1d 26/26
+```
+
+冻结哈希 `42841207…` 未变。0 个 .db 进仓库。
+
+---
+
+## 下一步：F2-P2B Evidence-Claims（**未启动，需独立批准**）
+
+1. 只消费 `extracted_fact`，证据经 `evidence_refs` 回查，**不直接读快照**
+2. Claim 必须显式引用 facts 列表
+3. 三态裁决 `supported` / `refuted` / `insufficient_evidence`，**不得默认 supported**
+4. 无 fact 支撑 → 一律 `insufficient_evidence`；PARTIAL 来源事实不能单独支撑
+5. 同 facts 集合 + 同裁决规则版本 → 同结论，身份稳定

@@ -1,0 +1,38 @@
+{
+  "artifact": "F2_P2A_E2E_REPLAY",
+  "data_provenance": "HISTORICAL_REAL_DATA",
+  "note": "这是 P1C 真实采集数据的回放，不是本轮实时 GitHub 访问",
+  "source_record": "docs/implementation/F2_P1C_REAL_GITHUB.json",
+  "replayed_at": "2026-11-04T21:19:13+08:00",
+  "snapshot": {
+    "repository_id": "1296269",
+    "commit_sha": "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",
+    "root_tree_sha": "b4eecafa9be2f2006ce1b709d6857b07069b4608",
+    "logical_identity": "SL-SNAP-5a414a4b81e4c2d4a77a03fc2ca154b1201e6b6b",
+    "content_hash": "41f06f6f0708fd6b83202ccc1ea4872730a3acdc04a786703c33d3a13adeb6fd"
+  },
+  "snapshot_ingest": {
+    "state": "INGESTED",
+    "asset_id": "SL-A-8c5de9a79a5d158c3ad636ac2cc23c86"
+  },
+  "fact_readme": {
+    "observation": "OBSERVED_PRESENT",
+    "fact_id": "SL-FACT-23fb9eaf7edad041595ead0a3af938350c90bfab",
+    "object_kind": "regular_file",
+    "blob_sha": "980a0d5f19a64b4b30a87d4206aade58726b60e3"
+  },
+  "fact_absent": {
+    "observation": "OBSERVED_ABSENT_IN_COVERED_SCOPE",
+    "scope_statement": "在指定 Commit 的已完整覆盖范围内未发现该路径"
+  },
+  "fact_ingest": {
+    "first": "INGESTED",
+    "second": "IDEMPOTENT_ALREADY_PRESENT",
+    "asset_id": "SL-A-3e8d750e97cb4865697ce331fc18618e",
+    "pointer_version": 1
+  },
+  "summary": {
+    "snapshot_assets": 1,
+    "fact_assets": 1
+  }
+}

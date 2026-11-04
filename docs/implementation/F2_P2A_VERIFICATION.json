@@ -1,0 +1,105 @@
+{
+  "task": "M2 / F2-P2A（确定性 Facts 抽取引擎）",
+  "generated_by": "tools/f2p2a_verify.py",
+  "independent": true,
+  "git_head": "a15e47d04a0fe6ccb2032ce6732217f94103dc81",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "e2e_provenance": "HISTORICAL_REAL_DATA",
+  "summary": {
+    "passed": 15,
+    "total": 15,
+    "result": "PASS"
+  },
+  "checks": [
+    {
+      "id": "c1",
+      "name": "从 Storage 读真实快照资产",
+      "passed": true,
+      "detail": "Facts 套件 44 项 exit=0"
+    },
+    {
+      "id": "c2",
+      "name": "不直接访问 GitHub",
+      "passed": true,
+      "detail": "抽取器无网络依赖，命中 无"
+    },
+    {
+      "id": "c3",
+      "name": "不绕过 Storage API 查表",
+      "passed": true,
+      "detail": "抽取器不直连 SQL，命中 无"
+    },
+    {
+      "id": "c4",
+      "name": "COMPLETE 覆盖范围内不存在语义",
+      "passed": true,
+      "detail": "COMPLETE 未命中 → OBSERVED_ABSENT_IN_COVERED_SCOPE"
+    },
+    {
+      "id": "c5",
+      "name": "PARTIAL 缺失返回 UNKNOWN",
+      "passed": true,
+      "detail": "UNKNOWN 不冒充空/false 断言=True"
+    },
+    {
+      "id": "c6",
+      "name": "真实快照端到端回放",
+      "passed": true,
+      "detail": "真实数据回放 snapshot=1 fact=1；provenance=HISTORICAL_REAL_DATA"
+    },
+    {
+      "id": "c7",
+      "name": "P1A/P1B/P1C 全部回归",
+      "passed": true,
+      "detail": "P1A 45 exit=0 / P1B 53 exit=0 / P1C 48 exit=0"
+    },
+    {
+      "id": "c8",
+      "name": "F1-D 冻结哈希与验证",
+      "passed": true,
+      "detail": "冻结 SHA=42841207b8088c89… 未变=True、f1d exit=0"
+    },
+    {
+      "id": "c9",
+      "name": "P1C 重试上限口径已核实",
+      "passed": true,
+      "detail": "默认上限 120s；测试用 5 是显式覆盖（已加两条测试固化）"
+    },
+    {
+      "id": "c10",
+      "name": "不产生 verified Claim",
+      "passed": true,
+      "detail": "无 verified Claim 断言=True"
+    },
+    {
+      "id": "c11",
+      "name": "Collector 清单契约已补齐",
+      "passed": true,
+      "detail": "Collector 清单契约已向后兼容补齐=True"
+    },
+    {
+      "id": "c12",
+      "name": "v1 快照向后兼容",
+      "passed": true,
+      "detail": "v1 向后兼容（hash/身份与 P1C 记录一致）=True"
+    },
+    {
+      "id": "c13",
+      "name": "规则不含 LLM",
+      "passed": true,
+      "detail": "所有规则不用 LLM，违规 无"
+    },
+    {
+      "id": "c14",
+      "name": "四种身份概念分离",
+      "passed": true,
+      "detail": "四种身份概念分离=True"
+    },
+    {
+      "id": "c15",
+      "name": "UNKNOWN 不冒充空结果",
+      "passed": true,
+      "detail": "UNKNOWN 不冒充空/false 断言=True"
+    }
+  ]
+}

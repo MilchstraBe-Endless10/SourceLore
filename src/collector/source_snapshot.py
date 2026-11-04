@@ -32,6 +32,13 @@ SOURCE_PROVIDER = "github"
 # 采集范围（本批只支持全树枚举；明确声明，不冒充已做全仓库语义分析）
 SCOPE_FULL_TREE = "full_tree_enumeration"
 
+# 清单版本：
+#   v1 = 只有 blob_refs（P1C 原始契约；无法证明"不存在"）
+#   v2 = 额外带完整 tree_entries（可支撑存在/不存在双判）
+MANIFEST_V1_BLOB_REFS_ONLY = 1
+MANIFEST_V2_FULL_ENTRIES = 2
+CURRENT_MANIFEST_VERSION = MANIFEST_V2_FULL_ENTRIES
+
 
 def canonical_json(obj) -> str:
     return json.dumps(obj, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
@@ -64,6 +71,9 @@ class SourceSnapshot:
     deep_walk_used: bool = False
     collector_version: str = COLLECTOR_VERSION
     source_provider: str = SOURCE_PROVIDER
+    # 完整条目清单（v2）。v1 快照该字段为 None —— Facts 必须据此降级为 UNKNOWN
+    tree_entries: Optional[list] = None
+    manifest_version: int = CURRENT_MANIFEST_VERSION
 
     # ── 确定性身份 ────────────────────────────────────────
     def identity_payload(self) -> dict:
@@ -74,6 +84,8 @@ class SourceSnapshot:
             "root_tree_sha": self.root_tree_sha,
             "retrieval_scope": self.retrieval_scope,
             "collector_version": self.collector_version,
+            **(({"manifest_version": self.manifest_version} )
+               if self.manifest_version >= MANIFEST_V2_FULL_ENTRIES else {}),
         }
 
     def logical_identity(self) -> str:
@@ -98,6 +110,12 @@ class SourceSnapshot:
             "deep_walk_used": self.deep_walk_used,
             "collector_version": self.collector_version,
             "source_provider": self.source_provider,
+            # **向后兼容关键**：v1 快照的 content_hash 不得因本字段改变。
+            # 只有 manifest_version >= 2 且确实带清单时才进入哈希。
+            **(({"manifest_version": self.manifest_version,
+                "tree_entries": self.tree_entries}
+               ) if self.manifest_version >= MANIFEST_V2_FULL_ENTRIES
+                  and self.tree_entries is not None else {}),
             # 刻意不含 collected_at
         }
 
@@ -149,6 +167,7 @@ class SourceSnapshot:
             "source_evidence_refs": self.source_evidence_refs,
             "tree_truncated_seen": self.tree_truncated_seen,
             "deep_walk_used": self.deep_walk_used,
+            "manifest_version": self.manifest_version,
             "logical_identity": self.logical_identity(),
             "content_hash": self.content_hash(),
         }
@@ -162,7 +181,8 @@ def build_snapshot(*, repository_id: str, requested_repository: str,
                    blob_refs: Optional[list] = None,
                    truncated_seen: bool = False,
                    deep_walk_used: bool = False,
-                   retrieval_scope: str = SCOPE_FULL_TREE) -> SourceSnapshot:
+                   retrieval_scope: str = SCOPE_FULL_TREE,
+                   manifest_v1: bool = False) -> SourceSnapshot:
     """构造快照。
 
     三字段**逐个传入**，不做任何自动回填 —— 防止把 commit_sha 当成 root_tree_sha。
@@ -194,4 +214,8 @@ def build_snapshot(*, repository_id: str, requested_repository: str,
         source_evidence_refs=list(evidence_refs),
         tree_truncated_seen=truncated_seen,
         deep_walk_used=deep_walk_used,
+        # 写入完整清单（v2）；调用方显式给 manifest_v1=True 时保持旧契约
+        tree_entries=(None if manifest_v1 else list(tree_entries)),
+        manifest_version=(MANIFEST_V1_BLOB_REFS_ONLY if manifest_v1
+                          else MANIFEST_V2_FULL_ENTRIES),
     )

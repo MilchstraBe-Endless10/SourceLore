@@ -363,7 +363,8 @@ def main() -> int:
         # 每个新批次获批后在此登记，越界即为越权。
         allowed_prefixes = ("src/runtime/", "tests/runtime/",
                             "src/storage/", "tests/storage/",
-                            "src/collector/", "tests/collector/")
+                            "src/collector/", "tests/collector/",
+                            "src/facts/", "tests/facts/")
         outside = [str(p.relative_to(ROOT)) for p in code
                    if "__pycache__" not in str(p)
                    and not str(p.relative_to(ROOT)).startswith(allowed_prefixes)]
