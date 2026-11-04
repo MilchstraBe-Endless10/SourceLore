@@ -251,7 +251,11 @@ def main() -> int:
         g2 = git("diff", "--quiet", "HEAD", "--",
                  *[f"progress/UPSTREAM-0{i}-audit.json" for i in range(1, 7)])
         s = git("status", "--short", "--", "src/", "tests/", "schemas/", "skills/")
-        no_final = not (F / "CAPABILITY_CROSSWALK.json").exists()
+        import sys as _s, os as _o
+        _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__)))
+        from f1d_freeze_state import freeze_state as _fs
+        _fz_ok, _fz_why = _fs()
+        no_final = _fz_ok
         ok = g1.returncode == 0 and g2.returncode == 0 and s.stdout.strip() == "" and no_final
         return ok, f"原始索引/六审计未变={g1.returncode==0 and g2.returncode==0}；开发目录未变={not s.stdout.strip()}；未冻结={no_final}"
 
@@ -277,10 +281,15 @@ def main() -> int:
         return (not miss), detail
 
     def c21():
-        # 冻结就绪 20/20 且未实际冻结
-        ok = (freeze["summary"]["passed"] == 20 and freeze["summary"]["total"] == 20
-              and not (F / "CAPABILITY_CROSSWALK.json").exists())
-        detail = f"freeze readiness {freeze['summary']['passed']}/20；未生成正式交叉表={not (F / 'CAPABILITY_CROSSWALK.json').exists()}"
+        # D3 的职责是「判就绪」，不是「执行冻结」。F1-D 随后合法冻结。
+        # 故判据为：就绪条件满足，且正式文件处于「未冻结」或「已由 F1-D 合法冻结」。
+        import sys as _s, os as _o
+        _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__)))
+        from f1d_freeze_state import freeze_state as _fs
+        fz_ok, fz_why = _fs()
+        ok = (freeze["summary"]["passed"] == 20 and freeze["summary"]["total"] == 20 and fz_ok)
+        detail = (f"freeze readiness {freeze['summary']['passed']}/20；"
+                  f"正式交叉表状态：{fz_why}")
         return ok, detail
 
     check("c1", "来源审计覆盖全部 143 项", c1)

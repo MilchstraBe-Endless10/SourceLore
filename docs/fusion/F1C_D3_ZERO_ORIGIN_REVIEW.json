@@ -1,7 +1,7 @@
 {
   "artifact": "F1C_D3_ZERO_ORIGIN_REVIEW",
   "schema_version": 1,
-  "generated_at": "2026-11-04T17:09:30+08:00",
+  "generated_at": "2026-11-04T17:24:21+08:00",
   "generated_by": "tools/fusion/f1c_d3_review.py",
   "principle": "零来源 canonical 是 SourceLore 自有需求，**不得为减少数量而补 upstream_ref**；若发现职责重复，只记录合并方案与影响范围，不静默删除。",
   "count": 7,

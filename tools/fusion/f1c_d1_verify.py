@@ -236,7 +236,11 @@ def main() -> int:
         s = git("status", "--short", "--", "src/", "tests/", "schemas/")
         ok = g1.returncode == 0 and g2.returncode == 0 and s.stdout.strip() == ""
         # 且未生成正式交叉表
-        no_final = not (F / "CAPABILITY_CROSSWALK.json").exists()
+        import sys as _s, os as _o
+        _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__)))
+        from f1d_freeze_state import freeze_state as _fs
+        _fz_ok, _fz_why = _fs()
+        no_final = _fz_ok
         detail = f"原始索引/六审计/引擎/Schema 未变={ok}；未冻结正式交叉表={no_final}"
         return (ok and no_final), detail
 

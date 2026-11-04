@@ -1,7 +1,7 @@
 {
   "artifact": "F1C_D2_CONFLICT_RESOLUTIONS",
   "schema_version": 1,
-  "generated_at": "2026-11-04T17:09:30+08:00",
+  "generated_at": "2026-11-04T17:24:21+08:00",
   "generated_by": "tools/fusion/f1c_d2_build.py（数据源 f1c_d2_decisions.py）",
   "basis": {
     "identities": 143,

@@ -1,7 +1,7 @@
 {
   "artifact": "F1C_D3_FREEZE_READINESS",
   "schema_version": 1,
-  "generated_at": "2026-11-04T17:09:30+08:00",
+  "generated_at": "2026-11-04T17:24:21+08:00",
   "generated_by": "tools/fusion/f1c_d3_freeze.py（只读现算）",
   "scope": "只检查冻结条件；**未冻结**，未生成 CAPABILITY_CROSSWALK.json",
   "checks": [
@@ -111,7 +111,7 @@
       "id": "18",
       "description": "正式引擎与 Skill 保持未实现",
       "passed": true,
-      "detail": "代码文件 0 个；未生成正式交叉表=True"
+      "detail": "代码文件 0 个；已由 F1-D 正式冻结（FROZEN_INTERNAL_RESTRICTED），crosswalk sha256=42841207b8088c89…"
     },
     {
       "id": "19",

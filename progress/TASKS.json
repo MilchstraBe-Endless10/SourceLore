@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-04T17:09:53+08:00",
+  "updated_at": "2026-11-04T17:25:17+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -912,6 +912,41 @@
       "blocked_reason": null,
       "depends_on": [
         "M1-FUSION-GATE-F1C-D2"
+      ]
+    },
+    {
+      "id": "M1-FUSION-GATE-F1-D",
+      "milestone": "M1-FUSION-GATE",
+      "goal": "F1-D：能力基线冻结 + 全局独立验收 + F2 准入移交",
+      "inputs": [
+        "docs/fusion/CAPABILITY_CROSSWALK.draft.json",
+        "docs/fusion/F1C_D3_FREEZE_READINESS.json"
+      ],
+      "expected_outputs": [
+        "docs/fusion/CAPABILITY_CROSSWALK.json",
+        "docs/fusion/F1D_FREEZE_MANIFEST.json",
+        "docs/fusion/F1D_FREEZE_REPORT.md",
+        "docs/fusion/F1D_F2_ENTRY_GATES.json",
+        "docs/fusion/F1D_VERIFICATION.json",
+        "tools/fusion/f1d_build_freeze.py",
+        "tools/fusion/f1d_verify.py",
+        "tools/fusion/f1d_entry_gates.py",
+        "tools/fusion/f1d_freeze_state.py"
+      ],
+      "status": "DONE",
+      "verification_commands": [
+        "python3 tools/fusion/f1d_build_freeze.py",
+        "python3 tools/fusion/f1d_verify.py",
+        "python3 tools/fusion/f1c_history_verify.py"
+      ],
+      "evidence_paths": [
+        "docs/fusion/F1D_FREEZE_MANIFEST.json",
+        "docs/fusion/F1D_VERIFICATION.json"
+      ],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": [
+        "M1-FUSION-GATE-F1C-D3"
       ]
     }
   ]

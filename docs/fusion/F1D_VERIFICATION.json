@@ -1,0 +1,171 @@
+{
+  "task": "M1-FUSION-GATE-F1 / F1-D（能力基线冻结与全局独立验收）",
+  "generated_by": "tools/fusion/f1d_verify.py",
+  "independent": true,
+  "imports_batch_verifiers": false,
+  "git_head": "115f8cc02e624bde4df0d898f3b313f96d450c86",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "summary": {
+    "passed": 26,
+    "total": 26,
+    "result": "PASS"
+  },
+  "checks": [
+    {
+      "id": "c1",
+      "name": "六源原始身份完整 143",
+      "passed": true,
+      "detail": "正式文件 143 项身份；RAW 143 项；集合一致=True"
+    },
+    {
+      "id": "c2",
+      "name": "143 项有最终处置",
+      "passed": true,
+      "detail": "143 项终态齐全，非法 无；分布 {'ADOPTED': 122, 'ADOPTED_AS_COUNTEREXAMPLE': 17, 'REJECTED_WITH_REASON': 4}"
+    },
+    {
+      "id": "c3",
+      "name": "正向承接与反例关系独立",
+      "passed": true,
+      "detail": "role/verdict 一致，问题 无"
+    },
+    {
+      "id": "c4",
+      "name": "原始许可证信息未被改写",
+      "passed": true,
+      "detail": "143 项许可与 RAW 逐项一致，问题 无"
+    },
+    {
+      "id": "c5",
+      "name": "canonical ID 唯一、owner 唯一",
+      "passed": true,
+      "detail": "canonical 75 唯一=True；ID 连续=True；owner 合法=True"
+    },
+    {
+      "id": "c6",
+      "name": "21 条 amendment 有历史依据",
+      "passed": true,
+      "detail": "amendment 21 条，均有草稿依据，问题 无"
+    },
+    {
+      "id": "c7",
+      "name": "七条内部能力无虚构来源",
+      "passed": true,
+      "detail": "7 条 INTERNAL_DESIGN_ONLY，均无 refs=True；UPSTREAM_DERIVED 均有 refs=True"
+    },
+    {
+      "id": "c8",
+      "name": "四条独立拒绝无假映射",
+      "passed": true,
+      "detail": "4 项拒绝身份无映射=True；仍 UNREVIEWED=True"
+    },
+    {
+      "id": "c9",
+      "name": "17 条反例关联真实可定位",
+      "passed": true,
+      "detail": "17 条反例边、17 项对应身份、全部可定位=True"
+    },
+    {
+      "id": "c10",
+      "name": "全局历史身份映射未变",
+      "passed": true,
+      "detail": "F1-B 112 项映射保持、无改绑；问题 无"
+    },
+    {
+      "id": "c11",
+      "name": "八项架构裁决可定位",
+      "passed": true,
+      "detail": "八项裁决在正式文件中可定位且状态一致=True"
+    },
+    {
+      "id": "c12",
+      "name": "D3 审计异常未被静默清除",
+      "passed": true,
+      "detail": "REVIEW_REQUIRED 保留=True；blockers 保留=True；manifest 标 OPEN=True"
+    },
+    {
+      "id": "c13",
+      "name": "冻结计数一致",
+      "passed": true,
+      "detail": "manifest/crosswalk 计数一致=True"
+    },
+    {
+      "id": "c14",
+      "name": "Crosswalk 与草稿语义一致",
+      "passed": true,
+      "detail": "终态一致=True；映射集合一致=True"
+    },
+    {
+      "id": "c15",
+      "name": "crosswalk 哈希与 manifest 一致",
+      "passed": true,
+      "detail": "crosswalk sha256=42841207b8088c89…；manifest 记录一致=True"
+    },
+    {
+      "id": "c16",
+      "name": "正式 Crosswalk 可确定性重建",
+      "passed": true,
+      "detail": "隔离重建逐字节一致=True；sha256=42841207b8088c89…"
+    },
+    {
+      "id": "c17",
+      "name": "正式文件不受 F1-C 构建误覆盖",
+      "passed": true,
+      "detail": "跑 F1-C 应用链后正式文件未被覆盖"
+    },
+    {
+      "id": "c18",
+      "name": "冻结输入哈希复算一致",
+      "passed": true,
+      "detail": "20 份输入语义哈希复算，问题 无"
+    },
+    {
+      "id": "c19",
+      "name": "U06 全部 false",
+      "passed": true,
+      "detail": "U06 28 项与 16 条 canonical 权限全 false；问题 无"
+    },
+    {
+      "id": "c20",
+      "name": "未实现引擎/DB/Skill",
+      "passed": true,
+      "detail": "开发目录无改动=True；无数据库文件=True"
+    },
+    {
+      "id": "c21",
+      "name": "六源审计与原始索引未改",
+      "passed": true,
+      "detail": "RAW 索引与六份上游审计未改"
+    },
+    {
+      "id": "c22",
+      "name": "F2 准入三类阻塞齐备",
+      "passed": true,
+      "detail": "F2 准入 42 条；必需两类齐备=True；architecture_freeze 0 条（应为 0 或全 OPEN=True）；D2 全覆盖=True；未知范围=无"
+    },
+    {
+      "id": "c23",
+      "name": "冻结判定与阻塞项一致",
+      "passed": true,
+      "detail": "判定=FROZEN_INTERNAL_RESTRICTED；存在 OPEN 许可项=True；判定与阻塞一致=True"
+    },
+    {
+      "id": "c24",
+      "name": "本轮未启动 F2",
+      "passed": true,
+      "detail": "无 SKILL.md=True；无产品代码=True"
+    },
+    {
+      "id": "c25",
+      "name": "冻结报告完整",
+      "passed": true,
+      "detail": "冻结报告覆盖要点，缺 无"
+    },
+    {
+      "id": "c26",
+      "name": "草稿与历史文件未被删除",
+      "passed": true,
+      "detail": "草稿与历史裁决记录均在，缺 无"
+    }
+  ]
+}

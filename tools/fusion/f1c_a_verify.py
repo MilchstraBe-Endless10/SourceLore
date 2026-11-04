@@ -238,7 +238,11 @@ def main() -> int:
     def c16():
         # F1-C-A 本身不启动后续批次；但后续批次（F1-C-B）会合法改动 Crosswalk。
         # 故本检查只判「正式交叉表未提前冻结」与「未落地 terminal_disposition」两件事。
-        no_f1d = not (F / "CAPABILITY_CROSSWALK.json").exists()
+        import sys as _s, os as _o
+        _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__)))
+        from f1d_freeze_state import freeze_state as _fs
+        _fz_ok, _fz_why = _fs()
+        no_f1d = _fz_ok
         no_terminal = all("terminal_disposition" not in c for c in canon)
         detail = (f"正式交叉表未冻结={no_f1d}；"
                   f"terminal_disposition 未落地={no_terminal}（按计划留 F1-C-D）")

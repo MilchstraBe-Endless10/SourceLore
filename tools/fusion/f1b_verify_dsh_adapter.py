@@ -476,7 +476,19 @@ def main() -> int:
         return g.stdout.strip() == "", "src/tests/schemas 无改动" if not g.stdout.strip() else g.stdout.strip()
 
     def c52():
-        return not (F / "CAPABILITY_CROSSWALK.json").exists(), "正式交叉表尚未提前冻结"
+        # 历史时点断言：本批执行时必须尚未冻结；但 F1-D 是**获授权**的冻结批次，
+        # 故允许「未冻结」或「已被 F1-D 按其 manifest 正式冻结」两种合法状态。
+        _cw = F / "CAPABILITY_CROSSWALK.json"
+        _man = F / "F1D_FREEZE_MANIFEST.json"
+        if not _cw.exists():
+            _ok, _why = True, "本批时点未冻结（符合分批纪律）"
+        else:
+            _m = json.loads(_man.read_text(encoding="utf-8")) if _man.exists() else {}
+            _ok = _m.get("freeze_decision") in ("FROZEN_INTERNAL_RESTRICTED",
+                                                "FROZEN_RELEASE_READY")
+            _why = (f"已由 F1-D 正式冻结（{_m.get('freeze_decision')}），"
+                    f"sha256={str(_m.get('crosswalk_sha256',''))[:16]}…")
+        return _ok, f"正式交叉表状态：{_why}"
 
     def c53():
         sys.path.insert(0, str(ROOT / "tools" / "fusion"))

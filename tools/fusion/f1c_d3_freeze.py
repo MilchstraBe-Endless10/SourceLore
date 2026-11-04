@@ -162,10 +162,15 @@ def main() -> int:
 
     code = [str(p.relative_to(ROOT)) for d in ("src", "tests", "schemas", "skills")
             for p in (ROOT / d).rglob("*") if p.is_file()] if (ROOT / "src").exists() else []
-    no_final = not (F / "CAPABILITY_CROSSWALK.json").exists()
+    # 冻结与否由 F1-D 决定；本检查只要求「引擎与 Skill 未实现」。
+    # 若正式文件已存在，必须是合法冻结（无 manifest 即「无记录冻结」，算失败）。
+    import sys as _s, os as _o
+    _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__)))
+    from f1d_freeze_state import freeze_state as _fs
+    _fz_ok, _fz_why = _fs()
     ck("18", "正式引擎与 Skill 保持未实现",
-       len(code) == 0 and no_final,
-       f"代码文件 {len(code)} 个；未生成正式交叉表={no_final}")
+       len(code) == 0 and _fz_ok,
+       f"代码文件 {len(code)} 个；{_fz_why}")
 
     # 19 幂等（由 verify 实跑比对，这里给静态承诺）
     ck("19", "独立构建器重复执行幂等",

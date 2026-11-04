@@ -341,7 +341,11 @@ def main() -> int:
         g2 = git("diff", "--quiet", "HEAD", "--",
                  *[f"progress/UPSTREAM-0{i}-audit.json" for i in range(1, 7)])
         s = git("status", "--short", "--", "src/", "tests/", "schemas/")
-        no_final = not (F / "CAPABILITY_CROSSWALK.json").exists()
+        import sys as _s, os as _o
+        _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__)))
+        from f1d_freeze_state import freeze_state as _fs
+        _fz_ok, _fz_why = _fs()
+        no_final = _fz_ok
         ok = g1.returncode == 0 and g2.returncode == 0 and s.stdout.strip() == "" and no_final
         return ok, f"原始索引/六审计/引擎/Schema 未变={g1.returncode == 0 and g2.returncode == 0 and not s.stdout.strip()}；未冻结正式交叉表={no_final}"
 

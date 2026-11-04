@@ -199,7 +199,19 @@ def main() -> int:
         return (not missing and nums), f"缺失编号 {missing}；关键计数齐备={nums}"
 
     def c26():
-        ok = not (F / "CAPABILITY_CROSSWALK.json").exists()
+        # 历史时点断言：本批执行时必须尚未冻结；但 F1-D 是**获授权**的冻结批次，
+        # 故允许「未冻结」或「已被 F1-D 按其 manifest 正式冻结」两种合法状态。
+        _cw = F / "CAPABILITY_CROSSWALK.json"
+        _man = F / "F1D_FREEZE_MANIFEST.json"
+        if not _cw.exists():
+            ok, why = True, "本批时点未冻结（符合分批纪律）"
+        else:
+            _m = json.loads(_man.read_text(encoding="utf-8")) if _man.exists() else {}
+            ok = _m.get("freeze_decision") in ("FROZEN_INTERNAL_RESTRICTED",
+                                               "FROZEN_RELEASE_READY")
+            why = (f"已由 F1-D 正式冻结（{_m.get('freeze_decision')}），"
+                   f"聚合 sha256={_m.get('crosswalk_sha256','')[:16]}…")
+        return ok, f"正式交叉表状态：{why}"
         return ok, "正式交叉表尚未冻结（符合 F1-D 前不得发布）"
 
     check("c1", "原始索引哈希与草稿记录一致", c1)

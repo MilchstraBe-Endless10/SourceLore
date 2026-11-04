@@ -1,0 +1,478 @@
+{
+  "artifact": "F1D_F2_ENTRY_GATES",
+  "schema_version": 1,
+  "generated_by": "tools/fusion/f1d_entry_gates.py",
+  "principle": "三类阻塞范围必须分开：architecture_freeze / implementation / distribution。**不得因为某项在 F2 实测，就把它描述为 F1 阶段已验证。**",
+  "blocking_scope_definition": {
+    "architecture_freeze": "阻塞架构冻结（当前为 0 条——结构不变量全部满足）",
+    "implementation": "阻塞正式开发中的该项实现，不阻塞内部设计冻结",
+    "distribution": "阻塞对外分发，不阻塞内部设计冻结"
+  },
+  "gates": [
+    {
+      "gate_id": "X-2-G1",
+      "owner": "Lifecycle（SL-CAP-0040）",
+      "prerequisite": "F1-C-D2 X-2 架构裁决",
+      "verification_method": "结构检查（已在 F1-D 复核）",
+      "required_evidence": "同一 repository_id 下可存在多个 subject_id（不得一一对应断言）",
+      "blocking_scope": "implementation",
+      "stage": "F1",
+      "status": "SATISFIED_AT_FREEZE"
+    },
+    {
+      "gate_id": "X-2-G2",
+      "owner": "Lifecycle（SL-CAP-0040）",
+      "prerequisite": "F1-C-D2 X-2 架构裁决",
+      "verification_method": "结构检查（已在 F1-D 复核）",
+      "required_evidence": "fork 的两个 repository_id 必须映射到两个不同 subject_id",
+      "blocking_scope": "implementation",
+      "stage": "F1",
+      "status": "SATISFIED_AT_FREEZE"
+    },
+    {
+      "gate_id": "X-2-G3",
+      "owner": "Lifecycle（SL-CAP-0040）",
+      "prerequisite": "F1-C-D2 X-2 架构裁决",
+      "verification_method": "结构检查（已在 F1-D 复核）",
+      "required_evidence": "repository 改名后 subject_id 不变、name_history 有记录",
+      "blocking_scope": "implementation",
+      "stage": "F1",
+      "status": "SATISFIED_AT_FREEZE"
+    },
+    {
+      "gate_id": "X-2-G4",
+      "owner": "Lifecycle（SL-CAP-0040）",
+      "prerequisite": "F1-C-D2 X-2 架构裁决",
+      "verification_method": "结构检查（已在 F1-D 复核）",
+      "required_evidence": "workspace_id / commit_sha / subject_version 均不得出现在 subject 身份键中",
+      "blocking_scope": "implementation",
+      "stage": "F1",
+      "status": "SATISFIED_AT_FREEZE"
+    },
+    {
+      "gate_id": "X-4-G1",
+      "owner": "Lifecycle（SL-CAP-0041/0042）",
+      "prerequisite": "F1-C-D2 X-4 架构裁决",
+      "verification_method": "结构检查（已在 F1-D 复核）",
+      "required_evidence": "构造 dangling_pointer 场景：必须返回 pointer_invalid + last_known_good，不得返回空",
+      "blocking_scope": "implementation",
+      "stage": "F1",
+      "status": "SATISFIED_AT_FREEZE"
+    },
+    {
+      "gate_id": "X-4-G2",
+      "owner": "Lifecycle（SL-CAP-0041/0042）",
+      "prerequisite": "F1-C-D2 X-4 架构裁决",
+      "verification_method": "结构检查（已在 F1-D 复核）",
+      "required_evidence": "构造 B 的新结论与 A 的旧结论不一致：视图必须同时含两者与各自 source_snapshot",
+      "blocking_scope": "implementation",
+      "stage": "F1",
+      "status": "SATISFIED_AT_FREEZE"
+    },
+    {
+      "gate_id": "X-4-G3",
+      "owner": "Lifecycle（SL-CAP-0041/0042）",
+      "prerequisite": "F1-C-D2 X-4 架构裁决",
+      "verification_method": "结构检查（已在 F1-D 复核）",
+      "required_evidence": "构造「不同版本」场景：状态必须是 supersedes，不得是 refuted",
+      "blocking_scope": "implementation",
+      "stage": "F1",
+      "status": "SATISFIED_AT_FREEZE"
+    },
+    {
+      "gate_id": "X-4-G4",
+      "owner": "Lifecycle（SL-CAP-0041/0042）",
+      "prerequisite": "F1-C-D2 X-4 架构裁决",
+      "verification_method": "结构检查（已在 F1-D 复核）",
+      "required_evidence": "Renderer 的实现中不得出现任何写 A 层或推 B 指针的路径",
+      "blocking_scope": "implementation",
+      "stage": "F1",
+      "status": "SATISFIED_AT_FREEZE"
+    },
+    {
+      "gate_id": "X-4-G5",
+      "owner": "Lifecycle（SL-CAP-0041/0042）",
+      "prerequisite": "F1-C-D2 X-4 架构裁决",
+      "verification_method": "结构检查（已在 F1-D 复核）",
+      "required_evidence": "读取被权限拒绝时必须返回 denied，不得返回空",
+      "blocking_scope": "implementation",
+      "stage": "F1",
+      "status": "SATISFIED_AT_FREEZE"
+    },
+    {
+      "gate_id": "X-5-G1",
+      "owner": "Storage（SL-CAP-0064）",
+      "prerequisite": "F1-C-D2 X-5 架构裁决",
+      "verification_method": "实测（真实执行）",
+      "required_evidence": "崩溃注入：写入过程中 kill 进程，重启后权威位置必须是上一份已提交状态",
+      "blocking_scope": "implementation",
+      "stage": "F2",
+      "status": "OPEN_PENDING_F2"
+    },
+    {
+      "gate_id": "X-5-G2",
+      "owner": "Storage（SL-CAP-0064）",
+      "prerequisite": "F1-C-D2 X-5 架构裁决",
+      "verification_method": "实测（真实执行）",
+      "required_evidence": "并发：两个 writer 同时推进同一指针，必须一方成功一方收到明确 conflict",
+      "blocking_scope": "implementation",
+      "stage": "F2",
+      "status": "OPEN_PENDING_F2"
+    },
+    {
+      "gate_id": "X-5-G3",
+      "owner": "Storage（SL-CAP-0064）",
+      "prerequisite": "F1-C-D2 X-5 架构裁决",
+      "verification_method": "实测（真实执行）",
+      "required_evidence": "临时区残留必须在下次启动时被安全清理，且不影响权威位置",
+      "blocking_scope": "implementation",
+      "stage": "F2",
+      "status": "OPEN_PENDING_F2"
+    },
+    {
+      "gate_id": "X-5-G4",
+      "owner": "Storage（SL-CAP-0064）",
+      "prerequisite": "F1-C-D2 X-5 架构裁决",
+      "verification_method": "实测（真实执行）",
+      "required_evidence": "任一失败路径上不得出现「部分写入但已暴露」的权威资产",
+      "blocking_scope": "implementation",
+      "stage": "F2",
+      "status": "OPEN_PENDING_F2"
+    },
+    {
+      "gate_id": "X-6-G1",
+      "owner": "Storage（SL-CAP-0065）",
+      "prerequisite": "F1-C-D2 X-6 架构裁决",
+      "verification_method": "结构检查（已在 F1-D 复核）",
+      "required_evidence": "F1 的 Q-1/Q-2/Q-3 三类查询必须在不依赖向量/图库的前提下可实现",
+      "blocking_scope": "implementation",
+      "stage": "F1",
+      "status": "SATISFIED_AT_FREEZE"
+    },
+    {
+      "gate_id": "X-6-G2",
+      "owner": "Storage（SL-CAP-0065）",
+      "prerequisite": "F1-C-D2 X-6 架构裁决",
+      "verification_method": "结构检查（已在 F1-D 复核）",
+      "required_evidence": "若 F2 引入，必须附「为什么文本+结构化做不到」的实测证据，而非偏好",
+      "blocking_scope": "implementation",
+      "stage": "F1",
+      "status": "SATISFIED_AT_FREEZE"
+    },
+    {
+      "gate_id": "X-7-G1",
+      "owner": "Storage（SL-CAP-0067）",
+      "prerequisite": "F1-C-D2 X-7 架构裁决",
+      "verification_method": "结构检查（已在 F1-D 复核）",
+      "required_evidence": "路径必须能由 repository_id 派生，且不含 owner/name",
+      "blocking_scope": "implementation",
+      "stage": "F1",
+      "status": "SATISFIED_AT_FREEZE"
+    },
+    {
+      "gate_id": "X-7-G2",
+      "owner": "Storage（SL-CAP-0067）",
+      "prerequisite": "F1-C-D2 X-7 架构裁决",
+      "verification_method": "结构检查（已在 F1-D 复核）",
+      "required_evidence": "同一 repository 的多个 commit 快照不得产生多个顶层命名空间",
+      "blocking_scope": "implementation",
+      "stage": "F1",
+      "status": "SATISFIED_AT_FREEZE"
+    },
+    {
+      "gate_id": "X-7-G3",
+      "owner": "Storage（SL-CAP-0067）",
+      "prerequisite": "F1-C-D2 X-7 架构裁决",
+      "verification_method": "结构检查（已在 F1-D 复核）",
+      "required_evidence": "branch 名不得出现在任何知识资产路径中",
+      "blocking_scope": "implementation",
+      "stage": "F1",
+      "status": "SATISFIED_AT_FREEZE"
+    },
+    {
+      "gate_id": "X-7-G4",
+      "owner": "Storage（SL-CAP-0067）",
+      "prerequisite": "F1-C-D2 X-7 架构裁决",
+      "verification_method": "结构检查（已在 F1-D 复核）",
+      "required_evidence": "路径穿越防护（P-3）与符号链接解析（P-4）必须生效",
+      "blocking_scope": "implementation",
+      "stage": "F1",
+      "status": "SATISFIED_AT_FREEZE"
+    },
+    {
+      "gate_id": "K-7-G1",
+      "owner": "Security（SL-CAP-0053 P-3/P-4：人工审查与发布批准）",
+      "prerequisite": "F1-C-D2 K-7 架构裁决",
+      "verification_method": "结构检查（已在 F1-D 复核）",
+      "required_evidence": "自动产物只能新建文件，不得修改已存在的人工文档（机检：对人工文档的写操作一律拒绝）",
+      "blocking_scope": "implementation",
+      "stage": "F1",
+      "status": "SATISFIED_AT_FREEZE"
+    },
+    {
+      "gate_id": "K-7-G2",
+      "owner": "Security（SL-CAP-0053 P-3/P-4：人工审查与发布批准）",
+      "prerequisite": "F1-C-D2 K-7 架构裁决",
+      "verification_method": "结构检查（已在 F1-D 复核）",
+      "required_evidence": "任何写入人工文档的代码路径必须不存在于 F1",
+      "blocking_scope": "implementation",
+      "stage": "F1",
+      "status": "SATISFIED_AT_FREEZE"
+    },
+    {
+      "gate_id": "K-7-G3",
+      "owner": "Security（SL-CAP-0053 P-3/P-4：人工审查与发布批准）",
+      "prerequisite": "F1-C-D2 K-7 架构裁决",
+      "verification_method": "结构检查（已在 F1-D 复核）",
+      "required_evidence": "若 F2 实现局部插入，须有「无授权即拒绝」「版本已变即拒绝」「区间冲突即拒绝」三条用例",
+      "blocking_scope": "implementation",
+      "stage": "F1",
+      "status": "SATISFIED_AT_FREEZE"
+    },
+    {
+      "gate_id": "Y-4-G1",
+      "owner": "DSH-Adapter（SL-CAP-0071）",
+      "prerequisite": "F1-C-D2 Y-4 架构裁决",
+      "verification_method": "结构检查（已在 F1-D 复核）",
+      "required_evidence": "checkpoint 记录不得出现在知识资产的 A/B/C 层命名空间内",
+      "blocking_scope": "implementation",
+      "stage": "F1",
+      "status": "SATISFIED_AT_FREEZE"
+    },
+    {
+      "gate_id": "Y-4-G2",
+      "owner": "DSH-Adapter（SL-CAP-0071）",
+      "prerequisite": "F1-C-D2 Y-4 架构裁决",
+      "verification_method": "结构检查（已在 F1-D 复核）",
+      "required_evidence": "恢复时必须校验 expected checkpoint_version，不一致即拒绝",
+      "blocking_scope": "implementation",
+      "stage": "F1",
+      "status": "SATISFIED_AT_FREEZE"
+    },
+    {
+      "gate_id": "Y-4-G3",
+      "owner": "DSH-Adapter（SL-CAP-0071）",
+      "prerequisite": "F1-C-D2 Y-4 架构裁决",
+      "verification_method": "结构检查（已在 F1-D 复核）",
+      "required_evidence": "checkpoint 损坏时必须转不可自动恢复，不得凭热记忆续跑",
+      "blocking_scope": "implementation",
+      "stage": "F1",
+      "status": "SATISFIED_AT_FREEZE"
+    },
+    {
+      "gate_id": "Y-4-G4",
+      "owner": "DSH-Adapter（SL-CAP-0071）",
+      "prerequisite": "F1-C-D2 Y-4 架构裁决",
+      "verification_method": "结构检查（已在 F1-D 复核）",
+      "required_evidence": "「任务恢复成功」不得导致任何 claim 被标记为 still valid",
+      "blocking_scope": "implementation",
+      "stage": "F1",
+      "status": "SATISFIED_AT_FREEZE"
+    },
+    {
+      "gate_id": "Y-6-G1",
+      "owner": "DSH-Adapter（SL-CAP-0068 / 0071 / 0072 / 0073）",
+      "prerequisite": "F1-C-D2 Y-6 架构裁决",
+      "verification_method": "实测（真实执行）",
+      "required_evidence": "所有 UNVERIFIED 项在文档中必须标 UNVERIFIED，不得出现「平台已支持」的表述",
+      "blocking_scope": "implementation",
+      "stage": "F2",
+      "status": "OPEN_PENDING_F2"
+    },
+    {
+      "gate_id": "Y-6-G2",
+      "owner": "DSH-Adapter（SL-CAP-0068 / 0071 / 0072 / 0073）",
+      "prerequisite": "F1-C-D2 Y-6 架构裁决",
+      "verification_method": "实测（真实执行）",
+      "required_evidence": "每个探测任务必须有明确的通过判据与失败替代路径",
+      "blocking_scope": "implementation",
+      "stage": "F2",
+      "status": "OPEN_PENDING_F2"
+    },
+    {
+      "gate_id": "Y-6-G3",
+      "owner": "DSH-Adapter（SL-CAP-0068 / 0071 / 0072 / 0073）",
+      "prerequisite": "F1-C-D2 Y-6 架构裁决",
+      "verification_method": "实测（真实执行）",
+      "required_evidence": "探测失败不得导致项目停工——必须能退化到全自建路径",
+      "blocking_scope": "implementation",
+      "stage": "F2",
+      "status": "OPEN_PENDING_F2"
+    },
+    {
+      "gate_id": "Y-6-G4",
+      "owner": "DSH-Adapter（SL-CAP-0068 / 0071 / 0072 / 0073）",
+      "prerequisite": "F1-C-D2 Y-6 架构裁决",
+      "verification_method": "实测（真实执行）",
+      "required_evidence": "F1 不得创建正式 Skill（`skills/sourcelore/` 保持空，仅契约）",
+      "blocking_scope": "implementation",
+      "stage": "F2",
+      "status": "OPEN_PENDING_F2"
+    },
+    {
+      "gate_id": "Y6-P1",
+      "owner": "DSH-Adapter",
+      "prerequisite": "F1-C-D2 Y-6 裁决",
+      "verification_method": "运行时探测（真实调用 BotHarness/DSH 接口）",
+      "required_evidence": "接口经实测证实可用，且证据记录到 F2 探测报告",
+      "blocking_scope": "implementation",
+      "stage": "F2",
+      "status": "OPEN_PENDING_F2",
+      "fail_fallback": "走全自建路径（自有 checkpoint + 自查审批），不得停工",
+      "no_go_if": "探测失败后仍依赖该接口 → 禁止上线"
+    },
+    {
+      "gate_id": "Y6-P2",
+      "owner": "DSH-Adapter",
+      "prerequisite": "F1-C-D2 Y-6 裁决",
+      "verification_method": "运行时探测（真实调用 BotHarness/DSH 接口）",
+      "required_evidence": "接口经实测证实可用，且证据记录到 F2 探测报告",
+      "blocking_scope": "implementation",
+      "stage": "F2",
+      "status": "OPEN_PENDING_F2",
+      "fail_fallback": "走全自建路径（自有 checkpoint + 自查审批），不得停工",
+      "no_go_if": "探测失败后仍依赖该接口 → 禁止上线"
+    },
+    {
+      "gate_id": "Y6-P3",
+      "owner": "DSH-Adapter",
+      "prerequisite": "F1-C-D2 Y-6 裁决",
+      "verification_method": "运行时探测（真实调用 BotHarness/DSH 接口）",
+      "required_evidence": "接口经实测证实可用，且证据记录到 F2 探测报告",
+      "blocking_scope": "implementation",
+      "stage": "F2",
+      "status": "OPEN_PENDING_F2",
+      "fail_fallback": "走全自建路径（自有 checkpoint + 自查审批），不得停工",
+      "no_go_if": "探测失败后仍依赖该接口 → 禁止上线"
+    },
+    {
+      "gate_id": "Y6-P4",
+      "owner": "DSH-Adapter",
+      "prerequisite": "F1-C-D2 Y-6 裁决",
+      "verification_method": "运行时探测（真实调用 BotHarness/DSH 接口）",
+      "required_evidence": "接口经实测证实可用，且证据记录到 F2 探测报告",
+      "blocking_scope": "implementation",
+      "stage": "F2",
+      "status": "OPEN_PENDING_F2",
+      "fail_fallback": "走全自建路径（自有 checkpoint + 自查审批），不得停工",
+      "no_go_if": "探测失败后仍依赖该接口 → 禁止上线"
+    },
+    {
+      "gate_id": "Y6-P5",
+      "owner": "DSH-Adapter",
+      "prerequisite": "F1-C-D2 Y-6 裁决",
+      "verification_method": "运行时探测（真实调用 BotHarness/DSH 接口）",
+      "required_evidence": "接口经实测证实可用，且证据记录到 F2 探测报告",
+      "blocking_scope": "implementation",
+      "stage": "F2",
+      "status": "OPEN_PENDING_F2",
+      "fail_fallback": "走全自建路径（自有 checkpoint + 自查审批），不得停工",
+      "no_go_if": "探测失败后仍依赖该接口 → 禁止上线"
+    },
+    {
+      "gate_id": "Y6-P6",
+      "owner": "DSH-Adapter",
+      "prerequisite": "F1-C-D2 Y-6 裁决",
+      "verification_method": "运行时探测（真实调用 BotHarness/DSH 接口）",
+      "required_evidence": "接口经实测证实可用，且证据记录到 F2 探测报告",
+      "blocking_scope": "implementation",
+      "stage": "F2",
+      "status": "OPEN_PENDING_F2",
+      "fail_fallback": "走全自建路径（自有 checkpoint + 自查审批），不得停工",
+      "no_go_if": "探测失败后仍依赖该接口 → 禁止上线"
+    },
+    {
+      "gate_id": "B-1-DIST",
+      "owner": "DSH-Adapter",
+      "prerequisite": "F1-C-D3 B-1 登记",
+      "verification_method": "F5 重写总述为分层表述；不改历史审计",
+      "required_evidence": "THIRD_PARTY_NOTICES.md 修订稿 + 分层表述核对",
+      "blocking_scope": "distribution",
+      "stage": "PRE_DISTRIBUTION",
+      "status": "OPEN",
+      "note": "THIRD_PARTY_NOTICES.md 总述句「不包含任何第三方源代码、提示词、规则文本或模板」与 docs/ 中的引文式短句事实不符；F0 规划在 F5 重写，尚未处理",
+      "does_not_block": "内部设计冻结（F1-D 已按 FROZEN_INTERNAL_RESTRICTED 完成）"
+    },
+    {
+      "gate_id": "B-2-DIST",
+      "owner": "Security",
+      "prerequisite": "F1-C-D3 B-2 登记",
+      "verification_method": "法务判断（U06 审计 U10）",
+      "required_evidence": "法务意见书或明确的保守立场确认",
+      "blocking_scope": "distribution",
+      "stage": "PRE_DISTRIBUTION",
+      "status": "OPEN",
+      "note": "U06 无许可证，抽象思想与受保护表达的边界需法务判断（U10），本轮采取保守立场（零复制、不复述规则文本）",
+      "does_not_block": "内部设计冻结（F1-D 已按 FROZEN_INTERNAL_RESTRICTED 完成）"
+    },
+    {
+      "gate_id": "B-3-DIST",
+      "owner": "Security",
+      "prerequisite": "F1-C-D3 B-3 登记",
+      "verification_method": "分发物中落地署名 + 许可链接 + 修改声明",
+      "required_evidence": "分发物含署名段落与许可链接",
+      "blocking_scope": "distribution",
+      "stage": "PRE_DISTRIBUTION",
+      "status": "OPEN",
+      "note": "description 内含 CC BY 4.0 来源的一句英文原文（6 词），许可允许但需履行署名义务；分发物须含署名与许可链接",
+      "does_not_block": "内部设计冻结（F1-D 已按 FROZEN_INTERNAL_RESTRICTED 完成）"
+    },
+    {
+      "gate_id": "X-5-CRASH-INJECT",
+      "owner": "Storage",
+      "prerequisite": "F1-C-D2 X-5 架构裁决（契约已定，实现未验证）",
+      "verification_method": "崩溃注入（kill 进程 / 磁盘满）+ 并发 CAS 压测，真实执行",
+      "required_evidence": "重启后权威位置为上一份已提交状态；并发两 writer 一方成功一方明确 conflict",
+      "blocking_scope": "implementation",
+      "stage": "F2",
+      "status": "OPEN_PENDING_F2",
+      "note": "设计要求事务 ≠ 已验证事务正确"
+    },
+    {
+      "gate_id": "K-7-HUMAN-DOC",
+      "owner": "Renderer",
+      "prerequisite": "F1-C-D2 K-7 裁决",
+      "verification_method": "代码路径检查 + 若实现局部插入则三条拒绝用例",
+      "required_evidence": "F1/F2 中不存在写人工文档的代码路径；F2 若实现须有授权/版本/冲突三条拒绝用例",
+      "blocking_scope": "implementation",
+      "stage": "F2",
+      "status": "OPEN_PENDING_F2"
+    },
+    {
+      "gate_id": "EC-EVAL-BASELINE",
+      "owner": "Evidence-Claims",
+      "prerequisite": "SL-CAP-0075（F1-C-C1 新建）",
+      "verification_method": "离线复算评测集与确定性指标（V1 不使用付费 API）",
+      "required_evidence": "eval_record{基准集版本, 指标名与数值, 被测判据版本, 运行快照}",
+      "blocking_scope": "implementation",
+      "stage": "F2",
+      "status": "OPEN_PENDING_F2"
+    }
+  ],
+  "stats": {
+    "total": 42,
+    "by_scope": {
+      "distribution": 3,
+      "implementation": 39
+    },
+    "by_status": {
+      "OPEN": 3,
+      "OPEN_PENDING_F2": 17,
+      "SATISFIED_AT_FREEZE": 22
+    }
+  },
+  "f2_entry_conditions": [
+    "F1-D 冻结完成（当前：FROZEN_INTERNAL_RESTRICTED）",
+    "用户明确批准启动 F2（**本轮未启动**）",
+    "F2 首项任务须先跑 Y6-P1..P6 探测，失败走全自建路径"
+  ],
+  "prohibitions_in_f1d": [
+    "未创建正式 Skill",
+    "未实现产品引擎",
+    "未创建数据库",
+    "未安装依赖",
+    "未修改运行时配置",
+    "未推送公开仓库",
+    "未创建远程 Release"
+  ]
+}

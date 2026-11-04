@@ -1,0 +1,190 @@
+{
+  "freeze_schema_version": 1,
+  "freeze_scope": {
+    "artifacts": [
+      "docs/fusion/CAPABILITY_CROSSWALK.json"
+    ],
+    "description": "SourceLore M1-FUSION-GATE/F1 融合阶段的能力基线冻结",
+    "does_not_include": [
+      "产品实现代码",
+      "Skill",
+      "数据库",
+      "运行时配置"
+    ]
+  },
+  "canonical_count": 75,
+  "upstream_identity_count": 143,
+  "terminal_disposition_counts": {
+    "ADOPTED": 122,
+    "ADOPTED_AS_COUNTEREXAMPLE": 17,
+    "REJECTED_WITH_REASON": 4
+  },
+  "mapping_status_counts": {
+    "MAPPED": 139,
+    "ROUTED": 0,
+    "UNREVIEWED": 4
+  },
+  "source_commit_refs": {
+    "UPSTREAM-01": {
+      "path": null,
+      "commit_sha": "b8c000f60c03003cbb08e6737b2e8193289904ea"
+    },
+    "UPSTREAM-02": {
+      "path": null,
+      "commit_sha": "44e372dd7f8a511e6223f548f55f7b4c939ca226"
+    },
+    "UPSTREAM-03": {
+      "path": null,
+      "commit_sha": "557703fffe69c9ab97eff67acabea6b346afd89c"
+    },
+    "UPSTREAM-04": {
+      "path": null,
+      "commit_sha": "a3e5e9da94434127cdd47a1a7e0658baafff7083"
+    },
+    "UPSTREAM-05": {
+      "path": null,
+      "commit_sha": "284971cdd2666878d13716af8f26f51521cd915c"
+    },
+    "UPSTREAM-06": {
+      "path": null,
+      "commit_sha": "d5128b03d6a785bfb7c8be4139291f887c2a3215"
+    }
+  },
+  "input_file_hashes": [
+    {
+      "path": "docs/fusion/CROSSWALK_PROGRESS.json",
+      "sha256": "0b91515eca74d436a83b30615edcd9568b0fc685a7c6f210980729a25197b21b"
+    },
+    {
+      "path": "docs/fusion/F1B_FROZEN_BASELINE.json",
+      "sha256": "f7412dd6d8067e26c10d05edac23d40246f7d30eaa3a869d6d431adc024ed0f4"
+    },
+    {
+      "path": "docs/fusion/F1C_C2_U05_RECONCILIATION.json",
+      "sha256": "cc603f731da256ddffad6ab2c77c0b3028a9385531f10a118dd0e6a314496b82"
+    },
+    {
+      "path": "docs/fusion/F1C_C3_RECONCILIATION.json",
+      "sha256": "851dfcb044bdc3bdd1281626d35386e9f322dec6fd080e2fd6851d8362651098"
+    },
+    {
+      "path": "docs/fusion/F1C_D1_TERMINAL_MIGRATION.json",
+      "sha256": "47b9f797136fa5591607f3d3d0c5081615f9881da4653f0afdfde480c12b999c"
+    },
+    {
+      "path": "docs/fusion/F1C_D1_TERMINAL_MIGRATION.json",
+      "sha256": "47b9f797136fa5591607f3d3d0c5081615f9881da4653f0afdfde480c12b999c"
+    },
+    {
+      "path": "docs/fusion/F1C_D2_CONFLICT_RESOLUTIONS.json",
+      "sha256": "4c2b9f4e6f0f63cc9772312833afe24cf98093c7f443703694760981e642351b"
+    },
+    {
+      "path": "docs/fusion/F1C_D2_F2_GATES.json",
+      "sha256": "23490a7b781c1f90518e203d0180be6406c8e10bc74e70edd9067446f1fab8eb"
+    },
+    {
+      "path": "docs/fusion/F1C_D3_COUNTEREXAMPLE_AUDIT.json",
+      "sha256": "b9f7f88b40a825ea90b11240b72ac4dda3c2396640b0bd0f0215f1e46c05e062"
+    },
+    {
+      "path": "docs/fusion/F1C_D3_FREEZE_READINESS.json",
+      "sha256": "03300f922b3ce16fdd513113401c93e47c6a1e8bddcae6068d9da2203abdf3f0"
+    },
+    {
+      "path": "docs/fusion/F1C_D3_PROVENANCE_LICENSE_AUDIT.json",
+      "sha256": "6ae42c9804fbeb5f407af00ea9a561ae7bfeb91ec5d3380bcf6c49e64edfe59d"
+    },
+    {
+      "path": "docs/fusion/F1C_D3_ZERO_ORIGIN_REVIEW.json",
+      "sha256": "131dd7fd4b048263ccb5c6fdab05bbe2ab0a3745f97b7b9771ffc5e0be370e44"
+    },
+    {
+      "path": "docs/fusion/F1C_DECISION_REGISTER.json",
+      "sha256": "b02522b2598f0714f8ec760adf747cf27498df64bd2228d190f30a32fbfed1af"
+    },
+    {
+      "path": "docs/fusion/RAW_CAPABILITY_INDEX.json",
+      "sha256": "52239af7a4b841d63289100eddb0a4a541993c0c0c0a38fbc4f50982ad59034c"
+    },
+    {
+      "path": "progress/UPSTREAM-01-audit.json",
+      "sha256": "ada6ec9fd917d97eee4f078a6b0808a0223e8d9a07cd665f38bfb63cae89bddd"
+    },
+    {
+      "path": "progress/UPSTREAM-02-audit.json",
+      "sha256": "be3b4f83682cda9f6bf106bd9c9a436133e4c9356177eaeb2117366c39bd5e05"
+    },
+    {
+      "path": "progress/UPSTREAM-03-audit.json",
+      "sha256": "c1710d15f74725b3cf35ec1ddcf4b59e4a9369800c199e2e7836725bb5f6e6d0"
+    },
+    {
+      "path": "progress/UPSTREAM-04-audit.json",
+      "sha256": "a049a4b610aa7ea4af5ce02d51244872acd234a23b2083de42e8665cf67e07c8"
+    },
+    {
+      "path": "progress/UPSTREAM-05-audit.json",
+      "sha256": "2598e8ad8fa2e4a63ea4766ec3aa7cf030e1e212307082257f7e6be405cd917e"
+    },
+    {
+      "path": "progress/UPSTREAM-06-audit.json",
+      "sha256": "c409b9e78a23bacb37dd4883bae938f7f565dc7d855a35609a2fb66618584b25"
+    }
+  ],
+  "input_hash_method": {
+    "json": "剔除 generated_at 后按规范化 JSON 序列化哈希（语义哈希）",
+    "other": "文件字节 SHA-256",
+    "rationale": "冻结对象是语义内容，不是执行时刻；避免重生成导致假失效"
+  },
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "crosswalk_path": "docs/fusion/CAPABILITY_CROSSWALK.json",
+  "included_decision_registers": [
+    "F1C_DECISION_REGISTER.json",
+    "F1C_B_ROUTED_RECONCILIATION.json",
+    "F1C_C1_RESOLUTION.json",
+    "F1C_C2_U05_RECONCILIATION.json",
+    "F1C_C3_RECONCILIATION.json",
+    "F1C_D1_TERMINAL_MIGRATION.json",
+    "F1C_D2_CONFLICT_RESOLUTIONS.json",
+    "F1C_D3_PROVENANCE_LICENSE_AUDIT.json"
+  ],
+  "amendment_count": 21,
+  "unresolved_dependencies": {
+    "f2_gates": 30,
+    "y6_runtime_probes": 6,
+    "implementation_dependency_conflicts": [
+      "X-5"
+    ],
+    "blocked_conflicts": [
+      "Y-6"
+    ]
+  },
+  "legal_review_status": {
+    "B-1_third_party_notices_wording": "OPEN — 总述措辞与实际引文不符；原计划 F5 重写",
+    "B-2_upstream_06_boundary": "OPEN — 抽象思想与受保护表达边界需法务判断（U06 U10）",
+    "B-3_sl_cap_0023_attribution": "OPEN — CC BY 4.0 短句，分发物须履行署名与许可链接",
+    "distribution_permitted": false
+  },
+  "runtime_verification_status": {
+    "H-A": "VERIFIED",
+    "H-B": "PARTIALLY_VERIFIED",
+    "H-C": "PARTIALLY_VERIFIED",
+    "H-D": "UNVERIFIED",
+    "H-E": "UNVERIFIED",
+    "H-F": "UNVERIFIED",
+    "H-G": "VERIFIED_SEMANTIC_ONLY",
+    "H-H": "UNVERIFIED",
+    "product_implementation": "NOT_STARTED",
+    "skill": "NOT_CREATED",
+    "database": "NOT_CREATED"
+  },
+  "freeze_decision": "FROZEN_INTERNAL_RESTRICTED",
+  "freeze_decision_basis": {
+    "structural_invariants": "PASS（143 身份 / 75 canonical / 三态守恒 / 21 amendment / 历史映射保持）",
+    "reproducible_build": "PASS（两次生成逐字节一致）",
+    "distribution_gates": "OPEN（B-1/B-2/B-3 未闭环）",
+    "means": "内部设计基线已冻结；**不代表可以公开分发，也不代表可以进入正式运行**"
+  },
+  "identity_of_manifest": "由最终 Git Commit 固定，不在本文件内自引"
+}
