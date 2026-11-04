@@ -1,8 +1,8 @@
 {
   "task": "M1-FUSION-GATE-F1 / F1-B / Collector",
-  "generated_at": "2026-11-04T16:07:22+08:00",
+  "generated_at": "2026-11-04T16:49:47+08:00",
   "generated_by": "tools/fusion/f1b_verify_collector.py",
-  "git_head": "d0709a387f5d4299e38c9ccaaae4c2a31fc14e87",
+  "git_head": "43a63bd30e363ce416b9170727a622dc3252d527",
   "summary": {
     "passed": 30,
     "total": 30,

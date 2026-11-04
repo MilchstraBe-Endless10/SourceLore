@@ -1,8 +1,8 @@
 {
   "task": "F1-C 全局历史验证（独立入口，供 F1-D 直接调用）",
-  "generated_at": "2026-11-04T16:07:23+08:00",
+  "generated_at": "2026-11-04T16:49:48+08:00",
   "generated_by": "tools/fusion/f1c_history_verify.py",
-  "git_head": "d0709a387f5d4299e38c9ccaaae4c2a31fc14e87",
+  "git_head": "43a63bd30e363ce416b9170727a622dc3252d527",
   "reconciliations_consumed": [
     "F1C_B_ROUTED_RECONCILIATION",
     "F1C_C1_RESOLUTION",

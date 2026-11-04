@@ -1,7 +1,7 @@
 {
   "artifact": "F1C_D1_TERMINAL_MIGRATION",
   "schema_version": 1,
-  "generated_at": "2026-11-04T16:07:23+08:00",
+  "generated_at": "2026-11-04T16:49:48+08:00",
   "generated_by": "tools/fusion/f1c_d1_migrate_terminal.py",
   "principle": "三个正交概念：mapping_status（进度） / terminal_disposition（设计终态） / canonical_origin_type（来源性质）。不手填、不默认 ADOPTED、不依赖遍历顺序。",
   "derivation_owner": "f1c_terminal_model.derive（由 f1c_apply_routed.py 在写盘前调用）",

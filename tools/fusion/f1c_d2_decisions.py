@@ -1,0 +1,583 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""F1-C-D2：八项跨模块架构冲突裁决（纯数据）。
+
+原始定义来源（不凭编号猜）：
+  X-2 / X-4 / X-5 / X-6 / X-7  ← F1B_STORAGE_DECISIONS.md §11「F1-C 待裁决项」
+  K-7                          ← F1B_RENDERER_DECISIONS.md §10
+  Y-4 / Y-6                    ← F1B_DSH_ADAPTER_DECISIONS.md §10
+（注意：Lifecycle 文档也有 X-1…X-6，编号同名但所指不同；本批以 Storage 表为准，
+ 因为 F1C_D_HANDOFF_INVENTORY 的 X-* 条目取自 Storage 表。）
+
+三种结果：
+  DESIGN_RESOLVED               架构责任与契约已裁定，可实施
+  IMPLEMENTATION_DEPENDENCY     架构已定，具体实现/实测必须在 F2
+  BLOCKED_BY_MISSING_EVIDENCE   现有证据不足以作架构选择
+"""
+
+BATCH = "F1-C-D2"
+
+RESOLUTIONS = [
+    # ══════════════════════════════════════════════════════════
+    {
+        "conflict_id": "X-2",
+        "original_question": "跨仓库 Subject 的主键表示（建议 owner：Lifecycle + Storage 联合）",
+        "source_refs": ["F1B_STORAGE_DECISIONS.md §11 X-2", "F1B_LIFECYCLE_DECISIONS.md §9 X-2(同名不同义)"],
+        "affected_canonical_ids": ["SL-CAP-0040", "SL-CAP-0063", "SL-CAP-0067", "SL-CAP-0035"],
+        "affected_modules": ["Lifecycle", "Storage", "Research", "Evidence-Claims"],
+        "competing_options": [
+            "A. 用 repository_id 作为所有 Subject 的主键（最简）",
+            "B. 用 owner/name 或 URL 作为主键（易读）",
+            "C. subject_id 为独立逻辑身份，repo_binding 是它的一条属性；同一 Subject 可跨多个 repository 关联",
+            "D. 每个 repository 强制一个 Subject，跨仓库一律视为不同 Subject",
+        ],
+        "selected_architecture": (
+            "C。**三层身份分离**：\n"
+            "① repository_id —— GitHub 稳定数字 ID，是**仓库**身份锚点，改名不改号；\n"
+            "② subject_id —— **逻辑知识主体**身份，由 Lifecycle 分配、永不复用（SL-CAP-0063）；\n"
+            "③ repo_binding —— Subject 与 repository 的**关联记录**，可多对多。\n"
+            "**repository_id 不是所有 Subject 的主键。** 一个 repository 可承载多个 Subject（不同模块/不同 claim_scope）；"
+            "一个 Subject 也可关联多个 repository（monorepo 拆分、fork 对照、跨仓库同名实体）。\n"
+            "**workspace_id** 是运行期作用域标识（一次会话/一次批量），**不参与知识身份**，"
+            "不得写入 subject_id 或 repository_id 的字段。\n"
+            "**commit_sha** 是内容快照标识，属版本维度，不入身份。\n"
+            "**subject_version** 是业务版本（SL-CAP-0063 第三种身份），不参与跨仓库判定。"
+        ),
+        "key_rulings": {
+            "仓库重命名": "repository_id 不变 → 同一 Subject 保持稳定；旧 owner/name 记入 name_history（SL-CAP-0040 已有）。",
+            "Fork": "fork 有自己的 repository_id，属**独立 Subject**，通过 forked_from 字段关联；"
+                    "**不得合并成一个身份**，也不得因内容相似而自动归并。",
+            "跨仓库同名实体": "**不得自动合并**。判定顺序：先比 repository 关系（fork/上游）、"
+                          "再比 subject_key 规范化后的 claim_scope 重叠；两者都不足以定案时，"
+                          "**保留两个独立 Subject**并登记 possible_duplicate 待人工确认。",
+            "仓库关系谁存": "**Storage**（SL-CAP-0063 的关系存储面 + SL-CAP-0067 命名空间隔离）。",
+            "语义身份谁定义": "**Lifecycle**（SL-CAP-0040）—— 什么算同一个知识主体、复用判定规则。",
+            "多仓库研究如何关联": "**Research 只能产出关联候选**（claim_candidates / association_candidates），"
+                              "**不得绕过 EC 直接认定**同一实体；认定须经 EC 的 SL-CAP-0028 裁决。",
+        },
+        "unique_owner": {"semantic": "Lifecycle（SL-CAP-0040）",
+                         "persistence": "Storage（SL-CAP-0063 / SL-CAP-0067）"},
+        "consumer_modules": ["Research", "Evidence-Claims", "Product", "Renderer"],
+        "decision_rationale": (
+            "「Lifecycle 定语义、Storage 定落地」这条边界在 F1-B 已确立（SL-CAP-0063 零来源能力正是为此而建）。"
+            "本批不新增机制，只把「repository_id 不等于 Subject 主键」这一条写成显式契约——"
+            "因为上游六源里普遍用 owner/name 或 URL 作键，这个误会最容易在这里发生。"
+        ),
+        "rejected_alternatives": [
+            {"option": "A repository_id 作所有 Subject 主键",
+             "reason": "违反 SL-CAP-0040 已有的 Subject 粒度定义；monorepo 与跨仓库 Subject 无法表达。"},
+            {"option": "B owner/name 或 URL 作主键",
+             "reason": "仓库改名后 URL 就变、知识应当延续（SL-CAP-0040 已明令禁止）。"},
+            {"option": "D 每 repository 强制一个 Subject",
+             "reason": "仓库内不同模块的知识 claim_scope 不同，强绑会让粒度失真。"},
+        ],
+        "implementation_dependencies": [
+            "F2：subject_id 的分配策略（中心化序列 vs 内容派生）需实测决定",
+            "F2：possible_duplicate 的人工确认通道需落地",
+        ],
+        "verification_gate": [
+            "同一 repository_id 下可存在多个 subject_id（不得一一对应断言）",
+            "fork 的两个 repository_id 必须映射到两个不同 subject_id",
+            "repository 改名后 subject_id 不变、name_history 有记录",
+            "workspace_id / commit_sha / subject_version 均不得出现在 subject 身份键中",
+        ],
+        "residual_risks": ["跨仓库同名实体的自动误合并（已用「不自动合并 + 待人工确认」缓解）"],
+        "resolution_status": "DESIGN_RESOLVED",
+        "f2_required": True,
+    },
+    # ══════════════════════════════════════════════════════════
+    {
+        "conflict_id": "X-4",
+        "original_question": "B 层当前视图与 A 层历史冲突时的用户可见判定（建议 owner：Renderer + Lifecycle）",
+        "source_refs": ["F1B_STORAGE_DECISIONS.md §11 X-4", "F1B_STORAGE_DECISIONS.md §10 M-G"],
+        "affected_canonical_ids": ["SL-CAP-0062", "SL-CAP-0041", "SL-CAP-0042", "SL-CAP-0055", "SL-CAP-0028"],
+        "affected_modules": ["Storage", "Lifecycle", "Renderer", "Evidence-Claims"],
+        "competing_options": [
+            "A. B 层以最新结论覆盖 A 层展示（最简单，但毁历史）",
+            "B. A 层永远优先，B 层失效时整库回退到历史",
+            "C. 两层并存：B 是指针，A 是权威；B 失效时显式标注并保留最后有效视图",
+            "D. 读取失败时展示空视图（伪装成「无知识」）",
+        ],
+        "selected_architecture": (
+            "C。判定规则逐条：\n"
+            "① **B 指针指向不存在的 A 对象** → 判定为 `dangling_pointer`，**不静默重建**："
+            "保留上一份有效 B 视图（`last_known_good`），同时在视图上打显式标记 "
+            "`pointer_invalid` 与受影响范围。**禁止伪装成空结果或「无知识」**（SL-CAP-0065 硬规则五同源）。\n"
+            "② **当前视图与历史结论不一致** → 用户**两者都看到**：当前结论 + 历史结论 + 各自版本锚点"
+            "（source_snapshot / retrieved_from_layer），并标注 `supersedes` 链。"
+            "**不得把不同版本的结论视为互相证伪**——版本差异不是 claim 冲突；"
+            "真伪只在同一快照下由 EC 判（SL-CAP-0028）。\n"
+            "③ **是否保留最后有效视图** → 是。`last_known_good` 必须持久化，"
+            "损坏/失败时降级到它，并显式标 `degraded`。\n"
+            "④ **新的验证结论如何形成历史修订** → 只能**追加**新的 A 层记录 + 推进 B 指针"
+            "（SL-CAP-0062 A 层只追加 + SL-CAP-0064 W-4 CAS 推指针）。**不存在「修改历史」这个动作。**\n"
+            "⑤ **写入权限** → A 层：只有 Storage 的追加接口（EC/Lifecycle 提供语义，物理由 Storage 写）；"
+            "B 层：只有 Storage 的指针推进（受 CAS 保护）。**Renderer 对两层都无写权限。**\n"
+            "⑥ **谁向用户显示冲突与版本限制** → **Renderer**（忠实呈现），但**判定权不在它手里**："
+            "冲突状态由 Lifecycle（有效性与版本）与 EC（claim 真伪）产出，Renderer 只负责如实展示与不隐瞒。"
+        ),
+        "key_rulings": {
+            "不得用 B 覆盖 A": "硬规则。任何试图「用当前视图回写历史」的实现一律拒绝。",
+            "不同版本不等于互相证伪": "硬规则。版本差异记 supersedes，不记 refuted。",
+            "读取失败不得伪装成无知识": "硬规则。失败必显式失败（pointer_invalid / degraded / denied）。",
+            "Renderer 不拥有事实裁决权": "它呈现，不裁定。",
+            "Storage 管物理一致性": "A 层追加、B 层 CAS 推指针、C 层可重建。",
+            "Lifecycle 管有效性": "SL-CAP-0041 可变/不可变分离、SL-CAP-0042 哈希失效。",
+            "EC 管 Claim 验证": "只有 EC 能在同一快照下判真伪（SL-CAP-0028）。",
+        },
+        "unique_owner": {"semantic_validity": "Lifecycle（SL-CAP-0041/0042）",
+                         "claim_truth": "Evidence-Claims（SL-CAP-0028）",
+                         "physical_consistency": "Storage（SL-CAP-0062/0064）",
+                         "presentation": "Renderer（SL-CAP-0055，无裁决权）"},
+        "consumer_modules": ["Renderer", "Storage", "Lifecycle", "Evidence-Claims", "Research"],
+        "decision_rationale": (
+            "这条的关键是**分清四种「冲突」的归属**（与 F1-C-C2 的 U05-C21 同一思路）："
+            "物理一致性 → Storage；知识有效性 → Lifecycle；Claim 真伪 → EC；呈现 → Renderer。"
+            "把它们混成一个「冲突状态」是这一条最容易犯的错。"
+            "本批不新增机制——四层模型（0062）、可变/不可变（0041）、哈希失效（0042）、"
+            "裁决状态机（0028）都已存在；缺的只是**跨层失效时的降级与展示契约**。"
+        ),
+        "rejected_alternatives": [
+            {"option": "A B 覆盖 A", "reason": "直接违反 SL-CAP-0062 A 层「只允许追加、禁止原地覆盖」。",
+             },
+            {"option": "B A 永远优先，B 失效即整库回退",
+             "reason": "代价过大且不必要；局部降级到 last_known_good 更合理。"},
+            {"option": "D 读取失败展示空视图",
+             "reason": "正是 SL-CAP-0065 硬规则五禁止的「把拒绝伪装成空结果」，也是本项目反复强调的失败模式。"},
+        ],
+        "implementation_dependencies": [
+            "F2：last_known_good 的落盘格式与回收策略",
+            "F2：supersedes 链的深度上限（避免无限回溯拖慢读取）",
+        ],
+        "verification_gate": [
+            "构造 dangling_pointer 场景：必须返回 pointer_invalid + last_known_good，不得返回空",
+            "构造 B 的新结论与 A 的旧结论不一致：视图必须同时含两者与各自 source_snapshot",
+            "构造「不同版本」场景：状态必须是 supersedes，不得是 refuted",
+            "Renderer 的实现中不得出现任何写 A 层或推 B 指针的路径",
+            "读取被权限拒绝时必须返回 denied，不得返回空",
+        ],
+        "residual_risks": [
+            "last_known_good 本身可能过期，需在视图上带它的时间戳",
+            "supersedes 链过深时的性能与可读性",
+        ],
+        "resolution_status": "DESIGN_RESOLVED",
+        "f2_required": True,
+    },
+    # ══════════════════════════════════════════════════════════
+    {
+        "conflict_id": "X-5",
+        "original_question": "跨文件原子性的实现路径（提交日志 vs 单文件事务库）",
+        "source_refs": ["F1B_STORAGE_DECISIONS.md §11 X-5"],
+        "affected_canonical_ids": ["SL-CAP-0064", "SL-CAP-0062"],
+        "affected_modules": ["Storage"],
+        "competing_options": [
+            "A. 单文件事务库（SQLite 等）承载全部权威资产",
+            "B. 文件系统 + 提交日志（WAL 式两阶段）",
+            "C. 混合：小元数据入事务库，大产物留文件系统",
+            "D. 直接写文件、失败靠人工修复",
+        ],
+        "selected_architecture": (
+            "**架构层不锁定实现，但锁定可观测契约。**\n"
+            "A. F1 必须确定的行为契约（不依赖选型）：SL-CAP-0064 的五步写入契约——"
+            "W-1 临时区、W-2 结构+引用校验、W-3 记 expected_version、W-4 CAS 才推指针、W-5 崩溃后保持上一份已提交状态。"
+            "**F1 只要求「契约可判定」，不要求「事务已实测」。**\n"
+            "B. F2 可自由选择的实现：A / B / C 任一，只要满足 A 的契约与 C 的门禁。\n"
+            "C. 最低验收标准：见 verification_gate（断电/崩溃注入测试必须真做）。\n"
+            "D. 必须真实实验才能确认的性质：崩溃恢复的原子性、并发 CAS 的正确性、"
+            "临时区残留清理的可靠性——**这三项不能靠阅读代码或设计文档断言**。\n"
+            "E. 禁止上线条件：任一崩溃注入用例出现半写入权威资产、或并发写出现静默覆盖，即禁止上线。"
+        ),
+        "key_rulings": {
+            "设计上要求支持事务 ≠ 已经验证事务正确": "本条明确标注为 IMPLEMENTATION_DEPENDENCY。",
+            "不锁数据库": "F2 可选 SQLite / 文件系统 / 混合，唯一约束是契约与门禁。",
+        },
+        "unique_owner": {"contract": "Storage（SL-CAP-0064）", "selection": "F2 决策记录（唯一 owner：Storage）"},
+        "consumer_modules": ["Lifecycle", "Evidence-Claims", "DSH-Adapter"],
+        "decision_rationale": (
+            "选型不该在 F1 定，但**契约必须在 F1 定**——否则 F2 各做各的，事后无法收敛。"
+            "本批把「契约已定、实现未验证」这件事写成显式状态，避免把设计意图说成已实现能力。"
+        ),
+        "rejected_alternatives": [
+            {"option": "A 单文件事务库（作为 F1 已定选型）",
+             "reason": "过早锁定会限制 F2；且本项目明确要求「不得仅以偏好选数据库」。"},
+            {"option": "D 直接写文件、失败靠人工",
+             "reason": "违反 SL-CAP-0064 W-5（崩溃后必须保持上一份已提交状态）。"},
+        ],
+        "implementation_dependencies": [
+            "F2-1：选型决策（须记唯一 owner 与可复测的选择条件）",
+            "F2-2：崩溃注入测试套件（断电/进程 kill/磁盘满）",
+            "F2-3：并发 CAS 压测",
+        ],
+        "verification_gate": [
+            "崩溃注入：写入过程中 kill 进程，重启后权威位置必须是上一份已提交状态",
+            "并发：两个 writer 同时推进同一指针，必须一方成功一方收到明确 conflict",
+            "临时区残留必须在下次启动时被安全清理，且不影响权威位置",
+            "任一失败路径上不得出现「部分写入但已暴露」的权威资产",
+        ],
+        "residual_risks": ["崩溃注入测试本身可能不充分覆盖真实断电场景"],
+        "resolution_status": "IMPLEMENTATION_DEPENDENCY",
+        "f2_required": True,
+    },
+    # ══════════════════════════════════════════════════════════
+    {
+        "conflict_id": "X-6",
+        "original_question": "是否最终需要向量或图检索",
+        "source_refs": ["F1B_STORAGE_DECISIONS.md §11 X-6"],
+        "affected_canonical_ids": ["SL-CAP-0065", "SL-CAP-0067"],
+        "affected_modules": ["Storage"],
+        "competing_options": [
+            "A. F1 即引入向量数据库",
+            "B. F1 即引入图数据库",
+            "C. F1 只用文本 + 结构化检索，向量/图留 F2 按需议定",
+        ],
+        "selected_architecture": (
+            "C。**与 SL-CAP-0065 硬规则四一致**：不得在没有必要时引入向量数据库或图数据库；"
+            "文本检索、结构化检索可并存，向量/图**仅在有明确必要性时由 F2 议定**。\n"
+            "F1 契约：Q-1 按身份定位 / Q-2 按属性过滤 / Q-3 双通道（索引查新、直链消费已知）"
+            "必须能在**纯文本 + 结构化**实现下满足。\n"
+            "引入的必要性判据（F2 用）：当且仅当出现「结构化过滤无法表达、且实测证明文本检索召回不可接受」的用例。"
+        ),
+        "unique_owner": {"contract": "Storage（SL-CAP-0065）", "selection": "F2（唯一 owner：Storage）"},
+        "consumer_modules": ["Research", "Evidence-Claims", "Renderer"],
+        "decision_rationale": (
+            "这条不是「要不要 AI 检索」的偏好问题，而是「对不对得上现有契约」的问题。"
+            "0065 已经把「不必要不引入」写成硬规则，本批只是把它确认为 X-6 的裁决结果。"
+        ),
+        "rejected_alternatives": [
+            {"option": "A/B 在 F1 引入",
+             "reason": "违反 SL-CAP-0065 硬规则四；且违背 U03-C25 已确立的「技术选型不设永久禁令但也不预设」立场。"},
+        ],
+        "implementation_dependencies": ["F2：必要性判据的实测（召回率基线对比）"],
+        "verification_gate": [
+            "F1 的 Q-1/Q-2/Q-3 三类查询必须在不依赖向量/图库的前提下可实现",
+            "若 F2 引入，必须附「为什么文本+结构化做不到」的实测证据，而非偏好",
+        ],
+        "residual_risks": ["F2 若引入，索引可重建性（0065 硬规则三）必须同样成立"],
+        "resolution_status": "DESIGN_RESOLVED",
+        "f2_required": True,
+    },
+    # ══════════════════════════════════════════════════════════
+    {
+        "conflict_id": "X-7",
+        "original_question": "知识根目录默认位置与分支/commit 是否共用命名空间",
+        "source_refs": ["F1B_STORAGE_DECISIONS.md §11 X-7"],
+        "affected_canonical_ids": ["SL-CAP-0067", "SL-CAP-0062"],
+        "affected_modules": ["Storage"],
+        "competing_options": [
+            "A. 默认放当前工作目录",
+            "B. 按 owner/name 建目录（可读）",
+            "C. 显式配置根 + 按 repository_id 派生命名空间 + commit/branch 不共层",
+        ],
+        "selected_architecture": (
+            "C，且**仅完成命名空间契约，默认位置交 F2**。\n"
+            "① **根目录显式声明**（SL-CAP-0067 P-1 已有）：禁止隐式假设当前工作目录。\n"
+            "② **按 repository_id 划分命名空间**（P-2 已有）：路径由 identity 派生，不用 owner/name。\n"
+            "③ **commit / branch 不与 repository 共用命名空间**：\n"
+            "   - repository 级命名空间承载 Subject 与当前视图（B 层）；\n"
+            "   - commit 级是**版本维度**，作为 A 层记录内的 source_snapshot 字段，**不另开目录层**；\n"
+            "   - branch 是**取数指针**，不是身份，**不得进入路径**。\n"
+            "④ **默认物理位置**：F2 决定（候选：知识库内 `.sourcelore/` vs 独立根）。F1 只要求「显式配置」这一条。"
+        ),
+        "unique_owner": {"path_contract": "Storage（SL-CAP-0067）", "default_location": "F2（唯一 owner：Storage）"},
+        "consumer_modules": ["Facts", "Collector", "Lifecycle"],
+        "decision_rationale": (
+            "命名空间契约是可以现在就定的（0067 已定了大半），但「默认放哪」是部署偏好，"
+            "F1 定死会绑住后续安装方式。故拆成两块：契约 DESIGN_RESOLVED，默认位置进 F2 门禁。"
+        ),
+        "rejected_alternatives": [
+            {"option": "A 默认当前工作目录", "reason": "违反 P-1 显式声明，且会污染被分析仓库。"},
+            {"option": "B owner/name 建目录", "reason": "改名即断（P-2 已禁止）。"},
+            {"option": "把 branch 写进路径", "reason": "branch 是取数指针不是身份；同名 branch 在不同时间指向不同 commit，"
+                                                  "写入路径会让知识按分支碎片化。"},
+        ],
+        "implementation_dependencies": ["F2：默认根位置的决策与安装脚本支持"],
+        "verification_gate": [
+            "路径必须能由 repository_id 派生，且不含 owner/name",
+            "同一 repository 的多个 commit 快照不得产生多个顶层命名空间",
+            "branch 名不得出现在任何知识资产路径中",
+            "路径穿越防护（P-3）与符号链接解析（P-4）必须生效",
+        ],
+        "residual_risks": ["默认位置未定，安装体验暂时需要用户显式配置"],
+        "resolution_status": "DESIGN_RESOLVED",
+        "f2_required": True,
+    },
+    # ══════════════════════════════════════════════════════════
+    {
+        "conflict_id": "K-7",
+        "original_question": "人工叙事文档是否允许被自动更新（原裁决：不允许整篇覆盖；局部插入片段待 F1-C）",
+        "source_refs": ["F1B_RENDERER_DECISIONS.md §10 K-7"],
+        "affected_canonical_ids": ["SL-CAP-0055", "SL-CAP-0062", "SL-CAP-0041"],
+        "affected_modules": ["Renderer", "Storage", "Lifecycle"],
+        "competing_options": [
+            "A. 允许自动整篇重写人工文档",
+            "B. 允许自动局部插入片段（以 Markdown 标记定位）",
+            "C. 一律不允许自动修改；只允许产出独立的新文件",
+        ],
+        "selected_architecture": (
+            "**F1 定为 C 的安全变体：默认一律不允许自动修改人工维护的正文。**\n"
+            "人工文档属 A 层（不可变历史 / 人工权威），**自动产物不得直接覆盖或修改**——"
+            "这与 SL-CAP-0062 A 层只追加、SL-CAP-0041 不可变层规则一致。\n"
+            "允许的是：**产出一个独立的新文件**（或新的 A 层记录），由人决定如何并入。\n\n"
+            "**未来若需局部插入，必须独立评估以下七项全部满足**（本批只定边界，不实现）：\n"
+            "① 明确的用户授权（每次操作级，不是一次性全局开关）；\n"
+            "② 被允许修改的范围（哪一段、哪个标记区间，须显式声明）；\n"
+            "③ 生成内容的身份与来源（哪条 claim、哪个 run，必须可追溯）；\n"
+            "④ 修改前的版本校验（CAS：人工文档在生成后被改动过就不得插入）；\n"
+            "⑤ 冲突检测（目标区间已被他人修改 → 拒绝并报冲突）；\n"
+            "⑥ 人工审查与回退（插入后必须可一键回退到插入前版本）；\n"
+            "⑦ 不改变不可变历史（插入不得修改 A 层既有记录）。\n\n"
+            "**硬规则：不得因为文档内存在 Markdown 标记，就默认 Agent 有权自动写入。**\n"
+            "标记的存在只说明「这里是一个可定位的位置」，不构成写入授权。"
+        ),
+        "key_rulings": {
+            "安全默认值": "自动产物不得直接覆盖或修改人工维护的正文。",
+            "标记不等于授权": "显式写入本条，防止后续实现者用「有标记就能改」当理由。",
+            "人工文档属 A 层": "受「只追加、不覆盖」保护。",
+        },
+        "unique_owner": {"write_authorization": "Security（SL-CAP-0053 P-3/P-4：人工审查与发布批准）",
+                         "render_boundary": "Renderer（SL-CAP-0055：只产新文件）",
+                         "storage_layer": "Storage（SL-CAP-0062 A 层不可变）"},
+        "consumer_modules": ["Renderer", "Security", "Storage"],
+        "decision_rationale": (
+            "K-7 在 F1-B 时只裁了「不许整篇覆盖」，「局部插入」悬着。"
+            "本批按「安全默认 + 七项前置条件」定案：默认禁止，若要放开必须七项全满足。"
+            "这样既不堵死未来，也不给当前实现留后门。"
+        ),
+        "rejected_alternatives": [
+            {"option": "A 整篇自动重写", "reason": "直接摧毁人工维护内容，且违反 A 层只追加。"},
+            {"option": "B 无条件允许局部插入",
+             "reason": "缺少授权、版本校验、冲突检测与回退；且极易在「有 Markdown 标记」的借口下被滥用。"},
+        ],
+        "implementation_dependencies": [
+            "F2：若要实现局部插入，七项前置条件须逐项有测试",
+            "F2：独立新文件的产出约定（命名、放置位置由人决定）",
+        ],
+        "verification_gate": [
+            "自动产物只能新建文件，不得修改已存在的人工文档（机检：对人工文档的写操作一律拒绝）",
+            "任何写入人工文档的代码路径必须不存在于 F1",
+            "若 F2 实现局部插入，须有「无授权即拒绝」「版本已变即拒绝」「区间冲突即拒绝」三条用例",
+        ],
+        "residual_risks": ["F2 实现局部插入时的授权粒度可能过粗（一次性开关）"],
+        "resolution_status": "DESIGN_RESOLVED",
+        "f2_required": True,
+    },
+    # ══════════════════════════════════════════════════════════
+    {
+        "conflict_id": "Y-4",
+        "original_question": "检查点的物理存放（原裁决：逻辑上属执行层 SL-CAP-0071；物理承载由 Storage 权威，待 F1-C）",
+        "source_refs": ["F1B_DSH_ADAPTER_DECISIONS.md §10 Y-4"],
+        "affected_canonical_ids": ["SL-CAP-0071", "SL-CAP-0062", "SL-CAP-0064"],
+        "affected_modules": ["DSH-Adapter", "Storage"],
+        "competing_options": [
+            "A. 检查点写入知识库 A 层，视为知识",
+            "B. 检查点只存热记忆（agent 上下文）",
+            "C. 检查点作为独立执行产物：语义归 DSH-Adapter(0071)，物理归 Storage，与知识资产分区隔离",
+        ],
+        "selected_architecture": (
+            "C。**三个对象必须分开**：\n"
+            "① **SourceLore 知识资产** —— A/B/C/D 四层（SL-CAP-0062），是权威知识。\n"
+            "② **Agent 任务执行检查点** —— 任务是**执行状态**，不是知识。语义归 DSH-Adapter（SL-CAP-0071），"
+            "物理由 Storage 以**独立分区**承载（不得混入知识资产的 A/B/C 层命名空间）。\n"
+            "③ **模型上下文 / 热记忆** —— 只是**辅助定位手段**，**任何时候都不是唯一权威来源**。\n\n"
+            "逐条裁定：\n"
+            "- **谁定义 checkpoint 内容** → DSH-Adapter（SL-CAP-0071：task_id/run_id/workspace_id/subject_id/"
+            "requested_action/current_stage/checkpoint_ref/input_snapshot_ref/attempt_count/error_category）。\n"
+            "- **谁保存 checkpoint** → Storage（提供具备权限与一致性保障的持久化，走 SL-CAP-0064 五步契约）。\n"
+            "- **谁判断 checkpoint 可恢复** → DSH-Adapter（语义判定：状态是否自洽、是否满足 I-1 不重复提交）。\n"
+            "- **如何关联 run_id / task_id / subject_id** → 三者在 checkpoint 记录里并列存储；"
+            "**subject_id 是知识侧外键，不是执行身份**；checkpoint 不得因 subject_id 而进入知识命名空间。\n"
+            "- **并发恢复如何防重复提交** → Storage 的 CAS（SL-CAP-0064 W-3/W-4）："
+            "恢复时必须带 expected checkpoint_version，不一致即拒绝。\n"
+            "- **检查点损坏后如何降级** → 判定为 `checkpoint_corrupt`，**任务转不可自动恢复**，"
+            "交人工确认；**不得凭热记忆推断状态并继续跑**。\n"
+            "- **能否靠热记忆恢复唯一权威状态** → **不可以。** 热记忆只能提示「去哪找 checkpoint」，"
+            "找到后仍以持久化记录为准。\n\n"
+            "**硬规则：「任务能否恢复」与「知识是否仍然有效」是两件事**，"
+            "checkpoint 恢复成功不代表任何 claim 仍有效（后者归 SL-CAP-0042 的哈希失效检测）。"
+        ),
+        "key_rulings": {
+            "任务恢复 ≠ 知识有效": "两条判定链完全独立，不得互相推导。",
+            "热记忆不是权威": "只作定位线索。",
+            "检查点不入知识命名空间": "物理分区隔离。",
+        },
+        "unique_owner": {"semantics": "DSH-Adapter（SL-CAP-0071）", "persistence": "Storage（SL-CAP-0064 / 0062 分区）"},
+        "consumer_modules": ["Storage", "Lifecycle"],
+        "decision_rationale": (
+            "F1-B 时只裁了「逻辑归 0071、物理归 Storage」。本批把「怎么隔离」补齐："
+            "关键是**检查点是执行状态不是知识**——这条不说清，实现者很容易把 checkpoint "
+            "写进 A 层当成知识资产，之后知识库就被执行噪声污染了。"
+        ),
+        "rejected_alternatives": [
+            {"option": "A 检查点入 A 层当知识",
+             "reason": "执行状态会污染知识资产；且 A 层只追加的语义不适合高频重写的 checkpoint。"},
+            {"option": "B 只存热记忆",
+             "reason": "热记忆会随上下文压缩/会话结束丢失，任务无法可靠恢复。"},
+        ],
+        "implementation_dependencies": [
+            "F2：checkpoint 分区的物理布局与生命周期（保留多久、何时清理）",
+            "F2-3：与 Y-6 的 H-F 接口探测联动——若平台无恢复接口，则完全靠自有 checkpoint",
+        ],
+        "verification_gate": [
+            "checkpoint 记录不得出现在知识资产的 A/B/C 层命名空间内",
+            "恢复时必须校验 expected checkpoint_version，不一致即拒绝",
+            "checkpoint 损坏时必须转不可自动恢复，不得凭热记忆续跑",
+            "「任务恢复成功」不得导致任何 claim 被标记为 still valid",
+        ],
+        "residual_risks": ["checkpoint 分区若无清理策略会持续膨胀"],
+        "resolution_status": "DESIGN_RESOLVED",
+        "f2_required": True,
+    },
+    # ══════════════════════════════════════════════════════════
+    {
+        "conflict_id": "Y-6",
+        "original_question": "BotHarness 发现与审批传递的缺口（原处置：标 UNVERIFIED_RUNTIME_CAPABILITY，交 F1-C/F2 实测后补）",
+        "source_refs": ["F1B_DSH_ADAPTER_DECISIONS.md §3 H-A…H-H", "§10 Y-6"],
+        "affected_canonical_ids": ["SL-CAP-0068", "SL-CAP-0071", "SL-CAP-0072", "SL-CAP-0073"],
+        "affected_modules": ["DSH-Adapter", "Security", "Storage"],
+        "competing_options": [
+            "A. 假定平台已提供恢复与审批接口（不可接受：无证据）",
+            "B. 完全自建：checkpoint 与审批全部由 SourceLore 自查自管",
+            "C. 逐项标记证据等级，可验证的用平台、未验证的自建兜底，并定义 F2 探测任务",
+        ],
+        "selected_architecture": (
+            "C。**逐项证据等级（本批只读复核，未安装、未改配置、未建 Skill）**：\n\n"
+            "| 接口 | 问题 | 证据等级 | 依据 |\n"
+            "|---|---|---|---|\n"
+            "| H-A | Skill 入口与加载方式 | **VERIFIED** | `<root>/<name>/SKILL.md` + YAML frontmatter；"
+            "本机 `~/.agents/skills/` 有 diagnose-crash、omarchy 两个实例 |\n"
+            "| H-B | BotHarness 侧如何发现 Skill | **PARTIALLY_VERIFIED** | DSH 侧由目录扫描+description 触发（"
+            "本会话 skill 清单即证据）；**BotHarness 侧发现机制未实测** |\n"
+            "| H-C | Harness 如何调用 Skill 内脚本 | **PARTIALLY_VERIFIED** | Skill 目录可含 scripts/（"
+            "`skills/sourcelore/scripts/` 目录存在但**空**）；调用通道未实测 |\n"
+            "| H-D | 平台级持久化状态接口 | **UNVERIFIED** | 未发现平台级跨会话状态存储；"
+            "本机无 BotHarness 专用目录 |\n"
+            "| H-E | Skill 内的人类审批传递 | **UNVERIFIED** | DSH 侧 approval policy 存在；"
+            "Skill 内部传递未实测 |\n"
+            "| H-F | 上下文不足/模型切换后恢复 | **UNVERIFIED** | 未见平台级恢复能力 |\n"
+            "| H-G | 执行结果回传 | **VERIFIED（语义层）** | Skill 以 Markdown 输出回传、Agent 读文本；"
+            "结构化通道未实测 |\n"
+            "| H-H | 失败/超时/取消的可观测状态 | **UNVERIFIED** | 未实测 Skill 级失败状态暴露 |\n\n"
+            "**核心事实（必须如实记录）：`skills/sourcelore/` 目前只有空的 references/ 与 scripts/ 目录，"
+            "无任何文件。BotHarness 能否实际加载与调用 SourceLore Skill —— 未经实测，标记 UNVERIFIED。**\n\n"
+            "**设计方向：** SourceLore 自行管理检查点（Y-4 已定），"
+            "**不假定 BotHarness 提供原生恢复接口**；平台若提供则优先用，未提供则完全靠自有 checkpoint。"
+        ),
+        "key_rulings": {
+            "未验证不得称为可用": "所有 UNVERIFIED 项不得在 Skill 文档或设计文档中描述为「平台现有功能」。",
+            "不得自动跳过未来验收": "F2 的接口探测任务必须先跑，通过才可依赖平台能力。",
+            "探测失败必须有替代": "探测失败 → 走全自建路径（自有 checkpoint + 自查审批），不得停工等平台。",
+            "不得假装平台提供原生恢复": "即使选了自建方向，也不得反过来声称平台已有恢复接口。",
+        },
+        "unique_owner": {"interface_contract": "DSH-Adapter（SL-CAP-0068 / 0071 / 0072 / 0073）"},
+        "consumer_modules": ["Security", "Storage"],
+        "decision_rationale": (
+            "Y-6 的本质是**证据缺口**，不是设计缺口。四项 UNVERIFIED 里有三项是「本批无权实测」，"
+            "一项（H-D）是「本机确实没有该设施」。按第 8 节要求如实标级，并定义 F2 探测任务，"
+            "而不是把「设计上假定由 Storage 承载」写成「平台已支持」。"
+        ),
+        "rejected_alternatives": [
+            {"option": "A 假定平台已提供", "reason": "无任何实测证据；且这会把设计意图伪装成已实现能力。"},
+        ],
+        "implementation_dependencies": [
+            "F2-P1：H-B 探测（BotHarness 侧 Skill 发现）",
+            "F2-P2：H-D 探测（平台级持久化状态接口）",
+            "F2-P3：H-E 探测（Skill 内审批传递）",
+            "F2-P4：H-F 探测（上下文恢复）",
+            "F2-P5：H-H 探测（失败/超时/取消可观测状态）",
+            "F2-P6：Goal「BotHarness 能否加载 SourceLore Skill」端到端验证",
+        ],
+        "verification_gate": [
+            "所有 UNVERIFIED 项在文档中必须标 UNVERIFIED，不得出现「平台已支持」的表述",
+            "每个探测任务必须有明确的通过判据与失败替代路径",
+            "探测失败不得导致项目停工——必须能退化到全自建路径",
+            "F1 不得创建正式 Skill（`skills/sourcelore/` 保持空，仅契约）",
+        ],
+        "residual_risks": [
+            "若 BotHarness 侧完全无法加载 Skill，整个集成形态需重新设计（属 F2 的重大发现）",
+            "自建 checkpoint 路径的成本高于平台原生方案",
+        ],
+        "resolution_status": "BLOCKED_BY_MISSING_EVIDENCE",
+        "blocked_scope": (
+            "阻塞的是「是否可以依赖平台原生能力」这个判断，**不是**架构设计本身。"
+            "架构已定（C 方案：逐项标级 + 可自建兜底）；"
+            "无法确定的是 H-B/H-D/H-E/H-F/H-H 五项的真实能力，需 F2 实测。"
+            "在此之前的实现必须走全自建路径，不得依赖未验证接口。"
+        ),
+        "f2_required": True,
+    },
+]
+
+# ── 两项反向处置的复核 ──
+REVERSE_CASES = [
+    {
+        "identity_key": "UPSTREAM-06::C13",
+        "upstream_disposition": "ADAPT",
+        "sourcelore_verdict": "REJECT",
+        "canonical_id": "SL-CAP-0018",
+        "upstream_claim": "Semgrep 三层规则集 + 本地缓存优先 + 废弃包移除（U06 的包/依赖安全扫描方法论）",
+        "rejected_part": (
+            "**整体拒绝其方法论的可迁移性**：三层规则集绑死 Semgrep 这一具体工具及其规则语言；"
+            "「本地缓存优先」与「废弃包移除」是其工具链的实现细节，不是可抽象的安全契约。"
+        ),
+        "retained_part": "**未保留任何部分。** 该身份的终态为 ADOPTED_AS_COUNTEREXAMPLE，"
+                         "只作为 SL-CAP-0018 的反面约束——提醒「安全发现契约」不得绑死单一扫描工具。",
+        "final_reason": (
+            "上游判 ADAPT（认为可改造），SourceLore 判 REJECT。**允许不同**："
+            "上游的 ADAPT 前提是「同一团队继续用 Semgrep」，而 SourceLore 的目标是工具无关的安全契约"
+            "（SL-CAP-0018 已定「安全发现契约与四项独立检查」）。"
+            "把 Semgrep 规则映射进契约，会让契约反向依赖具体工具，违背 SL-CAP-0057/0069 的「不锁定实现」原则。"
+        ),
+        "license_boundary": (
+            "**UPSTREAM-06 无明确复制许可（copy_permitted=false，spdx=null）。**"
+            "本条**零复制**：未复制其规则集、提示词、代码或模板；"
+            "仅以抽象描述记录「该机制被拒绝」，这是事实陈述而非内容复制。"
+        ),
+    },
+    {
+        "identity_key": "UPSTREAM-02::C17",
+        "upstream_disposition": "REJECT",
+        "sourcelore_verdict": "REIMPLEMENT",
+        "canonical_id": "SL-CAP-0057",
+        "upstream_claim": "Mermaid 图表硬要求——架构文档必须包含 Mermaid 图表，且按固定节点结构填写",
+        "rejected_part": (
+            "**拒绝「硬要求」本身**：强制出图、固定节点结构必须填写、与实际架构无关也照画。"
+            "这正是 SL-CAP-0057 明确拒绝继承的上游机制。"
+        ),
+        "retained_part": (
+            "**保留「图表作为可选呈现手段」**：SL-CAP-0057 的三条硬规则——"
+            "数据决定触发、内容可追溯、图表不是完成判据。"
+            "同时保留「Mermaid 可作为可选格式之一」，但**不锁定**。"
+        ),
+        "final_reason": (
+            "上游判 REJECT（否定强制出图），SourceLore 判 REIMPLEMENT（自建可选图表能力）。"
+            "**允许不同**：上游拒绝的是整个图表机制，SourceLore 认为图表作为可选手段有价值，"
+            "只是必须去掉「强制」与「编造」两个成分。故 REIMPLEMENT 是「保留其意图、重写其机制」。"
+            "这条已在 F1-C-C2 的 U05-C13/U03-C24 中以同源方式处理（拒绝强制、保留可选）。"
+        ),
+        "license_boundary": (
+            "MIT / copy_permitted=true / attribution_required=true。"
+            "**本条只借「可选图表」的抽象意图，未复制其 Mermaid 模板或节点结构定义**；"
+            "若未来复制任何片段，须履行署名义务。"
+        ),
+    },
+]
+
+# ── 反例统计口径澄清 ──
+COUNTEREXAMPLE_CLARIFICATION = {
+    "wrong_claim": "21 项反例绑定",
+    "correct": {
+        "adopted_as_counterexample_unique_identities": 17,
+        "rejected_with_reason_unbound_identities": 4,
+        "total_counterexample_role_identities": 21,
+        "actual_identity_to_canonical_edges": 17,
+    },
+    "explanation": (
+        "「反例绑定」指**实际存在 identity → canonical 的 verdict=REJECT 关联边**，"
+        "本批实测 **17 条边、17 个唯一身份（一对一）**。"
+        "另 4 项 REJECTED_WITH_REASON **未绑定任何 canonical**，"
+        "它们的 `role` 字段虽标为 counterexample（表示「其机制可作反面参照」），"
+        "但**不能称为「反例绑定」**——没有边就没有绑定。"
+        "若把两者相加说成「21 项反例绑定」是口径错误。正确表述："
+        "**17 项反例绑定（17 边）+ 4 项无绑定的拒绝身份 = 21 项 counterexample 角色**。"
+    ),
+}

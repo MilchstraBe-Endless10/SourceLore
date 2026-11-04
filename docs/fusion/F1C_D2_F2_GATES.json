@@ -1,0 +1,311 @@
+{
+  "artifact": "F1C_D2_F2_GATES",
+  "schema_version": 1,
+  "generated_at": "2026-11-04T16:49:48+08:00",
+  "generated_by": "tools/fusion/f1c_d2_build.py",
+  "principle": "每条门禁必须有唯一 owner、可通过的判据、失败后的替代路径。F1 阶段门禁不得以「设计上已经支持」代替实测。",
+  "gates": [
+    {
+      "gate_id": "X-2-G1",
+      "conflict_id": "X-2",
+      "owner": "Lifecycle（SL-CAP-0040）",
+      "criterion": "同一 repository_id 下可存在多个 subject_id（不得一一对应断言）",
+      "stage": "F1",
+      "blocking": true
+    },
+    {
+      "gate_id": "X-2-G2",
+      "conflict_id": "X-2",
+      "owner": "Lifecycle（SL-CAP-0040）",
+      "criterion": "fork 的两个 repository_id 必须映射到两个不同 subject_id",
+      "stage": "F1",
+      "blocking": true
+    },
+    {
+      "gate_id": "X-2-G3",
+      "conflict_id": "X-2",
+      "owner": "Lifecycle（SL-CAP-0040）",
+      "criterion": "repository 改名后 subject_id 不变、name_history 有记录",
+      "stage": "F1",
+      "blocking": true
+    },
+    {
+      "gate_id": "X-2-G4",
+      "conflict_id": "X-2",
+      "owner": "Lifecycle（SL-CAP-0040）",
+      "criterion": "workspace_id / commit_sha / subject_version 均不得出现在 subject 身份键中",
+      "stage": "F1",
+      "blocking": true
+    },
+    {
+      "gate_id": "X-4-G1",
+      "conflict_id": "X-4",
+      "owner": "Lifecycle（SL-CAP-0041/0042）",
+      "criterion": "构造 dangling_pointer 场景：必须返回 pointer_invalid + last_known_good，不得返回空",
+      "stage": "F1",
+      "blocking": true
+    },
+    {
+      "gate_id": "X-4-G2",
+      "conflict_id": "X-4",
+      "owner": "Lifecycle（SL-CAP-0041/0042）",
+      "criterion": "构造 B 的新结论与 A 的旧结论不一致：视图必须同时含两者与各自 source_snapshot",
+      "stage": "F1",
+      "blocking": true
+    },
+    {
+      "gate_id": "X-4-G3",
+      "conflict_id": "X-4",
+      "owner": "Lifecycle（SL-CAP-0041/0042）",
+      "criterion": "构造「不同版本」场景：状态必须是 supersedes，不得是 refuted",
+      "stage": "F1",
+      "blocking": true
+    },
+    {
+      "gate_id": "X-4-G4",
+      "conflict_id": "X-4",
+      "owner": "Lifecycle（SL-CAP-0041/0042）",
+      "criterion": "Renderer 的实现中不得出现任何写 A 层或推 B 指针的路径",
+      "stage": "F1",
+      "blocking": true
+    },
+    {
+      "gate_id": "X-4-G5",
+      "conflict_id": "X-4",
+      "owner": "Lifecycle（SL-CAP-0041/0042）",
+      "criterion": "读取被权限拒绝时必须返回 denied，不得返回空",
+      "stage": "F1",
+      "blocking": true
+    },
+    {
+      "gate_id": "X-5-G1",
+      "conflict_id": "X-5",
+      "owner": "Storage（SL-CAP-0064）",
+      "criterion": "崩溃注入：写入过程中 kill 进程，重启后权威位置必须是上一份已提交状态",
+      "stage": "F2",
+      "blocking": true
+    },
+    {
+      "gate_id": "X-5-G2",
+      "conflict_id": "X-5",
+      "owner": "Storage（SL-CAP-0064）",
+      "criterion": "并发：两个 writer 同时推进同一指针，必须一方成功一方收到明确 conflict",
+      "stage": "F2",
+      "blocking": true
+    },
+    {
+      "gate_id": "X-5-G3",
+      "conflict_id": "X-5",
+      "owner": "Storage（SL-CAP-0064）",
+      "criterion": "临时区残留必须在下次启动时被安全清理，且不影响权威位置",
+      "stage": "F2",
+      "blocking": true
+    },
+    {
+      "gate_id": "X-5-G4",
+      "conflict_id": "X-5",
+      "owner": "Storage（SL-CAP-0064）",
+      "criterion": "任一失败路径上不得出现「部分写入但已暴露」的权威资产",
+      "stage": "F2",
+      "blocking": true
+    },
+    {
+      "gate_id": "X-6-G1",
+      "conflict_id": "X-6",
+      "owner": "Storage（SL-CAP-0065）",
+      "criterion": "F1 的 Q-1/Q-2/Q-3 三类查询必须在不依赖向量/图库的前提下可实现",
+      "stage": "F1",
+      "blocking": true
+    },
+    {
+      "gate_id": "X-6-G2",
+      "conflict_id": "X-6",
+      "owner": "Storage（SL-CAP-0065）",
+      "criterion": "若 F2 引入，必须附「为什么文本+结构化做不到」的实测证据，而非偏好",
+      "stage": "F1",
+      "blocking": true
+    },
+    {
+      "gate_id": "X-7-G1",
+      "conflict_id": "X-7",
+      "owner": "Storage（SL-CAP-0067）",
+      "criterion": "路径必须能由 repository_id 派生，且不含 owner/name",
+      "stage": "F1",
+      "blocking": true
+    },
+    {
+      "gate_id": "X-7-G2",
+      "conflict_id": "X-7",
+      "owner": "Storage（SL-CAP-0067）",
+      "criterion": "同一 repository 的多个 commit 快照不得产生多个顶层命名空间",
+      "stage": "F1",
+      "blocking": true
+    },
+    {
+      "gate_id": "X-7-G3",
+      "conflict_id": "X-7",
+      "owner": "Storage（SL-CAP-0067）",
+      "criterion": "branch 名不得出现在任何知识资产路径中",
+      "stage": "F1",
+      "blocking": true
+    },
+    {
+      "gate_id": "X-7-G4",
+      "conflict_id": "X-7",
+      "owner": "Storage（SL-CAP-0067）",
+      "criterion": "路径穿越防护（P-3）与符号链接解析（P-4）必须生效",
+      "stage": "F1",
+      "blocking": true
+    },
+    {
+      "gate_id": "K-7-G1",
+      "conflict_id": "K-7",
+      "owner": "Security（SL-CAP-0053 P-3/P-4：人工审查与发布批准）",
+      "criterion": "自动产物只能新建文件，不得修改已存在的人工文档（机检：对人工文档的写操作一律拒绝）",
+      "stage": "F1",
+      "blocking": true
+    },
+    {
+      "gate_id": "K-7-G2",
+      "conflict_id": "K-7",
+      "owner": "Security（SL-CAP-0053 P-3/P-4：人工审查与发布批准）",
+      "criterion": "任何写入人工文档的代码路径必须不存在于 F1",
+      "stage": "F1",
+      "blocking": true
+    },
+    {
+      "gate_id": "K-7-G3",
+      "conflict_id": "K-7",
+      "owner": "Security（SL-CAP-0053 P-3/P-4：人工审查与发布批准）",
+      "criterion": "若 F2 实现局部插入，须有「无授权即拒绝」「版本已变即拒绝」「区间冲突即拒绝」三条用例",
+      "stage": "F1",
+      "blocking": true
+    },
+    {
+      "gate_id": "Y-4-G1",
+      "conflict_id": "Y-4",
+      "owner": "DSH-Adapter（SL-CAP-0071）",
+      "criterion": "checkpoint 记录不得出现在知识资产的 A/B/C 层命名空间内",
+      "stage": "F1",
+      "blocking": true
+    },
+    {
+      "gate_id": "Y-4-G2",
+      "conflict_id": "Y-4",
+      "owner": "DSH-Adapter（SL-CAP-0071）",
+      "criterion": "恢复时必须校验 expected checkpoint_version，不一致即拒绝",
+      "stage": "F1",
+      "blocking": true
+    },
+    {
+      "gate_id": "Y-4-G3",
+      "conflict_id": "Y-4",
+      "owner": "DSH-Adapter（SL-CAP-0071）",
+      "criterion": "checkpoint 损坏时必须转不可自动恢复，不得凭热记忆续跑",
+      "stage": "F1",
+      "blocking": true
+    },
+    {
+      "gate_id": "Y-4-G4",
+      "conflict_id": "Y-4",
+      "owner": "DSH-Adapter（SL-CAP-0071）",
+      "criterion": "「任务恢复成功」不得导致任何 claim 被标记为 still valid",
+      "stage": "F1",
+      "blocking": true
+    },
+    {
+      "gate_id": "Y-6-G1",
+      "conflict_id": "Y-6",
+      "owner": "DSH-Adapter（SL-CAP-0068 / 0071 / 0072 / 0073）",
+      "criterion": "所有 UNVERIFIED 项在文档中必须标 UNVERIFIED，不得出现「平台已支持」的表述",
+      "stage": "F2",
+      "blocking": true
+    },
+    {
+      "gate_id": "Y-6-G2",
+      "conflict_id": "Y-6",
+      "owner": "DSH-Adapter（SL-CAP-0068 / 0071 / 0072 / 0073）",
+      "criterion": "每个探测任务必须有明确的通过判据与失败替代路径",
+      "stage": "F2",
+      "blocking": true
+    },
+    {
+      "gate_id": "Y-6-G3",
+      "conflict_id": "Y-6",
+      "owner": "DSH-Adapter（SL-CAP-0068 / 0071 / 0072 / 0073）",
+      "criterion": "探测失败不得导致项目停工——必须能退化到全自建路径",
+      "stage": "F2",
+      "blocking": true
+    },
+    {
+      "gate_id": "Y-6-G4",
+      "conflict_id": "Y-6",
+      "owner": "DSH-Adapter（SL-CAP-0068 / 0071 / 0072 / 0073）",
+      "criterion": "F1 不得创建正式 Skill（`skills/sourcelore/` 保持空，仅契约）",
+      "stage": "F2",
+      "blocking": true
+    }
+  ],
+  "y6_probes": [
+    {
+      "probe_id": "Y6-P1",
+      "target": "F2-P1：H-B 探测（BotHarness 侧 Skill 发现）",
+      "owner": "DSH-Adapter",
+      "pass_criterion": "接口经实测证实可用，且证据记录到 F2 探测报告",
+      "fail_fallback": "走全自建路径（自有 checkpoint + 自查审批），不得停工",
+      "no_go_if": "探测失败后仍依赖该接口 → 禁止上线"
+    },
+    {
+      "probe_id": "Y6-P2",
+      "target": "F2-P2：H-D 探测（平台级持久化状态接口）",
+      "owner": "DSH-Adapter",
+      "pass_criterion": "接口经实测证实可用，且证据记录到 F2 探测报告",
+      "fail_fallback": "走全自建路径（自有 checkpoint + 自查审批），不得停工",
+      "no_go_if": "探测失败后仍依赖该接口 → 禁止上线"
+    },
+    {
+      "probe_id": "Y6-P3",
+      "target": "F2-P3：H-E 探测（Skill 内审批传递）",
+      "owner": "DSH-Adapter",
+      "pass_criterion": "接口经实测证实可用，且证据记录到 F2 探测报告",
+      "fail_fallback": "走全自建路径（自有 checkpoint + 自查审批），不得停工",
+      "no_go_if": "探测失败后仍依赖该接口 → 禁止上线"
+    },
+    {
+      "probe_id": "Y6-P4",
+      "target": "F2-P4：H-F 探测（上下文恢复）",
+      "owner": "DSH-Adapter",
+      "pass_criterion": "接口经实测证实可用，且证据记录到 F2 探测报告",
+      "fail_fallback": "走全自建路径（自有 checkpoint + 自查审批），不得停工",
+      "no_go_if": "探测失败后仍依赖该接口 → 禁止上线"
+    },
+    {
+      "probe_id": "Y6-P5",
+      "target": "F2-P5：H-H 探测（失败/超时/取消可观测状态）",
+      "owner": "DSH-Adapter",
+      "pass_criterion": "接口经实测证实可用，且证据记录到 F2 探测报告",
+      "fail_fallback": "走全自建路径（自有 checkpoint + 自查审批），不得停工",
+      "no_go_if": "探测失败后仍依赖该接口 → 禁止上线"
+    },
+    {
+      "probe_id": "Y6-P6",
+      "target": "F2-P6：Goal「BotHarness 能否加载 SourceLore Skill」端到端验证",
+      "owner": "DSH-Adapter",
+      "pass_criterion": "接口经实测证实可用，且证据记录到 F2 探测报告",
+      "fail_fallback": "走全自建路径（自有 checkpoint + 自查审批），不得停工",
+      "no_go_if": "探测失败后仍依赖该接口 → 禁止上线"
+    }
+  ],
+  "hard_rules": [
+    "IMPLEMENTATION_DEPENDENCY 不得被写成「已实现」",
+    "BLOCKED_BY_MISSING_EVIDENCE 不得被标为已解决",
+    "未通过门禁的实现不得上线",
+    "F1 不创建正式 Skill，skills/sourcelore/ 保持仅契约状态"
+  ],
+  "stats": {
+    "gates": 30,
+    "f1_stage": 22,
+    "f2_stage": 8,
+    "probes": 6
+  }
+}

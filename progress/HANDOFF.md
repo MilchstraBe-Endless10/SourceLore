@@ -1655,3 +1655,94 @@ SL-CAP-0013 / 0019 / 0045 / 0047 / 0061 / 0063 / 0073。
 3. 核验 21 项反例绑定的许可证陈述（尤其 U06 零复制）
 
 零来源质量审查留 F1-C-D3；`CAPABILITY_CROSSWALK.json` 冻结留 F1-D，本批未生成。
+
+
+## M1-FUSION-GATE / F1-C-D2 完成（2026-11-04 16:50 +08:00）
+
+### 一句话
+
+八项跨模块架构冲突全部裁决：6 项 DESIGN_RESOLVED、1 项 IMPLEMENTATION_DEPENDENCY、
+1 项 BLOCKED_BY_MISSING_EVIDENCE。**0 条 canonical amendment**——canonical 字段一个没改。
+
+### ★ 先核清一件事：八条编号散落三份文档，且同名不同义
+
+| 编号 | 真实出处 |
+|---|---|
+| X-2/4/5/6/7 | `F1B_STORAGE_DECISIONS.md §11` |
+| K-7 | `F1B_RENDERER_DECISIONS.md §10` |
+| Y-4/Y-6 | `F1B_DSH_ADAPTER_DECISIONS.md §10` |
+
+**陷阱：`F1B_LIFECYCLE_DECISIONS.md §9` 也有 X-1…X-6，所指完全不同**
+（Lifecycle 的 X-4 是「Storage 写入责任」，Storage 的 X-4 是「B/A 层冲突的用户可见判定」）。
+本次按 Storage 表裁决，不混用。
+
+→ 教训：**跨模块编号不可跨文档复用理解，必须回到定义出处**。
+
+### 八项裁决摘要
+
+| ID | 结论 | status |
+|---|---|---|
+| X-2 | 三层身份分离；repository_id **不是** Subject 主键；fork 独立；跨仓库同名**不自动合并** | DESIGN_RESOLVED |
+| X-4 | B 是指针、A 是权威；`last_known_good` 显式降级；版本差异≠证伪；读取失败不伪装空；Renderer 无写权 | DESIGN_RESOLVED |
+| X-5 | 契约已定（0064 五步）、**实现与崩溃注入未实测** | IMPLEMENTATION_DEPENDENCY |
+| X-6 | 不引入向量/图库；F1 只用文本+结构化 | DESIGN_RESOLVED |
+| X-7 | commit/branch 不共层；**branch 不入路径**；默认位置留 F2 | DESIGN_RESOLVED |
+| K-7 | **默认禁止自动改人工文档**；放开需七项前置；标记≠授权 | DESIGN_RESOLVED |
+| Y-4 | 检查点是**执行状态非知识**，独立分区；任务恢复≠知识有效 | DESIGN_RESOLVED |
+| Y-6 | 五项接口 UNVERIFIED；`skills/sourcelore/` 实测 **0 文件** | BLOCKED_BY_MISSING_EVIDENCE |
+
+### ★ Y-6 的实话
+
+`find skills/sourcelore -type f` 返回 **0 个文件**（只有空的 references/ 与 scripts/）。
+本机无 BotHarness 专用目录。H-D（平台级持久化）、H-E（Skill 内审批传递）、
+H-F（上下文恢复）、H-H（失败可观测）**全部 UNVERIFIED**。
+**BotHarness 能否实际加载 SourceLore Skill —— 未经实测。**
+
+设计方向：自建 checkpoint，**不假定平台提供原生恢复**。探测失败 → 走全自建，不得停工。
+
+### ★ 反例统计口径纠正
+
+先前说「21 项反例绑定」是错的：
+- **17 项** `ADOPTED_AS_COUNTEREXAMPLE`，对应 **17 条** `verdict=REJECT` 关联边（一对一）
+- **4 项** `REJECTED_WITH_REASON` **无任何 canonical 边**
+- 合计 21 是 **counterexample 角色**身份数，不是绑定数
+
+**没有边就没有绑定。** 若把两者相加说成「21 项反例绑定」是口径错误。
+
+### 两项反向处置已补齐理由
+
+- `U06::C13` 上游 ADAPT → SourceLore **REJECT**：拒的是「方法论绑死 Semgrep」；
+  **保留部分为无**；U06 无许可，**零复制**
+- `U02::C17` 上游 REJECT → SourceLore **REIMPLEMENT**：拒「硬要求」，留「可选图表」；
+  MIT 可复制但**未复制模板**
+
+### 为什么 0 条 amendment
+
+八项都是**约束已有模块之间的接口**。四层模型、可变/不可变分离、哈希失效、裁决状态机、
+CAS 写入、命名空间隔离——机制本来都在，缺的只是跨层契约的显式表述。
+按第 11 节「优先建立独立架构决策记录，不反复改写已有 75 条 canonical」。
+
+### 验证
+
+`f1c_d2_verify` 22/22；十八个验证器全链绿
+（12/30/51/43/46/48/53/48/54/56/17/21/15/18/19/19/22/10），全部 exit 0。生成器幂等。
+
+### ★ 本批踩的坑（断言设计）
+
+四条断言首次误报，全是**把否定句里的措辞当成违规本身**：
+「而不是把…写成『平台已支持』」「不得出现『平台已支持』的表述」
+「A. 假定平台已提供（不可接受）」「不得反过来声称平台已有恢复接口」。
+
+**修法：改用句级否定判据**——按 `。；\n，` 切句，同句内出现否定词则视为「在说不得这样」。
+固定字符窗口（12 字）不够，因为否定词与短语之间会隔很长。
+
+**教训：检查「不得出现某断言」时，判据必须是「同句内有没有否定」，不是「附近有没有关键词」。**
+
+### 下一步：F1-C-D3
+
+1. 21 项 counterexample 角色（17 边 + 4 无绑定）的许可证逐项总审（本批只核了 2 项）
+2. 7 条零来源 canonical（0013/0019/0045/0047/0061/0063/0073）质量审查
+3. UPSTREAM-06 全部条目零复制复核（本批只验了 C13）
+4. 交叉表冻结前最后一致性检查（冻结留 F1-D）
+
+**本轮未创建正式 Skill、未改人工文档、未生成 CAPABILITY_CROSSWALK.json。**

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-04T16:08:36+08:00",
+  "updated_at": "2026-11-04T16:50:56+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -843,6 +843,41 @@
       "blocked_reason": null,
       "depends_on": [
         "M1-FUSION-GATE-F1C-C3"
+      ]
+    },
+    {
+      "id": "M1-FUSION-GATE-F1C-D2",
+      "milestone": "M1-FUSION-GATE",
+      "goal": "F1-C-D2：八项跨模块架构冲突裁决 + F2 门禁",
+      "inputs": [
+        "docs/fusion/F1C_D_HANDOFF_INVENTORY.json",
+        "docs/fusion/F1B_STORAGE_DECISIONS.md",
+        "docs/fusion/F1B_RENDERER_DECISIONS.md",
+        "docs/fusion/F1B_DSH_ADAPTER_DECISIONS.md"
+      ],
+      "expected_outputs": [
+        "docs/fusion/F1C_D2_ARCHITECTURE_DECISIONS.md",
+        "docs/fusion/F1C_D2_CONFLICT_RESOLUTIONS.json",
+        "docs/fusion/F1C_D2_F2_GATES.json",
+        "docs/fusion/F1C_D2_VERIFICATION.json",
+        "tools/fusion/f1c_d2_decisions.py",
+        "tools/fusion/f1c_d2_build.py",
+        "tools/fusion/f1c_d2_verify.py"
+      ],
+      "status": "DONE",
+      "verification_commands": [
+        "python3 tools/fusion/f1c_d2_build.py",
+        "python3 tools/fusion/f1c_d2_verify.py",
+        "python3 tools/fusion/f1c_history_verify.py"
+      ],
+      "evidence_paths": [
+        "docs/fusion/F1C_D2_ARCHITECTURE_DECISIONS.md",
+        "docs/fusion/F1C_D2_VERIFICATION.json"
+      ],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": [
+        "M1-FUSION-GATE-F1C-D1"
       ]
     }
   ]

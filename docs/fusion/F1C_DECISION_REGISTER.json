@@ -179,5 +179,122 @@
   "batches_registered": [
     "F1-C-A",
     "F1-C-B"
-  ]
+  ],
+  "d2_cross_module_resolutions": {
+    "batch": "F1-C-D2",
+    "artifact": "F1C_D2_CONFLICT_RESOLUTIONS.json",
+    "items": {
+      "X-2": {
+        "status": "DESIGN_RESOLVED",
+        "owner": {
+          "semantic": "Lifecycle（SL-CAP-0040）",
+          "persistence": "Storage（SL-CAP-0063 / SL-CAP-0067）"
+        },
+        "canonicals": [
+          "SL-CAP-0040",
+          "SL-CAP-0063",
+          "SL-CAP-0067",
+          "SL-CAP-0035"
+        ]
+      },
+      "X-4": {
+        "status": "DESIGN_RESOLVED",
+        "owner": {
+          "semantic_validity": "Lifecycle（SL-CAP-0041/0042）",
+          "claim_truth": "Evidence-Claims（SL-CAP-0028）",
+          "physical_consistency": "Storage（SL-CAP-0062/0064）",
+          "presentation": "Renderer（SL-CAP-0055，无裁决权）"
+        },
+        "canonicals": [
+          "SL-CAP-0062",
+          "SL-CAP-0041",
+          "SL-CAP-0042",
+          "SL-CAP-0055",
+          "SL-CAP-0028"
+        ]
+      },
+      "X-5": {
+        "status": "IMPLEMENTATION_DEPENDENCY",
+        "owner": {
+          "contract": "Storage（SL-CAP-0064）",
+          "selection": "F2 决策记录（唯一 owner：Storage）"
+        },
+        "canonicals": [
+          "SL-CAP-0064",
+          "SL-CAP-0062"
+        ]
+      },
+      "X-6": {
+        "status": "DESIGN_RESOLVED",
+        "owner": {
+          "contract": "Storage（SL-CAP-0065）",
+          "selection": "F2（唯一 owner：Storage）"
+        },
+        "canonicals": [
+          "SL-CAP-0065",
+          "SL-CAP-0067"
+        ]
+      },
+      "X-7": {
+        "status": "DESIGN_RESOLVED",
+        "owner": {
+          "path_contract": "Storage（SL-CAP-0067）",
+          "default_location": "F2（唯一 owner：Storage）"
+        },
+        "canonicals": [
+          "SL-CAP-0067",
+          "SL-CAP-0062"
+        ]
+      },
+      "K-7": {
+        "status": "DESIGN_RESOLVED",
+        "owner": {
+          "write_authorization": "Security（SL-CAP-0053 P-3/P-4：人工审查与发布批准）",
+          "render_boundary": "Renderer（SL-CAP-0055：只产新文件）",
+          "storage_layer": "Storage（SL-CAP-0062 A 层不可变）"
+        },
+        "canonicals": [
+          "SL-CAP-0055",
+          "SL-CAP-0062",
+          "SL-CAP-0041"
+        ]
+      },
+      "Y-4": {
+        "status": "DESIGN_RESOLVED",
+        "owner": {
+          "semantics": "DSH-Adapter（SL-CAP-0071）",
+          "persistence": "Storage（SL-CAP-0064 / 0062 分区）"
+        },
+        "canonicals": [
+          "SL-CAP-0071",
+          "SL-CAP-0062",
+          "SL-CAP-0064"
+        ]
+      },
+      "Y-6": {
+        "status": "BLOCKED_BY_MISSING_EVIDENCE",
+        "owner": {
+          "interface_contract": "DSH-Adapter（SL-CAP-0068 / 0071 / 0072 / 0073）"
+        },
+        "canonicals": [
+          "SL-CAP-0068",
+          "SL-CAP-0071",
+          "SL-CAP-0072",
+          "SL-CAP-0073"
+        ]
+      }
+    },
+    "reverse_dispositions_reviewed": [
+      "UPSTREAM-06::C13",
+      "UPSTREAM-02::C17"
+    ],
+    "counterexample_clarification": {
+      "adopted_as_counterexample_unique_identities": 17,
+      "rejected_with_reason_unbound_identities": 4,
+      "total_counterexample_role_identities": 21,
+      "actual_identity_to_canonical_edges": 17
+    },
+    "amendments_made": 0,
+    "note": "本批只补架构裁决与说明，未修改任何 canonical 字段（0 条 amendment）。"
+  }
 }
