@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-04T17:25:17+08:00",
+  "updated_at": "2026-11-04T18:16:28+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -947,6 +947,35 @@
       "blocked_reason": null,
       "depends_on": [
         "M1-FUSION-GATE-F1C-D3"
+      ]
+    },
+    {
+      "id": "M2-F2-P0",
+      "milestone": "M2",
+      "goal": "F2-P0：DeepSeek Harness 运行时真实接入验证（六项 Y-6 探测）",
+      "inputs": [
+        "docs/fusion/CAPABILITY_CROSSWALK.json",
+        "docs/fusion/F1D_F2_ENTRY_GATES.json"
+      ],
+      "expected_outputs": [
+        "docs/implementation/F2_P0_RUNTIME_PROBE_REPORT.md",
+        "docs/implementation/F2_P0_RUNTIME_CAPABILITIES.json",
+        "docs/implementation/F2_P0_ADAPTER_DECISIONS.md",
+        "docs/implementation/F2_P0_VERIFICATION.json",
+        "tools/runtime_probe/",
+        "tools/f2p0_verify.py"
+      ],
+      "status": "DONE",
+      "verification_commands": [
+        "python3 tools/f2p0_verify.py"
+      ],
+      "evidence_paths": [
+        "docs/implementation/F2_P0_VERIFICATION.json"
+      ],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": [
+        "M1-FUSION-GATE-F1-D"
       ]
     }
   ]

@@ -3,7 +3,7 @@
   "generated_by": "tools/fusion/f1d_verify.py",
   "independent": true,
   "imports_batch_verifiers": false,
-  "git_head": "115f8cc02e624bde4df0d898f3b313f96d450c86",
+  "git_head": "4934eecdb90da3934d2f49dfed2d457337ffa01b",
   "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
   "summary": {
     "passed": 26,

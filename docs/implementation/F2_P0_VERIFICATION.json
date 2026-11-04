@@ -1,0 +1,110 @@
+{
+  "task": "M2 / F2-P0（运行时真实接入验证）",
+  "generated_by": "tools/f2p0_verify.py",
+  "independent": true,
+  "git_head": "4934eecdb90da3934d2f49dfed2d457337ffa01b",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "summary": {
+    "passed": 16,
+    "total": 16,
+    "result": "PASS"
+  },
+  "checks": [
+    {
+      "id": "c1",
+      "name": "冻结 Crosswalk 哈希正确",
+      "passed": true,
+      "detail": "冻结哈希 42841207b8088c89… 与预期及 manifest 一致=True"
+    },
+    {
+      "id": "c2",
+      "name": "探测 Skill 结构来自真实规范",
+      "passed": true,
+      "detail": "frontmatter=True、name=True、description=True（对齐真实 resolveAgentsHome 规范）"
+    },
+    {
+      "id": "c3",
+      "name": "六项探测全部执行且有完整记录",
+      "passed": true,
+      "detail": "六项齐全=True；状态合法=True；缺字段=无"
+    },
+    {
+      "id": "c4",
+      "name": "本地工具调用确实发生",
+      "passed": true,
+      "detail": "真实执行 exit=0，sha256_12=8527197b4cb4 与独立复算一致=True"
+    },
+    {
+      "id": "c5",
+      "name": "成功与失败可区分",
+      "passed": true,
+      "detail": "成功 exit=0 / 失败 exit=7（必须可区分）"
+    },
+    {
+      "id": "c6",
+      "name": "权限拒绝不当作成功",
+      "passed": true,
+      "detail": "越界写 exit=3、未落盘=True、显式拦截=True"
+    },
+    {
+      "id": "c7",
+      "name": "重试不默认认定为幂等",
+      "passed": true,
+      "detail": "状态记录存在，含 pid=1944792（可区分不同次执行，不默认幂等）"
+    },
+    {
+      "id": "c8",
+      "name": "检查点与知识权威隔离",
+      "passed": true,
+      "detail": "探测产物与冻结基线分离，越界 无"
+    },
+    {
+      "id": "c9",
+      "name": "未验证能力不被标 VERIFIED",
+      "passed": true,
+      "detail": "状态与证据一致，问题 无；分布={'VERIFIED': 2, 'PARTIALLY_VERIFIED': 4, 'UNVERIFIED': 0, 'UNSUPPORTED': 0}"
+    },
+    {
+      "id": "c10",
+      "name": "所有实验可重复",
+      "passed": true,
+      "detail": "同一输入两次执行，除 pid/cwd 外结果一致（可重复）"
+    },
+    {
+      "id": "c11",
+      "name": "新增文件属受控范围",
+      "passed": true,
+      "detail": "新增文件均在受控范围，越界 无"
+    },
+    {
+      "id": "c12",
+      "name": "未触碰正式冻结基线",
+      "passed": true,
+      "detail": "冻结文件 git 无改动=True、哈希未变=True"
+    },
+    {
+      "id": "c13",
+      "name": "未修改人工文档",
+      "passed": true,
+      "detail": "既有 .md 被修改/删除 无（新增不计）"
+    },
+    {
+      "id": "c14",
+      "name": "未泄露凭据",
+      "passed": true,
+      "detail": "三份产物无凭据样式内容，问题 无"
+    },
+    {
+      "id": "c15",
+      "name": "F1-D 独立验收仍通过",
+      "passed": true,
+      "detail": "f1d_verify exit=0，26/26 PASS -> F1D_VERIFICATION.json"
+    },
+    {
+      "id": "c16",
+      "name": "F2 门禁与实测结果一致",
+      "passed": true,
+      "detail": "六项实测状态与门禁一致，问题 无"
+    }
+  ]
+}

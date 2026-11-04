@@ -1,0 +1,133 @@
+{
+  "artifact": "F2_P0_RUNTIME_CAPABILITIES",
+  "schema_version": 1,
+  "generated_by": "F2-P0 实测（真实命令 + 真实退出码）",
+  "freeze_baseline": {
+    "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+    "verified": true,
+    "freeze_decision": "FROZEN_INTERNAL_RESTRICTED"
+  },
+  "status_legend": {
+    "VERIFIED": "真实执行且有可复算证据",
+    "PARTIALLY_VERIFIED": "部分链路实测通过，关键环节未验证",
+    "UNVERIFIED": "无有效证据",
+    "UNSUPPORTED": "有明确针对本平台的反证"
+  },
+  "environment": {
+    "harness_package_version": "0.2.1-rc.3",
+    "dsh_cli_self_reported": "0.2.1-rc.2",
+    "dsh_home": "/home/arlune_innersea/.config/open-deepseek-harness-desktop/dsh-home",
+    "default_agents_root": "~/.agents/skills",
+    "agents_root_override_env": "DSH_AGENTS_HOME（见 dsh-home-paths/src/index.ts:27）",
+    "skill_plugins_present": [
+      "@deepseek-ai/dsh-skill",
+      "@deepseek-ai/dsh-skill-filesystem",
+      "@deepseek-ai/dsh-skill-office",
+      "@deepseek-ai/dsh-tool-skill"
+    ],
+    "agent_state_bridge": "agents-anywhere-bridge-next 存在但 disabled，其 stateRoot 为空目录",
+    "bot_harness_evidence": "dsh-home/sessions 下存在 botharness-bots 会话目录；会话文件总数 1246",
+    "profiles_available": ["web（当前运行中）", "headless"]
+  },
+  "probes": [
+    {
+      "probe_id": "Y6-P1",
+      "topic": "Skill 发现（DSH 侧）",
+      "test_preconditions": "在 ~/.agents/skills/ 放置 sourcelore-probe/SKILL.md，frontmatter 含 name 与 description",
+      "actual_command_or_action": "cp -r tools/runtime_probe/skill/sourcelore-probe ~/.agents/skills/",
+      "expected_result": "Skill 被 Harness 发现并进入 skill catalog",
+      "observed_result": "本会话 skill catalog 立即出现 sourcelore-probe，无需重启；移除目录后立即消失",
+      "evidence_ref": ["tools/runtime_probe/skill/sourcelore-probe/SKILL.md", "会话 skill catalog 变更两次"],
+      "exit_code": 0,
+      "status": "VERIFIED",
+      "limitation": "为 DSH 侧目录扫描证据；BotHarness 侧独立发现机制未单独实测",
+      "fallback_design": "无需自建：使用 ~/.agents/skills 或 DSH_AGENTS_HOME 覆盖即可",
+      "next_action": "在 BotHarness 实际 bot 会话中复测一次 catalog 注入"
+    },
+    {
+      "probe_id": "Y6-P2",
+      "topic": "持久化状态",
+      "test_preconditions": "SOURCELORE_PROBE_ROOT 指向受控 artifacts 目录",
+      "actual_command_or_action": "state_tool.py write probe-key-1；随后 read（独立进程各一次）",
+      "expected_result": "写入后可跨调用、跨进程读取；越界写被拒",
+      "observed_result": "写入 ok；同进程读回 written-at-step1；独立进程读回同一值；越界写返回 PATH_ESCAPE_BLOCKED exit=3；落盘文件 67 字节",
+      "evidence_ref": ["tools/runtime_probe/artifacts/probe-key-1.json"],
+      "exit_code": 0,
+      "status": "PARTIALLY_VERIFIED",
+      "limitation": "验证的是本地文件系统持久化，不是平台级 KV/状态接口；未发现平台原生状态 API",
+      "fallback_design": "SourceLore 自建 checkpoint（SL-CAP-0071 逻辑 + Storage 物理），按 Y-4 独立分区，不入知识命名空间",
+      "next_action": "F2-P1 落地自建 checkpoint 存储层，补崩溃恢复测试"
+    },
+    {
+      "probe_id": "Y6-P3",
+      "topic": "权限审批",
+      "test_preconditions": "只读检查权限预设配置；未执行任何危险操作",
+      "actual_command_or_action": "读取 permission-presets 三档；以不存在键读取验证失败态",
+      "expected_result": "存在可区分的三档预设；拒绝/失败必须显式",
+      "observed_result": "三档预设读得：read-only(sandbox=read-only, approval=never)、workspace-write(sandbox=workspace-write, approval=ask)、danger-full-access(sandbox=danger-full-access, approval=never)；工具失败返回 exit=4 与 NOT_FOUND，非静默成功",
+      "evidence_ref": ["web profile 权限预设配置 L198-L216"],
+      "exit_code": 0,
+      "status": "PARTIALLY_VERIFIED",
+      "limitation": "未验证 Skill 内部的审批传递链路；approval=ask 的实际弹窗与拒绝行为未实测（本会话审批提示已禁用）",
+      "fallback_design": "SourceLore 自带授权令牌：每次写操作要求 authorization_scope，缺失即拒绝（SL-CAP-0072 三档门禁）",
+      "next_action": "在 approval=ask 的隔离会话中实测一次拒绝是否阻断执行"
+    },
+    {
+      "probe_id": "Y6-P4",
+      "topic": "上下文与任务恢复",
+      "test_preconditions": "sessions 根存在且已有持久化会话",
+      "actual_command_or_action": "dsh headless --session-id session-does-not-exist",
+      "expected_result": "未知 id 明确报错，不静默新建",
+      "observed_result": "明确报错 session does not exist；sessions 目录按 cwd 分片持久化",
+      "evidence_ref": ["dsh-home/sessions 结构"],
+      "exit_code": 0,
+      "status": "PARTIALLY_VERIFIED",
+      "limitation": "未实测真实恢复回放；仅证明会话 id 可定位，未证明恢复后模型自动记得任务",
+      "fallback_design": "SourceLore 自建 checkpoint 记录 task_id/run_id/stage；恢复依赖 checkpoint 而非会话记忆（SL-CAP-0071）",
+      "next_action": "F2-P1 用自建 checkpoint 做一次跨进程恢复演练"
+    },
+    {
+      "probe_id": "Y6-P5",
+      "topic": "失败 / 超时 / 取消 / 未知",
+      "test_preconditions": "确定性本地脚本，无外部依赖",
+      "actual_command_or_action": "echo_tool(正常) / fail_tool(exit 7) / timeout 2 slow_tool(5s)",
+      "expected_result": "成功、失败、超时、未知可区分",
+      "observed_result": "成功 exit=0 且 sha256_12=2689367b205c 可复算；失败 exit=7 且带 intentional 标记；超时 exit=124；未知项 exit=4 明确 NOT_FOUND；超时后无残留副作用",
+      "evidence_ref": ["tools/runtime_probe/artifacts/"],
+      "exit_code": 0,
+      "status": "VERIFIED",
+      "limitation": "SUCCESS/FAILED/TIMEOUT/CANCELLED/UNKNOWN 为探测侧分类，非平台原生枚举；CANCELLED 未单独实测",
+      "fallback_design": "SourceLore 自有结果契约：五态显式记录，超时不得推断为未执行",
+      "next_action": "补测 CANCELLED（SIGTERM 中断）"
+    },
+    {
+      "probe_id": "Y6-P6",
+      "topic": "Skill 端到端调用",
+      "test_preconditions": "Skill 已发现；工具脚本确定性可复算",
+      "actual_command_or_action": "加载 sourcelore-probe 后按其指令执行 echo_tool.py sourcelore-probe-token",
+      "expected_result": "发现→加载→内容注入→真实执行→结果可校验",
+      "observed_result": "加载返回 skill_content 并给出 base directory；执行输出 sha256_12=8527197b4cb4，与独立复算一致；结果写入受控 artifacts",
+      "evidence_ref": ["tools/runtime_probe/artifacts/p6_events.jsonl", "tools/runtime_probe/artifacts/p6_stderr.log"],
+      "exit_code": 0,
+      "status": "PARTIALLY_VERIFIED",
+      "limitation": "端到端未由 BotHarness 侧发起；dsh headless 全链路因 MISSING_CREDENTIAL 未跑通（provider route deepseek-official 无凭据），本次为同会话内加载与真实执行",
+      "fallback_design": "接入仍成立：发现与执行已独立验证；凭据属环境问题非设计缺陷",
+      "next_action": "补齐 headless 凭据或切换至已有凭据的 provider 后复跑端到端"
+    }
+  ],
+  "summary": {
+    "total": 6,
+    "by_status": {
+      "VERIFIED": 2,
+      "PARTIALLY_VERIFIED": 4,
+      "UNVERIFIED": 0,
+      "UNSUPPORTED": 0
+    }
+  },
+  "explicit_non_claims": [
+    "不证明 BotHarness 侧自主发现机制（仅 DSH 侧目录扫描证据）",
+    "不证明 Skill 内审批传递链路（approval=ask 未实测）",
+    "不证明会话恢复后模型自动记得任务",
+    "不证明 headless 端到端可跑（凭据缺失）"
+  ]
+}

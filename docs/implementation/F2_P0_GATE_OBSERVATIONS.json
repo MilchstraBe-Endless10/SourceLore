@@ -1,0 +1,66 @@
+{
+  "artifact": "F1D_F2_GATE_OBSERVATIONS",
+  "schema_version": 1,
+  "generated_at": "2026-11-04T18:16:28+08:00",
+  "generated_by": "F2-P0 实测回填（不修改 F1D_F2_ENTRY_GATES.json 的冻结快照）",
+  "principle": "冻结快照只读；本文件叠加实测观测，两者分开。",
+  "observations": [
+    {
+      "gate_id": "Y6-P1",
+      "status": "VERIFIED",
+      "evidence_ref": [
+        "tools/runtime_probe/skill/sourcelore-probe/SKILL.md",
+        "会话 skill catalog 变更两次"
+      ],
+      "observed_at": "2026-11-04T18:16:28+08:00",
+      "limitation": "为 DSH 侧目录扫描证据；BotHarness 侧独立发现机制未单独实测"
+    },
+    {
+      "gate_id": "Y6-P2",
+      "status": "PARTIALLY_VERIFIED",
+      "evidence_ref": [
+        "tools/runtime_probe/artifacts/probe-key-1.json"
+      ],
+      "observed_at": "2026-11-04T18:16:28+08:00",
+      "limitation": "验证的是本地文件系统持久化，不是平台级 KV/状态接口；未发现平台原生状态 API"
+    },
+    {
+      "gate_id": "Y6-P3",
+      "status": "PARTIALLY_VERIFIED",
+      "evidence_ref": [
+        "web profile 权限预设配置 L198-L216"
+      ],
+      "observed_at": "2026-11-04T18:16:28+08:00",
+      "limitation": "未验证 Skill 内部的审批传递链路；approval=ask 的实际弹窗与拒绝行为未实测（本会话审批提示已禁用）"
+    },
+    {
+      "gate_id": "Y6-P4",
+      "status": "PARTIALLY_VERIFIED",
+      "evidence_ref": [
+        "dsh-home/sessions 结构"
+      ],
+      "observed_at": "2026-11-04T18:16:28+08:00",
+      "limitation": "未实测真实恢复回放；仅证明会话 id 可定位，未证明恢复后模型自动记得任务"
+    },
+    {
+      "gate_id": "Y6-P5",
+      "status": "VERIFIED",
+      "evidence_ref": [
+        "tools/runtime_probe/artifacts/"
+      ],
+      "observed_at": "2026-11-04T18:16:28+08:00",
+      "limitation": "SUCCESS/FAILED/TIMEOUT/CANCELLED/UNKNOWN 为探测侧分类，非平台原生枚举；CANCELLED 未单独实测"
+    },
+    {
+      "gate_id": "Y6-P6",
+      "status": "PARTIALLY_VERIFIED",
+      "evidence_ref": [
+        "tools/runtime_probe/artifacts/p6_events.jsonl",
+        "tools/runtime_probe/artifacts/p6_stderr.log"
+      ],
+      "observed_at": "2026-11-04T18:16:28+08:00",
+      "limitation": "端到端未由 BotHarness 侧发起；dsh headless 全链路因 MISSING_CREDENTIAL 未跑通（provider route deepseek-official 无凭据），本次为同会话内加载与真实执行"
+    }
+  ],
+  "gate_file_untouched": "docs/fusion/F1D_F2_ENTRY_GATES.json"
+}
