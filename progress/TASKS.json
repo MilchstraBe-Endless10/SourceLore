@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-04T10:10:35+08:00",
+  "updated_at": "2026-11-04T12:10:25+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -719,6 +719,37 @@
       "blocked_reason": null,
       "depends_on": [
         "M1-FUSION-GATE-F1C-A"
+      ]
+    },
+    {
+      "id": "M1-FUSION-GATE-F1C-C1",
+      "milestone": "M1-FUSION-GATE",
+      "goal": "F1-C-C 阶段 1：3 项 DEFER（U04-C16/U05-C10/U01-C12）的归属与承接裁决",
+      "inputs": [
+        "tools/fusion/f1c_routed_decisions.py",
+        "docs/fusion/F1C_B_ROUTED_RECONCILIATION.json"
+      ],
+      "expected_outputs": [
+        "docs/fusion/CAPABILITY_CROSSWALK.draft.json（增量：+SL-CAP-0075）",
+        "docs/fusion/F1C_C1_DEFER_RESOLUTION.md",
+        "docs/fusion/F1C_C1_RESOLUTION.json",
+        "docs/fusion/F1C_C1_VERIFICATION.json",
+        "tools/fusion/f1c_history_invariants.py"
+      ],
+      "status": "DONE",
+      "verification_commands": [
+        "python3 tools/fusion/f1c_apply_routed.py",
+        "python3 tools/fusion/f1c_c1_verify.py"
+      ],
+      "evidence_paths": [
+        "docs/fusion/F1C_C1_DEFER_RESOLUTION.md",
+        "docs/fusion/F1C_C1_RESOLUTION.json",
+        "docs/fusion/F1C_C1_VERIFICATION.json"
+      ],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": [
+        "M1-FUSION-GATE-F1C-B"
       ]
     }
   ]

@@ -1,8 +1,8 @@
 {
   "task": "M1-FUSION-GATE-F1 / F1-B / Storage",
-  "generated_at": "2026-11-04T10:09:46+08:00",
+  "generated_at": "2026-11-04T12:09:41+08:00",
   "generated_by": "tools/fusion/f1b_verify_storage.py",
-  "git_head": "ad1202864719ea1bbda3f9971e0a0106b36db37b",
+  "git_head": "1ac00dbbddf020bf52ccb12d906d0455f22d0888",
   "scope_note": "F1 设计与产物验证；未测试真实数据库的事务与并发性能",
   "summary": {
     "passed": 54,
@@ -38,19 +38,19 @@
       "id": "c5",
       "name": "canonical_id 从 0001 连续",
       "passed": true,
-      "detail": "全表共 74 条，从 0001 连续无断号"
+      "detail": "全表共 75 条，从 0001 连续无断号"
     },
     {
       "id": "c6",
       "name": "canonical_id 无重复",
       "passed": true,
-      "detail": "canonical_id 无重复（74 条）"
+      "detail": "canonical_id 无重复（75 条）"
     },
     {
       "id": "c7",
       "name": "每个原始身份最多映射一次",
       "passed": true,
-      "detail": "每项原始能力最多正式映射一次，共 120 个身份"
+      "detail": "每项原始能力最多正式映射一次，共 123 个身份"
     },
     {
       "id": "c8",
@@ -62,13 +62,13 @@
       "id": "c9",
       "name": "来源证据可追溯",
       "passed": true,
-      "detail": "11 个原始来源全部可在索引定位"
+      "detail": "12 个原始来源全部可在索引定位"
     },
     {
       "id": "c10",
       "name": "ROUTED 晋升可追踪",
       "passed": true,
-      "detail": "晋升 11 条（路由表来源 4 条），问题 无"
+      "detail": "晋升 12 条（路由表来源 5 条），问题 无"
     },
     {
       "id": "c11",
@@ -80,13 +80,13 @@
       "id": "c12",
       "name": "三态守恒合计 143",
       "passed": true,
-      "detail": "mapped 120 + routed 3 + unreviewed 20 = 143；互斥=True"
+      "detail": "mapped 123 + routed 0 + unreviewed 20 = 143；互斥=True"
     },
     {
       "id": "c13",
       "name": "global_state_counts 与实算一致",
       "passed": true,
-      "detail": "global_state_counts 自洽 mapped=120 routed=3 unreviewed=20 canonical=74；不变量=True"
+      "detail": "global_state_counts 自洽 mapped=123 routed=0 unreviewed=20 canonical=75；不变量=True"
     },
     {
       "id": "c14",
@@ -98,7 +98,7 @@
       "id": "c15",
       "name": "Storage 批次记录自洽",
       "passed": true,
-      "detail": "mapped=12（应≥11）、本批 6 条全在=True、redirected 现算一致=True（当前 0）"
+      "detail": "mapped=13（应≥11）、本批 6 条全在=True、redirected 现算一致=True（当前 0）"
     },
     {
       "id": "c16",
@@ -254,7 +254,7 @@
       "id": "c41",
       "name": "决策文档与 JSON 一致",
       "passed": true,
-      "detail": "缺失 ID=无；批次数字 [12, 7, 0] 出现=True；累计快照 105/11/27 自洽=True；raw_total 出现=True"
+      "detail": "缺失 ID=无；批次数字 [13, 7, 0] 出现=True；累计快照 105/11/27 自洽=True；raw_total 出现=True"
     },
     {
       "id": "c42",
@@ -308,7 +308,7 @@
       "id": "c50",
       "name": "stats 重算一致且幂等",
       "passed": true,
-      "detail": "stats 重算一致 mapped=120 routed=3 unrev=20；Storage 重算 mapped=11=True"
+      "detail": "stats 重算一致 mapped=123 routed=0 unrev=20；Storage 重算 mapped=11=True"
     },
     {
       "id": "c51",

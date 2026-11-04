@@ -1,0 +1,103 @@
+{
+  "task": "M1-FUSION-GATE-F1 / F1-C-C1（3 项 DEFER 归属与承接裁决）",
+  "generated_at": "2026-11-04T12:09:41+08:00",
+  "generated_by": "tools/fusion/f1c_c1_verify.py",
+  "git_head": "1ac00dbbddf020bf52ccb12d906d0455f22d0888",
+  "summary": {
+    "passed": 15,
+    "total": 15,
+    "result": "PASS"
+  },
+  "checks": [
+    {
+      "id": "c1",
+      "name": "原始 143 项身份唯一且不变",
+      "passed": true,
+      "detail": "原始身份 143 项，unique=143"
+    },
+    {
+      "id": "c2",
+      "name": "既有 74 条 canonical 身份完整",
+      "passed": true,
+      "detail": "F1-B 原有 73 条全在；缺失 无"
+    },
+    {
+      "id": "c3",
+      "name": "F1-C-B 裁决结果完整保留",
+      "passed": true,
+      "detail": "F1-C-B 的 8 项承接/新建全部保留，问题 无"
+    },
+    {
+      "id": "c4",
+      "name": "三项 DEFER 逐项形成有证据的裁决",
+      "passed": true,
+      "detail": "3 项均给出终裁且带证据/理由/许可/unresolved，问题 无"
+    },
+    {
+      "id": "c5",
+      "name": "每身份最多一个正式 canonical 归属",
+      "passed": true,
+      "detail": "每身份唯一归属，重复 无；缺失 无"
+    },
+    {
+      "id": "c6",
+      "name": "owner 与跨模块依赖不混淆",
+      "passed": true,
+      "detail": "唯一 owner 一致=True；跨模块接口已列=True；问题 无"
+    },
+    {
+      "id": "c7",
+      "name": "REJECT/DEFER/ADAPT 语义未被误用",
+      "passed": true,
+      "detail": "verdict 合法且上游 disposition 未被篡改，问题 无"
+    },
+    {
+      "id": "c8",
+      "name": "许可证权限完整",
+      "passed": true,
+      "detail": "逐源许可完整，问题 无"
+    },
+    {
+      "id": "c9",
+      "name": "新增能力无重复语义",
+      "passed": true,
+      "detail": "名称唯一=True；已声明排除 C13/C14 方案=True"
+    },
+    {
+      "id": "c10",
+      "name": "Crosswalk 与登记表状态一致",
+      "passed": true,
+      "detail": "3 项裁决与 Crosswalk 应用一致，问题 无"
+    },
+    {
+      "id": "c11",
+      "name": "三态互斥且合计 143",
+      "passed": true,
+      "detail": "mapped 123 + routed 0 + unreviewed 20 = 143；互斥=True"
+    },
+    {
+      "id": "c12",
+      "name": "历史身份映射保持集合级不变量",
+      "passed": true,
+      "detail": "历史映射 112 条：丢失 0、无登记变更 0、登记内迁移 0｜历史 73 条 canonical ID 未被复用/删除，问题 无｜本批新增 amendment 的条目 ['SL-CAP-0028', 'SL-CAP-0060', 'SL-CAP-0064', 'SL-CAP-0071']，全部有留痕；问题 无"
+    },
+    {
+      "id": "c14",
+      "name": "决策文档完整",
+      "passed": true,
+      "detail": "文档覆盖三项裁决与承接细节，缺 无"
+    },
+    {
+      "id": "c15",
+      "name": "重建重复执行幂等",
+      "passed": true,
+      "detail": "重跑应用层后草稿逐字节一致（幂等）"
+    },
+    {
+      "id": "c16",
+      "name": "历史审计/索引/引擎/Schema 不变",
+      "passed": true,
+      "detail": "原始索引/六审计/正式引擎均未改动"
+    }
+  ]
+}

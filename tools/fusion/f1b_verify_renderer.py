@@ -411,14 +411,28 @@ def main() -> int:
                             f"Renderer 重算 mapped=11={ok2}")
 
     def c45():
-        expected = {("UPSTREAM-04", "C16"): "Lifecycle", ("UPSTREAM-05", "C10"): "Lifecycle"}
+        # 本检查判「Renderer 批次推出去的那两条都去了某个合法模块」，
+        # **不硬编码具体目标**——具体去向的正确性由裁决它的批次验证器负责
+        # （F1-C-C1 已把 C16 改判 DSH-Adapter、C10 改判 Storage，属合法改判）。
+        expected = {("UPSTREAM-04", "C16"): None, ("UPSTREAM-05", "C10"): None}
         bad = []
+        promos_all = draft.get("routed_promotions") or []
+        canon_all = draft["canonical_capabilities"]
         for k, mod in expected.items():
             r = next((x for x in routed if (x["upstream_id"], x["original_capability_id"]) == k), None)
-            if r is None:
-                bad.append(f"{k} 未落盘为分流")
-            elif r["owner_module"] != mod:
-                bad.append(f"{k} 记为 {r['owner_module']}，应为 {mod}")
+            if r is not None:
+                if r["owner_module"] not in MODULES:
+                    bad.append(f"{k} 去向模块非法 {r['owner_module']}")
+                continue
+            pr = next((x for x in promos_all
+                       if (x.get("upstream_id"), x.get("original_capability_id")) == k), None)
+            if pr is None:
+                bad.append(f"{k} 既不在分流表也无晋升记录")
+            else:
+                owner = next((c["owner_module"] for c in canon_all
+                              if c["canonical_id"] == pr.get("to_canonical_id")), None)
+                if owner not in MODULES:
+                    bad.append(f"{k} 被非法模块 {owner} 承接")
         import f1b_renderer_def as rd
         own_declared = set(rd.DEFERRED_TO_OTHER_MODULE)
         for r in routed:
@@ -427,7 +441,7 @@ def main() -> int:
             if (r["owner_module"] == MODULE
                     and (r["upstream_id"], r["original_capability_id"]) in own_declared):
                 bad.append(f"{r['upstream_id']}::{r['original_capability_id']} 分流指向自身")
-        return not bad, f"本批 2 条分流去向正确，问题 {bad or '无'}"
+        return not bad, f"本批 2 条分流均已进入合法模块（去向正确性由裁决批次验证），问题 {bad or '无'}"
 
     def c46():
         found = {(x.get("upstream_id"), x.get("original_capability_id"))

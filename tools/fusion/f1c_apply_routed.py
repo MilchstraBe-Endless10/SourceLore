@@ -24,6 +24,10 @@ RECON = F / "F1C_B_ROUTED_RECONCILIATION.json"
 
 sys.path.insert(0, str(Path(__file__).parent))
 import f1c_routed_decisions as DEC
+try:
+    import f1c_c1_decisions as DEC2
+except ImportError:
+    DEC2 = None
 
 BATCH = "F1-C-B"
 
@@ -105,7 +109,7 @@ def apply(base, raw, dry):
                 "upstream_id": k[0], "original_capability_id": k[1],
                 "from": "cross_module_redirections",
                 "to_canonical_id": target,
-                "promoted_in_batch": f"F1-{BATCH}",
+                "promoted_in_batch": BATCH,
                 "reason": tested["reason"][:400],
             })
             routed[:] = [r for r in routed
@@ -154,14 +158,14 @@ def apply(base, raw, dry):
                              "ref_count": 1, "sources": [k[0]]},
                 "unresolved": defn["unresolved"],
                 "merge_note": defn["merge_note"],
-                "created_in_batch": f"F1-{BATCH}",
+                "created_in_batch": BATCH,
             }
             canon.append(newc)
             d["routed_promotions"].append({
                 "upstream_id": k[0], "original_capability_id": k[1],
                 "from": "cross_module_redirections",
                 "to_canonical_id": cid,
-                "promoted_in_batch": f"F1-{BATCH}",
+                "promoted_in_batch": BATCH,
                 "reason": tested["reason"][:400],
             })
             routed[:] = [r for r in routed
@@ -192,6 +196,123 @@ def amend_canonical(canon, amend, changes):
     c.setdefault("f1c_amendments", []).append(amend["append_note"])
     changes.append({"identity": "-", "action": "AMEND_CANONICAL",
                     "target": amend["target"], "note": "追加 F1-C-B 修订" })
+
+
+def apply_c1(d, raw, dry):
+    """F1-C-C 阶段 1：在三项 DEFER 身份上叠加本批裁决。
+
+    前置约束：这三项必须仍在 ROUTED 中且未被任何 canonical 承接——
+    否则说明 F1-C-B 的 DEFER 已被别处改动，必须停止。
+    """
+    by = {(i["upstream_id"], i["original_capability_id"]): i for i in raw["items"]}
+    canon = d["canonical_capabilities"]
+    routed = d["cross_module_redirections"]
+    routed_keys = {(r["upstream_id"], r["original_capability_id"]) for r in routed}
+    mapped_keys = {(r["upstream_id"], r["original_capability_id"])
+                   for c in canon for r in c["upstream_refs"]}
+    changes, created = [], []
+
+    for tested in DEC2.DECISIONS:
+        k = tuple(tested["identity"])
+        if k not in routed_keys:
+            raise SystemExit(f"ERROR: {k} 不在当前 ROUTED 中，无法应用本批裁决")
+        if k in mapped_keys:
+            raise SystemExit(f"ERROR: {k} 已被映射，重复应用会二次映射")
+        it = by[k]
+        direction = tested["direction"]
+
+        if direction == "ADOPT_EXISTING":
+            target = tested["target_canonical"]
+            c = next((x for x in canon if x["canonical_id"] == target), None)
+            if c is None:
+                raise SystemExit(f"ERROR: 目标 {target} 不存在")
+            if c["owner_module"] != tested["final_owner"]:
+                raise SystemExit(f"ERROR: {target} owner={c['owner_module']}，"
+                                 f"裁决写 {tested['final_owner']}")
+            if not any((r["upstream_id"], r["original_capability_id"]) == k
+                       for r in c["upstream_refs"]):
+                c["upstream_refs"].append(ref_from_raw(it, tested["verdict"]))
+                lic = it.get("license") or {}
+                c["license_permission"]["per_upstream"].append({
+                    "spdx": lic.get("spdx"),
+                    "copy_permitted": lic.get("copy_permitted"),
+                    "attribution_required": lic.get("attribution_required"),
+                    "license_link_required": lic.get("license_link_required"),
+                    "modification_notice_required": lic.get("modification_notice_required"),
+                    "upstream_id": k[0],
+                })
+            d["routed_promotions"].append({
+                "upstream_id": k[0], "original_capability_id": k[1],
+                "from": "cross_module_redirections",
+                "to_canonical_id": target,
+                "promoted_in_batch": DEC2.BATCH,
+                "reason": tested["reason"][:400],
+            })
+            routed[:] = [r for r in routed
+                         if (r["upstream_id"], r["original_capability_id"]) != k]
+            changes.append({"identity": f"{k[0]}::{k[1]}", "action": "ADOPT_EXISTING",
+                            "target": target, "owner": c["owner_module"],
+                            "previous_owner": tested["previous_owner"],
+                            "owner_changed": tested["previous_owner"] != tested["final_owner"],
+                            "license_note": tested["license_note"]})
+            amend_canonical(canon, tested["amendment"], changes)
+
+        elif direction == "NEW_CANONICAL":
+            defn = tested["new_canonical_def"]
+            cid = next_id(canon)[0]
+            lic = it.get("license") or {}
+            newc = {
+                "canonical_id": cid,
+                "name": defn["name"],
+                "description": defn["description"],
+                "owner_module": defn["owner_module"],
+                "upstream_refs": [ref_from_raw(it, tested["verdict"])],
+                "disposition": "ADAPT",
+                "license_permission": {
+                    "per_upstream": [{
+                        "spdx": lic.get("spdx"),
+                        "copy_permitted": lic.get("copy_permitted"),
+                        "attribution_required": lic.get("attribution_required"),
+                        "license_link_required": lic.get("license_link_required"),
+                        "modification_notice_required": lic.get("modification_notice_required"),
+                        "upstream_id": k[0],
+                    }],
+                    "copy_permitted": bool(lic.get("copy_permitted")),
+                    "constraint": "MIT；只借 gold+确定性指标的形态，未复制其 judge 实现与评测数据",
+                },
+                "dependencies": defn["dependencies"],
+                "overlaps": [],
+                "v1_scope": defn["v1_scope"],
+                "input_boundary": defn["input_boundary"],
+                "output_boundary": defn["output_boundary"],
+                "evidence": {"raw_index_sha256": d["source_index_sha256"],
+                             "ref_count": 1, "sources": [k[0]]},
+                "unresolved": defn["unresolved"],
+                "merge_note": defn["merge_note"],
+                "created_in_batch": DEC2.BATCH,
+            }
+            canon.append(newc)
+            d["routed_promotions"].append({
+                "upstream_id": k[0], "original_capability_id": k[1],
+                "from": "cross_module_redirections",
+                "to_canonical_id": cid,
+                "promoted_in_batch": DEC2.BATCH,
+                "reason": tested["reason"][:400],
+            })
+            routed[:] = [r for r in routed
+                         if (r["upstream_id"], r["original_capability_id"]) != k]
+            created.append({"canonical_id": cid, "name": defn["name"],
+                            "from_identity": f"{k[0]}::{k[1]}",
+                            "owner": defn["owner_module"]})
+            changes.append({"identity": f"{k[0]}::{k[1]}", "action": "NEW_CANONICAL",
+                            "target": cid, "owner": defn["owner_module"],
+                            "previous_owner": tested["previous_owner"],
+                            "owner_changed": tested["previous_owner"] != tested["final_owner"],
+                            "license_note": tested["license_note"]})
+        else:
+            raise SystemExit(f"ERROR: 本批不接受方向 {direction}（3 项 DEFER 必须给出终裁）")
+
+    return d, changes, created
 
 
 def recompute(d, base):
@@ -247,10 +368,11 @@ def update_progress(d):
     if "f1c_batches" not in p:
         p["f1c_batches"] = {}
     p["f1c_batches"]["F1-C-B"] = "DONE"
+    p["f1c_batches"]["F1-C-C1"] = "DONE"
     p["f1c_batches"]["F1-C"] = "IN_PROGRESS"
-    p["next_batch_start"] = "F1-C-C"
-    p["note"] = ("F1-C-B 已清算 11 项 ROUTED：7 承接到已有 canonical、1 新建 SL-CAP-0074、"
-                 "3 DEFER 待 F1-C-C 定 owner。剩余 20 项 UNREVIEWED 与 3 项 DEFER 未处理。")
+    p["next_batch_start"] = "F1-C-C2"
+    p["note"] = ("F1-C-B 已清算 11 项 ROUTED；F1-C-C1 已将 3 项 DEFER 全部终裁"
+                 "（2 承接已有 + 1 新建 SL-CAP-0075）。剩余 20 项 UNREVIEWED 未处理。")
     PROG.write_text(json.dumps(p, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"updated  -> {PROG.name}")
 
@@ -259,6 +381,10 @@ def main() -> int:
     dry = "--dry-run" in sys.argv
     base, raw = load()
     d, changes, created = apply(base, raw, dry)
+    c1_changes, c1_created = [], []
+    if DEC2 is not None:
+        d, c1_changes, c1_created = apply_c1(d, raw, dry)
+        created = created + c1_created
     d = recompute(d, base)
     g = d["global_state_counts"]
     print(f"mapped={g['mapped_count']} routed={g['routed_pending_count']} "
@@ -274,13 +400,15 @@ def main() -> int:
         "generated_by": "tools/fusion/f1c_apply_routed.py",
         "source_baseline": "docs/fusion/F1B_FROZEN_BASELINE.json",
         "decision_source": "tools/fusion/f1c_routed_decisions.py",
-        "principle": "每次运行都从 F1-B 基线重建再叠加裁决；不是打补丁，故撤销裁决不会遗留历史路由。",
+        "principle": ("每次运行都从 F1-B 基线重建再叠加裁决；不是打补丁，故撤销裁决不会遗留历史路由。"
+                      "叠加顺序：F1-B 基线 → F1-C-B 裁决（8 项 ROUTED 清算）→ F1-C-C1 裁决（3 项 DEFER 终裁）。"),
         "totals_after": {
             "mapped": g["mapped_count"], "routed": g["routed_pending_count"],
             "unreviewed": g["unreviewed_count"], "canonical": g["canonical_count"],
             "sum_check": g["sum_check"],
         },
         "changes": changes,
+        "changes_c1": c1_changes,
         "created_canonicals": created,
         "errata": DEC.ERRATA,
     }

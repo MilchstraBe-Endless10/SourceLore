@@ -192,18 +192,30 @@ def main() -> int:
                     f"= {len(mapped)+len(routed)+len(unreviewed)}；三态互斥")
 
     def c14():
-        # 不得通过强行映射隐藏 DEFER
+        # 「不得通过强行映射隐藏 DEFER」：DEFER 必须是**有理由且带解除条件**的，
+        # 且解除必须由后续批次显式裁决（本批 F1-C-C1 已把 3 项全部终裁）。
+        # 因此判据改为：每项 DEFER 都带 defer_condition；若已被解除，必须有 C1 裁决记录。
         deferred = [d for d in DEC.DECISIONS if d["direction"] == "DEFER_WITH_REASON"]
         why_not_mapped = []
+        try:
+            import f1c_c1_decisions as C1
+            resolved = {(x["identity"][0], x["identity"][1]) for x in C1.DECISIONS}
+        except Exception:
+            resolved = set()
         for d in deferred:
             k = tuple(d["identity"])
-            if k in mapped:
-                why_not_mapped.append(f"{k} 被强行映射，违反 DEFER 裁决")
-            if k not in routed:
-                why_not_mapped.append(f"{k} 不在 routed 中（应保持 ROUTED）")
             if not d.get("defer_condition"):
-                why_not_mapped.append(f"{k} 缺延期条件")
-        return not why_not_mapped, f"{len(deferred)} 项 DEFER 仍为 ROUTED 且带延期条件，{why_not_mapped or '无问题'}"
+                why_not_mapped.append(f"{k} 缺延期条件（DEFER 必须有解除条件）")
+            if k in mapped and k not in resolved:
+                why_not_mapped.append(f"{k} 被强行映射，且无后续批次的显式解除裁决")
+            if k not in mapped and k not in routed:
+                why_not_mapped.append(f"{k} 既不在 routed 也未映射——状态丢失")
+        note = ("全部已由 F1-C-C1 显式终裁" if resolved
+                else "仍保持 ROUTED")
+        detail = (f"{len(deferred)} 项 DEFER 均带解除条件；"
+                  f"已解除 {len(resolved & {tuple(d['identity']) for d in deferred})} 项（{note}）；"
+                  f"{why_not_mapped or '无问题'}")
+        return not why_not_mapped, detail
 
     def c15():
         # 所有路由迁移有完整历史：每条晋升都在 routed_promotions 里
@@ -273,6 +285,30 @@ def main() -> int:
         miss = [k for k in need if k not in txt]
         return not miss, f"文档含 11 项裁决 + 两处勘误，缺 {miss or '无'}"
 
+    def c_hist():
+        """历史不变量（集合级）：不只数量没减少，集合内容也未被偷偷换掉。"""
+        import sys as _s, json as _j
+        from pathlib import Path as _P
+        _s.path.insert(0, str(_P(__file__).parent))
+        from f1c_history_invariants import (
+            check_identity_mapping_preserved, check_canonical_ids_not_reused,
+            check_amendments_recorded, build_allowed_moves)
+        _recons = []
+        for _n in ("F1C_B_ROUTED_RECONCILIATION.json", "F1C_C1_RESOLUTION.json"):
+            _p = F / _n
+            if _p.exists():
+                _recons.append(_j.loads(_p.read_text(encoding="utf-8")))
+        _base = _j.loads((F / "F1B_FROZEN_BASELINE.json").read_text(encoding="utf-8"))
+        _moves = build_allowed_moves(_recons)
+        _r1 = check_identity_mapping_preserved(_base, draft, _moves)
+        _r2 = check_canonical_ids_not_reused(_base, draft)
+        _r3 = check_amendments_recorded(_base, draft, _recons[0] if _recons else {})
+        _r3b = True
+        for _rc in _recons[1:]:
+            _r3b = _r3b and check_amendments_recorded(_base, draft, _rc)[0]
+        detail = f"{_r1[1]}｜{_r2[1]}｜{_r3[1]}"
+        return (_r1[0] and _r2[0] and _r3[0] and _r3b), detail
+
     check("c1", "原始 143 项唯一且不变", c1)
     check("c2", "F1-B 原有 73 条 canonical 可追溯", c2)
     check("c3", "当前 11 项 ROUTED 身份准确", c3)
@@ -293,6 +329,7 @@ def main() -> int:
     check("c18", "六份审计与原始索引未改", c18)
     check("c19", "正式引擎/Schema/测试未改", c19)
     check("c20", "决策文档完整", c20)
+    check("c_hist", "历史不变量（集合级）", c_hist)
 
     passed = sum(1 for r in results if r["passed"])
     out = {

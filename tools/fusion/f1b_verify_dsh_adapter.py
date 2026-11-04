@@ -507,12 +507,23 @@ def main() -> int:
     def c55():
         expected = {("UPSTREAM-01", "C12"): "Evidence-Claims"}
         bad = []
+        promos_all = draft.get("routed_promotions") or []
+        canon_all = draft["canonical_capabilities"]
         for k, mod in expected.items():
             r = next((x for x in routed if (x["upstream_id"], x["original_capability_id"]) == k), None)
-            if r is None:
-                bad.append(f"{k} 未落盘为分流")
-            elif r["owner_module"] != mod:
-                bad.append(f"{k} 记为 {r['owner_module']}，应为 {mod}")
+            if r is not None:
+                if r["owner_module"] != mod:
+                    bad.append(f"{k} 记为 {r['owner_module']}，应为 {mod}")
+                continue
+            pr = next((x for x in promos_all
+                       if (x.get("upstream_id"), x.get("original_capability_id")) == k), None)
+            if pr is None:
+                bad.append(f"{k} 既不在分流表也无晋升记录")
+            else:
+                owner = next((c["owner_module"] for c in canon_all
+                              if c["canonical_id"] == pr.get("to_canonical_id")), None)
+                if owner != mod:
+                    bad.append(f"{k} 被 {owner} 承接，预期去向 {mod}")
         return not bad, f"本批 1 条分流去向正确，问题 {bad or '无'}"
 
     def c56():

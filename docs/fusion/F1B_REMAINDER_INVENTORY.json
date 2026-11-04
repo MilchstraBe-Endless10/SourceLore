@@ -1,7 +1,7 @@
 {
   "artifact": "F1B_REMAINDER_INVENTORY",
   "schema_version": 1,
-  "generated_at": "2026-11-04T10:06:13+08:00",
+  "generated_at": "2026-11-04T12:05:45+08:00",
   "generated_by": "tools/fusion/f1b_build_remainder.py",
   "computed_from": [
     "docs/fusion/RAW_CAPABILITY_INDEX.json",
@@ -10,8 +10,8 @@
   "source_index_sha256": "e62b68ed1658b95ebe73b37d8c991c995b1a18201faabbde81e41214c03a2f11",
   "disclaimer": "F1-B 十个模块批次全部完成，但不等于 143 项原始能力已全部完成归属裁决。本清单从当前 Crosswalk 计算得出，逐项标明仍待 F1-C 处理的条目。不得为了让统计变成 143/0/0 而人为制造 canonical。",
   "state_totals": {
-    "mapped": 120,
-    "routed": 3,
+    "mapped": 123,
+    "routed": 0,
     "unreviewed": 20,
     "total": 143
   },
@@ -46,25 +46,7 @@
         "UPSTREAM-06::C21 模型分层（Deep / Standard）"
       ]
     },
-    "routed_unclaimed": {
-      "Evidence-Claims": {
-        "module": "Evidence-Claims",
-        "module_batch_done": true,
-        "count": 1,
-        "items": [
-          "UPSTREAM-01::C12"
-        ]
-      },
-      "Lifecycle": {
-        "module": "Lifecycle",
-        "module_batch_done": true,
-        "count": 2,
-        "items": [
-          "UPSTREAM-04::C16",
-          "UPSTREAM-05::C10"
-        ]
-      }
-    },
+    "routed_unclaimed": {},
     "reject_classification": {
       "adjudicated": [],
       "design_counterexample": [
@@ -276,7 +258,7 @@
       "upstream_id": "UPSTREAM-01",
       "original_capability_id": "C12",
       "capability": "eval baseline (gold + deterministic metrics + judge)",
-      "state": "ROUTED",
+      "state": "MAPPED",
       "suggested_owner": "Evidence-Claims",
       "original_disposition": "ADAPT",
       "license": {
@@ -284,9 +266,9 @@
         "copy_permitted": true,
         "attribution_required": true
       },
-      "unprocessed_reason": "去向已裁决但目标模块尚未建 canonical 承接",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-01",
@@ -1307,17 +1289,17 @@
       "upstream_id": "UPSTREAM-04",
       "original_capability_id": "C16",
       "capability": "完成检查（三处 Completion Check）",
-      "state": "ROUTED",
-      "suggested_owner": "Lifecycle",
+      "state": "MAPPED",
+      "suggested_owner": "DSH-Adapter",
       "original_disposition": "ADAPT",
       "license": {
         "spdx": "MIT",
         "copy_permitted": true,
         "attribution_required": true
       },
-      "unprocessed_reason": "去向已裁决但目标模块尚未建 canonical 承接",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-04",
@@ -1647,17 +1629,17 @@
       "upstream_id": "UPSTREAM-05",
       "original_capability_id": "C10",
       "capability": "契约式 Postconditions",
-      "state": "ROUTED",
-      "suggested_owner": "Lifecycle",
+      "state": "MAPPED",
+      "suggested_owner": "Storage",
       "original_disposition": "ADAPT",
       "license": {
         "spdx": "Apache-2.0",
         "copy_permitted": true,
         "attribution_required": true
       },
-      "unprocessed_reason": "去向已裁决但目标模块尚未建 canonical 承接",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-05",

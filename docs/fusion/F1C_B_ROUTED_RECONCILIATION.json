@@ -4,12 +4,12 @@
   "generated_by": "tools/fusion/f1c_apply_routed.py",
   "source_baseline": "docs/fusion/F1B_FROZEN_BASELINE.json",
   "decision_source": "tools/fusion/f1c_routed_decisions.py",
-  "principle": "每次运行都从 F1-B 基线重建再叠加裁决；不是打补丁，故撤销裁决不会遗留历史路由。",
+  "principle": "每次运行都从 F1-B 基线重建再叠加裁决；不是打补丁，故撤销裁决不会遗留历史路由。叠加顺序：F1-B 基线 → F1-C-B 裁决（8 项 ROUTED 清算）→ F1-C-C1 裁决（3 项 DEFER 终裁）。",
   "totals_after": {
-    "mapped": 120,
-    "routed": 3,
+    "mapped": 123,
+    "routed": 0,
     "unreviewed": 20,
-    "canonical": 74,
+    "canonical": 75,
     "sum_check": 143
   },
   "changes": [
@@ -108,11 +108,58 @@
       "note": "保持 ROUTED 状态；终态处置待 terminal_disposition 迁移"
     }
   ],
+  "changes_c1": [
+    {
+      "identity": "UPSTREAM-04::C16",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0071",
+      "owner": "DSH-Adapter",
+      "previous_owner": "Lifecycle",
+      "owner_changed": true,
+      "license_note": "MIT / copy_permitted=true（只借形态，未复制散文要求原文）"
+    },
+    {
+      "identity": "-",
+      "action": "AMEND_CANONICAL",
+      "target": "SL-CAP-0071",
+      "note": "追加 F1-C-B 修订"
+    },
+    {
+      "identity": "UPSTREAM-05::C10",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0064",
+      "owner": "Storage",
+      "previous_owner": "Lifecycle",
+      "owner_changed": true,
+      "license_note": "Apache-2.0 / copy_permitted=true（借「具名 postcondition」形式，未复制条目原文）"
+    },
+    {
+      "identity": "-",
+      "action": "AMEND_CANONICAL",
+      "target": "SL-CAP-0064",
+      "note": "追加 F1-C-B 修订"
+    },
+    {
+      "identity": "UPSTREAM-01::C12",
+      "action": "NEW_CANONICAL",
+      "target": "SL-CAP-0075",
+      "owner": "Evidence-Claims",
+      "previous_owner": "Evidence-Claims",
+      "owner_changed": false,
+      "license_note": "MIT / copy_permitted=true（只用形态，不用其 judge 实现与数据）"
+    }
+  ],
   "created_canonicals": [
     {
       "canonical_id": "SL-CAP-0074",
       "name": "阶段产物完整性投影（跳过阶段显式缺失，禁止空对象冒充已完成）",
       "from_identity": "UPSTREAM-06::C25"
+    },
+    {
+      "canonical_id": "SL-CAP-0075",
+      "name": "离线评测基线与判据校准（拒绝付费 API 与多模型 judge）",
+      "from_identity": "UPSTREAM-01::C12",
+      "owner": "Evidence-Claims"
     }
   ],
   "errata": [

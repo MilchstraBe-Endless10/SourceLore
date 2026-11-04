@@ -234,6 +234,30 @@ def main() -> int:
                   f"terminal_disposition 未落地={no_terminal}（按计划留 F1-C-D）")
         return (no_f1d and no_terminal), detail
 
+    def c_hist():
+        """历史不变量（集合级）：不只数量没减少，集合内容也未被偷偷换掉。"""
+        import sys as _s, json as _j
+        from pathlib import Path as _P
+        _s.path.insert(0, str(_P(__file__).parent))
+        from f1c_history_invariants import (
+            check_identity_mapping_preserved, check_canonical_ids_not_reused,
+            check_amendments_recorded, build_allowed_moves)
+        _recons = []
+        for _n in ("F1C_B_ROUTED_RECONCILIATION.json", "F1C_C1_RESOLUTION.json"):
+            _p = F / _n
+            if _p.exists():
+                _recons.append(_j.loads(_p.read_text(encoding="utf-8")))
+        _base = _j.loads((F / "F1B_FROZEN_BASELINE.json").read_text(encoding="utf-8"))
+        _moves = build_allowed_moves(_recons)
+        _r1 = check_identity_mapping_preserved(_base, draft, _moves)
+        _r2 = check_canonical_ids_not_reused(_base, draft)
+        _r3 = check_amendments_recorded(_base, draft, _recons[0] if _recons else {})
+        _r3b = True
+        for _rc in _recons[1:]:
+            _r3b = _r3b and check_amendments_recorded(_base, draft, _rc)[0]
+        detail = f"{_r1[1]}｜{_r2[1]}｜{_r3[1]}"
+        return (_r1[0] and _r2[0] and _r3[0] and _r3b), detail
+
     check("c1", "143 项原始身份完整", c1)
     check("c2", "已映射 112 项保持不变", c2)
     check("c3", "73 条 canonical 完整保留", c3)
@@ -250,6 +274,7 @@ def main() -> int:
     check("c14", "三态守恒检查未削弱", c14)
     check("c15", "裁决文档完整", c15)
     check("c16", "未提前进入 F1-C-B / F1-D", c16)
+    check("c_hist", "历史不变量（集合级）", c_hist)
 
     passed = sum(1 for r in results if r["passed"])
     total = len(results)

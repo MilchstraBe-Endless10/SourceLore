@@ -87,8 +87,21 @@ def main() -> int:
         return got == set(EC_IDS), f"EC 编号 {len(got)}/9 全部存在"
 
     def c8():
+        # F1-C 起允许后续批次把新 canonical 并入 EC（如 SL-CAP-0075 离线评测基线）。
+        # 判据：EC 原有的编号必须全在；新增的可以存在；不得有非 EC 条目被标成 EC。
         own = {c["canonical_id"] for c in canon if c["owner_module"] == MODULE}
-        return own == set(EC_IDS), f"owner_module=Evidence-Claims 的条目 {len(own)} 条，与 EC 编号集一致"
+        missing = set(EC_IDS) - own
+        extra = own - set(EC_IDS)
+        # 没有条目被「错误地」标成 EC：每条 owner=EC 的都必须要么属原集合、要么是 F1-C 明确并入的
+        bad_owner = []
+        for cid in extra:
+            c = next(x for x in canon if x["canonical_id"] == cid)
+            if not c.get("created_in_batch", "").startswith("F1-C"):
+                bad_owner.append(cid)
+        ok = not missing and not bad_owner
+        detail = (f"EC 原有 {len(EC_IDS)} 条全在={not missing}；"
+                  f"后续并入 {len(extra)} 条 {sorted(extra)}；异常并入={bad_owner or '无'}")
+        return ok, detail
 
     def c9():
         # 前两批的编号与 owner 不得被本批改动
@@ -161,11 +174,13 @@ def main() -> int:
         b = next((x for x in draft.get("batches", []) if x["module"] == MODULE), None)
         if b is None:
             return False, "草稿中没有 Evidence-Claims 批次记录"
-        ok = (b["raw_mapped_to_this_module"] == len(ec_owned)
-              and b["canonical_ids"] == EC_IDS
-              and b["canonical_ids"] == sorted(b["canonical_ids"]))
-        return ok, (f"raw_mapped_to_this_module={b['raw_mapped_to_this_module']} 与实际 {len(ec_owned)} 一致；"
-                    f"canonical_ids 齐备={b['canonical_ids'] == EC_IDS}")
+        ids_ok = all(i in b["canonical_ids"] for i in EC_IDS)
+        sorted_ok = b["canonical_ids"] == sorted(b["canonical_ids"])
+        mapped_ok = b["raw_mapped_to_this_module"] >= len(ec_owned)
+        ok = ids_ok and sorted_ok and mapped_ok
+        detail = (f"raw_mapped={b['raw_mapped_to_this_module']}（实际≥{len(ec_owned)}）；"
+                  f"EC 原 9 条全在={ids_ok}；有序={sorted_ok}")
+        return ok, detail
 
     def c17():
         # 作用域修正：batch_summary 按统计契约指向「业务顺序上最后完成的那一批」，
@@ -475,6 +490,30 @@ def main() -> int:
         detail = f"U06::C06 归属 SL-CAP-0028={has_key}；文档记录拒绝语义={doc_reject}"
         return (has_key and doc_reject), detail
 
+    def c_hist():
+        """历史不变量（集合级）：不只数量没减少，集合内容也未被偷偷换掉。"""
+        import sys as _s, json as _j
+        from pathlib import Path as _P
+        _s.path.insert(0, str(_P(__file__).parent))
+        from f1c_history_invariants import (
+            check_identity_mapping_preserved, check_canonical_ids_not_reused,
+            check_amendments_recorded, build_allowed_moves)
+        _recons = []
+        for _n in ("F1C_B_ROUTED_RECONCILIATION.json", "F1C_C1_RESOLUTION.json"):
+            _p = F / _n
+            if _p.exists():
+                _recons.append(_j.loads(_p.read_text(encoding="utf-8")))
+        _base = _j.loads((F / "F1B_FROZEN_BASELINE.json").read_text(encoding="utf-8"))
+        _moves = build_allowed_moves(_recons)
+        _r1 = check_identity_mapping_preserved(_base, draft, _moves)
+        _r2 = check_canonical_ids_not_reused(_base, draft)
+        _r3 = check_amendments_recorded(_base, draft, _recons[0] if _recons else {})
+        _r3b = True
+        for _rc in _recons[1:]:
+            _r3b = _r3b and check_amendments_recorded(_base, draft, _rc)[0]
+        detail = f"{_r1[1]}｜{_r2[1]}｜{_r3[1]}"
+        return (_r1[0] and _r2[0] and _r3[0] and _r3b), detail
+
     check("c1", "原始索引哈希与草稿记录一致", c1)
     check("c2", "原始索引未被修改", c2)
     check("c3", "原始身份总数 143 且无重复", c3)
@@ -525,6 +564,7 @@ def main() -> int:
     check("c48", "第E节六项约束逐条落章", c48)
     check("c49", "九条 ROUTED 全部承接且不再外推", c49)
     check("c50", "U06::C06 拒绝语义已记录", c50)
+    check("c_hist", "历史不变量（集合级）", c_hist)
 
     passed = sum(1 for r in results if r["passed"])
     total = len(results)
