@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-04T16:50:56+08:00",
+  "updated_at": "2026-11-04T17:09:53+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -878,6 +878,40 @@
       "blocked_reason": null,
       "depends_on": [
         "M1-FUSION-GATE-F1C-D1"
+      ]
+    },
+    {
+      "id": "M1-FUSION-GATE-F1C-D3",
+      "milestone": "M1-FUSION-GATE",
+      "goal": "F1-C-D3：来源可信性/许可证/实际复用/设计处置 四层总审 + 冻结前一致性检查",
+      "inputs": [
+        "docs/fusion/F1C_D2_CONFLICT_RESOLUTIONS.json",
+        "docs/fusion/RAW_CAPABILITY_INDEX.json",
+        "progress/UPSTREAM-0*-audit.json",
+        "THIRD_PARTY_NOTICES.md"
+      ],
+      "expected_outputs": [
+        "docs/fusion/F1C_D3_PROVENANCE_LICENSE_AUDIT.json",
+        "docs/fusion/F1C_D3_COUNTEREXAMPLE_AUDIT.md",
+        "docs/fusion/F1C_D3_ZERO_ORIGIN_REVIEW.md",
+        "docs/fusion/F1C_D3_FREEZE_READINESS.json",
+        "docs/fusion/F1C_D3_VERIFICATION.json"
+      ],
+      "status": "DONE",
+      "verification_commands": [
+        "python3 tools/fusion/f1c_d3_audit.py",
+        "python3 tools/fusion/f1c_d3_review.py",
+        "python3 tools/fusion/f1c_d3_freeze.py",
+        "python3 tools/fusion/f1c_d3_verify.py"
+      ],
+      "evidence_paths": [
+        "docs/fusion/F1C_D3_PROVENANCE_LICENSE_AUDIT.json",
+        "docs/fusion/F1C_D3_FREEZE_READINESS.json"
+      ],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": [
+        "M1-FUSION-GATE-F1C-D2"
       ]
     }
   ]

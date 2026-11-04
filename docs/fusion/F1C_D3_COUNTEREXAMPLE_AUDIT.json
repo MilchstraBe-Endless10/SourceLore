@@ -1,0 +1,499 @@
+{
+  "artifact": "F1C_D3_COUNTEREXAMPLE_AUDIT",
+  "schema_version": 1,
+  "generated_at": "2026-11-04T17:09:30+08:00",
+  "generated_by": "tools/fusion/f1c_d3_review.py（只读现算）",
+  "statistics": {
+    "adopted_as_counterexample_identities": 17,
+    "association_edge_count": 17,
+    "rejected_with_reason_unbound_identities": 4,
+    "total_counterexample_role": 21,
+    "clarification": "17 项绑定（17 边）+ 4 项无绑定 = 21 项角色；不能说成「21 项反例绑定」"
+  },
+  "bound_items": [
+    {
+      "identity_key": "UPSTREAM-01::C13",
+      "upstream_capability": "direct external LLM API client",
+      "upstream_where": "llm/openai_client.py, config.py, .env.example",
+      "upstream_disposition": "REJECT",
+      "terminal_disposition": "ADOPTED_AS_COUNTEREXAMPLE",
+      "association_role": "counterexample",
+      "bound_canonical_ids": [
+        "SL-CAP-0070"
+      ],
+      "association_edge_count": 1,
+      "rejected_mechanism": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "how_it_constrains": "该 canonical 无 amendment，反例仅以 refs 标记",
+      "license_permission": {
+        "spdx": "MIT",
+        "copy_permitted": true
+      },
+      "actual_reuse": "零复制——仅以 REJECT verdict 出现在 refs，未进入设计文本",
+      "decision_basis_located": true,
+      "manual_legal_review_needed": false
+    },
+    {
+      "identity_key": "UPSTREAM-01::C14",
+      "upstream_capability": "multi-model judge ensemble",
+      "upstream_where": "evals.py, .env.example JUDGE_*",
+      "upstream_disposition": "REJECT",
+      "terminal_disposition": "ADOPTED_AS_COUNTEREXAMPLE",
+      "association_role": "counterexample",
+      "bound_canonical_ids": [
+        "SL-CAP-0070"
+      ],
+      "association_edge_count": 1,
+      "rejected_mechanism": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "how_it_constrains": "该 canonical 无 amendment，反例仅以 refs 标记",
+      "license_permission": {
+        "spdx": "MIT",
+        "copy_permitted": true
+      },
+      "actual_reuse": "零复制——仅以 REJECT verdict 出现在 refs，未进入设计文本",
+      "decision_basis_located": true,
+      "manual_legal_review_needed": false
+    },
+    {
+      "identity_key": "UPSTREAM-01::C15",
+      "upstream_capability": "bespoke GitHub REST client",
+      "upstream_where": "github_client.py (226 lines)",
+      "upstream_disposition": "REJECT",
+      "terminal_disposition": "ADOPTED_AS_COUNTEREXAMPLE",
+      "association_role": "counterexample",
+      "bound_canonical_ids": [
+        "SL-CAP-0011"
+      ],
+      "association_edge_count": 1,
+      "rejected_mechanism": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "how_it_constrains": "该 canonical 无 amendment，反例仅以 refs 标记",
+      "license_permission": {
+        "spdx": "MIT",
+        "copy_permitted": true
+      },
+      "actual_reuse": "零复制——仅以 REJECT verdict 出现在 refs，未进入设计文本",
+      "decision_basis_located": true,
+      "manual_legal_review_needed": false
+    },
+    {
+      "identity_key": "UPSTREAM-02::C08",
+      "upstream_capability": "仓库摘要聚合 summarize_repo",
+      "upstream_where": "scripts/github_api.py L257-312",
+      "upstream_disposition": "REJECT",
+      "terminal_disposition": "ADOPTED_AS_COUNTEREXAMPLE",
+      "association_role": "counterexample",
+      "bound_canonical_ids": [
+        "SL-CAP-0017"
+      ],
+      "association_edge_count": 1,
+      "rejected_mechanism": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "how_it_constrains": "该 canonical 无 amendment，反例仅以 refs 标记",
+      "license_permission": {
+        "spdx": "MIT",
+        "copy_permitted": true
+      },
+      "actual_reuse": "零复制——仅以 REJECT verdict 出现在 refs，未进入设计文本",
+      "decision_basis_located": true,
+      "manual_legal_review_needed": false
+    },
+    {
+      "identity_key": "UPSTREAM-02::C09",
+      "upstream_capability": "树格式化 format_tree",
+      "upstream_where": "scripts/github_api.py L232-255",
+      "upstream_disposition": "REJECT",
+      "terminal_disposition": "ADOPTED_AS_COUNTEREXAMPLE",
+      "association_role": "counterexample",
+      "bound_canonical_ids": [
+        "SL-CAP-0015"
+      ],
+      "association_edge_count": 1,
+      "rejected_mechanism": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "how_it_constrains": "该 canonical 无 amendment，反例仅以 refs 标记",
+      "license_permission": {
+        "spdx": "MIT",
+        "copy_permitted": true
+      },
+      "actual_reuse": "零复制——仅以 REJECT verdict 出现在 refs，未进入设计文本",
+      "decision_basis_located": true,
+      "manual_legal_review_needed": false
+    },
+    {
+      "identity_key": "UPSTREAM-02::C15",
+      "upstream_capability": "置信度三档百分比",
+      "upstream_where": "SKILL.md L123-131, assets/report_template.md L159-168",
+      "upstream_disposition": "REJECT",
+      "terminal_disposition": "ADOPTED_AS_COUNTEREXAMPLE",
+      "association_role": "counterexample",
+      "bound_canonical_ids": [
+        "SL-CAP-0038"
+      ],
+      "association_edge_count": 1,
+      "rejected_mechanism": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "how_it_constrains": "补充报告间冲突处理（F1-C-C3 由 U04-C21 引入）：两份研究对同一事实的解释不一致时，**必须先分辨两类**，不得直接当 claim 冲突：\nR-1 **视角差异**（如「架构好」vs「维护差」分别从不同维度评价，两者都成立）→ 并列呈现，各自标注适用条件与评价维度，**不判谁错**；\n…",
+      "license_permission": {
+        "spdx": "MIT",
+        "copy_permitted": true
+      },
+      "actual_reuse": "零复制——仅以 REJECT verdict 出现在 refs，未进入设计文本",
+      "decision_basis_located": true,
+      "manual_legal_review_needed": false
+    },
+    {
+      "identity_key": "UPSTREAM-02::C18",
+      "upstream_capability": "自建 GitHub REST 客户端",
+      "upstream_where": "scripts/github_api.py 全文（GITHUB_TOKEN/BASE_URL/_get）",
+      "upstream_disposition": "REJECT",
+      "terminal_disposition": "ADOPTED_AS_COUNTEREXAMPLE",
+      "association_role": "counterexample",
+      "bound_canonical_ids": [
+        "SL-CAP-0011"
+      ],
+      "association_edge_count": 1,
+      "rejected_mechanism": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "how_it_constrains": "该 canonical 无 amendment，反例仅以 refs 标记",
+      "license_permission": {
+        "spdx": "MIT",
+        "copy_permitted": true
+      },
+      "actual_reuse": "零复制——仅以 REJECT verdict 出现在 refs，未进入设计文本",
+      "decision_basis_located": true,
+      "manual_legal_review_needed": false
+    },
+    {
+      "identity_key": "UPSTREAM-03::C23",
+      "upstream_capability": "五档证据优先级",
+      "upstream_where": "SKILL.md §12.2 L1142–L1154",
+      "upstream_disposition": "REJECT",
+      "terminal_disposition": "ADOPTED_AS_COUNTEREXAMPLE",
+      "association_role": "counterexample",
+      "bound_canonical_ids": [
+        "SL-CAP-0037"
+      ],
+      "association_edge_count": 1,
+      "rejected_mechanism": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "how_it_constrains": "补充反例约束（F1-C-C3 由 U03-C23 引入）：**明确拒绝「多档证据优先级排序」机制**。理由：五档无权重不构成全序、且允许任意层级，排序自我消解（上游审计 D10）；叠加会让 SourceLore 出现两套互不兼容的证据体系。硬规则：来源优先级**只能**用于「先看哪个资料」的取数次序…",
+      "license_permission": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true
+      },
+      "actual_reuse": "抽象思想 + 反例条款，无逐字复制（见 license 审计）",
+      "decision_basis_located": true,
+      "manual_legal_review_needed": false
+    },
+    {
+      "identity_key": "UPSTREAM-03::C24",
+      "upstream_capability": "D2 图规范（强制 D2）",
+      "upstream_where": "SKILL.md §11.1–§11.6 L1044–L1113",
+      "upstream_disposition": "REJECT",
+      "terminal_disposition": "ADOPTED_AS_COUNTEREXAMPLE",
+      "association_role": "counterexample",
+      "bound_canonical_ids": [
+        "SL-CAP-0057"
+      ],
+      "association_edge_count": 1,
+      "rejected_mechanism": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "how_it_constrains": "补充反例约束（F1-C-C3 由 U03-C24 引入）：**明确拒绝「强制单一图示语法」**（上游强制 D2 却无工具链、无语法校验，且无「不适用」出口）。硬规则：任何具体图示语法（D2 / Mermaid / PlantUML / SVG）都只是**实现选择**，不得写入 canonical 作…",
+      "license_permission": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true
+      },
+      "actual_reuse": "抽象思想 + 反例条款，无逐字复制（见 license 审计）",
+      "decision_basis_located": true,
+      "manual_legal_review_needed": false
+    },
+    {
+      "identity_key": "UPSTREAM-03::C25",
+      "upstream_capability": "「不得依赖 AST 解析器/图数据库/静态分析管线/索引系统」",
+      "upstream_where": "SKILL.md §2 L52–L53",
+      "upstream_disposition": "REJECT",
+      "terminal_disposition": "ADOPTED_AS_COUNTEREXAMPLE",
+      "association_role": "counterexample",
+      "bound_canonical_ids": [
+        "SL-CAP-0001"
+      ],
+      "association_edge_count": 1,
+      "rejected_mechanism": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "how_it_constrains": "补充技术选型立场（F1-C-C3 由 U03-C25 引入）：**明确拒绝「禁止使用 AST 解析器 / 图数据库 / 静态分析管线 / 索引系统」这条方法论设限**。硬规则：确定性事实抽取（本能力）**可以且应当**使用 AST 等确定性工具；派生索引的可重建性归 SL-CAP-0065。技术选型…",
+      "license_permission": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true
+      },
+      "actual_reuse": "抽象思想 + 反例条款，无逐字复制（见 license 审计）",
+      "decision_basis_located": true,
+      "manual_legal_review_needed": false
+    },
+    {
+      "identity_key": "UPSTREAM-03::C26",
+      "upstream_capability": "每个术语必须独立成页（含小仓库）",
+      "upstream_where": "SKILL.md §7.2 L530–L559（L534、L557）",
+      "upstream_disposition": "REJECT",
+      "terminal_disposition": "ADOPTED_AS_COUNTEREXAMPLE",
+      "association_role": "counterexample",
+      "bound_canonical_ids": [
+        "SL-CAP-0055"
+      ],
+      "association_edge_count": 1,
+      "rejected_mechanism": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "how_it_constrains": "补充导航策略（F1-C-C3 由 U03-C26 引入）：**拒绝「每个术语强制独立成页」**（上游含小仓库也强制，与低 token 目标冲突）。采纳两级策略：默认以**术语表条目**呈现（摘要视图），当某术语满足「被多次引用 / 有独立证据链 / 人工要求升格」之一时，方可升格为独立页。硬规则：术…",
+      "license_permission": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true
+      },
+      "actual_reuse": "抽象思想 + 反例条款，无逐字复制（见 license 审计）",
+      "decision_basis_located": true,
+      "manual_legal_review_needed": false
+    },
+    {
+      "identity_key": "UPSTREAM-03::C27",
+      "upstream_capability": "百分比置信度豁免",
+      "upstream_where": "SKILL.md §13.1 L1201",
+      "upstream_disposition": "REJECT",
+      "terminal_disposition": "ADOPTED_AS_COUNTEREXAMPLE",
+      "association_role": "counterexample",
+      "bound_canonical_ids": [
+        "SL-CAP-0038"
+      ],
+      "association_edge_count": 1,
+      "rejected_mechanism": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "how_it_constrains": "补充报告间冲突处理（F1-C-C3 由 U04-C21 引入）：两份研究对同一事实的解释不一致时，**必须先分辨两类**，不得直接当 claim 冲突：\nR-1 **视角差异**（如「架构好」vs「维护差」分别从不同维度评价，两者都成立）→ 并列呈现，各自标注适用条件与评价维度，**不判谁错**；\n…",
+      "license_permission": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true
+      },
+      "actual_reuse": "零复制——仅以 REJECT verdict 出现在 refs，未进入设计文本",
+      "decision_basis_located": true,
+      "manual_legal_review_needed": false
+    },
+    {
+      "identity_key": "UPSTREAM-04::C25",
+      "upstream_capability": "「一个仓库一个 corpus，住在仓库内」的部署模型",
+      "upstream_where": "SKILL.md L23–L37；README L42–L58",
+      "upstream_disposition": "REJECT",
+      "terminal_disposition": "ADOPTED_AS_COUNTEREXAMPLE",
+      "association_role": "counterexample",
+      "bound_canonical_ids": [
+        "SL-CAP-0067"
+      ],
+      "association_edge_count": 1,
+      "rejected_mechanism": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "how_it_constrains": "该 canonical 无 amendment，反例仅以 refs 标记",
+      "license_permission": {
+        "spdx": "MIT",
+        "copy_permitted": true
+      },
+      "actual_reuse": "零复制——仅以 REJECT verdict 出现在 refs，未进入设计文本",
+      "decision_basis_located": true,
+      "manual_legal_review_needed": false
+    },
+    {
+      "identity_key": "UPSTREAM-04::C26",
+      "upstream_capability": "Research 必须产报告（即使无新发现）",
+      "upstream_where": "SKILL.md L21、L44–L47",
+      "upstream_disposition": "REJECT",
+      "terminal_disposition": "ADOPTED_AS_COUNTEREXAMPLE",
+      "association_role": "counterexample",
+      "bound_canonical_ids": [
+        "SL-CAP-0038"
+      ],
+      "association_edge_count": 1,
+      "rejected_mechanism": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "how_it_constrains": "补充报告间冲突处理（F1-C-C3 由 U04-C21 引入）：两份研究对同一事实的解释不一致时，**必须先分辨两类**，不得直接当 claim 冲突：\nR-1 **视角差异**（如「架构好」vs「维护差」分别从不同维度评价，两者都成立）→ 并列呈现，各自标注适用条件与评价维度，**不判谁错**；\n…",
+      "license_permission": {
+        "spdx": "MIT",
+        "copy_permitted": true
+      },
+      "actual_reuse": "零复制——仅以 REJECT verdict 出现在 refs，未进入设计文本",
+      "decision_basis_located": true,
+      "manual_legal_review_needed": false
+    },
+    {
+      "identity_key": "UPSTREAM-05::C26",
+      "upstream_capability": "知识库住在被分析仓库内",
+      "upstream_where": "SKILL.md L54–L64",
+      "upstream_disposition": "REJECT",
+      "terminal_disposition": "ADOPTED_AS_COUNTEREXAMPLE",
+      "association_role": "counterexample",
+      "bound_canonical_ids": [
+        "SL-CAP-0067"
+      ],
+      "association_edge_count": 1,
+      "rejected_mechanism": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "how_it_constrains": "该 canonical 无 amendment，反例仅以 refs 标记",
+      "license_permission": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true
+      },
+      "actual_reuse": "零复制——仅以 REJECT verdict 出现在 refs，未进入设计文本",
+      "decision_basis_located": true,
+      "manual_legal_review_needed": false
+    },
+    {
+      "identity_key": "UPSTREAM-06::C13",
+      "upstream_capability": "Semgrep 三层规则集 + 本地缓存优先 + 废弃包移除",
+      "upstream_where": "references/phase4-owasp.md L193–L363",
+      "upstream_disposition": "ADAPT",
+      "terminal_disposition": "ADOPTED_AS_COUNTEREXAMPLE",
+      "association_role": "counterexample",
+      "bound_canonical_ids": [
+        "SL-CAP-0018"
+      ],
+      "association_edge_count": 1,
+      "rejected_mechanism": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "how_it_constrains": "该 canonical 无 amendment，反例仅以 refs 标记",
+      "license_permission": {
+        "spdx": null,
+        "copy_permitted": false
+      },
+      "actual_reuse": "零复制——仅以 REJECT verdict 出现在 refs，未进入设计文本",
+      "decision_basis_located": true,
+      "manual_legal_review_needed": true
+    },
+    {
+      "identity_key": "UPSTREAM-06::C28",
+      "upstream_capability": "一键安装外部扫描器",
+      "upstream_where": "scripts/setup.sh 全文",
+      "upstream_disposition": "REJECT",
+      "terminal_disposition": "ADOPTED_AS_COUNTEREXAMPLE",
+      "association_role": "counterexample",
+      "bound_canonical_ids": [
+        "SL-CAP-0051"
+      ],
+      "association_edge_count": 1,
+      "rejected_mechanism": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "how_it_constrains": "该 canonical 无 amendment，反例仅以 refs 标记",
+      "license_permission": {
+        "spdx": null,
+        "copy_permitted": false
+      },
+      "actual_reuse": "零复制——仅以 REJECT verdict 出现在 refs，未进入设计文本",
+      "decision_basis_located": true,
+      "manual_legal_review_needed": true
+    }
+  ],
+  "unbound_items": [
+    {
+      "identity_key": "UPSTREAM-04::C27",
+      "upstream_capability": "HTML/excalidraw 等具体产物格式",
+      "upstream_where": "仓库层面（README、docs/pipeline.excalidraw）",
+      "upstream_disposition": "REJECT",
+      "terminal_disposition": "REJECTED_WITH_REASON",
+      "bound_canonical_ids": [],
+      "association_edge_count": 0,
+      "note": "已裁决拒绝，但**未绑定任何 canonical**——没有边，不是反例绑定",
+      "license_permission": {
+        "spdx": "MIT",
+        "copy_permitted": true
+      },
+      "actual_reuse": "零复制",
+      "decision_basis_located": true,
+      "manual_legal_review_needed": false
+    },
+    {
+      "identity_key": "UPSTREAM-05::C27",
+      "upstream_capability": "产出面向人类的整册项目文档",
+      "upstream_where": "SKILL.md L69–L97；L219–L260",
+      "upstream_disposition": "REJECT",
+      "terminal_disposition": "REJECTED_WITH_REASON",
+      "bound_canonical_ids": [],
+      "association_edge_count": 0,
+      "note": "已裁决拒绝，但**未绑定任何 canonical**——没有边，不是反例绑定",
+      "license_permission": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true
+      },
+      "actual_reuse": "零复制",
+      "decision_basis_located": true,
+      "manual_legal_review_needed": false
+    },
+    {
+      "identity_key": "UPSTREAM-05::C28",
+      "upstream_capability": "双语 Sphinx 站与 gettext 流程",
+      "upstream_where": "SKILL.md L123–L125；references/sphinx-bilingual.md",
+      "upstream_disposition": "REJECT",
+      "terminal_disposition": "REJECTED_WITH_REASON",
+      "bound_canonical_ids": [],
+      "association_edge_count": 0,
+      "note": "已裁决拒绝，但**未绑定任何 canonical**——没有边，不是反例绑定",
+      "license_permission": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true
+      },
+      "actual_reuse": "零复制",
+      "decision_basis_located": true,
+      "manual_legal_review_needed": false
+    },
+    {
+      "identity_key": "UPSTREAM-06::C21",
+      "upstream_capability": "模型分层（Deep / Standard）",
+      "upstream_where": "SKILL.md L130–L330",
+      "upstream_disposition": "REJECT",
+      "terminal_disposition": "REJECTED_WITH_REASON",
+      "bound_canonical_ids": [],
+      "association_edge_count": 0,
+      "note": "已裁决拒绝，但**未绑定任何 canonical**——没有边，不是反例绑定",
+      "license_permission": {
+        "spdx": null,
+        "copy_permitted": false
+      },
+      "actual_reuse": "零复制",
+      "decision_basis_located": true,
+      "manual_legal_review_needed": true
+    }
+  ],
+  "reintroduction_checks": [
+    {
+      "from": "U02::C17 / U03::C24",
+      "rejected": "强制图表成为完成门禁",
+      "guard_canonical": "SL-CAP-0057",
+      "must_contain": "图表不是完成判据",
+      "forbidden_phrasing": "必须出图",
+      "guard_present": true,
+      "forbidden_absent": true,
+      "result": "PASS"
+    },
+    {
+      "from": "U01::C13 / U01::C14",
+      "rejected": "外部付费 API / 多模型 judge",
+      "guard_canonical": "SL-CAP-0075",
+      "must_contain": "V1 不使用任何付费 API",
+      "forbidden_phrasing": "接入外部 LLM API",
+      "guard_present": true,
+      "forbidden_absent": true,
+      "result": "PASS"
+    },
+    {
+      "from": "U05::C28",
+      "rejected": "知识库驻留方式被路径别名绕过隔离",
+      "guard_canonical": "SL-CAP-0067",
+      "must_contain": "根目录显式声明",
+      "forbidden_phrasing": "默认当前工作目录",
+      "guard_present": true,
+      "forbidden_absent": true,
+      "result": "PASS"
+    },
+    {
+      "from": "U03::C23",
+      "rejected": "证据优先级替代验证规则",
+      "guard_canonical": "SL-CAP-0037",
+      "must_contain": "来源类型不构成真伪排序",
+      "forbidden_phrasing": "优先级决定真伪",
+      "guard_present": true,
+      "forbidden_absent": true,
+      "result": "PASS"
+    },
+    {
+      "from": "U03::C25",
+      "rejected": "不可验证即否证",
+      "guard_canonical": "SL-CAP-0028",
+      "must_contain": "不可验证只产生 insufficient_evidence",
+      "forbidden_phrasing": "无法证明即已证伪",
+      "guard_present": true,
+      "forbidden_absent": true,
+      "result": "PASS"
+    }
+  ],
+  "legal_review_queue": [
+    "UPSTREAM-06::C13",
+    "UPSTREAM-06::C21",
+    "UPSTREAM-06::C28"
+  ]
+}

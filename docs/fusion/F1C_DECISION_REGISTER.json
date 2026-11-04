@@ -296,5 +296,51 @@
     },
     "amendments_made": 0,
     "note": "本批只补架构裁决与说明，未修改任何 canonical 字段（0 条 amendment）。"
+  },
+  "d3_provenance_license_audit": {
+    "batch": "F1-C-D3",
+    "artifacts": [
+      "F1C_D3_PROVENANCE_LICENSE_AUDIT.json",
+      "F1C_D3_COUNTEREXAMPLE_AUDIT.json",
+      "F1C_D3_ZERO_ORIGIN_REVIEW.json",
+      "F1C_D3_FREEZE_READINESS.json"
+    ],
+    "four_layers": [
+      "provenance",
+      "license",
+      "actual_reuse",
+      "disposition"
+    ],
+    "canonical_audit_results": {
+      "PASS": 29,
+      "PASS_WITH_DEPENDENCY": 45,
+      "REVIEW_REQUIRED": 1
+    },
+    "verbatim_hit_canonicals": [
+      "SL-CAP-0023"
+    ],
+    "u06_all_copy_permitted_false": true,
+    "counterexample": {
+      "bound": 17,
+      "edges": 17,
+      "unbound": 4,
+      "role_total": 21
+    },
+    "zero_origin": {
+      "count": 7,
+      "pass": 7
+    },
+    "freeze_readiness": {
+      "passed": 20,
+      "total": 20,
+      "result": "READY"
+    },
+    "blockers": [
+      "B-1",
+      "B-2",
+      "B-3"
+    ],
+    "amendments_made": 0,
+    "note": "本批只做审计与记录，未修改任何 canonical、未修改历史审计、未生成正式交叉表。"
   }
 }

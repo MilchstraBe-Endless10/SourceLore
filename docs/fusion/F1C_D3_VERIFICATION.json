@@ -1,0 +1,139 @@
+{
+  "task": "M1-FUSION-GATE-F1 / F1-C-D3（来源可信性与冻结前质量总审）",
+  "generated_at": "2026-11-04T17:09:30+08:00",
+  "generated_by": "tools/fusion/f1c_d3_verify.py",
+  "git_head": "c722484212779216ea1d0922e121a9653bb13660",
+  "summary": {
+    "passed": 21,
+    "total": 21,
+    "result": "PASS"
+  },
+  "checks": [
+    {
+      "id": "c1",
+      "name": "来源审计覆盖全部 143 项",
+      "passed": true,
+      "detail": "canonical 审计 75/75；身份覆盖 139/139 映射 + 28 U06 + 4 未映射 = 171"
+    },
+    {
+      "id": "c2",
+      "name": "17 条反例关联与 4 条独立拒绝分开",
+      "passed": true,
+      "detail": "17 绑定/17 边 + 4 无绑定 = 21 角色；分开统计=True；4 项无绑定=True"
+    },
+    {
+      "id": "c3",
+      "name": "七条零来源逐项有结论",
+      "passed": true,
+      "detail": "7 条逐项结论齐备、pass=7；无 refs 且 origin 正确=True"
+    },
+    {
+      "id": "c4",
+      "name": "UPSTREAM-06 全部 28 项权限正确",
+      "passed": true,
+      "detail": "U06 28 项权限全 false=True；越权=无；逐字命中=0"
+    },
+    {
+      "id": "c5",
+      "name": "未经许可的实际复制未被误标可复制",
+      "passed": true,
+      "detail": "逐字命中项均未被误判 PASS；问题 无"
+    },
+    {
+      "id": "c6",
+      "name": "其他五源许可证与署名义务已核查",
+      "passed": true,
+      "detail": "五源 spdx 完整=True；copy_permitted=true 保持=True"
+    },
+    {
+      "id": "c7",
+      "name": "disposition/verdict/terminal 正交",
+      "passed": true,
+      "detail": "上游 disposition / verdict / terminal_disposition 三处独立存储；取值差异 143/143"
+    },
+    {
+      "id": "c8",
+      "name": "权限信息不因合并丢失",
+      "passed": true,
+      "detail": "每 canonical 的逐源许可数与 refs 数一致，问题 无"
+    },
+    {
+      "id": "c9",
+      "name": "许可证异常有可定位证据",
+      "passed": true,
+      "detail": "REVIEW_REQUIRED 1 条均有 evidence_locations=True：['SL-CAP-0023']"
+    },
+    {
+      "id": "c10",
+      "name": "不确定事项用 REVIEW_REQUIRED",
+      "passed": true,
+      "detail": "REVIEW_REQUIRED=1；已声明机器检测的盲区=3 项"
+    },
+    {
+      "id": "c11",
+      "name": "全局身份与状态守恒",
+      "passed": true,
+      "detail": "三态 139/0/4=143；终态和=143；canonical=75"
+    },
+    {
+      "id": "c12",
+      "name": "canonical owner 唯一",
+      "passed": true,
+      "detail": "75 条 owner 均唯一且合法；问题 无"
+    },
+    {
+      "id": "c13",
+      "name": "全部 amendment 可追溯",
+      "passed": true,
+      "detail": "amendment 共 21 条，均可由 F1-C 各批 amendment 记录追溯"
+    },
+    {
+      "id": "c14",
+      "name": "D2 架构裁决和门禁完整保留",
+      "passed": true,
+      "detail": "D2 八项 8 + 门禁 30 + 探测 6 完整保留"
+    },
+    {
+      "id": "c15",
+      "name": "Y-6 未验证能力未被虚假认定",
+      "passed": true,
+      "detail": "Y-6 四项仍标未验证；肯定式声称 无"
+    },
+    {
+      "id": "c16",
+      "name": "独立历史不变量检查通过",
+      "passed": true,
+      "detail": "历史映射 112 条：丢失 0、无登记变更 0、登记内迁移 0"
+    },
+    {
+      "id": "c17",
+      "name": "构建器和审计器输出稳定",
+      "passed": true,
+      "detail": "三个审计器重跑后输出稳定（除时间戳）"
+    },
+    {
+      "id": "c18",
+      "name": "上游审计/索引/开发目录无越权变化",
+      "passed": true,
+      "detail": "原始索引/六审计未变=True；开发目录未变=True；未冻结=True"
+    },
+    {
+      "id": "c19",
+      "name": "被拒机制未借新名复活",
+      "passed": true,
+      "detail": "5 项复活检查全通过=True；问题 无"
+    },
+    {
+      "id": "c20",
+      "name": "两份专项文档完整",
+      "passed": true,
+      "detail": "两份文档覆盖要点，缺 无"
+    },
+    {
+      "id": "c21",
+      "name": "冻结就绪且未实际冻结",
+      "passed": true,
+      "detail": "freeze readiness 20/20；未生成正式交叉表=True"
+    }
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "artifact": "F1C_D3_FREEZE_READINESS",
+  "schema_version": 1,
+  "generated_at": "2026-11-04T17:09:30+08:00",
+  "generated_by": "tools/fusion/f1c_d3_freeze.py（只读现算）",
+  "scope": "只检查冻结条件；**未冻结**，未生成 CAPABILITY_CROSSWALK.json",
+  "checks": [
+    {
+      "id": "1",
+      "description": "143 个原始身份是否全部存在",
+      "passed": true,
+      "detail": "raw items=143, unique=143"
+    },
+    {
+      "id": "2",
+      "description": "143 项是否全部完成终态裁决",
+      "passed": true,
+      "detail": "terminal_dispositions=143"
+    },
+    {
+      "id": "3",
+      "description": "75 条 canonical 是否唯一",
+      "passed": true,
+      "detail": "count=75, unique=75"
+    },
+    {
+      "id": "4",
+      "description": "Canonical ID 无跳号复用或身份漂移",
+      "passed": true,
+      "detail": "ID 连续 1..75=True; 名称漂移=无"
+    },
+    {
+      "id": "5",
+      "description": "原始身份无重复正式映射",
+      "passed": true,
+      "detail": "重复 无"
+    },
+    {
+      "id": "6",
+      "description": "一个 canonical 只有一个主要 owner",
+      "passed": true,
+      "detail": "问题 无"
+    },
+    {
+      "id": "7",
+      "description": "17 条反例绑定都能定位原始身份",
+      "passed": true,
+      "detail": "边数=17, 可定位=True"
+    },
+    {
+      "id": "8",
+      "description": "4 条拒绝身份仍无假映射",
+      "passed": true,
+      "detail": "拒绝 4 项, 均未映射=True"
+    },
+    {
+      "id": "9",
+      "description": "七条零来源有内部需求依据",
+      "passed": true,
+      "detail": "零来源 7 条, 全无 refs=True, review_pass=7"
+    },
+    {
+      "id": "10",
+      "description": "六源许可元数据被完整保留",
+      "passed": true,
+      "detail": "六源=['UPSTREAM-01', 'UPSTREAM-02', 'UPSTREAM-03', 'UPSTREAM-04', 'UPSTREAM-05', 'UPSTREAM-06']; 缺 spdx（U06 除外）=无"
+    },
+    {
+      "id": "11",
+      "description": "UPSTREAM-06 无错误复制权限",
+      "passed": true,
+      "detail": "问题 无"
+    },
+    {
+      "id": "12",
+      "description": "所有 amendment 有迁移记录",
+      "passed": true,
+      "detail": "amendment 共 21 条（各批 amendment 工具已留痕）"
+    },
+    {
+      "id": "13",
+      "description": "全局三态与终态数量守恒",
+      "passed": true,
+      "detail": "三态 139/0/4=143; 终态和=143"
+    },
+    {
+      "id": "14",
+      "description": "历史验证器保护完整身份映射",
+      "passed": true,
+      "detail": "F1-B 映射 112 项全在=True（f1c_history_verify 另做集合级校验）"
+    },
+    {
+      "id": "15",
+      "description": "D2 八项冲突均有明确状态",
+      "passed": true,
+      "detail": "8 项，状态 ['BLOCKED_BY_MISSING_EVIDENCE', 'DESIGN_RESOLVED', 'IMPLEMENTATION_DEPENDENCY']"
+    },
+    {
+      "id": "16",
+      "description": "30 条门禁有责任与验证条件",
+      "passed": true,
+      "detail": "门禁 30 条，缺项 无"
+    },
+    {
+      "id": "17",
+      "description": "Y-6 未验证接口仍按真实等级记录",
+      "passed": true,
+      "detail": "四项仍标 UNVERIFIED"
+    },
+    {
+      "id": "18",
+      "description": "正式引擎与 Skill 保持未实现",
+      "passed": true,
+      "detail": "代码文件 0 个；未生成正式交叉表=True"
+    },
+    {
+      "id": "19",
+      "description": "独立构建器重复执行幂等",
+      "passed": true,
+      "detail": "由 f1c_d3_verify c21 实跑两次比对（除时间戳外一致）"
+    },
+    {
+      "id": "20",
+      "description": "无未记录的原始数据/历史变更",
+      "passed": true,
+      "detail": "total=143, sum_check=143, per_source 合计=143"
+    }
+  ],
+  "summary": {
+    "passed": 20,
+    "total": 20,
+    "result": "READY"
+  },
+  "blockers": [
+    {
+      "id": "B-1",
+      "topic": "E-02 声明措辞",
+      "detail": "THIRD_PARTY_NOTICES.md 总述句「不包含任何第三方源代码、提示词、规则文本或模板」与 docs/ 中的引文式短句事实不符；F0 规划在 F5 重写，尚未处理",
+      "impact_on_freeze": "不阻塞结构冻结，但分发前必须修订"
+    },
+    {
+      "id": "B-2",
+      "topic": "U06 抽象/表达边界",
+      "detail": "U06 无许可证，抽象思想与受保护表达的边界需法务判断（U10），本轮采取保守立场（零复制、不复述规则文本）",
+      "impact_on_freeze": "不阻塞冻结；若未来要搬运任何 U06 文本须先复审"
+    },
+    {
+      "id": "B-3",
+      "topic": "SL-CAP-0023 逐字短句",
+      "detail": "description 内含 CC BY 4.0 来源的一句英文原文（6 词），许可允许但需履行署名义务；分发物须含署名与许可链接",
+      "impact_on_freeze": "不阻塞冻结；分发前确认署名已落地"
+    }
+  ],
+  "freeze_conditions_not_met": []
+}

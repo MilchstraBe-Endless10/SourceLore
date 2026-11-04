@@ -1,7 +1,7 @@
 {
   "artifact": "F1C_D2_F2_GATES",
   "schema_version": 1,
-  "generated_at": "2026-11-04T16:49:48+08:00",
+  "generated_at": "2026-11-04T17:09:30+08:00",
   "generated_by": "tools/fusion/f1c_d2_build.py",
   "principle": "每条门禁必须有唯一 owner、可通过的判据、失败后的替代路径。F1 阶段门禁不得以「设计上已经支持」代替实测。",
   "gates": [

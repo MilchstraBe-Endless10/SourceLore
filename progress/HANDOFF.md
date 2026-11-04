@@ -1746,3 +1746,97 @@ CAS 写入、命名空间隔离——机制本来都在，缺的只是跨层契�
 4. 交叉表冻结前最后一致性检查（冻结留 F1-D）
 
 **本轮未创建正式 Skill、未改人工文档、未生成 CAPABILITY_CROSSWALK.json。**
+
+## M1-FUSION-GATE / F1-C-D3 完成（2026-11-04 17:10 +08:00）
+
+### 一句话
+
+四层审计跑通（来源/许可/实际复用/设计处置分开记录）。冻结就绪 20/20，**但未实际冻结**。
+**0 条 canonical amendment**，未改历史审计，未生成 `CAPABILITY_CROSSWALK.json`。
+
+### ★ 四层不合并成一个布尔值
+
+- **A 来源**：六源 commit、路径、许可全部可定位
+- **B 许可**：五源 copy_permitted=true（MIT×3 / CC-BY-4.0 / Apache-2.0），U06 全 false
+- **C 实际复用**：**产品代码/Skill/Schema 全部 0 文件**；canonical 设计文本仅 1 处逐字英文短句
+- **D 处置**：122 ADOPTED / 17 反例 / 4 拒绝
+
+### ★ 实际复用实测结论（最有分量的一条）
+
+`find src tests schemas skills -type f` = **0**。产品代码根本不存在，因此不可能有代码级复制。
+
+canonical 设计文本与上游文本做 ≥6 连续英文词的逐字比对：**仅 1 处命中**——
+`SL-CAP-0023` 含 `Unsupported claims MUST NOT be presented as facts`（6 词），
+来自 **UPSTREAM-03**（CC BY 4.0，copy_permitted=true）。许可允许，但**须履行署名义务**。
+故标记 `REVIEW_REQUIRED`，不强行 PASS。
+
+另有一处看似命中，实为**本项目自填的 `upstream_capability` 转述字段**（`U03::C01` 的 capability），
+不是设计文本搬运。
+
+**必须说清的盲区**：字符串重合未命中 **不等于** 已证明零复制。
+语义级改写与结构搬运无法机器判定，这一点已写入审计 JSON 的 `verification_scope`。
+
+### ★ UPSTREAM-06 全量零复制
+
+28 项：`copy_permitted` 全部 false，canonical 里无一覆写为 true，**零逐字命中**。
+许可状态 `status=none`、`/license` 端点 404、16 文件检索 LICENSE/Copyright/SPDX/© **命中 0**。
+法律立场：默认著作权保留全部权利，**不属于「许可不明」，是「没有许可」**。`reuse_scope=design-only`。
+
+### 21 项反例角色
+
+- **17 项**绑定，**17 条边**（一对一）
+- **4 项** `REJECTED_WITH_REASON` 无任何绑定（U04::C27、U05::C27、U05::C28、U06::C21）
+- **不能说「21 项反例绑定」**——没有边就没有绑定
+
+### ★ 复活检查 5 项全 PASS
+
+被拒机制**没有换名字重新进来**：
+强制图表→SL-CAP-0057 含「图表不是完成判据」；付费 API→SL-CAP-0075 含「V1 不使用任何付费 API」；
+路径别名→SL-CAP-0067 含「根目录显式声明」；证据优先级→SL-CAP-0037 含「来源类型不构成真伪排序」；
+不可验证即否证→SL-CAP-0028 含「不可验证只产生 insufficient_evidence」。
+
+### 7 条零来源 canonical
+
+逐条 10 项检查全 PASS。owner 分布：Collector 2、Lifecycle 1、Security 1、Renderer 1、
+Storage 1、DSH-Adapter 1。**未虚构 upstream_ref**，**未发现职责重复**。
+
+### 三项阻塞（不阻塞结构冻结，但分发前必须处理）
+
+- **B-1** E-02 声明措辞：`THIRD_PARTY_NOTICES.md` 总述句「不包含任何第三方源代码、提示词、
+  规则文本或模板」与 `docs/` 存在引文式短句的事实不符。F0 规划在 F5 重写，**尚未处理**。
+- **B-2** U06 抽象/表达边界需法务判断（U06 审计 U10）。本轮取保守立场（零复制、不复述规则文本）。
+- **B-3** `SL-CAP-0023` 的 CC BY 4.0 署名义务须在分发物中落地。
+
+### 冻结前 20 项一致性检查
+
+**20/20 满足。** 包括：143 身份 / 75 canonical 唯一且 ID 连续无跳号 / 112 项 F1-B 映射保持 /
+17 边可定位 / 4 拒绝无假映射 / 7 零来源有依据 / 六源许可完整 / U06 无错误权限 /
+21 条 amendment / 三态守恒 / 历史验证器做集合级校验 / D2 八项状态齐全 / 30 门禁有主 /
+Y-6 四项仍 UNVERIFIED / 产品代码 0 文件 / 未生成正式交叉表。
+
+**仍然没有生成 `CAPABILITY_CROSSWALK.json`**——冻结属 F1-D。
+
+### 本批修掉的问题
+
+**审计器一处括号断裂**（`next(...)` 少闭合），**c20 一处键名错误**（`raw["counts"]["total"]`
+实际是 `total_raw_capabilities`），**验证器一处措辞断言**（文档写 `U06` 简写而断言查 `UPSTREAM-06`）。
+
+**★ D2 验证器 c9 的判据缺陷（真实设计错误）**：
+原判据 `git status --short` 里出现 `.md` 就判「改了人工文档」，
+把**新建文件**（`??`）也算进去。而 K-7 恰恰规定「允许产出独立的新文件」——
+本批新建两份 `.md` 被误判为违规。
+**修法：按状态符区分，只有 M/D/R（修改/删除/重命名）才算动了既有文档，`??` 新建不算。**
+教训：**判定「有没有改既有文档」必须看 git 状态符，不能只看文件名后缀。**
+
+### 验证
+
+`f1c_d3_verify` 21/21；十九个验证器全绿
+（12/30/51/43/46/48/53/48/54/56/17/21/15/18/19/19/22/21/10），全部 exit 0。审计器幂等。
+
+### 下一步：F1-D
+
+可执行起点：
+1. 处理 B-1/E-02 措辞（原属 F5，但冻结分发前须有分层表述）
+2. 确认 B-3 署名义务落地位置
+3. 复跑 `f1c_history_verify.py` 与 `f1c_d3_freeze.py`
+4. 冻结 `CAPABILITY_CROSSWALK.json`（**本轮未做**）

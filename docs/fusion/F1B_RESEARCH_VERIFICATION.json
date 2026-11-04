@@ -1,8 +1,8 @@
 {
   "task": "M1-FUSION-GATE-F1 / F1-B / Research",
-  "generated_at": "2026-11-04T16:49:47+08:00",
+  "generated_at": "2026-11-04T17:09:29+08:00",
   "generated_by": "tools/fusion/f1b_verify_research.py",
-  "git_head": "43a63bd30e363ce416b9170727a622dc3252d527",
+  "git_head": "c722484212779216ea1d0922e121a9653bb13660",
   "summary": {
     "passed": 46,
     "total": 46,

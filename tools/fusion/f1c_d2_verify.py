@@ -181,10 +181,22 @@ def main() -> int:
                 "明确的用户授权", "回退", "不改变不可变历史"]
         miss = [k for k in need if k not in txt]
         # 本轮不得实际修改人工文档：检查 git 状态中无 docs 下人工叙事文档被改
+        # K-7 判据只针对「修改已存在的人工文档」。
+        # 新建独立文件（git 状态 ??）正是 K-7 允许的做法，不算违规——
+        # 早期版本把 ?? 也算进来，导致后续批次新建的 .md 被误判。
         s = git("status", "--short")
-        modified = [l for l in s.stdout.splitlines() if l.strip().endswith(".md")
-                    and "progress/" not in l and "docs/fusion/F1C_D2" not in l]
-        detail = f"K-7 边界与七项条件齐备，缺 {miss or '无'}；非本批文档的 .md 改动 {modified or '无'}"
+        modified = []
+        for line in s.stdout.splitlines():
+            st, _, path = line[:2], line[2:3], line[3:].strip()
+            if not path.endswith(".md"):
+                continue
+            if path.startswith("progress/") or "docs/fusion/" in path:
+                continue
+            # 只有 M（修改）/ D（删除）/ R（重命名）才算动了既有文档
+            if st.strip() in ("M", "D", "R"):
+                modified.append(path)
+        detail = (f"K-7 边界与七项条件齐备，缺 {miss or '无'}；"
+                  f"既有 .md 被修改/删除 {modified or '无'}（新建文件不计）")
         return (not miss and not modified), detail
 
     def c10():

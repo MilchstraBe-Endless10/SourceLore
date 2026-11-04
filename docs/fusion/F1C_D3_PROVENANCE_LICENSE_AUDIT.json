@@ -1,0 +1,3925 @@
+{
+  "artifact": "F1C_D3_PROVENANCE_LICENSE_AUDIT",
+  "schema_version": 1,
+  "generated_at": "2026-11-04T17:09:30+08:00",
+  "generated_by": "tools/fusion/f1c_d3_audit.py（只读现算）",
+  "four_layer_principle": {
+    "A_provenance": "来源是否真实、准确、可定位",
+    "B_license": "上游授予的复制与使用权限",
+    "C_actual_reuse": "实际复制了什么（代码/规则/prompt/模板/受保护表达）",
+    "D_disposition": "最终采用、拒绝或作为反例",
+    "rule": "四层不合并；copy_permitted=true 不等于已复制；copy_permitted=false 不阻止参考抽象思想；REUSE/ADAPT/REIMPLEMENT 不是法律许可；REJECT 不等于无设计价值"
+  },
+  "verification_scope": {
+    "machine_check": "canonical 设计文本(description+amendments)与上游文本 ≥6 连续英文词的逐字重合",
+    "cannot_verify": [
+      "语义级改写",
+      "结构搬运",
+      "人工核对的具体受保护表达"
+    ],
+    "consequence": "字符串未命中不等于已证明零复制"
+  },
+  "product_code_state": {
+    "files_under_src_tests_schemas_skills": [],
+    "count": 0,
+    "note": "产品代码、Skill、Schema 全部未实现；上游无任何代码可被复制"
+  },
+  "sources": [
+    {
+      "upstream_id": "UPSTREAM-01",
+      "path": null,
+      "spdx": "MIT",
+      "spdx_api": "MIT",
+      "copy_permitted": true,
+      "copyright_holders": [
+        "Copyright (c) 2026 Jingyu Wang"
+      ],
+      "attribution_required": true,
+      "license_link_required": false,
+      "modification_notice_required": false,
+      "reuse_obligation": "retain copyright notice and permission notice in all copies or substantial portions",
+      "identity_count": 15,
+      "canonical_results": [
+        "PASS",
+        "PASS_WITH_DEPENDENCY"
+      ]
+    },
+    {
+      "upstream_id": "UPSTREAM-02",
+      "path": null,
+      "spdx": "MIT",
+      "spdx_api": "MIT",
+      "copy_permitted": true,
+      "copyright_holders": [
+        "Copyright (c) 2025 Bytedance Ltd. and/or its affiliates",
+        "Copyright (c) 2025-2026 DeerFlow Authors"
+      ],
+      "attribution_required": true,
+      "license_link_required": false,
+      "modification_notice_required": false,
+      "reuse_obligation": "在所有副本或实质性部分中保留两行版权与 MIT 许可声明",
+      "identity_count": 18,
+      "canonical_results": [
+        "PASS",
+        "PASS_WITH_DEPENDENCY"
+      ]
+    },
+    {
+      "upstream_id": "UPSTREAM-03",
+      "path": null,
+      "spdx": "CC-BY-4.0",
+      "spdx_api": "NOASSERTION",
+      "copy_permitted": true,
+      "copyright_holders": [],
+      "attribution_required": true,
+      "license_link_required": true,
+      "modification_notice_required": true,
+      "reuse_obligation": "CC BY 4.0：① 给予适当署名 ② 提供许可证链接 ③ 标明是否作了修改 ④ 不得附加法律或技术措施限制他人行使许可证允许的权利",
+      "identity_count": 27,
+      "canonical_results": [
+        "PASS_WITH_DEPENDENCY",
+        "REVIEW_REQUIRED"
+      ]
+    },
+    {
+      "upstream_id": "UPSTREAM-04",
+      "path": null,
+      "spdx": "MIT",
+      "spdx_api": "MIT",
+      "copy_permitted": true,
+      "copyright_holders": [
+        "Copyright (c) 2026 Sergii Vashchyshchuk"
+      ],
+      "attribution_required": true,
+      "license_link_required": false,
+      "modification_notice_required": true,
+      "reuse_obligation": "MIT：保留版权声明与许可声明；分发含本源改写内容的产物需附 MIT 全文并说明修改。",
+      "identity_count": 27,
+      "canonical_results": [
+        "PASS",
+        "PASS_WITH_DEPENDENCY"
+      ]
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "path": null,
+      "spdx": "Apache-2.0",
+      "spdx_api": "Apache-2.0",
+      "copy_permitted": true,
+      "copyright_holders": [],
+      "attribution_required": true,
+      "license_link_required": true,
+      "modification_notice_required": true,
+      "reuse_obligation": "Apache-2.0 §4：再分发需保留 LICENSE 与 NOTICE（若有）。本仓库无 NOTICE，故仅需保留 LICENSE 与修改声明。SourceLore 不复制其源码，仅借鉴设计，无再分发义务",
+      "identity_count": 28,
+      "canonical_results": [
+        "PASS_WITH_DEPENDENCY"
+      ]
+    },
+    {
+      "upstream_id": "UPSTREAM-06",
+      "path": null,
+      "spdx": null,
+      "spdx_api": null,
+      "copy_permitted": false,
+      "copyright_holders": [],
+      "attribution_required": false,
+      "license_link_required": false,
+      "modification_notice_required": false,
+      "reuse_obligation": null,
+      "identity_count": 28,
+      "canonical_results": [
+        "PASS_WITH_DEPENDENCY"
+      ]
+    }
+  ],
+  "canonical_audits": [
+    {
+      "subject_id": "SL-CAP-0001",
+      "audit_category": "canonical",
+      "expected_owner": "Facts",
+      "actual_owner": "Facts",
+      "upstream_identities": [
+        "UPSTREAM-01::C01",
+        "UPSTREAM-05::C01",
+        "UPSTREAM-03::C25"
+      ],
+      "upstream_dispositions": [
+        "REJECT",
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED",
+        "ADOPTED_AS_COUNTEREXAMPLE"
+      ],
+      "association_roles": [
+        "counterexample",
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-01",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "retain copyright notice and permission notice in all copies or substantial portions"
+          },
+          {
+            "upstream_id": "UPSTREAM-03",
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "CC BY 4.0：① 给予适当署名 ② 提供许可证链接 ③ 标明是否作了修改 ④ 不得附加法律或技术措施限制他人行使许可证允许的权利"
+          },
+          {
+            "upstream_id": "UPSTREAM-05",
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "Apache-2.0 §4：再分发需保留 LICENSE 与 NOTICE（若有）。本仓库无 NOTICE，故仅需保留 LICENSE 与修改声明。SourceLore 不复制其源码，仅借鉴设计，无再分发义务"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "CC BY 4.0 来源：须在分发物中履行署名与许可链接义务",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0002",
+      "audit_category": "canonical",
+      "expected_owner": "Facts",
+      "actual_owner": "Facts",
+      "upstream_identities": [
+        "UPSTREAM-01::C02"
+      ],
+      "upstream_dispositions": [
+        "ADAPT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-01",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "retain copyright notice and permission notice in all copies or substantial portions"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0003",
+      "audit_category": "canonical",
+      "expected_owner": "Facts",
+      "actual_owner": "Facts",
+      "upstream_identities": [
+        "UPSTREAM-01::C04"
+      ],
+      "upstream_dispositions": [
+        "ADAPT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-01",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "retain copyright notice and permission notice in all copies or substantial portions"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0004",
+      "audit_category": "canonical",
+      "expected_owner": "Facts",
+      "actual_owner": "Facts",
+      "upstream_identities": [
+        "UPSTREAM-01::C08"
+      ],
+      "upstream_dispositions": [
+        "ADAPT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-01",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "retain copyright notice and permission notice in all copies or substantial portions"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0005",
+      "audit_category": "canonical",
+      "expected_owner": "Facts",
+      "actual_owner": "Facts",
+      "upstream_identities": [
+        "UPSTREAM-01::C09"
+      ],
+      "upstream_dispositions": [
+        "ADAPT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-01",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "retain copyright notice and permission notice in all copies or substantial portions"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0006",
+      "audit_category": "canonical",
+      "expected_owner": "Facts",
+      "actual_owner": "Facts",
+      "upstream_identities": [
+        "UPSTREAM-01::C05"
+      ],
+      "upstream_dispositions": [
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-01",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "retain copyright notice and permission notice in all copies or substantial portions"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0007",
+      "audit_category": "canonical",
+      "expected_owner": "Facts",
+      "actual_owner": "Facts",
+      "upstream_identities": [
+        "UPSTREAM-02::C05"
+      ],
+      "upstream_dispositions": [
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-02",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "在所有副本或实质性部分中保留两行版权与 MIT 许可声明"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0008",
+      "audit_category": "canonical",
+      "expected_owner": "Facts",
+      "actual_owner": "Facts",
+      "upstream_identities": [
+        "UPSTREAM-03::C04"
+      ],
+      "upstream_dispositions": [
+        "ADAPT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-03",
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "CC BY 4.0：① 给予适当署名 ② 提供许可证链接 ③ 标明是否作了修改 ④ 不得附加法律或技术措施限制他人行使许可证允许的权利"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "CC BY 4.0 来源：须在分发物中履行署名与许可链接义务",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0009",
+      "audit_category": "canonical",
+      "expected_owner": "Facts",
+      "actual_owner": "Facts",
+      "upstream_identities": [
+        "UPSTREAM-03::C05"
+      ],
+      "upstream_dispositions": [
+        "ADAPT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-03",
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "CC BY 4.0：① 给予适当署名 ② 提供许可证链接 ③ 标明是否作了修改 ④ 不得附加法律或技术措施限制他人行使许可证允许的权利"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "CC BY 4.0 来源：须在分发物中履行署名与许可链接义务",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0010",
+      "audit_category": "canonical",
+      "expected_owner": "Facts",
+      "actual_owner": "Facts",
+      "upstream_identities": [
+        "UPSTREAM-03::C02"
+      ],
+      "upstream_dispositions": [
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-03",
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "CC BY 4.0：① 给予适当署名 ② 提供许可证链接 ③ 标明是否作了修改 ④ 不得附加法律或技术措施限制他人行使许可证允许的权利"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "CC BY 4.0 来源：须在分发物中履行署名与许可链接义务",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0011",
+      "audit_category": "canonical",
+      "expected_owner": "Collector",
+      "actual_owner": "Collector",
+      "upstream_identities": [
+        "UPSTREAM-01::C15",
+        "UPSTREAM-02::C18",
+        "UPSTREAM-02::C01",
+        "UPSTREAM-02::C04"
+      ],
+      "upstream_dispositions": [
+        "ADAPT",
+        "REJECT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED",
+        "ADOPTED_AS_COUNTEREXAMPLE"
+      ],
+      "association_roles": [
+        "counterexample",
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-01",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "retain copyright notice and permission notice in all copies or substantial portions"
+          },
+          {
+            "upstream_id": "UPSTREAM-02",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "在所有副本或实质性部分中保留两行版权与 MIT 许可声明"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0012",
+      "audit_category": "canonical",
+      "expected_owner": "Collector",
+      "actual_owner": "Collector",
+      "upstream_identities": [
+        "UPSTREAM-02::C02"
+      ],
+      "upstream_dispositions": [
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-02",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "在所有副本或实质性部分中保留两行版权与 MIT 许可声明"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0013",
+      "audit_category": "canonical",
+      "expected_owner": "Collector",
+      "actual_owner": "Collector",
+      "upstream_identities": [],
+      "upstream_dispositions": null,
+      "terminal_dispositions": null,
+      "association_roles": null,
+      "license_permission": {
+        "per_upstream": [],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "INTERNAL_DESIGN_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "INTERNAL_DESIGN_ONLY",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0014",
+      "audit_category": "canonical",
+      "expected_owner": "Collector",
+      "actual_owner": "Collector",
+      "upstream_identities": [
+        "UPSTREAM-02::C06"
+      ],
+      "upstream_dispositions": [
+        "ADAPT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-02",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "在所有副本或实质性部分中保留两行版权与 MIT 许可声明"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0015",
+      "audit_category": "canonical",
+      "expected_owner": "Collector",
+      "actual_owner": "Collector",
+      "upstream_identities": [
+        "UPSTREAM-02::C03",
+        "UPSTREAM-02::C09"
+      ],
+      "upstream_dispositions": [
+        "REJECT",
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED",
+        "ADOPTED_AS_COUNTEREXAMPLE"
+      ],
+      "association_roles": [
+        "counterexample",
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-02",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "在所有副本或实质性部分中保留两行版权与 MIT 许可声明"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0016",
+      "audit_category": "canonical",
+      "expected_owner": "Collector",
+      "actual_owner": "Collector",
+      "upstream_identities": [
+        "UPSTREAM-02::C07"
+      ],
+      "upstream_dispositions": [
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-02",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "在所有副本或实质性部分中保留两行版权与 MIT 许可声明"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0017",
+      "audit_category": "canonical",
+      "expected_owner": "Collector",
+      "actual_owner": "Collector",
+      "upstream_identities": [
+        "UPSTREAM-02::C08"
+      ],
+      "upstream_dispositions": [
+        "REJECT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED_AS_COUNTEREXAMPLE"
+      ],
+      "association_roles": [
+        "counterexample"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-02",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "在所有副本或实质性部分中保留两行版权与 MIT 许可声明"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0018",
+      "audit_category": "canonical",
+      "expected_owner": "Collector",
+      "actual_owner": "Collector",
+      "upstream_identities": [
+        "UPSTREAM-06::C13"
+      ],
+      "upstream_dispositions": [
+        "ADAPT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED_AS_COUNTEREXAMPLE"
+      ],
+      "association_roles": [
+        "counterexample"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-06",
+            "spdx": null,
+            "copy_permitted": false,
+            "attribution_required": false,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": null
+          }
+        ],
+        "aggregate_copy_permitted": false
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "含 UPSTREAM-06 来源：零复制，只作抽象思想；抽象思想与受保护表达的边界需法务判断（U06 审计 U10）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0019",
+      "audit_category": "canonical",
+      "expected_owner": "Collector",
+      "actual_owner": "Collector",
+      "upstream_identities": [],
+      "upstream_dispositions": null,
+      "terminal_dispositions": null,
+      "association_roles": null,
+      "license_permission": {
+        "per_upstream": [],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "INTERNAL_DESIGN_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "INTERNAL_DESIGN_ONLY",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0020",
+      "audit_category": "canonical",
+      "expected_owner": "Evidence-Claims",
+      "actual_owner": "Evidence-Claims",
+      "upstream_identities": [
+        "UPSTREAM-04::C07",
+        "UPSTREAM-04::C08",
+        "UPSTREAM-04::C24",
+        "UPSTREAM-05::C24"
+      ],
+      "upstream_dispositions": [
+        "ADAPT",
+        "REIMPLEMENT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-04",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true,
+            "reuse_obligation": "MIT：保留版权声明与许可声明；分发含本源改写内容的产物需附 MIT 全文并说明修改。"
+          },
+          {
+            "upstream_id": "UPSTREAM-05",
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "Apache-2.0 §4：再分发需保留 LICENSE 与 NOTICE（若有）。本仓库无 NOTICE，故仅需保留 LICENSE 与修改声明。SourceLore 不复制其源码，仅借鉴设计，无再分发义务"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "Apache-2.0 来源：若再分发需保留 LICENSE 与修改声明（本仓库无实际代码复制）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0021",
+      "audit_category": "canonical",
+      "expected_owner": "Evidence-Claims",
+      "actual_owner": "Evidence-Claims",
+      "upstream_identities": [
+        "UPSTREAM-06::C05"
+      ],
+      "upstream_dispositions": [
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-06",
+            "spdx": null,
+            "copy_permitted": false,
+            "attribution_required": false,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": null
+          }
+        ],
+        "aggregate_copy_permitted": false
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "含 UPSTREAM-06 来源：零复制，只作抽象思想；抽象思想与受保护表达的边界需法务判断（U06 审计 U10）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0022",
+      "audit_category": "canonical",
+      "expected_owner": "Evidence-Claims",
+      "actual_owner": "Evidence-Claims",
+      "upstream_identities": [
+        "UPSTREAM-01::C03"
+      ],
+      "upstream_dispositions": [
+        "ADAPT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-01",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "retain copyright notice and permission notice in all copies or substantial portions"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0023",
+      "audit_category": "canonical",
+      "expected_owner": "Evidence-Claims",
+      "actual_owner": "Evidence-Claims",
+      "upstream_identities": [
+        "UPSTREAM-03::C03"
+      ],
+      "upstream_dispositions": [
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-03",
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "CC BY 4.0：① 给予适当署名 ② 提供许可证链接 ③ 标明是否作了修改 ④ 不得附加法律或技术措施限制他人行使许可证允许的权利"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "VERBATIM_SHORT_QUOTE_IN_DESIGN_TEXT",
+      "verbatim_runs_detected": [
+        "Unsupported claims MUST NOT be presented as"
+      ],
+      "verbatim_run_count": 1,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [
+        "SL-CAP-0023.description"
+      ],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "REVIEW_REQUIRED",
+      "severity": "high",
+      "remediation_required": "设计文本含逐字英文短句；需核对是否履行 CC BY 4.0 / MIT 署名义务",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0024",
+      "audit_category": "canonical",
+      "expected_owner": "Evidence-Claims",
+      "actual_owner": "Evidence-Claims",
+      "upstream_identities": [
+        "UPSTREAM-05::C05"
+      ],
+      "upstream_dispositions": [
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-05",
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "Apache-2.0 §4：再分发需保留 LICENSE 与 NOTICE（若有）。本仓库无 NOTICE，故仅需保留 LICENSE 与修改声明。SourceLore 不复制其源码，仅借鉴设计，无再分发义务"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "Apache-2.0 来源：若再分发需保留 LICENSE 与修改声明（本仓库无实际代码复制）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0025",
+      "audit_category": "canonical",
+      "expected_owner": "Evidence-Claims",
+      "actual_owner": "Evidence-Claims",
+      "upstream_identities": [
+        "UPSTREAM-05::C06"
+      ],
+      "upstream_dispositions": [
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-05",
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "Apache-2.0 §4：再分发需保留 LICENSE 与 NOTICE（若有）。本仓库无 NOTICE，故仅需保留 LICENSE 与修改声明。SourceLore 不复制其源码，仅借鉴设计，无再分发义务"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "Apache-2.0 来源：若再分发需保留 LICENSE 与修改声明（本仓库无实际代码复制）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0026",
+      "audit_category": "canonical",
+      "expected_owner": "Evidence-Claims",
+      "actual_owner": "Evidence-Claims",
+      "upstream_identities": [
+        "UPSTREAM-04::C10"
+      ],
+      "upstream_dispositions": [
+        "ADAPT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-04",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true,
+            "reuse_obligation": "MIT：保留版权声明与许可声明；分发含本源改写内容的产物需附 MIT 全文并说明修改。"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0027",
+      "audit_category": "canonical",
+      "expected_owner": "Evidence-Claims",
+      "actual_owner": "Evidence-Claims",
+      "upstream_identities": [
+        "UPSTREAM-04::C11",
+        "UPSTREAM-04::C09"
+      ],
+      "upstream_dispositions": [
+        "ADAPT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-04",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true,
+            "reuse_obligation": "MIT：保留版权声明与许可声明；分发含本源改写内容的产物需附 MIT 全文并说明修改。"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0028",
+      "audit_category": "canonical",
+      "expected_owner": "Evidence-Claims",
+      "actual_owner": "Evidence-Claims",
+      "upstream_identities": [
+        "UPSTREAM-06::C07",
+        "UPSTREAM-06::C06",
+        "UPSTREAM-05::C04",
+        "UPSTREAM-06::C10",
+        "UPSTREAM-06::C20",
+        "UPSTREAM-05::C19",
+        "UPSTREAM-05::C21"
+      ],
+      "upstream_dispositions": [
+        "ADAPT",
+        "REIMPLEMENT",
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-05",
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "Apache-2.0 §4：再分发需保留 LICENSE 与 NOTICE（若有）。本仓库无 NOTICE，故仅需保留 LICENSE 与修改声明。SourceLore 不复制其源码，仅借鉴设计，无再分发义务"
+          },
+          {
+            "upstream_id": "UPSTREAM-06",
+            "spdx": null,
+            "copy_permitted": false,
+            "attribution_required": false,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": null
+          }
+        ],
+        "aggregate_copy_permitted": false
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "含 UPSTREAM-06 来源：零复制，只作抽象思想；抽象思想与受保护表达的边界需法务判断（U06 审计 U10）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0029",
+      "audit_category": "canonical",
+      "expected_owner": "Product",
+      "actual_owner": "Product",
+      "upstream_identities": [
+        "UPSTREAM-03::C06"
+      ],
+      "upstream_dispositions": [
+        "ADAPT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-03",
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "CC BY 4.0：① 给予适当署名 ② 提供许可证链接 ③ 标明是否作了修改 ④ 不得附加法律或技术措施限制他人行使许可证允许的权利"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "CC BY 4.0 来源：须在分发物中履行署名与许可链接义务",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0030",
+      "audit_category": "canonical",
+      "expected_owner": "Product",
+      "actual_owner": "Product",
+      "upstream_identities": [
+        "UPSTREAM-03::C01"
+      ],
+      "upstream_dispositions": [
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-03",
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "CC BY 4.0：① 给予适当署名 ② 提供许可证链接 ③ 标明是否作了修改 ④ 不得附加法律或技术措施限制他人行使许可证允许的权利"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "CC BY 4.0 来源：须在分发物中履行署名与许可链接义务",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0031",
+      "audit_category": "canonical",
+      "expected_owner": "Product",
+      "actual_owner": "Product",
+      "upstream_identities": [
+        "UPSTREAM-03::C16"
+      ],
+      "upstream_dispositions": [
+        "REIMPLEMENT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-03",
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "CC BY 4.0：① 给予适当署名 ② 提供许可证链接 ③ 标明是否作了修改 ④ 不得附加法律或技术措施限制他人行使许可证允许的权利"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "CC BY 4.0 来源：须在分发物中履行署名与许可链接义务",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0032",
+      "audit_category": "canonical",
+      "expected_owner": "Product",
+      "actual_owner": "Product",
+      "upstream_identities": [
+        "UPSTREAM-03::C07",
+        "UPSTREAM-03::C13",
+        "UPSTREAM-03::C14"
+      ],
+      "upstream_dispositions": [
+        "ADAPT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-03",
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "CC BY 4.0：① 给予适当署名 ② 提供许可证链接 ③ 标明是否作了修改 ④ 不得附加法律或技术措施限制他人行使许可证允许的权利"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "CC BY 4.0 来源：须在分发物中履行署名与许可链接义务",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0033",
+      "audit_category": "canonical",
+      "expected_owner": "Product",
+      "actual_owner": "Product",
+      "upstream_identities": [
+        "UPSTREAM-03::C09",
+        "UPSTREAM-03::C10"
+      ],
+      "upstream_dispositions": [
+        "ADAPT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-03",
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "CC BY 4.0：① 给予适当署名 ② 提供许可证链接 ③ 标明是否作了修改 ④ 不得附加法律或技术措施限制他人行使许可证允许的权利"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "CC BY 4.0 来源：须在分发物中履行署名与许可链接义务",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0034",
+      "audit_category": "canonical",
+      "expected_owner": "Product",
+      "actual_owner": "Product",
+      "upstream_identities": [
+        "UPSTREAM-03::C17",
+        "UPSTREAM-03::C11"
+      ],
+      "upstream_dispositions": [
+        "ADAPT",
+        "REIMPLEMENT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-03",
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "CC BY 4.0：① 给予适当署名 ② 提供许可证链接 ③ 标明是否作了修改 ④ 不得附加法律或技术措施限制他人行使许可证允许的权利"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "CC BY 4.0 来源：须在分发物中履行署名与许可链接义务",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0035",
+      "audit_category": "canonical",
+      "expected_owner": "Research",
+      "actual_owner": "Research",
+      "upstream_identities": [
+        "UPSTREAM-02::C10",
+        "UPSTREAM-05::C08",
+        "UPSTREAM-05::C12",
+        "UPSTREAM-05::C13"
+      ],
+      "upstream_dispositions": [
+        "ADAPT",
+        "REIMPLEMENT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-02",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "在所有副本或实质性部分中保留两行版权与 MIT 许可声明"
+          },
+          {
+            "upstream_id": "UPSTREAM-05",
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "Apache-2.0 §4：再分发需保留 LICENSE 与 NOTICE（若有）。本仓库无 NOTICE，故仅需保留 LICENSE 与修改声明。SourceLore 不复制其源码，仅借鉴设计，无再分发义务"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "Apache-2.0 来源：若再分发需保留 LICENSE 与修改声明（本仓库无实际代码复制）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0036",
+      "audit_category": "canonical",
+      "expected_owner": "Research",
+      "actual_owner": "Research",
+      "upstream_identities": [
+        "UPSTREAM-02::C11"
+      ],
+      "upstream_dispositions": [
+        "ADAPT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-02",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "在所有副本或实质性部分中保留两行版权与 MIT 许可声明"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0037",
+      "audit_category": "canonical",
+      "expected_owner": "Research",
+      "actual_owner": "Research",
+      "upstream_identities": [
+        "UPSTREAM-02::C14",
+        "UPSTREAM-02::C12",
+        "UPSTREAM-03::C23"
+      ],
+      "upstream_dispositions": [
+        "ADAPT",
+        "REJECT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED",
+        "ADOPTED_AS_COUNTEREXAMPLE"
+      ],
+      "association_roles": [
+        "counterexample",
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-02",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "在所有副本或实质性部分中保留两行版权与 MIT 许可声明"
+          },
+          {
+            "upstream_id": "UPSTREAM-03",
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "CC BY 4.0：① 给予适当署名 ② 提供许可证链接 ③ 标明是否作了修改 ④ 不得附加法律或技术措施限制他人行使许可证允许的权利"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "CC BY 4.0 来源：须在分发物中履行署名与许可链接义务",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0038",
+      "audit_category": "canonical",
+      "expected_owner": "Research",
+      "actual_owner": "Research",
+      "upstream_identities": [
+        "UPSTREAM-02::C13",
+        "UPSTREAM-02::C15",
+        "UPSTREAM-03::C27",
+        "UPSTREAM-06::C23",
+        "UPSTREAM-04::C26",
+        "UPSTREAM-04::C21"
+      ],
+      "upstream_dispositions": [
+        "ADAPT",
+        "REIMPLEMENT",
+        "REJECT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED",
+        "ADOPTED_AS_COUNTEREXAMPLE"
+      ],
+      "association_roles": [
+        "counterexample",
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-02",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "在所有副本或实质性部分中保留两行版权与 MIT 许可声明"
+          },
+          {
+            "upstream_id": "UPSTREAM-03",
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "CC BY 4.0：① 给予适当署名 ② 提供许可证链接 ③ 标明是否作了修改 ④ 不得附加法律或技术措施限制他人行使许可证允许的权利"
+          },
+          {
+            "upstream_id": "UPSTREAM-04",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true,
+            "reuse_obligation": "MIT：保留版权声明与许可声明；分发含本源改写内容的产物需附 MIT 全文并说明修改。"
+          },
+          {
+            "upstream_id": "UPSTREAM-06",
+            "spdx": null,
+            "copy_permitted": false,
+            "attribution_required": false,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": null
+          }
+        ],
+        "aggregate_copy_permitted": false
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "含 UPSTREAM-06 来源：零复制，只作抽象思想；抽象思想与受保护表达的边界需法务判断（U06 审计 U10）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0039",
+      "audit_category": "canonical",
+      "expected_owner": "Research",
+      "actual_owner": "Research",
+      "upstream_identities": [
+        "UPSTREAM-02::C16"
+      ],
+      "upstream_dispositions": [
+        "ADAPT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-02",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "在所有副本或实质性部分中保留两行版权与 MIT 许可声明"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0040",
+      "audit_category": "canonical",
+      "expected_owner": "Lifecycle",
+      "actual_owner": "Lifecycle",
+      "upstream_identities": [
+        "UPSTREAM-04::C02",
+        "UPSTREAM-04::C18",
+        "UPSTREAM-04::C12",
+        "UPSTREAM-05::C07",
+        "UPSTREAM-04::C13"
+      ],
+      "upstream_dispositions": [
+        "ADAPT",
+        "REIMPLEMENT",
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-04",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true,
+            "reuse_obligation": "MIT：保留版权声明与许可声明；分发含本源改写内容的产物需附 MIT 全文并说明修改。"
+          },
+          {
+            "upstream_id": "UPSTREAM-05",
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "Apache-2.0 §4：再分发需保留 LICENSE 与 NOTICE（若有）。本仓库无 NOTICE，故仅需保留 LICENSE 与修改声明。SourceLore 不复制其源码，仅借鉴设计，无再分发义务"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "Apache-2.0 来源：若再分发需保留 LICENSE 与修改声明（本仓库无实际代码复制）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0041",
+      "audit_category": "canonical",
+      "expected_owner": "Lifecycle",
+      "actual_owner": "Lifecycle",
+      "upstream_identities": [
+        "UPSTREAM-04::C01",
+        "UPSTREAM-04::C20"
+      ],
+      "upstream_dispositions": [
+        "REIMPLEMENT",
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-04",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true,
+            "reuse_obligation": "MIT：保留版权声明与许可声明；分发含本源改写内容的产物需附 MIT 全文并说明修改。"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0042",
+      "audit_category": "canonical",
+      "expected_owner": "Lifecycle",
+      "actual_owner": "Lifecycle",
+      "upstream_identities": [
+        "UPSTREAM-05::C17",
+        "UPSTREAM-04::C19",
+        "UPSTREAM-06::C26"
+      ],
+      "upstream_dispositions": [
+        "REIMPLEMENT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-04",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true,
+            "reuse_obligation": "MIT：保留版权声明与许可声明；分发含本源改写内容的产物需附 MIT 全文并说明修改。"
+          },
+          {
+            "upstream_id": "UPSTREAM-05",
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "Apache-2.0 §4：再分发需保留 LICENSE 与 NOTICE（若有）。本仓库无 NOTICE，故仅需保留 LICENSE 与修改声明。SourceLore 不复制其源码，仅借鉴设计，无再分发义务"
+          },
+          {
+            "upstream_id": "UPSTREAM-06",
+            "spdx": null,
+            "copy_permitted": false,
+            "attribution_required": false,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": null
+          }
+        ],
+        "aggregate_copy_permitted": false
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "含 UPSTREAM-06 来源：零复制，只作抽象思想；抽象思想与受保护表达的边界需法务判断（U06 审计 U10）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0043",
+      "audit_category": "canonical",
+      "expected_owner": "Lifecycle",
+      "actual_owner": "Lifecycle",
+      "upstream_identities": [
+        "UPSTREAM-03::C08",
+        "UPSTREAM-05::C02",
+        "UPSTREAM-05::C11",
+        "UPSTREAM-05::C15"
+      ],
+      "upstream_dispositions": [
+        "ADAPT",
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-03",
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "CC BY 4.0：① 给予适当署名 ② 提供许可证链接 ③ 标明是否作了修改 ④ 不得附加法律或技术措施限制他人行使许可证允许的权利"
+          },
+          {
+            "upstream_id": "UPSTREAM-05",
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "Apache-2.0 §4：再分发需保留 LICENSE 与 NOTICE（若有）。本仓库无 NOTICE，故仅需保留 LICENSE 与修改声明。SourceLore 不复制其源码，仅借鉴设计，无再分发义务"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "CC BY 4.0 来源：须在分发物中履行署名与许可链接义务",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0044",
+      "audit_category": "canonical",
+      "expected_owner": "Lifecycle",
+      "actual_owner": "Lifecycle",
+      "upstream_identities": [
+        "UPSTREAM-04::C17",
+        "UPSTREAM-05::C16"
+      ],
+      "upstream_dispositions": [
+        "ADAPT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-04",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true,
+            "reuse_obligation": "MIT：保留版权声明与许可声明；分发含本源改写内容的产物需附 MIT 全文并说明修改。"
+          },
+          {
+            "upstream_id": "UPSTREAM-05",
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "Apache-2.0 §4：再分发需保留 LICENSE 与 NOTICE（若有）。本仓库无 NOTICE，故仅需保留 LICENSE 与修改声明。SourceLore 不复制其源码，仅借鉴设计，无再分发义务"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "Apache-2.0 来源：若再分发需保留 LICENSE 与修改声明（本仓库无实际代码复制）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0045",
+      "audit_category": "canonical",
+      "expected_owner": "Lifecycle",
+      "actual_owner": "Lifecycle",
+      "upstream_identities": [],
+      "upstream_dispositions": null,
+      "terminal_dispositions": null,
+      "association_roles": null,
+      "license_permission": {
+        "per_upstream": [],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "INTERNAL_DESIGN_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "INTERNAL_DESIGN_ONLY",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0046",
+      "audit_category": "canonical",
+      "expected_owner": "Security",
+      "actual_owner": "Security",
+      "upstream_identities": [
+        "UPSTREAM-06::C01",
+        "UPSTREAM-06::C02"
+      ],
+      "upstream_dispositions": [
+        "ADAPT",
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-06",
+            "spdx": null,
+            "copy_permitted": false,
+            "attribution_required": false,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": null
+          }
+        ],
+        "aggregate_copy_permitted": false
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "含 UPSTREAM-06 来源：零复制，只作抽象思想；抽象思想与受保护表达的边界需法务判断（U06 审计 U10）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0047",
+      "audit_category": "canonical",
+      "expected_owner": "Security",
+      "actual_owner": "Security",
+      "upstream_identities": [],
+      "upstream_dispositions": null,
+      "terminal_dispositions": null,
+      "association_roles": null,
+      "license_permission": {
+        "per_upstream": [],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "INTERNAL_DESIGN_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "INTERNAL_DESIGN_ONLY",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0048",
+      "audit_category": "canonical",
+      "expected_owner": "Security",
+      "actual_owner": "Security",
+      "upstream_identities": [
+        "UPSTREAM-06::C03",
+        "UPSTREAM-06::C04",
+        "UPSTREAM-06::C12",
+        "UPSTREAM-06::C09"
+      ],
+      "upstream_dispositions": [
+        "ADAPT",
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-06",
+            "spdx": null,
+            "copy_permitted": false,
+            "attribution_required": false,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": null
+          }
+        ],
+        "aggregate_copy_permitted": false
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "含 UPSTREAM-06 来源：零复制，只作抽象思想；抽象思想与受保护表达的边界需法务判断（U06 审计 U10）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0049",
+      "audit_category": "canonical",
+      "expected_owner": "Security",
+      "actual_owner": "Security",
+      "upstream_identities": [
+        "UPSTREAM-06::C15",
+        "UPSTREAM-06::C16"
+      ],
+      "upstream_dispositions": [
+        "ADAPT",
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-06",
+            "spdx": null,
+            "copy_permitted": false,
+            "attribution_required": false,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": null
+          }
+        ],
+        "aggregate_copy_permitted": false
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "含 UPSTREAM-06 来源：零复制，只作抽象思想；抽象思想与受保护表达的边界需法务判断（U06 审计 U10）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0050",
+      "audit_category": "canonical",
+      "expected_owner": "Security",
+      "actual_owner": "Security",
+      "upstream_identities": [
+        "UPSTREAM-06::C14",
+        "UPSTREAM-06::C08"
+      ],
+      "upstream_dispositions": [
+        "ADAPT",
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-06",
+            "spdx": null,
+            "copy_permitted": false,
+            "attribution_required": false,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": null
+          }
+        ],
+        "aggregate_copy_permitted": false
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "含 UPSTREAM-06 来源：零复制，只作抽象思想；抽象思想与受保护表达的边界需法务判断（U06 审计 U10）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0051",
+      "audit_category": "canonical",
+      "expected_owner": "Security",
+      "actual_owner": "Security",
+      "upstream_identities": [
+        "UPSTREAM-06::C11",
+        "UPSTREAM-06::C28"
+      ],
+      "upstream_dispositions": [
+        "REJECT",
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED",
+        "ADOPTED_AS_COUNTEREXAMPLE"
+      ],
+      "association_roles": [
+        "counterexample",
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-06",
+            "spdx": null,
+            "copy_permitted": false,
+            "attribution_required": false,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": null
+          }
+        ],
+        "aggregate_copy_permitted": false
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "含 UPSTREAM-06 来源：零复制，只作抽象思想；抽象思想与受保护表达的边界需法务判断（U06 审计 U10）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0052",
+      "audit_category": "canonical",
+      "expected_owner": "Security",
+      "actual_owner": "Security",
+      "upstream_identities": [
+        "UPSTREAM-06::C22"
+      ],
+      "upstream_dispositions": [
+        "ADAPT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-06",
+            "spdx": null,
+            "copy_permitted": false,
+            "attribution_required": false,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": null
+          }
+        ],
+        "aggregate_copy_permitted": false
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "含 UPSTREAM-06 来源：零复制，只作抽象思想；抽象思想与受保护表达的边界需法务判断（U06 审计 U10）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0053",
+      "audit_category": "canonical",
+      "expected_owner": "Security",
+      "actual_owner": "Security",
+      "upstream_identities": [
+        "UPSTREAM-05::C20",
+        "UPSTREAM-06::C17",
+        "UPSTREAM-06::C27",
+        "UPSTREAM-04::C06"
+      ],
+      "upstream_dispositions": [
+        "ADAPT",
+        "REIMPLEMENT",
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-04",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true,
+            "reuse_obligation": "MIT：保留版权声明与许可声明；分发含本源改写内容的产物需附 MIT 全文并说明修改。"
+          },
+          {
+            "upstream_id": "UPSTREAM-05",
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "Apache-2.0 §4：再分发需保留 LICENSE 与 NOTICE（若有）。本仓库无 NOTICE，故仅需保留 LICENSE 与修改声明。SourceLore 不复制其源码，仅借鉴设计，无再分发义务"
+          },
+          {
+            "upstream_id": "UPSTREAM-06",
+            "spdx": null,
+            "copy_permitted": false,
+            "attribution_required": false,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": null
+          }
+        ],
+        "aggregate_copy_permitted": false
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "含 UPSTREAM-06 来源：零复制，只作抽象思想；抽象思想与受保护表达的边界需法务判断（U06 审计 U10）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0054",
+      "audit_category": "canonical",
+      "expected_owner": "Security",
+      "actual_owner": "Security",
+      "upstream_identities": [
+        "UPSTREAM-06::C24"
+      ],
+      "upstream_dispositions": [
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-06",
+            "spdx": null,
+            "copy_permitted": false,
+            "attribution_required": false,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": null
+          }
+        ],
+        "aggregate_copy_permitted": false
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "含 UPSTREAM-06 来源：零复制，只作抽象思想；抽象思想与受保护表达的边界需法务判断（U06 审计 U10）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0055",
+      "audit_category": "canonical",
+      "expected_owner": "Renderer",
+      "actual_owner": "Renderer",
+      "upstream_identities": [
+        "UPSTREAM-01::C10",
+        "UPSTREAM-03::C26"
+      ],
+      "upstream_dispositions": [
+        "REJECT",
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED",
+        "ADOPTED_AS_COUNTEREXAMPLE"
+      ],
+      "association_roles": [
+        "counterexample",
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-01",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "retain copyright notice and permission notice in all copies or substantial portions"
+          },
+          {
+            "upstream_id": "UPSTREAM-03",
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "CC BY 4.0：① 给予适当署名 ② 提供许可证链接 ③ 标明是否作了修改 ④ 不得附加法律或技术措施限制他人行使许可证允许的权利"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "CC BY 4.0 来源：须在分发物中履行署名与许可链接义务",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0056",
+      "audit_category": "canonical",
+      "expected_owner": "Renderer",
+      "actual_owner": "Renderer",
+      "upstream_identities": [
+        "UPSTREAM-03::C15"
+      ],
+      "upstream_dispositions": [
+        "ADAPT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-03",
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "CC BY 4.0：① 给予适当署名 ② 提供许可证链接 ③ 标明是否作了修改 ④ 不得附加法律或技术措施限制他人行使许可证允许的权利"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "CC BY 4.0 来源：须在分发物中履行署名与许可链接义务",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0057",
+      "audit_category": "canonical",
+      "expected_owner": "Renderer",
+      "actual_owner": "Renderer",
+      "upstream_identities": [
+        "UPSTREAM-02::C17",
+        "UPSTREAM-03::C24"
+      ],
+      "upstream_dispositions": [
+        "REJECT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED",
+        "ADOPTED_AS_COUNTEREXAMPLE"
+      ],
+      "association_roles": [
+        "counterexample",
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-02",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "在所有副本或实质性部分中保留两行版权与 MIT 许可声明"
+          },
+          {
+            "upstream_id": "UPSTREAM-03",
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "CC BY 4.0：① 给予适当署名 ② 提供许可证链接 ③ 标明是否作了修改 ④ 不得附加法律或技术措施限制他人行使许可证允许的权利"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "CC BY 4.0 来源：须在分发物中履行署名与许可链接义务",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0058",
+      "audit_category": "canonical",
+      "expected_owner": "Renderer",
+      "actual_owner": "Renderer",
+      "upstream_identities": [
+        "UPSTREAM-05::C03",
+        "UPSTREAM-04::C14"
+      ],
+      "upstream_dispositions": [
+        "ADAPT",
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-04",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true,
+            "reuse_obligation": "MIT：保留版权声明与许可声明；分发含本源改写内容的产物需附 MIT 全文并说明修改。"
+          },
+          {
+            "upstream_id": "UPSTREAM-05",
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "Apache-2.0 §4：再分发需保留 LICENSE 与 NOTICE（若有）。本仓库无 NOTICE，故仅需保留 LICENSE 与修改声明。SourceLore 不复制其源码，仅借鉴设计，无再分发义务"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "Apache-2.0 来源：若再分发需保留 LICENSE 与修改声明（本仓库无实际代码复制）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0059",
+      "audit_category": "canonical",
+      "expected_owner": "Renderer",
+      "actual_owner": "Renderer",
+      "upstream_identities": [
+        "UPSTREAM-03::C18",
+        "UPSTREAM-03::C19",
+        "UPSTREAM-03::C20",
+        "UPSTREAM-03::C21",
+        "UPSTREAM-03::C22",
+        "UPSTREAM-03::C12"
+      ],
+      "upstream_dispositions": [
+        "ADAPT",
+        "REIMPLEMENT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-03",
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "CC BY 4.0：① 给予适当署名 ② 提供许可证链接 ③ 标明是否作了修改 ④ 不得附加法律或技术措施限制他人行使许可证允许的权利"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "CC BY 4.0 来源：须在分发物中履行署名与许可链接义务",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0060",
+      "audit_category": "canonical",
+      "expected_owner": "Renderer",
+      "actual_owner": "Renderer",
+      "upstream_identities": [
+        "UPSTREAM-05::C14"
+      ],
+      "upstream_dispositions": [
+        "ADAPT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-05",
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "Apache-2.0 §4：再分发需保留 LICENSE 与 NOTICE（若有）。本仓库无 NOTICE，故仅需保留 LICENSE 与修改声明。SourceLore 不复制其源码，仅借鉴设计，无再分发义务"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "Apache-2.0 来源：若再分发需保留 LICENSE 与修改声明（本仓库无实际代码复制）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0061",
+      "audit_category": "canonical",
+      "expected_owner": "Renderer",
+      "actual_owner": "Renderer",
+      "upstream_identities": [],
+      "upstream_dispositions": null,
+      "terminal_dispositions": null,
+      "association_roles": null,
+      "license_permission": {
+        "per_upstream": [],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "INTERNAL_DESIGN_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "INTERNAL_DESIGN_ONLY",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0062",
+      "audit_category": "canonical",
+      "expected_owner": "Storage",
+      "actual_owner": "Storage",
+      "upstream_identities": [
+        "UPSTREAM-04::C03",
+        "UPSTREAM-05::C18"
+      ],
+      "upstream_dispositions": [
+        "REIMPLEMENT",
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-04",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true,
+            "reuse_obligation": "MIT：保留版权声明与许可声明；分发含本源改写内容的产物需附 MIT 全文并说明修改。"
+          },
+          {
+            "upstream_id": "UPSTREAM-05",
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "Apache-2.0 §4：再分发需保留 LICENSE 与 NOTICE（若有）。本仓库无 NOTICE，故仅需保留 LICENSE 与修改声明。SourceLore 不复制其源码，仅借鉴设计，无再分发义务"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "Apache-2.0 来源：若再分发需保留 LICENSE 与修改声明（本仓库无实际代码复制）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0063",
+      "audit_category": "canonical",
+      "expected_owner": "Storage",
+      "actual_owner": "Storage",
+      "upstream_identities": [],
+      "upstream_dispositions": null,
+      "terminal_dispositions": null,
+      "association_roles": null,
+      "license_permission": {
+        "per_upstream": [],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "INTERNAL_DESIGN_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "INTERNAL_DESIGN_ONLY",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0064",
+      "audit_category": "canonical",
+      "expected_owner": "Storage",
+      "actual_owner": "Storage",
+      "upstream_identities": [
+        "UPSTREAM-04::C22",
+        "UPSTREAM-05::C22",
+        "UPSTREAM-05::C10"
+      ],
+      "upstream_dispositions": [
+        "ADAPT",
+        "REIMPLEMENT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-04",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true,
+            "reuse_obligation": "MIT：保留版权声明与许可声明；分发含本源改写内容的产物需附 MIT 全文并说明修改。"
+          },
+          {
+            "upstream_id": "UPSTREAM-05",
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "Apache-2.0 §4：再分发需保留 LICENSE 与 NOTICE（若有）。本仓库无 NOTICE，故仅需保留 LICENSE 与修改声明。SourceLore 不复制其源码，仅借鉴设计，无再分发义务"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "Apache-2.0 来源：若再分发需保留 LICENSE 与修改声明（本仓库无实际代码复制）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0065",
+      "audit_category": "canonical",
+      "expected_owner": "Storage",
+      "actual_owner": "Storage",
+      "upstream_identities": [
+        "UPSTREAM-04::C23",
+        "UPSTREAM-05::C23",
+        "UPSTREAM-04::C04"
+      ],
+      "upstream_dispositions": [
+        "REIMPLEMENT",
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-04",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true,
+            "reuse_obligation": "MIT：保留版权声明与许可声明；分发含本源改写内容的产物需附 MIT 全文并说明修改。"
+          },
+          {
+            "upstream_id": "UPSTREAM-05",
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "Apache-2.0 §4：再分发需保留 LICENSE 与 NOTICE（若有）。本仓库无 NOTICE，故仅需保留 LICENSE 与修改声明。SourceLore 不复制其源码，仅借鉴设计，无再分发义务"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "Apache-2.0 来源：若再分发需保留 LICENSE 与修改声明（本仓库无实际代码复制）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0066",
+      "audit_category": "canonical",
+      "expected_owner": "Storage",
+      "actual_owner": "Storage",
+      "upstream_identities": [
+        "UPSTREAM-06::C19"
+      ],
+      "upstream_dispositions": [
+        "REIMPLEMENT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-06",
+            "spdx": null,
+            "copy_permitted": false,
+            "attribution_required": false,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": null
+          }
+        ],
+        "aggregate_copy_permitted": false
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "含 UPSTREAM-06 来源：零复制，只作抽象思想；抽象思想与受保护表达的边界需法务判断（U06 审计 U10）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0067",
+      "audit_category": "canonical",
+      "expected_owner": "Storage",
+      "actual_owner": "Storage",
+      "upstream_identities": [
+        "UPSTREAM-05::C09",
+        "UPSTREAM-04::C25",
+        "UPSTREAM-05::C26"
+      ],
+      "upstream_dispositions": [
+        "ADAPT",
+        "REJECT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED",
+        "ADOPTED_AS_COUNTEREXAMPLE"
+      ],
+      "association_roles": [
+        "counterexample",
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-04",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true,
+            "reuse_obligation": "MIT：保留版权声明与许可声明；分发含本源改写内容的产物需附 MIT 全文并说明修改。"
+          },
+          {
+            "upstream_id": "UPSTREAM-05",
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "Apache-2.0 §4：再分发需保留 LICENSE 与 NOTICE（若有）。本仓库无 NOTICE，故仅需保留 LICENSE 与修改声明。SourceLore 不复制其源码，仅借鉴设计，无再分发义务"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "Apache-2.0 来源：若再分发需保留 LICENSE 与修改声明（本仓库无实际代码复制）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0068",
+      "audit_category": "canonical",
+      "expected_owner": "DSH-Adapter",
+      "actual_owner": "DSH-Adapter",
+      "upstream_identities": [
+        "UPSTREAM-01::C11",
+        "UPSTREAM-04::C05"
+      ],
+      "upstream_dispositions": [
+        "ADAPT",
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-01",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "retain copyright notice and permission notice in all copies or substantial portions"
+          },
+          {
+            "upstream_id": "UPSTREAM-04",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true,
+            "reuse_obligation": "MIT：保留版权声明与许可声明；分发含本源改写内容的产物需附 MIT 全文并说明修改。"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0069",
+      "audit_category": "canonical",
+      "expected_owner": "DSH-Adapter",
+      "actual_owner": "DSH-Adapter",
+      "upstream_identities": [
+        "UPSTREAM-01::C06"
+      ],
+      "upstream_dispositions": [
+        "REUSE"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-01",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "retain copyright notice and permission notice in all copies or substantial portions"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0070",
+      "audit_category": "canonical",
+      "expected_owner": "DSH-Adapter",
+      "actual_owner": "DSH-Adapter",
+      "upstream_identities": [
+        "UPSTREAM-01::C07",
+        "UPSTREAM-06::C18",
+        "UPSTREAM-01::C13",
+        "UPSTREAM-01::C14"
+      ],
+      "upstream_dispositions": [
+        "ADAPT",
+        "REJECT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED",
+        "ADOPTED_AS_COUNTEREXAMPLE"
+      ],
+      "association_roles": [
+        "counterexample",
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-01",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "retain copyright notice and permission notice in all copies or substantial portions"
+          },
+          {
+            "upstream_id": "UPSTREAM-06",
+            "spdx": null,
+            "copy_permitted": false,
+            "attribution_required": false,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": null
+          }
+        ],
+        "aggregate_copy_permitted": false
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "含 UPSTREAM-06 来源：零复制，只作抽象思想；抽象思想与受保护表达的边界需法务判断（U06 审计 U10）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0071",
+      "audit_category": "canonical",
+      "expected_owner": "DSH-Adapter",
+      "actual_owner": "DSH-Adapter",
+      "upstream_identities": [
+        "UPSTREAM-04::C16"
+      ],
+      "upstream_dispositions": [
+        "ADAPT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-04",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true,
+            "reuse_obligation": "MIT：保留版权声明与许可声明；分发含本源改写内容的产物需附 MIT 全文并说明修改。"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0072",
+      "audit_category": "canonical",
+      "expected_owner": "DSH-Adapter",
+      "actual_owner": "DSH-Adapter",
+      "upstream_identities": [
+        "UPSTREAM-04::C15"
+      ],
+      "upstream_dispositions": [
+        "ADAPT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-04",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true,
+            "reuse_obligation": "MIT：保留版权声明与许可声明；分发含本源改写内容的产物需附 MIT 全文并说明修改。"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0073",
+      "audit_category": "canonical",
+      "expected_owner": "DSH-Adapter",
+      "actual_owner": "DSH-Adapter",
+      "upstream_identities": [],
+      "upstream_dispositions": null,
+      "terminal_dispositions": null,
+      "association_roles": null,
+      "license_permission": {
+        "per_upstream": [],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "INTERNAL_DESIGN_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "INTERNAL_DESIGN_ONLY",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS",
+      "severity": "normal",
+      "remediation_required": null,
+      "remaining_uncertainty": "字符串重合检测未命中，但语义级改写无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0074",
+      "audit_category": "canonical",
+      "expected_owner": "Storage",
+      "actual_owner": "Storage",
+      "upstream_identities": [
+        "UPSTREAM-06::C25"
+      ],
+      "upstream_dispositions": [
+        "REIMPLEMENT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-06",
+            "spdx": null,
+            "copy_permitted": false,
+            "attribution_required": false,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": null
+          }
+        ],
+        "aggregate_copy_permitted": false
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "含 UPSTREAM-06 来源：零复制，只作抽象思想；抽象思想与受保护表达的边界需法务判断（U06 审计 U10）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    },
+    {
+      "subject_id": "SL-CAP-0075",
+      "audit_category": "canonical",
+      "expected_owner": "Evidence-Claims",
+      "actual_owner": "Evidence-Claims",
+      "upstream_identities": [
+        "UPSTREAM-01::C12",
+        "UPSTREAM-05::C25"
+      ],
+      "upstream_dispositions": [
+        "ADAPT",
+        "REIMPLEMENT"
+      ],
+      "terminal_dispositions": [
+        "ADOPTED"
+      ],
+      "association_roles": [
+        "positive"
+      ],
+      "license_permission": {
+        "per_upstream": [
+          {
+            "upstream_id": "UPSTREAM-01",
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "reuse_obligation": "retain copyright notice and permission notice in all copies or substantial portions"
+          },
+          {
+            "upstream_id": "UPSTREAM-05",
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "reuse_obligation": "Apache-2.0 §4：再分发需保留 LICENSE 与 NOTICE（若有）。本仓库无 NOTICE，故仅需保留 LICENSE 与修改声明。SourceLore 不复制其源码，仅借鉴设计，无再分发义务"
+          }
+        ],
+        "aggregate_copy_permitted": true
+      },
+      "actual_reuse_classification": "ABSTRACT_IDEA_ONLY",
+      "verbatim_runs_detected": [],
+      "verbatim_run_count": 0,
+      "origin_type": "UPSTREAM_DERIVED",
+      "evidence_locations": [],
+      "verification_method": "machine_text_overlap(>=6 English words)+metadata_read",
+      "result": "PASS_WITH_DEPENDENCY",
+      "severity": "normal",
+      "remediation_required": "Apache-2.0 来源：若再分发需保留 LICENSE 与修改声明（本仓库无实际代码复制）",
+      "remaining_uncertainty": "仅用字符串重合检测，不能证明「零复制」；语义级改写与结构搬运无法机器判定"
+    }
+  ],
+  "upstream_06_audit": {
+    "identity_count": 28,
+    "all_copy_permitted_false": true,
+    "any_canonical_overrides": [],
+    "verbatim_hits": [],
+    "items": [
+      {
+        "identity_key": "UPSTREAM-06::C01",
+        "capability": "两阶段信任边界（finder → judgment）",
+        "raw_disposition": "ADAPT",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0046",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C02",
+        "capability": "阶段间上下文卫生（下游只读上游结构字段，不读其 findings）",
+        "raw_disposition": "REUSE",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0046",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C03",
+        "capability": "Surface Gate：非生产面确定性抑制 + 置信度分级 + 封顶",
+        "raw_disposition": "REUSE",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0048",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C04",
+        "capability": "Boundary Gate：pre-auth 可达性门 + auth_coverage 映射",
+        "raw_disposition": "ADAPT",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0048",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C05",
+        "capability": "四节点数据流契约（entrypoint → hops → sink，逐跳 file:line）",
+        "raw_disposition": "REUSE",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0021",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C06",
+        "capability": "不可验证即判否的判据",
+        "raw_disposition": "REUSE",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0028",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C07",
+        "capability": "验证状态机与 report_tier 的固定映射",
+        "raw_disposition": "ADAPT",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0028",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C08",
+        "capability": "动态证据升级阶梯 + 每级独立同意",
+        "raw_disposition": "ADAPT",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0050",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C09",
+        "capability": "环境失败绝不改判",
+        "raw_disposition": "REUSE",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0048",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C10",
+        "capability": "动态否证只降级到人工复核",
+        "raw_disposition": "REUSE",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0028",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C11",
+        "capability": "两份独立控制 + 结构性构造门",
+        "raw_disposition": "REUSE",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0051",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C12",
+        "capability": "失效安全门控（fail-safe gating）",
+        "raw_disposition": "REUSE",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0048",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C13",
+        "capability": "Semgrep 三层规则集 + 本地缓存优先 + 废弃包移除",
+        "raw_disposition": "ADAPT",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0018",
+        "terminal_disposition": "ADOPTED_AS_COUNTEREXAMPLE",
+        "role": "counterexample",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C14",
+        "capability": "族扫描与诚实否定",
+        "raw_disposition": "REUSE",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0050",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C15",
+        "capability": "依赖可达性三态 + 保守默认 + KEV 下限",
+        "raw_disposition": "ADAPT",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0049",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C16",
+        "capability": "P3b 有效严重度与优先级",
+        "raw_disposition": "REUSE",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0049",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C17",
+        "capability": "密钥打码与原始输出清理",
+        "raw_disposition": "ADAPT",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0053",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C18",
+        "capability": "成本报告（时长 + token 估算）",
+        "raw_disposition": "ADAPT",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0070",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C19",
+        "capability": "多仓库拓扑与跨服务合成",
+        "raw_disposition": "REIMPLEMENT",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0066",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C20",
+        "capability": "延迟裁决与跨仓库解析",
+        "raw_disposition": "ADAPT",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0028",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C21",
+        "capability": "模型分层（Deep / Standard）",
+        "raw_disposition": "REJECT",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": null,
+        "terminal_disposition": "REJECTED_WITH_REASON",
+        "role": "counterexample",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C22",
+        "capability": "Skill/Agent 指令安全（OWASP LLM Top 10）",
+        "raw_disposition": "ADAPT",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0052",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C23",
+        "capability": "供应商采纳审计模式",
+        "raw_disposition": "ADAPT",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0038",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C24",
+        "capability": "PR diff 增量审查与移除控制回归检查",
+        "raw_disposition": "REUSE",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0054",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C25",
+        "capability": "三态分离的产物契约（run-metadata / 各阶段 JSON / 报告）",
+        "raw_disposition": "REIMPLEMENT",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0074",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C26",
+        "capability": "新鲜度与失效判定",
+        "raw_disposition": "REIMPLEMENT",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0042",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C27",
+        "capability": "密钥/数据分级",
+        "raw_disposition": "REIMPLEMENT",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0053",
+        "terminal_disposition": "ADOPTED",
+        "role": "positive",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      },
+      {
+        "identity_key": "UPSTREAM-06::C28",
+        "capability": "一键安装外部扫描器",
+        "raw_disposition": "REJECT",
+        "license_status": "none",
+        "copy_permitted_in_raw": false,
+        "mapped_to": "SL-CAP-0051",
+        "terminal_disposition": "ADOPTED_AS_COUNTEREXAMPLE",
+        "role": "counterexample",
+        "copy_permitted_in_canonical": true,
+        "verbatim_hits": [],
+        "result": "PASS"
+      }
+    ],
+    "legal_position": "默认著作权下保留全部权利；无复制、改编、再分发授权",
+    "reuse_scope": "design-only"
+  },
+  "summary": {
+    "canonical_total": 75,
+    "by_result": {
+      "PASS": 29,
+      "PASS_WITH_DEPENDENCY": 45,
+      "REVIEW_REQUIRED": 1
+    },
+    "by_severity": {
+      "high": 1,
+      "normal": 74
+    },
+    "verbatim_hit_canonicals": [
+      "SL-CAP-0023"
+    ],
+    "sources_with_copy_permitted_false": [
+      "UPSTREAM-06"
+    ],
+    "u06_blocked": []
+  }
+}
