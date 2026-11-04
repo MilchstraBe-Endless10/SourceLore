@@ -2274,3 +2274,140 @@ f2p2a 15/15   f2p1c 22/22   f2p1b 16/16   f2p1a 22/22   f1d 26/26
 3. 三态裁决 `supported` / `refuted` / `insufficient_evidence`，**不得默认 supported**
 4. 无 fact 支撑 → 一律 `insufficient_evidence`；PARTIAL 来源事实不能单独支撑
 5. 同 facts 集合 + 同裁决规则版本 → 同结论，身份稳定
+
+## M2 / F2-P2B 完成（2026-11-04 22:20 +08:00）
+
+### 结论：Evidence-Claims 确定性裁决闭环 DONE
+
+---
+
+## 两项前置核验（题面第 1 节）
+
+### A. P2A 的 manifest v2 依据 → **证据不足**
+
+P1C 记录的 `tree` 只有 `entry_count=1` / `sample_paths=["README"]`，**没有完整原始 Tree 响应**。
+P2A 回放的 `ents` 是用 `rec["blob"]` 手工构造的单条 —— 正是题面点名的"人工补录"。
+
+| 结论 | 级别 |
+|---|---|
+| README 存在 | **可用**（真实 blob 经 Git 对象 sha1 校验） |
+| package.json 不存在 | **证据不足** → 本批 **abstain** |
+
+### B. 46 vs 45 → 口径差异，**无删除**
+
+P1C 报的是**目录级**（43+3=46），P2A 报的是**单文件**（43+2=45）。
+逐项 diff 确认只有新增 2 条，无删除。退避测试加非空断言后能捕获假通过。
+
+---
+
+## 双层身份（本轮地基）
+
+```
+claim_id        = H(repo, commit, 命题类型, 规范化参数, schema)      ← 只看命题，换证据不变
+verification_id = H(claim_id, sorted(fact_ids), sorted(hashes),
+                    rule_version, 验证参数)                          ← 证据或规则变则新版本
+```
+
+时间戳**不进任何身份**。事实顺序颠倒、重复传入都不改变身份。
+
+---
+
+## 三态裁决
+
+| 观察 | 命题 | 结论 |
+|---|---|---|
+| PRESENT | 存在 | supported |
+| PRESENT | 不存在 | refuted |
+| ABSENT + COMPLETE | 不存在 | supported |
+| ABSENT + COMPLETE | 存在 | refuted |
+| ABSENT + 非 COMPLETE | 任意 | insufficient |
+
+**16 个 insufficient 原因码。任何路径都不会默认 supported/refuted。**
+
+---
+
+## PARTIAL 的关键性质
+
+PARTIAL 未命中在 **Facts 层**就变成 UNKNOWN 并拒绝入库，
+所以它在 EC 层**连证据都不是** —— 从根上消灭"拿 UNKNOWN 当否证"的可能。
+这比在 EC 层拦截更早、更彻底。
+
+PARTIAL 命中的存在可 supported，但必须带 `local_coverage_only=true`。
+
+---
+
+## 冲突与 Commit 隔离
+
+- 同 Commit 同路径出现 PRESENT 与 ABSENT → `CONFLICTING_EVIDENCE` + `conflict_detected`，
+  **没有多数票，没有取最新**。
+- 诚实说明：当前身份契约下（identity 只由 repo/commit/scope/collector_version 决定），
+  **两个正常快照不可能产生同 Commit 真实矛盾** —— 矛盾只可能来自数据损坏。
+  所以用受控注入构造，验证"不硬裁"。
+- Commit A / Commit B → 两条命题各自成立，交叉传入 → `COMMIT_MISMATCH`。
+
+---
+
+## 离线 Gold
+
+14 条手工用例（预期人工写定，非裁决器生成）：supported 3 / refuted 2 / insufficient 9。
+
+```
+                 supported  refuted  insufficient
+supported             3        0           0
+refuted               0        2           0
+insufficient          0        0           9
+```
+
+错误 supported 0 / 错误 refuted 0 / 阻断级 0 / gate=PASS。
+
+**变异测试实证门禁有效**（只在测试内替换，不改源码）：
+把无证据判 refuted → 捕获 `MISSING_JUDGED_REFUTED`；
+把不充分判 supported → 捕获 `INSUFFICIENT_JUDGED_SUPPORTED`；
+全判 supported → 大量 false_supported + BLOCKER；
+空 gold 集 → 显式 `EMPTY_GOLD_SET`，不返回 accuracy=1。
+
+---
+
+## 真实数据回放（HISTORICAL_REAL_DATA，非实时 API）
+
+```
+README 存在      → supported
+README 不存在    → refuted
+package.json 不存在 → insufficient（依 §1A 正确 abstain）
+错误 Commit 证据 → 拒绝（COMMIT_MISMATCH）
+重复裁决         → INGESTED → IDEMPOTENT_ALREADY_PRESENT
+```
+
+资产：snapshot 1 / fact 1 / claim 1 / verification 1。
+
+---
+
+## 本轮真缺陷与坑
+
+1. **真缺陷**：`ingest_claim` 推进版本时**忽略了调用方给的 `expected_version`**，
+   错误期望版本也能成功 → 已加 CAS 校验。
+2. **模块名冲突**：EC 的 `models.py` 与 `src/facts/models.py` 同名，混合 sys.path 下 import 命中错的
+   → 改名 `ec_models.py`。
+3. **身份语义连锁**：`completeness_status` 不进 snapshot identity，同 repo+commit 下
+   COMPLETE 与 PARTIAL 撞 CONFLICT → gold 每场景独立 store（非 bug，是既有契约）。
+
+---
+
+## 验证
+
+```
+tests/runtime 45 / storage 53 / collector 48 / facts 44 / evidence_claims 36   全 OK
+f2p2b 17/17  f2p2a 15/15  f2p1c 22/22  f2p1b 16/16  f2p1a 22/22  f1d 26/26
+```
+
+226 项 unittest + 118 项验收断言，失败 0。冻结哈希 `42841207…` 未变。
+
+---
+
+## 下一步：F2-P3 Lifecycle（**未启动，需独立批准**）
+
+1. 只消费 `claim_candidate` + `claim_verification`，**不重跑裁决**
+2. Lifecycle 管"知识何时可能过时"，**不改变已有 verification 结论**
+3. 最小规则：新 Commit 出现 → 旧 claim 标 `possibly_stale`，**不标 false**
+4. 新鲜度与裁决状态正交（`knowledge_freshness` 已是独立字段）
+5. 必测：旧结论不被改写、`possibly_stale` 不自动变 `refuted`、历史版本可读回

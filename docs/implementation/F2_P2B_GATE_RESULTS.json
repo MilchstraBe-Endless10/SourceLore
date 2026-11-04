@@ -1,0 +1,80 @@
+{
+  "artifact": "F2_P2B_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-04T22:19:18+08:00",
+  "generated_by": "F2-P2B 实测回填",
+  "principle": "叠加观测，不覆盖 F1-D 冻结快照",
+  "ec_component": {
+    "verdict": "DONE",
+    "evidence": "docs/implementation/F2_P2B_VERIFICATION.json (17/17)",
+    "tests": {
+      "runtime": 45,
+      "storage": 53,
+      "collector": 48,
+      "facts": 44,
+      "evidence_claims": 36
+    },
+    "claim_type": "repository_path_exists",
+    "verifier_rule": "path-exists-verifier/v1",
+    "states": [
+      "supported",
+      "refuted",
+      "insufficient_evidence"
+    ]
+  },
+  "preconditions": {
+    "A_manifest_provenance": {
+      "finding": "**证据不足**",
+      "impact": "package.json 不存在命题 abstain；README 存在命题基于真实 blob"
+    },
+    "B_test_count": {
+      "conclusion": "口径差异 + 新增 2 条；**没有任何测试被删除**",
+      "removed_tests": "无"
+    }
+  },
+  "offline_gold": {
+    "cases": 14,
+    "states_covered": [
+      "supported",
+      "refuted",
+      "insufficient_evidence"
+    ],
+    "blocking_rules": [
+      "INSUFFICIENT_JUDGED_SUPPORTED",
+      "MISSING_JUDGED_REFUTED"
+    ]
+  },
+  "real_data_integration": {
+    "provenance": "HISTORICAL_REAL_DATA",
+    "note": "P1C 真实采集记录回放，非本轮实时 API",
+    "readme_exists": "supported",
+    "readme_not_exists": "refuted",
+    "package_json_absent": "insufficient_evidence",
+    "wrong_commit_rejected": "COMMIT_MISMATCH",
+    "idempotent": "IDEMPOTENT_ALREADY_PRESENT"
+  },
+  "still_open": [
+    {
+      "gate": "F2-P3 Lifecycle",
+      "status": "NOT_STARTED"
+    },
+    {
+      "gate": "Y6-P3 审批传递",
+      "status": "UNVERIFIED"
+    },
+    {
+      "gate": "Y6-P6 BotHarness 端到端",
+      "status": "OPEN"
+    },
+    {
+      "gate": "B-1/B-2/B-3 分发门禁",
+      "status": "OPEN"
+    }
+  ],
+  "explicitly_not_claimed": [
+    "未实现自然语言语义命题裁决",
+    "未调用任何 LLM 参与证据或判分",
+    "未建第二套 Claim 权威数据库",
+    "AI 不产生 approved，人工审批仅留数据契约"
+  ]
+}

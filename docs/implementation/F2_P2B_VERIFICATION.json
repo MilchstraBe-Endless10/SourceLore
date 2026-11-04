@@ -1,0 +1,117 @@
+{
+  "task": "M2 / F2-P2B（Evidence-Claims 确定性裁决）",
+  "generated_by": "tools/f2p2b_verify.py",
+  "independent": true,
+  "git_head": "9d97c747c00276e2d66a24b24466d0f86f283ad4",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "data_provenance": "HISTORICAL_REAL_DATA",
+  "summary": {
+    "passed": 17,
+    "total": 17,
+    "result": "PASS"
+  },
+  "checks": [
+    {
+      "id": "c1",
+      "name": "EC 测试套件",
+      "passed": true,
+      "detail": "EC 套件 36 项 exit=0"
+    },
+    {
+      "id": "c2",
+      "name": "离线 Gold + 变异测试",
+      "passed": true,
+      "detail": "Gold+变异 9 项 exit=0"
+    },
+    {
+      "id": "c3",
+      "name": "三态裁决都有真实执行证据",
+      "passed": true,
+      "detail": "supported=supported refuted=refuted abstain=insufficient_evidence"
+    },
+    {
+      "id": "c4",
+      "name": "§1A 前置核验并据此 abstain",
+      "passed": true,
+      "detail": "§1A 判定=**证据不足**；package.json abstain=True"
+    },
+    {
+      "id": "c5",
+      "name": "§1B 前置核验（无测试被删）",
+      "passed": true,
+      "detail": "口径差异 + 新增 2 条；**没有任何测试被删除**"
+    },
+    {
+      "id": "c6",
+      "name": "退避测试非空断言可捕获假通过",
+      "passed": true,
+      "detail": "非空断言在位=True，collector 45 项 exit=0"
+    },
+    {
+      "id": "c7",
+      "name": "错误 Commit 证据不被接受",
+      "passed": true,
+      "detail": "insufficient_evidence/COMMIT_MISMATCH"
+    },
+    {
+      "id": "c8",
+      "name": "重复裁决幂等",
+      "passed": true,
+      "detail": "INGESTED -> IDEMPOTENT_ALREADY_PRESENT"
+    },
+    {
+      "id": "c9",
+      "name": "无第二套权威数据库",
+      "passed": true,
+      "detail": "自建库文件 无"
+    },
+    {
+      "id": "c10",
+      "name": "不引入 LLM",
+      "passed": true,
+      "detail": "LLM 依赖 无"
+    },
+    {
+      "id": "c11",
+      "name": "AI 不能生成 approved",
+      "passed": true,
+      "detail": "AI 不得自批约束在位=True"
+    },
+    {
+      "id": "c12",
+      "name": "P1A/P1B/P1C/P2A 全链回归",
+      "passed": true,
+      "detail": "runtime 45 exit=0; storage 53 exit=0; collector 48 exit=0; facts 44 exit=0"
+    },
+    {
+      "id": "c13",
+      "name": "F1-D 冻结哈希与验证",
+      "passed": true,
+      "detail": "SHA=42841207b8088c89… 未变=True f1d exit=0"
+    },
+    {
+      "id": "c14",
+      "name": "真实数据级别标注正确",
+      "passed": true,
+      "detail": "数据级别=HISTORICAL_REAL_DATA（未标 REAL_LIVE_API，未把合成清单当真实）"
+    },
+    {
+      "id": "c15",
+      "name": "不支持命题类型显式拒绝",
+      "passed": true,
+      "detail": "verifier 返回 R_UNSUPPORTED_TYPE=True、gold 场景 unsupported_type=True"
+    },
+    {
+      "id": "c16",
+      "name": "冲突不被强行裁决",
+      "passed": true,
+      "detail": "gold 覆盖冲突场景=True，verifier 断言在位=True"
+    },
+    {
+      "id": "c17",
+      "name": "PARTIAL 范围限制被执行",
+      "passed": true,
+      "detail": "PARTIAL 存在限制=True、未命中不推否证=True、gold 局部存在用例=True"
+    }
+  ]
+}

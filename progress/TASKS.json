@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-04T21:29:16+08:00",
+  "updated_at": "2026-11-04T22:21:14+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -1104,6 +1104,39 @@
       "blocked_reason": null,
       "depends_on": [
         "M2-F2-P1C"
+      ]
+    },
+    {
+      "id": "M2-F2-P2B",
+      "milestone": "M2",
+      "goal": "F2-P2B：Evidence-Claims 确定性证据评估、Claim 裁决与离线校准",
+      "inputs": [
+        "docs/implementation/F2_P2A_FACTS_ARCHITECTURE.md"
+      ],
+      "expected_outputs": [
+        "src/evidence_claims/",
+        "tests/evidence_claims/",
+        "tests/evidence_claims/gold/gold_cases.json",
+        "tools/f2p2b_verify.py",
+        "tools/f2p2b_e2e_replay.py",
+        "docs/implementation/F2_P2B_EC_ARCHITECTURE.md",
+        "docs/implementation/F2_P2B_EXECUTION_REPORT.md",
+        "docs/implementation/F2_P2B_VERIFICATION.json"
+      ],
+      "status": "DONE",
+      "verification_commands": [
+        "python3 -m unittest discover -s tests/evidence_claims",
+        "python3 tools/f2p2b_verify.py"
+      ],
+      "evidence_paths": [
+        "docs/implementation/F2_P2B_VERIFICATION.json",
+        "docs/implementation/F2_P2B_E2E_REPLAY.json",
+        "docs/implementation/F2_P2B_PRECONDITION_AUDIT.json"
+      ],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": [
+        "M2-F2-P2A"
       ]
     }
   ]

@@ -1,0 +1,57 @@
+{
+  "artifact": "F2_P2B_E2E_REPLAY",
+  "data_provenance": "HISTORICAL_REAL_DATA",
+  "note": "P1C 真实采集记录的回放，不是本轮实时 GitHub 访问；并按 §1A 核验结论：manifest 只有真实 blob 依据，无完整原始 Tree 清单",
+  "precondition_A_impact": "package.json 的'不存在'命题缺真实完整覆盖证据 → 必须 abstain",
+  "replayed_at": "2026-11-04T22:15:08+08:00",
+  "snapshot": {
+    "repository_id": "1296269",
+    "commit_sha": "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",
+    "root_tree_sha": "b4eecafa9be2f2006ce1b709d6857b07069b4608",
+    "logical_identity": "SL-SNAP-5a414a4b81e4c2d4a77a03fc2ca154b1201e6b6b"
+  },
+  "snapshot_ingest": {
+    "state": "INGESTED",
+    "asset_id": "SL-A-8c5de9a79a5d158c3ad636ac2cc23c86"
+  },
+  "facts": {
+    "readme": {
+      "observation": "OBSERVED_PRESENT",
+      "state": "INGESTED"
+    },
+    "package_json": {
+      "observation": "OBSERVED_ABSENT_IN_COVERED_SCOPE",
+      "ingested": false,
+      "why": "依 §1A，该清单缺真实完整 Tree 依据，不据此产出裁决证据"
+    }
+  },
+  "claim_readme_exists": {
+    "status": "supported",
+    "reason": null,
+    "verification_id": "SL-VERIF-3543119f023fccee7e96f646ec382a8e831bb305"
+  },
+  "claim_readme_not_exists": {
+    "status": "refuted",
+    "verification_id": "SL-VERIF-ec0670b6449b5605d9dbf4971290aff64a3d0572"
+  },
+  "claim_package_json_absent": {
+    "status": "insufficient_evidence",
+    "reason": "NO_FACTS",
+    "expected_by_precondition_A": "insufficient_evidence",
+    "abstained": true
+  },
+  "wrong_commit_rejected": {
+    "status": "insufficient_evidence",
+    "reason": "COMMIT_MISMATCH"
+  },
+  "persistence": {
+    "first": "INGESTED",
+    "second": "IDEMPOTENT_ALREADY_PRESENT"
+  },
+  "summary": {
+    "snapshot_assets": 1,
+    "fact_assets": 1,
+    "claim_assets": 1,
+    "verification_assets": 1
+  }
+}

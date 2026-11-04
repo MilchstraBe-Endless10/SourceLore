@@ -1,0 +1,78 @@
+{
+  "artifact": "F2_P2B_PRECONDITION_AUDIT",
+  "generated_at": "2026-11-04T22:05:06+08:00",
+  "purpose": "题面指令第 1 节两项前置核验（A 证据分级 / B 测试数量差异）",
+  "A_p2a_manifest_provenance": {
+    "question": "P2A 的 manifest_version=2 中完整 tree_entries 的构建依据是什么？",
+    "finding": "**证据不足**",
+    "evidence": {
+      "p1c_real_record_tree_field": {
+        "completeness_status": "COMPLETE",
+        "entry_count": 1,
+        "truncated_seen": false,
+        "deep_walk_used": false,
+        "tree_query_refs": [
+          "b4eecafa9be2f2006ce1b709d6857b07069b4608"
+        ],
+        "sample_paths": [
+          "README"
+        ]
+      },
+      "has_raw_tree_entries_in_record": false,
+      "raw_api_response_preserved": false
+    },
+    "what_p2a_actually_did": "tools/f2p2a_e2e_replay.py 用 rec['blob'] 的 blob_sha/size 手工构造单条 {path:README, type:blob, mode:100644} —— 这是**人工补录**，不是 API 原始响应",
+    "grading": {
+      "README 的存在性结论": "有真实依据（blob 经真实 API 读取并通过 Git 对象 sha1 校验）",
+      "package.json 的不存在性结论": "**证据不足** —— 单条人工补录清单不能证明完整覆盖",
+      "tree_entry_count=1": "真实（P1C 记录字段），但只证明数量，不提供条目内容"
+    },
+    "consequence_for_facts": [
+      "P2A 的 F2_P2A_E2E_REPLAY.json 中 fact_absent 结论必须重新标级为证据不足",
+      "不得用它作为 'octocat 在 7fd1a60b 不存在 package.json' 的证据"
+    ],
+    "consequence_for_ec": [
+      "本批对 package.json 不存在命题**必须 abstain**（insufficient_evidence），不得 supported",
+      "只有 README 存在命题可用真实 blob 证据判定"
+    ],
+    "allowed_use_of_synthetic": "合成夹具可以测试不存在判定（只要不伪装成真实 GitHub 证据）"
+  },
+  "B_collector_test_count": {
+    "question": "P1C 报告 46 项 vs P2A 记录 45 项，差异从何而来？",
+    "measured": {
+      "p1c_commit_a15e47d": {
+        "test_github_client.py": 43,
+        "test_crash_recovery.py": 3,
+        "discover_total": 46
+      },
+      "current_HEAD_9d97c74": {
+        "test_github_client.py": 45,
+        "test_crash_recovery.py": 3,
+        "discover_total": 48
+      }
+    },
+    "diff": "+2（无删除）",
+    "added_tests": [
+      "test_default_retry_after_cap_is_120 —— 固化生产默认上限 120s",
+      "test_retry_after_uses_default_cap_when_not_overridden —— 固化 9999 被截到 120"
+    ],
+    "removed_tests": "无",
+    "true_source_of_'45'_discrepancy": {
+      "real_cause": "P2A 报告写的是 `unittest discover -s tests/collector -p test_github_client.py` 的结果（45），而 P1C 报告写的是整个目录 discover 的结果（46）。两个数字口径不同，不是测试被删。",
+      "p1c_46": "目录级 discover（43+3）",
+      "p2a_45": "单文件（test_github_client.py）—— 当时是 43+2=45，即已加 2 条新测试",
+      "conclusion": "口径差异 + 新增 2 条；**没有任何测试被删除**"
+    }
+  },
+  "B_backoff_test_can_catch_fake_pass": {
+    "question": "退避测试的非空断言能否捕获'未实际等待却全部 PASS'？",
+    "finding": "能，且本批会用变异测试实证",
+    "mechanism": [
+      "修复后 install_fake 不再无条件覆盖 _sleep",
+      "两处测试改为 install_fake 之后设置 _sleep 并置 _sleep_override_set",
+      "新增 assertTrue(slept) —— 若 slept 为空直接失败，不再依赖 all([]) 永真"
+    ],
+    "planned_proof": "tests/evidence_claims 里做一个变异演示（不修改正式源码）"
+  },
+  "verdict": "两项核验完成；A 项发现证据不足，已按题面要求降级并约束本批行为"
+}

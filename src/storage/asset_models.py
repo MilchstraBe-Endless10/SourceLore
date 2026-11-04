@@ -31,6 +31,9 @@ ASSET_TYPES = frozenset({
     "relationship_record",   # 跨仓库关系
     # F2-P2A：确定性抽取事实（按题面 §8 授权的最小等价类型）
     "extracted_fact",
+    # F2-P2B：Claim 候选与证据评估记录（题面第 9 节授权的等价类型）
+    "claim_candidate",
+    "claim_verification",
 })
 
 # 敏感字段（按名拦截，不靠调用方自觉）
