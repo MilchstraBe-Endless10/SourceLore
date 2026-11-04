@@ -36,6 +36,7 @@ try:
     import f1c_c3_decisions as DEC4
 except ImportError:
     DEC4 = None
+import f1c_terminal_model as TM
 
 BATCH = "F1-C-B"
 
@@ -537,6 +538,20 @@ def main() -> int:
     if DEC4 is not None:
         d, c3_changes = apply_c3(d, raw, dry)
     d = recompute(d, base)
+    # 终态推导并入应用链：任何重跑都会重新生成，不会因下游步骤缺失而丢失。
+    decided_reject = {}
+    for mod in (DEC, DEC2, DEC3, DEC4):
+        if mod is None:
+            continue
+        for dd in getattr(mod, "DECISIONS", []):
+            if dd.get("direction") == "REJECT_WITH_REASON":
+                decided_reject[tuple(dd["identity"])] = {
+                    "terminal_disposition": dd.get("terminal_disposition",
+                                                   "REJECTED_WITH_REASON"),
+                    "reason": dd.get("reason"),
+                    "batch": getattr(mod, "BATCH", None),
+                }
+    tdist, odist, rdist = TM.derive(d, raw, decided_reject)
     g = d["global_state_counts"]
     print(f"mapped={g['mapped_count']} routed={g['routed_pending_count']} "
           f"unreviewed={g['unreviewed_count']} sum={g['sum_check']} canonical={g['canonical_count']}")
@@ -546,6 +561,9 @@ def main() -> int:
                   f"-> {c.get('target') or '(保持)'}")
     for c in created:
         print(f"  * 新建 {c['canonical_id']}: {c['name']}")
+    print(f"  terminal: {tdist}")
+    print(f"  origin  : {odist}")
+    print(f"  role    : {rdist}")
 
     recon = {
         "artifact": "F1C_B_ROUTED_RECONCILIATION",
@@ -556,6 +574,11 @@ def main() -> int:
         "principle": ("每次运行都从 F1-B 基线重建再叠加裁决；不是打补丁，故撤销裁决不会遗留历史路由。"
                       "叠加顺序：F1-B 基线 → F1-C-B（8 项 ROUTED 清算）→ F1-C-C1（3 项 DEFER 终裁）"
                       "→ F1-C-C2（U05 剩余 10 项）→ F1-C-C3（U03/U04/U06 剩余 10 项）。"),
+        "terminal_model_snapshot": {
+            "terminal_disposition_counts": tdist,
+            "canonical_origin_counts": odist,
+            "adoption_role_counts": rdist,
+        },
         "totals_after": {
             "mapped": g["mapped_count"], "routed": g["routed_pending_count"],
             "unreviewed": g["unreviewed_count"], "canonical": g["canonical_count"],

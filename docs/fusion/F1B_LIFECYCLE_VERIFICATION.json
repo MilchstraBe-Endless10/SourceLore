@@ -1,8 +1,8 @@
 {
   "task": "M1-FUSION-GATE-F1 / F1-B / Lifecycle",
-  "generated_at": "2026-11-04T14:39:49+08:00",
+  "generated_at": "2026-11-04T16:07:22+08:00",
   "generated_by": "tools/fusion/f1b_verify_lifecycle.py",
-  "git_head": "93c64ef0194ec10b41cb00dae034ddad8e9c323f",
+  "git_head": "d0709a387f5d4299e38c9ccaaae4c2a31fc14e87",
   "summary": {
     "passed": 48,
     "total": 48,

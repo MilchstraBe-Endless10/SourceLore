@@ -5,6 +5,21 @@
   "source_baseline": "docs/fusion/F1B_FROZEN_BASELINE.json",
   "decision_source": "tools/fusion/f1c_routed_decisions.py",
   "principle": "每次运行都从 F1-B 基线重建再叠加裁决；不是打补丁，故撤销裁决不会遗留历史路由。叠加顺序：F1-B 基线 → F1-C-B（8 项 ROUTED 清算）→ F1-C-C1（3 项 DEFER 终裁）→ F1-C-C2（U05 剩余 10 项）→ F1-C-C3（U03/U04/U06 剩余 10 项）。",
+  "terminal_model_snapshot": {
+    "terminal_disposition_counts": {
+      "ADOPTED": 122,
+      "ADOPTED_AS_COUNTEREXAMPLE": 17,
+      "REJECTED_WITH_REASON": 4
+    },
+    "canonical_origin_counts": {
+      "INTERNAL_DESIGN_ONLY": 7,
+      "UPSTREAM_DERIVED": 68
+    },
+    "adoption_role_counts": {
+      "counterexample": 21,
+      "positive": 122
+    }
+  },
   "totals_after": {
     "mapped": 139,
     "routed": 0,

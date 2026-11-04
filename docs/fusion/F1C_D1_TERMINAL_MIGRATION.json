@@ -1,0 +1,2571 @@
+{
+  "artifact": "F1C_D1_TERMINAL_MIGRATION",
+  "schema_version": 1,
+  "generated_at": "2026-11-04T16:07:23+08:00",
+  "generated_by": "tools/fusion/f1c_d1_migrate_terminal.py",
+  "principle": "三个正交概念：mapping_status（进度） / terminal_disposition（设计终态） / canonical_origin_type（来源性质）。不手填、不默认 ADOPTED、不依赖遍历顺序。",
+  "derivation_owner": "f1c_terminal_model.derive（由 f1c_apply_routed.py 在写盘前调用）",
+  "source_chain": [
+    "F1B_FROZEN_BASELINE.json",
+    "F1-C-B",
+    "F1-C-C1",
+    "F1-C-C2",
+    "F1-C-C3"
+  ],
+  "totals": {
+    "identities": 143,
+    "canonicals": 75,
+    "terminal_disposition_distribution": {
+      "ADOPTED": 122,
+      "ADOPTED_AS_COUNTEREXAMPLE": 17,
+      "REJECTED_WITH_REASON": 4
+    },
+    "canonical_origin_distribution": {
+      "INTERNAL_DESIGN_ONLY": 7,
+      "UPSTREAM_DERIVED": 68
+    },
+    "adoption_role_distribution": {
+      "counterexample": 21,
+      "positive": 122
+    },
+    "mapping_status_distribution": {
+      "MAPPED": 139,
+      "ROUTED": 0,
+      "UNREVIEWED": 4
+    }
+  },
+  "laws": [
+    "终态与 mapping_status 正交：REJECTED_WITH_REASON 可对应 UNREVIEWED，不伪造 MAPPED",
+    "终态与复制权限正交：ADOPTED 不推导 copy_permitted；U06 仍为 false",
+    "ADOPTED_AS_COUNTEREXAMPLE 只表示把被拒机制当反面约束，不表示采纳其行为",
+    "INTERNAL_DESIGN_ONLY 是 canonical 的来源性质，不强制赋给任何上游身份"
+  ],
+  "terminal_dispositions": {
+    "UPSTREAM-01::C01": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "fact-first layered extraction (zero-LLM)",
+      "adopted_parts": [
+        "SL-CAP-0001：fact-first layered extraction (zero-LLM)"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-01::C02": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "repo_facts.json single fact contract",
+      "adopted_parts": [
+        "SL-CAP-0002：repo_facts.json single fact contract"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-01::C03": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "citation existence check",
+      "adopted_parts": [
+        "SL-CAP-0022：citation existence check"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-01::C04": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "budgeted code sampling",
+      "adopted_parts": [
+        "SL-CAP-0003：budgeted code sampling"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-01::C05": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "entrypoint heuristics with rule+confidence",
+      "adopted_parts": [
+        "SL-CAP-0006：entrypoint heuristics with rule+confidence"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-01::C06": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "LLM provider decoupling via Protocol",
+      "adopted_parts": [
+        "SL-CAP-0069：LLM provider decoupling via Protocol"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-01::C07": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "single-call reasoning + bounded repair",
+      "adopted_parts": [
+        "SL-CAP-0070：single-call reasoning + bounded repair"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-01::C08": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "tree truncation degradation",
+      "adopted_parts": [
+        "SL-CAP-0004：tree truncation degradation"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-01::C09": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "monorepo support",
+      "adopted_parts": [
+        "SL-CAP-0005：monorepo support"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-01::C10": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "report schema + markdown render",
+      "adopted_parts": [
+        "SL-CAP-0055：report schema + markdown render"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-01::C11": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "prompt assets as markdown knowledge",
+      "adopted_parts": [
+        "SL-CAP-0068：prompt assets as markdown knowledge"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-01::C12": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "eval baseline (gold + deterministic metrics + judge)",
+      "adopted_parts": [
+        "SL-CAP-0075：eval baseline (gold + deterministic metrics + judge)"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-01::C13": {
+      "value": "ADOPTED_AS_COUNTEREXAMPLE",
+      "basis": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "role": "counterexample",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REJECT",
+      "upstream_capability": "direct external LLM API client",
+      "adopted_parts": [],
+      "rejected_parts": [
+        "SL-CAP-0070：direct external LLM API client"
+      ],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-01::C14": {
+      "value": "ADOPTED_AS_COUNTEREXAMPLE",
+      "basis": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "role": "counterexample",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REJECT",
+      "upstream_capability": "multi-model judge ensemble",
+      "adopted_parts": [],
+      "rejected_parts": [
+        "SL-CAP-0070：multi-model judge ensemble"
+      ],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-01::C15": {
+      "value": "ADOPTED_AS_COUNTEREXAMPLE",
+      "basis": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "role": "counterexample",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REJECT",
+      "upstream_capability": "bespoke GitHub REST client",
+      "adopted_parts": [],
+      "rejected_parts": [
+        "SL-CAP-0011：bespoke GitHub REST client"
+      ],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-02::C01": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "GitHub REST 端点清单与取数语义",
+      "adopted_parts": [
+        "SL-CAP-0011：GitHub REST 端点清单与取数语义"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-02::C02": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "get_tree 用 HEAD 让服务端解析默认分支",
+      "adopted_parts": [
+        "SL-CAP-0012：get_tree 用 HEAD 让服务端解析默认分支"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-02::C03": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "原始内容直取（raw accept）",
+      "adopted_parts": [
+        "SL-CAP-0015：原始内容直取（raw accept）"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-02::C04": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "requests 可选依赖的优雅降级",
+      "adopted_parts": [
+        "SL-CAP-0011：requests 可选依赖的优雅降级"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-02::C05": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "失败必须是异常而非写入数据通道",
+      "adopted_parts": [
+        "SL-CAP-0007：失败必须是异常而非写入数据通道"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-02::C06": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "分页遍历与短页终止判据",
+      "adopted_parts": [
+        "SL-CAP-0014：分页遍历与短页终止判据"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-02::C07": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "Issue 列表排除 PR 的语义",
+      "adopted_parts": [
+        "SL-CAP-0016：Issue 列表排除 PR 的语义"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-02::C08": {
+      "value": "ADOPTED_AS_COUNTEREXAMPLE",
+      "basis": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "role": "counterexample",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REJECT",
+      "upstream_capability": "仓库摘要聚合 summarize_repo",
+      "adopted_parts": [],
+      "rejected_parts": [
+        "SL-CAP-0017：仓库摘要聚合 summarize_repo"
+      ],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-02::C09": {
+      "value": "ADOPTED_AS_COUNTEREXAMPLE",
+      "basis": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "role": "counterexample",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REJECT",
+      "upstream_capability": "树格式化 format_tree",
+      "adopted_parts": [],
+      "rejected_parts": [
+        "SL-CAP-0015：树格式化 format_tree"
+      ],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-02::C10": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "四轮研究流程",
+      "adopted_parts": [
+        "SL-CAP-0035：四轮研究流程"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-02::C11": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "查询策略 Broad to Narrow",
+      "adopted_parts": [
+        "SL-CAP-0036：查询策略 Broad to Narrow"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-02::C12": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "五层来源优先级",
+      "adopted_parts": [
+        "SL-CAP-0037：五层来源优先级"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-02::C13": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "报告九节结构",
+      "adopted_parts": [
+        "SL-CAP-0038：报告九节结构"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-02::C14": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "来源分桶清单（Primary/Media/Academic/Community）",
+      "adopted_parts": [
+        "SL-CAP-0037：来源分桶清单（Primary/Media/Academic/Community）"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-02::C15": {
+      "value": "ADOPTED_AS_COUNTEREXAMPLE",
+      "basis": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "role": "counterexample",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REJECT",
+      "upstream_capability": "置信度三档百分比",
+      "adopted_parts": [],
+      "rejected_parts": [
+        "SL-CAP-0038：置信度三档百分比"
+      ],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-02::C16": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "强制内联引用规则与好/坏示例",
+      "adopted_parts": [
+        "SL-CAP-0039：强制内联引用规则与好/坏示例"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-02::C17": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REJECT",
+      "upstream_capability": "Mermaid 图表硬要求",
+      "adopted_parts": [
+        "SL-CAP-0057：Mermaid 图表硬要求"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [
+        {
+          "canonical_id": "SL-CAP-0057",
+          "upstream_disposition": "REJECT",
+          "verdict": "REIMPLEMENT"
+        }
+      ],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-02::C18": {
+      "value": "ADOPTED_AS_COUNTEREXAMPLE",
+      "basis": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "role": "counterexample",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REJECT",
+      "upstream_capability": "自建 GitHub REST 客户端",
+      "adopted_parts": [],
+      "rejected_parts": [
+        "SL-CAP-0011：自建 GitHub REST 客户端"
+      ],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C01": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "边界三分类（confirmed runtime integration / configured external boundary / integration unknown）",
+      "adopted_parts": [
+        "SL-CAP-0030：边界三分类（confirmed runtime integration / configured external boundary / integration unknown）"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C02": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "集成指示符正则集合 + 必扫面清单",
+      "adopted_parts": [
+        "SL-CAP-0010：集成指示符正则集合 + 必扫面清单"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C03": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "「显式未知优于自信猜测」+「无证据必须降级为假设」",
+      "adopted_parts": [
+        "SL-CAP-0023：「显式未知优于自信猜测」+「无证据必须降级为假设」"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C04": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "观察/推理硬隔离（Inventory 只写观察，附好例坏例）",
+      "adopted_parts": [
+        "SL-CAP-0008：观察/推理硬隔离（Inventory 只写观察，附好例坏例）"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C05": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "Canonical Knowledge Registry（名字/别名/类型/路径权威清单）",
+      "adopted_parts": [
+        "SL-CAP-0009：Canonical Knowledge Registry（名字/别名/类型/路径权威清单）"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C06": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "产品模型八要素（Frame/Roles/Entities/Capabilities/Flows/Boundaries/Constraints/Decisions-Risks-Unknowns）",
+      "adopted_parts": [
+        "SL-CAP-0029：产品模型八要素（Frame/Roles/Entities/Capabilities/Flows/Boundaries/Constraints/Decisions-Risks-Unknowns）"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C07": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "十四步依赖序构建",
+      "adopted_parts": [
+        "SL-CAP-0032：十四步依赖序构建"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C08": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "Rerun Protocol 九个重跑触发点",
+      "adopted_parts": [
+        "SL-CAP-0043：Rerun Protocol 九个重跑触发点"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C09": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "未知项一等公民（类型/五字段/生命周期）",
+      "adopted_parts": [
+        "SL-CAP-0033：未知项一等公民（类型/五字段/生命周期）"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C10": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "「来源冲突必须记录」规则",
+      "adopted_parts": [
+        "SL-CAP-0033：「来源冲突必须记录」规则"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C11": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "置信度三档 High/Medium/Low",
+      "adopted_parts": [
+        "SL-CAP-0034：置信度三档 High/Medium/Low"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C12": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "二十条反模式清单",
+      "adopted_parts": [
+        "SL-CAP-0059：二十条反模式清单"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C13": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "渐进发现（广度→具体，禁止一次成型）",
+      "adopted_parts": [
+        "SL-CAP-0032：渐进发现（广度→具体，禁止一次成型）"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C14": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "Knowledge Refinement 十个精修动作",
+      "adopted_parts": [
+        "SL-CAP-0032：Knowledge Refinement 十个精修动作"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C15": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "写作风格与受众定义",
+      "adopted_parts": [
+        "SL-CAP-0056：写作风格与受众定义"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C16": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "业务实体建模",
+      "adopted_parts": [
+        "SL-CAP-0031：业务实体建模"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C17": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "终止条件",
+      "adopted_parts": [
+        "SL-CAP-0034：终止条件"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C18": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "十八条结构一致性检查",
+      "adopted_parts": [
+        "SL-CAP-0059：十八条结构一致性检查"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C19": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "Obsidian wiki link 校验",
+      "adopted_parts": [
+        "SL-CAP-0059：Obsidian wiki link 校验"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C20": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "五条一致性规则（命名/链接/主张/置信度/未知项）",
+      "adopted_parts": [
+        "SL-CAP-0059：五条一致性规则（命名/链接/主张/置信度/未知项）"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C21": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "五十五问自检清单",
+      "adopted_parts": [
+        "SL-CAP-0059：五十五问自检清单"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C22": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "主张措辞规则",
+      "adopted_parts": [
+        "SL-CAP-0059：主张措辞规则"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C23": {
+      "value": "ADOPTED_AS_COUNTEREXAMPLE",
+      "basis": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "role": "counterexample",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REJECT",
+      "upstream_capability": "五档证据优先级",
+      "adopted_parts": [],
+      "rejected_parts": [
+        "SL-CAP-0037：五档证据优先级"
+      ],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C24": {
+      "value": "ADOPTED_AS_COUNTEREXAMPLE",
+      "basis": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "role": "counterexample",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REJECT",
+      "upstream_capability": "D2 图规范（强制 D2）",
+      "adopted_parts": [],
+      "rejected_parts": [
+        "SL-CAP-0057：D2 图规范（强制 D2）"
+      ],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C25": {
+      "value": "ADOPTED_AS_COUNTEREXAMPLE",
+      "basis": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "role": "counterexample",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REJECT",
+      "upstream_capability": "「不得依赖 AST 解析器/图数据库/静态分析管线/索引系统」",
+      "adopted_parts": [],
+      "rejected_parts": [
+        "SL-CAP-0001：「不得依赖 AST 解析器/图数据库/静态分析管线/索引系统」"
+      ],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C26": {
+      "value": "ADOPTED_AS_COUNTEREXAMPLE",
+      "basis": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "role": "counterexample",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REJECT",
+      "upstream_capability": "每个术语必须独立成页（含小仓库）",
+      "adopted_parts": [],
+      "rejected_parts": [
+        "SL-CAP-0055：每个术语必须独立成页（含小仓库）"
+      ],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-03::C27": {
+      "value": "ADOPTED_AS_COUNTEREXAMPLE",
+      "basis": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "role": "counterexample",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REJECT",
+      "upstream_capability": "百分比置信度豁免",
+      "adopted_parts": [],
+      "rejected_parts": [
+        "SL-CAP-0038：百分比置信度豁免"
+      ],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C01": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "可变层/不可变层分离",
+      "adopted_parts": [
+        "SL-CAP-0041：可变层/不可变层分离"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C02": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "Subject 作为知识身份单位（非 Question）",
+      "adopted_parts": [
+        "SL-CAP-0040：Subject 作为知识身份单位（非 Question）"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C03": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "索引是派生视图，禁止手改",
+      "adopted_parts": [
+        "SL-CAP-0062：索引是派生视图，禁止手改"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C04": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "双通道检索（索引找 / 直链用）",
+      "adopted_parts": [
+        "SL-CAP-0065：双通道检索（索引找 / 直链用）"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C05": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "按需加载的模式指引",
+      "adopted_parts": [
+        "SL-CAP-0068：按需加载的模式指引"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C06": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "不存密钥/凭据/个人数据（全模式适用）",
+      "adopted_parts": [
+        "SL-CAP-0053：不存密钥/凭据/个人数据（全模式适用）"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C07": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "证据三分法（完整存 / fixture+说明 / 不存）",
+      "adopted_parts": [
+        "SL-CAP-0020：证据三分法（完整存 / fixture+说明 / 不存）"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C08": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "外部探测的存档清单",
+      "adopted_parts": [
+        "SL-CAP-0020：外部探测的存档清单"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C09": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "Superseded 关系与保留历史",
+      "adopted_parts": [
+        "SL-CAP-0027：Superseded 关系与保留历史"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C10": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "Finding 四段结构",
+      "adopted_parts": [
+        "SL-CAP-0026：Finding 四段结构"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C11": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "`verified-against` 新鲜度字段",
+      "adopted_parts": [
+        "SL-CAP-0027：`verified-against` 新鲜度字段"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C12": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "优先扩展而非新建",
+      "adopted_parts": [
+        "SL-CAP-0040：优先扩展而非新建"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C13": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "报告粒度禁令",
+      "adopted_parts": [
+        "SL-CAP-0040：报告粒度禁令"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C14": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "产物命名与链接规范",
+      "adopted_parts": [
+        "SL-CAP-0058：产物命名与链接规范"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C15": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "自主权分级（可自主 vs 须先问）",
+      "adopted_parts": [
+        "SL-CAP-0072：自主权分级（可自主 vs 须先问）"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C16": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "完成检查（三处 Completion Check）",
+      "adopted_parts": [
+        "SL-CAP-0071：完成检查（三处 Completion Check）"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C17": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "仓库影响面调查流程",
+      "adopted_parts": [
+        "SL-CAP-0044：仓库影响面调查流程"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C18": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "Reuse / Extend / Create 三态判定",
+      "adopted_parts": [
+        "SL-CAP-0040：Reuse / Extend / Create 三态判定"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C19": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "知识失效检测",
+      "adopted_parts": [
+        "SL-CAP-0042：知识失效检测"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C20": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "`Current understanding` 演进史",
+      "adopted_parts": [
+        "SL-CAP-0041：`Current understanding` 演进史"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C21": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "冲突处理（两个报告判断不同）",
+      "adopted_parts": [
+        "SL-CAP-0038：冲突处理（两个报告判断不同）"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C22": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "并发写入保护",
+      "adopted_parts": [
+        "SL-CAP-0064：并发写入保护"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C23": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "结构化查询能力",
+      "adopted_parts": [
+        "SL-CAP-0065：结构化查询能力"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C24": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "无法复现的外部观察标记",
+      "adopted_parts": [
+        "SL-CAP-0020：无法复现的外部观察标记"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C25": {
+      "value": "ADOPTED_AS_COUNTEREXAMPLE",
+      "basis": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "role": "counterexample",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REJECT",
+      "upstream_capability": "「一个仓库一个 corpus，住在仓库内」的部署模型",
+      "adopted_parts": [],
+      "rejected_parts": [
+        "SL-CAP-0067：「一个仓库一个 corpus，住在仓库内」的部署模型"
+      ],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C26": {
+      "value": "ADOPTED_AS_COUNTEREXAMPLE",
+      "basis": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "role": "counterexample",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REJECT",
+      "upstream_capability": "Research 必须产报告（即使无新发现）",
+      "adopted_parts": [],
+      "rejected_parts": [
+        "SL-CAP-0038：Research 必须产报告（即使无新发现）"
+      ],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-04::C27": {
+      "value": "REJECTED_WITH_REASON",
+      "basis": "已裁决为拒绝，未建立任何 canonical 关联",
+      "role": "counterexample",
+      "mapping_status": "UNREVIEWED",
+      "upstream_disposition": "REJECT",
+      "upstream_capability": "HTML/excalidraw 等具体产物格式",
+      "adopted_parts": [],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C01": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "脚本优先、规则先行、零token前置",
+      "adopted_parts": [
+        "SL-CAP-0001：脚本优先、规则先行、零token前置"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C02": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "三级更新梯度 L1/L2/L3",
+      "adopted_parts": [
+        "SL-CAP-0043：三级更新梯度 L1/L2/L3"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C03": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "旁车产物与叙事页分离",
+      "adopted_parts": [
+        "SL-CAP-0058：旁车产物与叙事页分离"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C04": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "review_status 人机权限分离",
+      "adopted_parts": [
+        "SL-CAP-0028：review_status 人机权限分离"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C05": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "产物必须留 [NEEDS INPUT] 而非编造",
+      "adopted_parts": [
+        "SL-CAP-0024：产物必须留 [NEEDS INPUT] 而非编造"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C06": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "Auto-generated 头与出处强制",
+      "adopted_parts": [
+        "SL-CAP-0025：Auto-generated 头与出处强制"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C07": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "命令族与编号页集",
+      "adopted_parts": [
+        "SL-CAP-0040：命令族与编号页集"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C08": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "Phase 0 三分路由",
+      "adopted_parts": [
+        "SL-CAP-0035：Phase 0 三分路由"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C09": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "PKB_ROOT 与项目分离",
+      "adopted_parts": [
+        "SL-CAP-0067：PKB_ROOT 与项目分离"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C10": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "契约式 Postconditions",
+      "adopted_parts": [
+        "SL-CAP-0064：契约式 Postconditions"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C11": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "回滚与降级路径",
+      "adopted_parts": [
+        "SL-CAP-0043：回滚与降级路径"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C12": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "渐进式 AI 投喂",
+      "adopted_parts": [
+        "SL-CAP-0035：渐进式 AI 投喂"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C13": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "C4 强制顺序",
+      "adopted_parts": [
+        "SL-CAP-0035：C4 强制顺序"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C14": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "版本页脚七字段",
+      "adopted_parts": [
+        "SL-CAP-0060：版本页脚七字段"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C15": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "发布节奏绑定",
+      "adopted_parts": [
+        "SL-CAP-0043：发布节奏绑定"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C16": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "测试用例维护触发",
+      "adopted_parts": [
+        "SL-CAP-0044：测试用例维护触发"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C17": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "过期检测机制",
+      "adopted_parts": [
+        "SL-CAP-0042：过期检测机制"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C18": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "索引生成",
+      "adopted_parts": [
+        "SL-CAP-0062：索引生成"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C19": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "人类主导的语义补充",
+      "adopted_parts": [
+        "SL-CAP-0028：人类主导的语义补充"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C20": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "保密切分与发布脱敏",
+      "adopted_parts": [
+        "SL-CAP-0053：保密切分与发布脱敏"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C21": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "冲突处理",
+      "adopted_parts": [
+        "SL-CAP-0028：冲突处理"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C22": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "并发写入保护",
+      "adopted_parts": [
+        "SL-CAP-0064：并发写入保护"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C23": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "结构化查询",
+      "adopted_parts": [
+        "SL-CAP-0065：结构化查询"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C24": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "不可复现外部观察标记",
+      "adopted_parts": [
+        "SL-CAP-0020：不可复现外部观察标记"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C25": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "测试覆盖作为质量证据",
+      "adopted_parts": [
+        "SL-CAP-0075：测试覆盖作为质量证据"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C26": {
+      "value": "ADOPTED_AS_COUNTEREXAMPLE",
+      "basis": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "role": "counterexample",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REJECT",
+      "upstream_capability": "知识库住在被分析仓库内",
+      "adopted_parts": [],
+      "rejected_parts": [
+        "SL-CAP-0067：知识库住在被分析仓库内"
+      ],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C27": {
+      "value": "REJECTED_WITH_REASON",
+      "basis": "已裁决为拒绝，未建立任何 canonical 关联",
+      "role": "counterexample",
+      "mapping_status": "UNREVIEWED",
+      "upstream_disposition": "REJECT",
+      "upstream_capability": "产出面向人类的整册项目文档",
+      "adopted_parts": [],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-05::C28": {
+      "value": "REJECTED_WITH_REASON",
+      "basis": "已裁决为拒绝，未建立任何 canonical 关联",
+      "role": "counterexample",
+      "mapping_status": "UNREVIEWED",
+      "upstream_disposition": "REJECT",
+      "upstream_capability": "双语 Sphinx 站与 gettext 流程",
+      "adopted_parts": [],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": true,
+      "license_note": null
+    },
+    "UPSTREAM-06::C01": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "两阶段信任边界（finder → judgment）",
+      "adopted_parts": [
+        "SL-CAP-0046：两阶段信任边界（finder → judgment）"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C02": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "阶段间上下文卫生（下游只读上游结构字段，不读其 findings）",
+      "adopted_parts": [
+        "SL-CAP-0046：阶段间上下文卫生（下游只读上游结构字段，不读其 findings）"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C03": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "Surface Gate：非生产面确定性抑制 + 置信度分级 + 封顶",
+      "adopted_parts": [
+        "SL-CAP-0048：Surface Gate：非生产面确定性抑制 + 置信度分级 + 封顶"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C04": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "Boundary Gate：pre-auth 可达性门 + auth_coverage 映射",
+      "adopted_parts": [
+        "SL-CAP-0048：Boundary Gate：pre-auth 可达性门 + auth_coverage 映射"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C05": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "四节点数据流契约（entrypoint → hops → sink，逐跳 file:line）",
+      "adopted_parts": [
+        "SL-CAP-0021：四节点数据流契约（entrypoint → hops → sink，逐跳 file:line）"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C06": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "不可验证即判否的判据",
+      "adopted_parts": [
+        "SL-CAP-0028：不可验证即判否的判据"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C07": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "验证状态机与 report_tier 的固定映射",
+      "adopted_parts": [
+        "SL-CAP-0028：验证状态机与 report_tier 的固定映射"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C08": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "动态证据升级阶梯 + 每级独立同意",
+      "adopted_parts": [
+        "SL-CAP-0050：动态证据升级阶梯 + 每级独立同意"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C09": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "环境失败绝不改判",
+      "adopted_parts": [
+        "SL-CAP-0048：环境失败绝不改判"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C10": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "动态否证只降级到人工复核",
+      "adopted_parts": [
+        "SL-CAP-0028：动态否证只降级到人工复核"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C11": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "两份独立控制 + 结构性构造门",
+      "adopted_parts": [
+        "SL-CAP-0051：两份独立控制 + 结构性构造门"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C12": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "失效安全门控（fail-safe gating）",
+      "adopted_parts": [
+        "SL-CAP-0048：失效安全门控（fail-safe gating）"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C13": {
+      "value": "ADOPTED_AS_COUNTEREXAMPLE",
+      "basis": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "role": "counterexample",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "Semgrep 三层规则集 + 本地缓存优先 + 废弃包移除",
+      "adopted_parts": [],
+      "rejected_parts": [
+        "SL-CAP-0018：Semgrep 三层规则集 + 本地缓存优先 + 废弃包移除"
+      ],
+      "upstream_verdict_inconsistent": [
+        {
+          "canonical_id": "SL-CAP-0018",
+          "upstream_disposition": "ADAPT",
+          "verdict": "REJECT"
+        }
+      ],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C14": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "族扫描与诚实否定",
+      "adopted_parts": [
+        "SL-CAP-0050：族扫描与诚实否定"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C15": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "依赖可达性三态 + 保守默认 + KEV 下限",
+      "adopted_parts": [
+        "SL-CAP-0049：依赖可达性三态 + 保守默认 + KEV 下限"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C16": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "P3b 有效严重度与优先级",
+      "adopted_parts": [
+        "SL-CAP-0049：P3b 有效严重度与优先级"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C17": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "密钥打码与原始输出清理",
+      "adopted_parts": [
+        "SL-CAP-0053：密钥打码与原始输出清理"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C18": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "成本报告（时长 + token 估算）",
+      "adopted_parts": [
+        "SL-CAP-0070：成本报告（时长 + token 估算）"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C19": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "多仓库拓扑与跨服务合成",
+      "adopted_parts": [
+        "SL-CAP-0066：多仓库拓扑与跨服务合成"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C20": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "延迟裁决与跨仓库解析",
+      "adopted_parts": [
+        "SL-CAP-0028：延迟裁决与跨仓库解析"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C21": {
+      "value": "REJECTED_WITH_REASON",
+      "basis": "已裁决为拒绝，未建立任何 canonical 关联",
+      "role": "counterexample",
+      "mapping_status": "UNREVIEWED",
+      "upstream_disposition": "REJECT",
+      "upstream_capability": "模型分层（Deep / Standard）",
+      "adopted_parts": [],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C22": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "Skill/Agent 指令安全（OWASP LLM Top 10）",
+      "adopted_parts": [
+        "SL-CAP-0052：Skill/Agent 指令安全（OWASP LLM Top 10）"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C23": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "ADAPT",
+      "upstream_capability": "供应商采纳审计模式",
+      "adopted_parts": [
+        "SL-CAP-0038：供应商采纳审计模式"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C24": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REUSE",
+      "upstream_capability": "PR diff 增量审查与移除控制回归检查",
+      "adopted_parts": [
+        "SL-CAP-0054：PR diff 增量审查与移除控制回归检查"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C25": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "三态分离的产物契约（run-metadata / 各阶段 JSON / 报告）",
+      "adopted_parts": [
+        "SL-CAP-0074：三态分离的产物契约（run-metadata / 各阶段 JSON / 报告）"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C26": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "新鲜度与失效判定",
+      "adopted_parts": [
+        "SL-CAP-0042：新鲜度与失效判定"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C27": {
+      "value": "ADOPTED",
+      "basis": "以非 REJECT verdict 正向承接",
+      "role": "positive",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REIMPLEMENT",
+      "upstream_capability": "密钥/数据分级",
+      "adopted_parts": [
+        "SL-CAP-0053：密钥/数据分级"
+      ],
+      "rejected_parts": [],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    },
+    "UPSTREAM-06::C28": {
+      "value": "ADOPTED_AS_COUNTEREXAMPLE",
+      "basis": "仅以 REJECT verdict 登记为反例约束，不采纳其行为",
+      "role": "counterexample",
+      "mapping_status": "MAPPED",
+      "upstream_disposition": "REJECT",
+      "upstream_capability": "一键安装外部扫描器",
+      "adopted_parts": [],
+      "rejected_parts": [
+        "SL-CAP-0051：一键安装外部扫描器"
+      ],
+      "upstream_verdict_inconsistent": [],
+      "copy_permitted": false,
+      "license_note": "终态与复制权限无关：ADOPTED 不等于获得复制许可"
+    }
+  },
+  "canonical_origins": {
+    "SL-CAP-0001": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 3,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0002": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0003": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0004": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0005": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0006": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0007": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0008": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0009": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0010": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0011": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 4,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0012": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0013": {
+      "origin_type": "INTERNAL_DESIGN_ONLY",
+      "upstream_ref_count": 0,
+      "internal_need_basis": "本条无上游来源：上游只做了「用 HEAD 解析」，没有做「解析完立刻钉 SHA」，更没有区分根 tree 与查询标识。F0 勘误 E-02 已实测：GitHub Trees API 在 ref 为 commit-ish 时 sha 字段回显请求标识，四源的 tree.json.sha 全部等于各自 commit SHA 而非真实根 tree。因此本能力必须是 REIMPLEMENT：目标对，上游无对应实现。"
+    },
+    "SL-CAP-0014": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0015": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 2,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0016": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0017": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0018": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0019": {
+      "origin_type": "INTERNAL_DESIGN_ONLY",
+      "upstream_ref_count": 0,
+      "internal_need_basis": "本条无直接上游来源，是本次裁决的架构决定：六源中没有统一的只读数据接口，每个源各取各的。既然 SourceLore 只允许一个 Collector，就必须显式定义这个出口，否则「唯一入口」在下游会退化成多个隐性入口。属于不依赖上游著作权的独立设计。"
+    },
+    "SL-CAP-0020": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 4,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0021": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0022": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0023": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0024": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0025": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0026": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0027": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 2,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0028": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 7,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0029": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0030": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0031": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0032": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 3,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0033": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 2,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0034": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 2,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0035": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 4,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0036": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0037": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 3,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0038": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 6,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0039": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0040": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 5,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0041": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 2,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0042": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 3,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0043": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 4,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0044": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 2,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0045": {
+      "origin_type": "INTERNAL_DESIGN_ONLY",
+      "upstream_ref_count": 0,
+      "internal_need_basis": "本条无上游来源，是独立设计。理由写清楚，否则读者会以为漏了引用。U04-C24 与 U05-C24（不可复现外部观察的字段缺失）在 Research 批次已判定归入 Evidence-Claims，当前仍是 ROUTED、未被任何批次承接；本批不重复占用，那两个身份的最终归属以 EC 批次为准。U06-C26（新鲜度与失效判定）已由 SL-CAP-0042 承接，同一个原始身份只能正式映射一次，故此处不能再引用。剩下的内容——按可变性给来源分类、verified_against_commit 只对 commit 固定的源码有效、retrieved_at 只证明取回时刻、TTL/ETag 只能作辅助不得伪造来源支持、不可复现观察永不被判 stale 只标 unverifiable_since——是 SourceLore 自建的语义，六源中没有任何一处提供过，属零来源独立设计。"
+    },
+    "SL-CAP-0046": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 2,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0047": {
+      "origin_type": "INTERNAL_DESIGN_ONLY",
+      "upstream_ref_count": 0,
+      "internal_need_basis": "本条无上游来源，是独立设计。理由写清楚，否则读者会以为漏了引用。U06-C05（四节点数据流契约）已在 Evidence-Claims 批次由 SL-CAP-0021 正式承接，同一原始身份只能映射一次，故本条不引用它，只声明「需要链路时引用 EC 的结构」。上一轮 Lifecycle 批次把 U06-C26 判给 SL-CAP-0042，Research 批次把 U04-C24 等判给 EC，本批同样遵守「起草前先确认候选未被占用」的纪律。剩下的内容——固定字段集、四项独立检查、unconfirmed/inconclusive 的硬规则、「不是所有发现都需要链路」——是 SourceLore 自建的安全发现契约，六源中没有任何一处把它落成结构字段，属零来源独立设计。"
+    },
+    "SL-CAP-0048": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 4,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0049": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 2,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0050": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 2,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0051": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 2,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0052": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0053": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 4,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0054": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0055": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 2,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0056": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0057": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 2,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0058": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 2,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0059": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 6,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0060": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0061": {
+      "origin_type": "INTERNAL_DESIGN_ONLY",
+      "upstream_ref_count": 0,
+      "internal_need_basis": "本条无上游来源，是独立设计。说明白，否则看起来像漏引：U05-C20 已在 Lifecycle 批次由 Security 的 SL-CAP-0053 承接（分级与发布门禁语义），U06-C17 同样归 0053。本条不重复占用，只声明「0053 的语义如何在渲染侧执行」。U05-C06（Auto-generated 头）已在 EC 批次由 SL-CAP-0025 承接，本条的空间隔离由 SL-CAP-0058 承担，亦不重复。剩下的内容——Markdown/HTML 转义、链接协议白名单、远程资源限制、上游文本不得控流程、三段门禁互不推导、AI 不得自批 approved——六源里没有任何一处把它写成渲染器契约（上游的安全关注点都在被分析仓库一侧，没有一个讨论「渲染器自己会不会被注入」），属零来源独立设计。"
+    },
+    "SL-CAP-0062": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 2,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0063": {
+      "origin_type": "INTERNAL_DESIGN_ONLY",
+      "upstream_ref_count": 0,
+      "internal_need_basis": "本条无上游来源，是内部设计能力。内部需求依据写明：SourceLore 的四层模型（SL-CAP-0062）落地必须有主键契约，而六源中没有任何一处给出「逻辑身份 / 内容哈希 / 业务版本」三者分离的存储层定义——上游的索引表只有四列且summary 被要求不含结论（U04-C23 的审计说明），既无内容哈希也无版本链。本条与 SL-CAP-0040（Subject 身份）的关系是「语义定义 vs 存储分配」：0040 说 Subject 由哪三件确定，本条说存储层怎么把它们落成不复用的主键。F0 勘误 E-01 的三字段不可互换是本条的直接前身，本条把它从「取数三字段」扩展到「全部身份标识」。"
+    },
+    "SL-CAP-0064": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 3,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0065": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 3,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0066": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0067": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 3,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0068": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 2,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0069": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0070": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 4,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0071": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0072": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0073": {
+      "origin_type": "INTERNAL_DESIGN_ONLY",
+      "upstream_ref_count": 0,
+      "internal_need_basis": "本条无上游来源，是内部设计能力。内部需求依据：SourceLore 有九个职责模块，而六源中的任何一个都不是「多模块编排器」——它们要么是单脚本、要么是单提示词流水线。本条把九个模块的调用契约集中定义，并钉死两条最容易出事的边界：**不绕过 Storage 改数据**、**不吞上游错误**。硬规则四是对「Skill 提示词膨胀」的直接防护：能力靠调用获得，不靠描述获得（与 SL-CAP-0068 的渐进加载互为表里）。"
+    },
+    "SL-CAP-0074": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 1,
+      "internal_need_basis": null
+    },
+    "SL-CAP-0075": {
+      "origin_type": "UPSTREAM_DERIVED",
+      "upstream_ref_count": 2,
+      "internal_need_basis": null
+    }
+  }
+}

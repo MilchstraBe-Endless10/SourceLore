@@ -1572,3 +1572,86 @@ c15 用了函数外的 `unrev` 变量；c19 断言的 ID 格式与文档不一�
 3. **7 条零来源 canonical** 的来源说明归档
 4. **17 条反例绑定** + 2 条 U06 无许可引用的许可证复核
 5. **冻结前**复跑 `f1c_history_verify.py`，再冻结 `CAPABILITY_CROSSWALK.json`
+
+
+## M1-FUSION-GATE / F1-C-D1 完成（2026-11-04 16:08 +08:00）
+
+### 一句话
+
+终态模型迁移落地：**143 项原始能力全部有可机读的终态**，与三态进度正交。
+三态未变（139/0/4），canonical 未变（75）。
+
+### 三个正交概念
+
+| 概念 | 字段 | 取值 |
+|---|---|---|
+| 融合进度 | `mapping_status` | MAPPED 139 / ROUTED 0 / UNREVIEWED 4（**未变**） |
+| 设计终态 | `terminal_disposition` | ADOPTED 122 / ADOPTED_AS_COUNTEREXAMPLE 17 / REJECTED_WITH_REASON 4 / DEFERRED 0 |
+| 来源性质 | `canonical_origin_type` | UPSTREAM_DERIVED 68 / INTERNAL_DESIGN_ONLY 7 |
+
+### ★ 本批最重要的结构决定
+
+**终态推导并入应用链，而不是独立后置步骤。**
+
+第一版把它写成独立迁移工具，结果任何验证器重跑应用链都会把它冲掉，
+`f1c_b_verify` 的幂等检查当场就红了。这不是验证器的问题——是架构错：
+终态是 draft 的派生属性，必须与应用链同生同灭。
+
+修正后：`f1c_apply_routed.py` 在写盘前调用 `f1c_terminal_model.derive()`。
+`f1c_d1_migrate_terminal.py` 退化为一层薄封装，负责导出快照。
+**任何重跑都会重新生成终态，不存在丢失可能。**
+
+### ★ 一处概念纠正
+
+前轮草案曾把 `INTERNAL_DESIGN_ONLY` 列为上游身份的终态之一。
+**这是错的**：它描述的是 canonical 的来源性质（C 字段），不是上游身份的设计处置（B 字段）。
+本批已纠正——上游身份终态只有四个值。
+
+### 4 项 REJECT 的迁移结果
+
+`U04::C27`、`U05::C27`、`U05::C28`、`U06::C21` 全部：
+终态 `REJECTED_WITH_REASON`、`mapping_status` 仍为 `UNREVIEWED`、
+原始 disposition 保留、拒绝理由保留、无 canonical 关联、**未伪造 MAPPED**。
+
+### 反例绑定
+
+**17 项**仅以 `verdict=REJECT` 绑定 canonical（不采纳其行为）。
+另有 4 项 REJECTED_WITH_REASON 完全未绑定。`counterexample` 角色共 21 项。
+
+**两处上游与 SourceLore 反向的个案已显式标注（不静默）：**
+- `U06::C13` Semgrep：上游 ADAPT → SourceLore **REJECT**
+- `U02::C17` Mermaid 硬要求：上游 REJECT → SourceLore **REIMPLEMENT**（保留可选图表）
+
+### 零来源 canonical 实际 7 条（非写死）
+
+SL-CAP-0013 / 0019 / 0045 / 0047 / 0061 / 0063 / 0073。
+全部具备 origin_type、内部需求依据、owner、依赖。**未虚构 upstream_ref**。
+质量审查留 F1-C-D3。
+
+### 兼容性改动
+
+`mapping_status` 三态未删未改。5 个旧验证器的幂等检查改为只比应用链负责的六核心字段
+（`canonical_capabilities` / `cross_module_redirections` / `routed_promotions` /
+`batches` / `global_state_counts` / `module_rollup`）。
+**这是划清职责边界，不是放宽判据**——身份唯一性、三态守恒、许可证隔离判据全部原样。
+
+### 验证
+
+`f1c_d1_verify` 19/19；十七个验证器全链绿
+（12/30/51/43/46/48/53/48/54/56/17/21/15/18/19/19/10），全部 exit 0。
+应用链与迁移工具均幂等。
+
+### ★ 踩的坑：正则跨函数误伤
+
+用 `re.search` 匹配多行块做批量改写时，正则吞掉了后面整个函数体，
+把 `f1c_b` 的 c1（身份检查）和 `f1c_c2/c3` 的 c10（新 canonical 检查）整块删掉。
+**改法：立即 `git checkout` 回滚，改用「唯一定位旧串」+ 按行号精确替换。**
+教训：跨多行用正则改函数体是危险的；能按行号就别用正则。
+
+### 下一步：F1-C-D2
+
+1. 跨模块冲突总审（8 项待议：X-2 / X-4 / X-5 / X-6 / X-7 / K-7 / Y-4 / Y-6）
+2. 复审 `U06-C13` / `U02-C17` 两处反向个案
+3. 核验 21 项反例绑定的许可证陈述（尤其 U06 零复制）
+
+零来源质量审查留 F1-C-D3；`CAPABILITY_CROSSWALK.json` 冻结留 F1-D，本批未生成。

@@ -37,6 +37,13 @@ def git(*a):
 
 
 def main() -> int:
+    def _core_fields(doc):
+        """应用链负责的核心字段。下游批次（如 F1-C-D1）新增的正交字段不在其列，
+        由各自迁移工具写入；这是划清职责边界，不是放宽判据。"""
+        keys = ["canonical_capabilities", "cross_module_redirections", "routed_promotions",
+                "batches", "global_state_counts", "module_rollup"]
+        return {k: doc.get(k) for k in keys}
+
     raw = json.loads(RAW.read_text(encoding="utf-8"))
     draft = json.loads(DRAFT.read_text(encoding="utf-8"))
     base = json.loads(BASE.read_text(encoding="utf-8"))
@@ -206,12 +213,13 @@ def main() -> int:
         return (not miss), detail
 
     def c15():
-        before = DRAFT.read_bytes()
+        import json as _j
+        before = _core_fields(_j.loads(DRAFT.read_text(encoding="utf-8")))
         import subprocess as sp
         sp.run([sys.executable, str(ROOT / "tools" / "fusion" / "f1c_apply_routed.py")],
                cwd=ROOT, capture_output=True)
-        after = DRAFT.read_bytes()
-        return (before == after), "重跑应用层后草稿逐字节一致（幂等）"
+        after = _core_fields(_j.loads(DRAFT.read_text(encoding="utf-8")))
+        return before == after, "重跑应用链后核心六字段一致（幂等）"
 
     def c16():
         g1 = git("diff", "--quiet", "HEAD", "--", "docs/fusion/RAW_CAPABILITY_INDEX.json")

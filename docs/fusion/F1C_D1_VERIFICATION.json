@@ -1,0 +1,127 @@
+{
+  "task": "M1-FUSION-GATE-F1 / F1-C-D1（终态模型迁移）",
+  "generated_at": "2026-11-04T16:07:23+08:00",
+  "generated_by": "tools/fusion/f1c_d1_verify.py",
+  "git_head": "d0709a387f5d4299e38c9ccaaae4c2a31fc14e87",
+  "summary": {
+    "passed": 19,
+    "total": 19,
+    "result": "PASS"
+  },
+  "checks": [
+    {
+      "id": "c1",
+      "name": "143 项原始身份完整唯一",
+      "passed": true,
+      "detail": "原始 143 项，unique=143"
+    },
+    {
+      "id": "c2",
+      "name": "143 项均有明确终态",
+      "passed": true,
+      "detail": "终态覆盖 143/143；缺 无；越界 无"
+    },
+    {
+      "id": "c3",
+      "name": "终态值在合法范围内",
+      "passed": true,
+      "detail": "终态值全部合法（143 项），非法 无"
+    },
+    {
+      "id": "c4",
+      "name": "4 项最终拒绝身份仍可定位",
+      "passed": true,
+      "detail": "4 项拒绝身份可定位=True（实际 ['UPSTREAM-04::C27', 'UPSTREAM-05::C27', 'UPSTREAM-05::C28', 'UPSTREAM-06::C21']）"
+    },
+    {
+      "id": "c5",
+      "name": "被拒绝身份不被伪造为已映射",
+      "passed": true,
+      "detail": "拒绝身份未被伪造为 MAPPED=True；仍标 UNREVIEWED=True"
+    },
+    {
+      "id": "c6",
+      "name": "139 项既有映射全部保留",
+      "passed": true,
+      "detail": "F1-B 冻结的 112 项映射全在，缺失 无"
+    },
+    {
+      "id": "c7",
+      "name": "75 条 canonical ID 不变",
+      "passed": true,
+      "detail": "F1-B 73 条全在=True；ID 未被复用=True"
+    },
+    {
+      "id": "c8",
+      "name": "零来源 canonical 具有独立 origin_type",
+      "passed": true,
+      "detail": "origin_type 全合法且与实际 refs 一致；零来源 7 条 ['SL-CAP-0013', 'SL-CAP-0019', 'SL-CAP-0045', 'SL-CAP-0047', 'SL-CAP-0061', 'SL-CAP-0063', 'SL-CAP-0073']"
+    },
+    {
+      "id": "c9",
+      "name": "反例绑定与正向承接可区分",
+      "passed": true,
+      "detail": "纯反例 17 项、正向 122 项；反例判定自洽=True；问题 无"
+    },
+    {
+      "id": "c10",
+      "name": "原始 disposition 与最终处置独立",
+      "passed": true,
+      "detail": "两字段独立：143/143 处取值不同（若全同则应怀疑是复制）；独立成立=True"
+    },
+    {
+      "id": "c11",
+      "name": "最终处置不推导复制权限",
+      "passed": true,
+      "detail": "终态不推导复制权限（17 项 ADOPTED_AS_COUNTEREXAMPLE 均为设计关系）；问题 无"
+    },
+    {
+      "id": "c12",
+      "name": "UPSTREAM-06 权限边界正确",
+      "passed": true,
+      "detail": "U06 相关 refs 27 条，复制权限全为 false=True"
+    },
+    {
+      "id": "c13",
+      "name": "已有 amendment 与迁移历史保留",
+      "passed": true,
+      "detail": "amendment 共 21 条，归属合法=True"
+    },
+    {
+      "id": "c14",
+      "name": "mapping_status 三态守恒 143",
+      "passed": true,
+      "detail": "映射三态守恒 mapped 139 + routed 0 + unrev 4 = 143"
+    },
+    {
+      "id": "c15",
+      "name": "裁决登记/Crosswalk/进度统计一致",
+      "passed": true,
+      "detail": "进度账本一致=True；迁移记录与草稿分布一致=True"
+    },
+    {
+      "id": "c16",
+      "name": "迁移过程幂等",
+      "passed": true,
+      "detail": "重跑迁移工具后草稿逐字节一致（幂等）"
+    },
+    {
+      "id": "c17",
+      "name": "全局历史不变量通过",
+      "passed": true,
+      "detail": "历史映射 112 条：丢失 0、无登记变更 0、登记内迁移 0"
+    },
+    {
+      "id": "c18",
+      "name": "六源审计/原始索引/引擎不变",
+      "passed": true,
+      "detail": "原始索引/六审计/引擎/Schema 未变=True；未冻结正式交叉表=True"
+    },
+    {
+      "id": "c19",
+      "name": "本批文档完整",
+      "passed": true,
+      "detail": "文档覆盖三个正交概念与 4 项拒绝，缺 无"
+    }
+  ]
+}

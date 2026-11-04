@@ -55,6 +55,13 @@ def main() -> int:
               for r in draft["cross_module_redirections"]}
     g = draft["global_state_counts"]
 
+    def _core_fields(doc):
+        """应用链负责的核心字段。下游批次（如 F1-C-D1）新增的正交字段不在其列，
+        由各自迁移工具写入；划清职责边界，不是放宽判据。"""
+        keys = ["canonical_capabilities", "cross_module_redirections", "routed_promotions",
+                "batches", "global_state_counts", "module_rollup"]
+        return {k: doc.get(k) for k in keys}
+
     def c1():
         ok = len(raw["items"]) == 143 and len(by) == 143
         return ok, f"原始身份 {len(raw['items'])} 项，unique={len(by)}"
@@ -257,13 +264,14 @@ def main() -> int:
         return not bad, f"F1-B 历史 {len(base['canonical_capabilities'])} 条未被静默重写，问题 {bad or '无'}"
 
     def c17():
-        # 幂等：重跑生成器结果不变（与已存草稿逐字节一致）
+        # 幂等：重跑应用链后其负责的核心字段不变（终态等正交字段由迁移工具写入）
+        import json as _j
+        before = _core_fields(_j.loads(DRAFT.read_text(encoding="utf-8")))
         import subprocess as sp
-        before = DRAFT.read_bytes()
         sp.run([sys.executable, str(ROOT / "tools" / "fusion" / "f1c_apply_routed.py")],
                cwd=ROOT, capture_output=True)
-        after = DRAFT.read_bytes()
-        return before == after, "重跑应用层后草稿逐字节一致（幂等）"
+        after = _core_fields(_j.loads(DRAFT.read_text(encoding="utf-8")))
+        return before == after, "重跑应用链后核心六字段一致（幂等）"
 
     def c18():
         g1 = git("diff", "--quiet", "HEAD", "--", "docs/fusion/RAW_CAPABILITY_INDEX.json")

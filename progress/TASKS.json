@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-04T14:41:04+08:00",
+  "updated_at": "2026-11-04T16:08:36+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -811,6 +811,38 @@
       "blocked_reason": null,
       "depends_on": [
         "M1-FUSION-GATE-F1C-C2"
+      ]
+    },
+    {
+      "id": "M1-FUSION-GATE-F1C-D1",
+      "milestone": "M1-FUSION-GATE",
+      "goal": "F1-C-D1：终态模型迁移（三个正交概念）",
+      "inputs": [
+        "docs/fusion/CAPABILITY_CROSSWALK.draft.json",
+        "docs/fusion/F1C_D_HANDOFF_INVENTORY.json"
+      ],
+      "expected_outputs": [
+        "docs/fusion/F1C_D1_TERMINAL_MODEL.md",
+        "docs/fusion/F1C_D1_TERMINAL_MIGRATION.json",
+        "docs/fusion/F1C_D1_VERIFICATION.json",
+        "tools/fusion/f1c_terminal_model.py",
+        "tools/fusion/f1c_d1_migrate_terminal.py"
+      ],
+      "status": "DONE",
+      "verification_commands": [
+        "python3 tools/fusion/f1c_apply_routed.py",
+        "python3 tools/fusion/f1c_d1_migrate_terminal.py",
+        "python3 tools/fusion/f1c_d1_verify.py",
+        "python3 tools/fusion/f1c_history_verify.py"
+      ],
+      "evidence_paths": [
+        "docs/fusion/F1C_D1_TERMINAL_MODEL.md",
+        "docs/fusion/F1C_D1_VERIFICATION.json"
+      ],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": [
+        "M1-FUSION-GATE-F1C-C3"
       ]
     }
   ]
