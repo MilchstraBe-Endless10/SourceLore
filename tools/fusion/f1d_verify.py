@@ -365,7 +365,8 @@ def main() -> int:
                             "src/storage/", "tests/storage/",
                             "src/collector/", "tests/collector/",
                             "src/facts/", "tests/facts/",
-                            "src/evidence_claims/", "tests/evidence_claims/")
+                            "src/evidence_claims/", "tests/evidence_claims/",
+                            "src/lifecycle/", "tests/lifecycle/")
         outside = [str(p.relative_to(ROOT)) for p in code
                    if "__pycache__" not in str(p)
                    and not str(p.relative_to(ROOT)).startswith(allowed_prefixes)]

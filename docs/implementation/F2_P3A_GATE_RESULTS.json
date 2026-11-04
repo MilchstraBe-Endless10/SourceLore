@@ -1,0 +1,64 @@
+{
+  "artifact": "F2_P3A_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-04T22:43:59+08:00",
+  "generated_by": "F2-P3A 实测回填",
+  "principle": "叠加观测，不覆盖 F1-D 冻结快照",
+  "lifecycle_component": {
+    "verdict": "DONE",
+    "evidence": "docs/implementation/F2_P3A_VERIFICATION.json (18/18)",
+    "tests": {
+      "runtime": 45,
+      "storage": 53,
+      "collector": 48,
+      "facts": 44,
+      "evidence_claims": 36,
+      "lifecycle": 40
+    },
+    "total_tests": 266,
+    "freshness_states": [
+      "NOT_APPLICABLE_TO_PINNED",
+      "VERSION_ALIGNED",
+      "POSSIBLY_STALE",
+      "UNKNOWN"
+    ]
+  },
+  "ref_observation_audit": {
+    "finding": "快照的 identity 与 payload 都不含 requested_ref",
+    "consequence": "快照不能证明 Ref→Commit；改用采集执行记录",
+    "correction": "本批初版审计曾误判，已实测纠正并写入文档"
+  },
+  "real_data": {
+    "provenance": "HISTORICAL_REAL_DATA",
+    "live_github_refetch": false,
+    "note": "未重新联网；\"新 Commit\"是 SYNTHETIC_FIXTURE",
+    "baseline_state": "VERSION_ALIGNED",
+    "moved_state": "POSSIBLY_STALE",
+    "unobservable_state": "UNKNOWN",
+    "ec_unchanged": true
+  },
+  "still_open": [
+    {
+      "gate": "F2-P3B 自动重新验证协调",
+      "status": "NOT_STARTED"
+    },
+    {
+      "gate": "Y6-P3 审批传递",
+      "status": "UNVERIFIED"
+    },
+    {
+      "gate": "Y6-P6 BotHarness 端到端",
+      "status": "OPEN"
+    },
+    {
+      "gate": "B-1/B-2/B-3 分发门禁",
+      "status": "OPEN"
+    }
+  ],
+  "explicitly_not_claimed": [
+    "未做实时 GitHub Ref 更新检测（本轮未联网）",
+    "POSSIBLY_STALE 不等于 refuted",
+    "未自动重新验证任何 Claim",
+    "未修改任何 review_status"
+  ]
+}

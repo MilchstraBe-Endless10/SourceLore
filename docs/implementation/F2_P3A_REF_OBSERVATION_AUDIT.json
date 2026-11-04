@@ -1,0 +1,49 @@
+{
+  "artifact": "F2_P3A_REF_OBSERVATION_AUDIT",
+  "generated_at": "2026-11-04T22:40:40+08:00",
+  "purpose": "题面 §3：检查现有 Source Snapshot 是否真能记录'该 Ref 当时解析出的 Commit'",
+  "finding": "**不能** —— 快照不记录 requested_ref",
+  "correction_note": "本文件初版曾误判为'requested_ref 存在于快照内容载荷'。实测纠错：`to_asset_payload()` 返回的就是 `content_payload()`，而后者**不含 requested_ref**。所以落库的快照 payload 里没有 Ref。",
+  "evidence": {
+    "collector_has_ref_resolution": "commit_for_ref(owner,name,ref) → /repos/{o}/{r}/commits/{ref}",
+    "snapshot_identity_payload_fields": [
+      "repository_id",
+      "commit_sha",
+      "root_tree_sha",
+      "retrieval_scope",
+      "collector_version",
+      "(manifest_version v2)"
+    ],
+    "requested_ref_in_identity": false,
+    "requested_ref_in_persisted_asset_payload": false,
+    "measured_payload_keys": [
+      "blob_refs",
+      "collector_version",
+      "commit_sha",
+      "completeness_status",
+      "deep_walk_used",
+      "manifest_version",
+      "repository_id",
+      "retrieval_scope",
+      "root_tree_sha",
+      "source_provider",
+      "tree_entries",
+      "tree_entry_count",
+      "tree_query_ref",
+      "tree_truncated_seen"
+    ],
+    "meaning": "快照只证明'存在一个 commit 的快照'，**不证明**'master 当时指向它'。identity 与 payload 都不含 Ref。"
+  },
+  "design_consequence": [
+    "observe_ref_from_snapshot 必须要求 payload 里有 requested_ref 且匹配 —— 否则 REF_MISMATCH",
+    "对 P1C 历史数据，可信 Ref 观测的唯一合法来源是**采集执行记录**（F2_P1C_REAL_GITHUB.json 同时含 requested_ref=master 与 commit_sha）",
+    "不得把'快照存在'等同于'Ref 当时指向该 Commit'",
+    "ref_observation 必须独立记录 requested_ref 与 resolved_commit_sha"
+  ],
+  "provenance_levels": {
+    "REAL_LIVE_API": "本轮实时的 /commits/{ref} 解析（唯一能产生新观测的高级来源）",
+    "HISTORICAL_REAL_DATA": "来自真实采集执行记录的 Ref→Commit 对位（如 P1C 记录）",
+    "SYNTHETIC_FIXTURE": "合成夹具，仅测试用，明确标注，不冒充真实观测"
+  },
+  "verdict": "可以在 HISTORICAL_REAL_DATA 级别构造可信观测，但依据必须是**执行记录**而非快照资产；本轮未重新联网，不得宣称实时 Ref 更新检测"
+}

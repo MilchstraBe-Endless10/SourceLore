@@ -2411,3 +2411,112 @@ f2p2b 17/17  f2p2a 15/15  f2p1c 22/22  f2p1b 16/16  f2p1a 22/22  f1d 26/26
 3. 最小规则：新 Commit 出现 → 旧 claim 标 `possibly_stale`，**不标 false**
 4. 新鲜度与裁决状态正交（`knowledge_freshness` 已是独立字段）
 5. 必测：旧结论不被改写、`possibly_stale` 不自动变 `refuted`、历史版本可读回
+
+## M2 / F2-P3A 完成（2026-11-04 22:45 +08:00）
+
+### 结论：Lifecycle 版本观测与时效评估 DONE
+
+---
+
+## ★ 本轮最重要的纠错：快照不能证明 Ref
+
+我最初审计说"快照内容载荷里有 `requested_ref`"——**实测是错的**。
+
+`to_asset_payload()` 返回的就是 `content_payload()`，落库 payload 实测键里**没有 `requested_ref`**：
+
+```
+blob_refs, collector_version, commit_sha, completeness_status, deep_walk_used,
+manifest_version, repository_id, retrieval_scope, root_tree_sha, source_provider,
+tree_entries, tree_entry_count, tree_query_ref, tree_truncated_seen
+```
+
+**后果：快照只能证明"存在某 commit 的快照"，不能证明"master 当时指向它"。**
+所以 `observe_ref_from_snapshot` 返回 `REF_MISMATCH`（已实测），
+历史观测改用**采集执行记录**（`observe_ref_from_record`，它同时含 requested_ref + commit_sha）。
+
+这条纠错直接改变了设计，也让 §3 的"来源可定位"有了真实依据而不是假设。
+
+---
+
+## 五类状态分离
+
+```
+verification_status  EC 证据裁决        —— 本批不改
+knowledge_freshness  Lifecycle          —— 本批新增，独立资产
+review_status        人类审核            —— 本批不改
+execution_status     Runtime/Checkpoint —— 不涉及
+source_completeness  Collector           —— 不涉及
+```
+
+源码级保证：`src/lifecycle/` 下**没有任何** `"refuted"` / `"approved"` 字面量；
+`FRESHNESS_STATES` 里也没有 `refuted`。
+
+---
+
+## 固定版本与移动 Ref
+
+**`PINNED_COMMIT` 不得建立 watch** —— 构造期直接抛错。
+没有 watch 就没有评估，任何 Ref 事件都触及不到固定版本的 Claim。
+
+---
+
+## 四态新鲜度
+
+| 状态 | 语义 |
+|---|---|
+| `NOT_APPLICABLE_TO_PINNED` | 不追踪移动 Ref |
+| `VERSION_ALIGNED` | 仅版本对齐，**不表示永久有效** |
+| `POSSIBLY_STALE` | 被跟踪 Ref 解析为新 Commit，**旧 Claim 未被推翻** |
+| `UNKNOWN` | 11 个原因码，缺可信观测 |
+
+---
+
+## ★ Tree SHA 不能当 Commit
+
+`b4eecafa…` 是 40 位十六进制 —— 只按长度校验会放行。已补 Commit 对象形状校验
+（必须有 `commit.tree.sha`），否则 `NOT_A_COMMIT_OBJECT`。这是 P1C 踩过的同一个坑。
+
+---
+
+## 情况 A..G
+
+分支独立、仓库独立、Fork 独立、重命名保 `repository_id`、
+强推**不假定快进**（detail 明写"未验证祖先关系"）、
+404/403/限流**分别映射**为 `REF_UNAVAILABLE`/`PERMISSION_DENIED`/`RATE_LIMITED`，都不解释成"已删除"。
+
+---
+
+## 本轮真缺陷
+
+`lifecycle_store._write` **忽略了 store 返回的 `idempotent` 标记**。
+4 进程并发 CAS 实测抓出：2 个进程报 `VERSION_ADDED`（本应只 1 个）。已修。
+
+---
+
+## 验证
+
+```
+tests/runtime 45 / storage 53 / collector 48 / facts 44 / EC 36 / lifecycle 40   全 OK
+f2p3a 18/18  f2p2b 17/17  f2p2a 15/15  f2p1c 22/22  f2p1b 16/16  f2p1a 22/22  f1d 26/26
+```
+
+266 项 unittest + 136 项验收断言，失败 0。冻结哈希 `42841207…` 未变。
+
+---
+
+## 数据级别（必须如实报告）
+
+**本轮未重新联网**（`live_github_refetch: false`）。
+基线来自 P1C 真实采集执行记录；"新 Commit"是 `SYNTHETIC_FIXTURE` 合成对位。
+**没有进行实时 Ref 更新检测，不得如此宣称。**
+
+---
+
+## 下一步：F2-P3B 自动重新验证协调（**未启动，需独立批准**）
+
+1. 只消费 `freshness_assessment`，不重复判新鲜度
+2. 入队条件严格：`POSSIBLY_STALE` 且 `conflict_detected == false`
+3. `revalidation_candidate` 是"待办提议"，**不自动跑 Collector**
+4. 重新验证走 Collector→Facts→EC 独立工作流，产出新 `verification_id`，**旧 verification 保留**
+5. 幂等键 `claim_id + observed_commit_sha + rule_version`；每 watch 同时只允许一条 pending
+6. 必测：不自动 approved；不把 `POSSIBLY_STALE` 当 refuted；重复入队幂等

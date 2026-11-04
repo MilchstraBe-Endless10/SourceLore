@@ -1,0 +1,124 @@
+{
+  "task": "M2 / F2-P3A（Lifecycle 版本观测与时效评估）",
+  "generated_by": "tools/f2p3a_verify.py",
+  "independent": true,
+  "git_head": "08271e018ad39bca4bf5a96c28cae838939c50ca",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "data_provenance": "HISTORICAL_REAL_DATA",
+  "live_github_refetch": false,
+  "summary": {
+    "passed": 18,
+    "total": 18,
+    "result": "PASS"
+  },
+  "checks": [
+    {
+      "id": "c1",
+      "name": "Lifecycle 测试套件",
+      "passed": true,
+      "detail": "Lifecycle 套件 40 项 exit=0"
+    },
+    {
+      "id": "c2",
+      "name": "三态新鲜度真实执行",
+      "passed": true,
+      "detail": "baseline=VERSION_ALIGNED moved=POSSIBLY_STALE unobservable=UNKNOWN"
+    },
+    {
+      "id": "c3",
+      "name": "如实报告未重新联网",
+      "passed": true,
+      "detail": "live_github_refetch=False（如实报告未重新联网）"
+    },
+    {
+      "id": "c4",
+      "name": "快照不能证明 Ref（审计已修正）",
+      "passed": true,
+      "detail": "快照拒绝=REF_MISMATCH；审计结论=**不能** —— 快照不记录 requ…"
+    },
+    {
+      "id": "c5",
+      "name": "Lifecycle 不改 EC 裁决",
+      "passed": true,
+      "detail": "Lifecycle 后 EC status=supported"
+    },
+    {
+      "id": "c6",
+      "name": "Lifecycle 不改 review_status",
+      "passed": true,
+      "detail": "review_status=pending_review"
+    },
+    {
+      "id": "c7",
+      "name": "源码无 refuted/approved 写入",
+      "passed": true,
+      "detail": "源码出现 refuted/approved: 无"
+    },
+    {
+      "id": "c8",
+      "name": "无第二套数据库",
+      "passed": true,
+      "detail": "自建库: 无"
+    },
+    {
+      "id": "c9",
+      "name": "不引入 LLM",
+      "passed": true,
+      "detail": "LLM 依赖: 无"
+    },
+    {
+      "id": "c10",
+      "name": "影响范围非空集合",
+      "passed": true,
+      "detail": "受影响 Claim 1 条（非空集合）"
+    },
+    {
+      "id": "c11",
+      "name": "CAS 冲突实测",
+      "passed": true,
+      "detail": "CAS 冲突断言在位=True"
+    },
+    {
+      "id": "c12",
+      "name": "真实 SIGKILL 恢复实验",
+      "passed": true,
+      "detail": "真实 SIGKILL 实验在位=True"
+    },
+    {
+      "id": "c13",
+      "name": "变异测试可捕获 stale→refuted",
+      "passed": true,
+      "detail": "变异（stale→refuted）被捕获=True"
+    },
+    {
+      "id": "c14",
+      "name": "P1A/P1B/P1C/P2A/P2B 全链回归",
+      "passed": true,
+      "detail": "runtime 45 exit=0; storage 53 exit=0; collector 48 exit=0; facts 44 exit=0; evidence_claims 36 exit=0"
+    },
+    {
+      "id": "c15",
+      "name": "F1-D 冻结哈希与验证",
+      "passed": true,
+      "detail": "SHA=42841207b8088c89… 未变=True f1d exit=0"
+    },
+    {
+      "id": "c16",
+      "name": "合成观测正确标注",
+      "passed": true,
+      "detail": "合成观测标注=SYNTHETIC_FIXTURE"
+    },
+    {
+      "id": "c17",
+      "name": "五类状态分离",
+      "passed": true,
+      "detail": "五类状态分离，缺 无"
+    },
+    {
+      "id": "c18",
+      "name": "固定版本语义隔离",
+      "passed": true,
+      "detail": "固定版本语义隔离在位=True"
+    }
+  ]
+}

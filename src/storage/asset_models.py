@@ -34,6 +34,10 @@ ASSET_TYPES = frozenset({
     # F2-P2B：Claim 候选与证据评估记录（题面第 9 节授权的等价类型）
     "claim_candidate",
     "claim_verification",
+    # F2-P3A：Lifecycle 的观察、跟踪与时效评估（题面 §6 授权的等价类型）
+    "lifecycle_watch",
+    "ref_observation",
+    "freshness_assessment",
 })
 
 # 敏感字段（按名拦截，不靠调用方自觉）

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-04T22:21:14+08:00",
+  "updated_at": "2026-11-04T22:45:41+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -1137,6 +1137,38 @@
       "blocked_reason": null,
       "depends_on": [
         "M2-F2-P2A"
+      ]
+    },
+    {
+      "id": "M2-F2-P3A",
+      "milestone": "M2",
+      "goal": "F2-P3A：Lifecycle 版本观测、知识时效评估与不可变历史保护",
+      "inputs": [
+        "docs/implementation/F2_P2B_EC_ARCHITECTURE.md"
+      ],
+      "expected_outputs": [
+        "src/lifecycle/",
+        "tests/lifecycle/",
+        "tools/f2p3a_verify.py",
+        "tools/f2p3a_e2e_replay.py",
+        "docs/implementation/F2_P3A_LIFECYCLE_ARCHITECTURE.md",
+        "docs/implementation/F2_P3A_EXECUTION_REPORT.md",
+        "docs/implementation/F2_P3A_VERIFICATION.json"
+      ],
+      "status": "DONE",
+      "verification_commands": [
+        "python3 -m unittest discover -s tests/lifecycle",
+        "python3 tools/f2p3a_verify.py"
+      ],
+      "evidence_paths": [
+        "docs/implementation/F2_P3A_VERIFICATION.json",
+        "docs/implementation/F2_P3A_E2E_REPLAY.json",
+        "docs/implementation/F2_P3A_REF_OBSERVATION_AUDIT.json"
+      ],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": [
+        "M2-F2-P2B"
       ]
     }
   ]

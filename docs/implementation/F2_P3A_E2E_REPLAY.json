@@ -1,0 +1,64 @@
+{
+  "artifact": "F2_P3A_E2E_REPLAY",
+  "data_provenance": "HISTORICAL_REAL_DATA",
+  "live_github_refetch": false,
+  "note": "本轮**未重新访问 GitHub**。基线 Commit 来自 P1C 真实采集；所谓'新 Commit'是 SYNTHETIC_FIXTURE 合成对位，**不是实时 Ref 更新检测**",
+  "replayed_at": "2026-11-04T22:40:59+08:00",
+  "baseline_commit_sha": "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",
+  "snapshot": {
+    "state": "INGESTED",
+    "asset_id": "SL-A-8c5de9a79a5d158c3ad636ac2cc23c86",
+    "logical_identity": "SL-SNAP-5a414a4b81e4c2d4a77a03fc2ca154b1201e6b6b"
+  },
+  "ec": {
+    "claim_id": "SL-CLAIM-b2d90832050096e96bd83b284ae02bae1d817cf0",
+    "status": "supported",
+    "verification_id": "SL-VERIF-3543119f023fccee7e96f646ec382a8e831bb305",
+    "review_status": "pending_review"
+  },
+  "watch": {
+    "watch_id": "SL-WATCH-141aa4a23767f43230f0d02b1ca11177",
+    "applicability_scope": "TRACKING_REF"
+  },
+  "snapshot_cannot_prove_ref": {
+    "observation_status": "OBSERVATION_FAILED",
+    "reason": "REF_MISMATCH",
+    "note": "快照不含 requested_ref，故不能证明该 Ref 指向该 Commit"
+  },
+  "assess_baseline": {
+    "state": "VERSION_ALIGNED",
+    "observation_status": "OBSERVED",
+    "provenance": "HISTORICAL_REAL_DATA"
+  },
+  "assess_moved": {
+    "state": "POSSIBLY_STALE",
+    "reason": "TRACKED_REF_MOVED",
+    "provenance": "SYNTHETIC_FIXTURE",
+    "note": "SYNTHETIC_FIXTURE，非真实 Ref 更新"
+  },
+  "assess_unobservable": {
+    "state": "UNKNOWN",
+    "reason": "OBSERVATION_FAILED",
+    "observed_commit": null
+  },
+  "ec_unchanged_after_lifecycle": {
+    "status": "supported",
+    "still_supported": true,
+    "claim_review_status": "pending_review"
+  },
+  "impact": {
+    "affected": [
+      "SL-CLAIM-b2d90832050096e96bd83b284ae02bae1d817cf0"
+    ],
+    "unaffected_count": 0
+  },
+  "counts": {
+    "repository_snapshot": 1,
+    "extracted_fact": 1,
+    "claim_candidate": 1,
+    "claim_verification": 1,
+    "lifecycle_watch": 1,
+    "ref_observation": 1,
+    "freshness_assessment": 2
+  }
+}
