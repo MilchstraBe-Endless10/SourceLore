@@ -41,6 +41,9 @@ ASSET_TYPES = frozenset({
     # F2-P3B：重新验证候选与每个 watch 的队列状态（题面 §7 方案 A）
     "revalidation_queue",
     "revalidation_candidate",
+    # F2-P3C：执行记录与完成结果（题面第 3/12 节）
+    "revalidation_run",
+    "revalidation_result",
 })
 
 # 敏感字段（按名拦截，不靠调用方自觉）

@@ -2646,3 +2646,104 @@ f2p3b 22/22  f2p3a 18/18  f2p2b 17/17  f2p2a 15/15  f2p1c 22/22  f2p1b 16/16  f2
 5. 执行状态写 Runtime，**不回写候选状态**
 6. 执行中目标又变 → 保留正在执行的真实状态，不得未经协调替换
 7. 必测：无授权/过期/范围不匹配均被拒；执行成功不自动 approved；失败不把旧 Claim 标 refuted
+
+## M2 / F2-P3C 完成（2026-11-05 00:25 +08:00）
+
+### 两个结论分开报
+
+- **A. LOCAL_CONTROLLED_EXECUTION = DONE**
+- **B. REAL_HARNESS_AUTHORIZED_E2E = OPEN**（无真实授权通道）
+
+---
+
+## 执行器（8 阶段）
+
+```
+PREFLIGHT → AUTHORIZATION_CHECK → SNAPSHOT_COLLECT → FACT_EXTRACT
+→ TARGET_CLAIM_CREATE → EVIDENCE_VERIFY → RESULT_PERSIST → COMPLETION_CHECK
+```
+
+新增：`revalidation_authorization.py` / `revalidation_run_store.py` /
+`revalidation_executor.py` / `collector_adapter.py`。
+**未新建第二套 Collector/Facts/EC/Storage。**
+
+---
+
+## 固定目标 B
+
+实测调用序列 `[(fetch_commit, bbbb…), (fetch_tree, 1111…)]` —— **没有 Ref 解析调用**。
+
+- 返回别的 Commit → 拒绝，不悄悄改用
+- `root_tree_sha` 必须来自 `commit.tree.sha`
+- **条目 sha 非法 → 拒绝**（初版接受 `sha="zzz"`，实测抓出）
+
+---
+
+## 新 Claim 身份
+
+新 Claim 重新计算（非复制），断言等于 `expected_target_claim_identity`；
+不一致 → 停在 `TARGET_CLAIM_CREATE` 且不写出错误 Claim。
+旧 Claim 仍绑 A、`review_status` 仍 pending；新 Claim 也从 pending 开始。
+
+---
+
+## 三态实测
+
+| 场景 | execution | verification |
+|---|---|---|
+| B 存在 README | SUCCESS | supported |
+| B 缺 README | SUCCESS | refuted |
+| B PARTIAL 未命中 | SUCCESS | **insufficient_evidence** |
+| B 获取失败 | FAILED | None（无裁决） |
+
+**执行成功 ≠ 裁决肯定** —— PARTIAL 那条就是 SUCCESS + insufficient。
+
+---
+
+## 授权隔离
+
+四类批准分开：`DEV_BATCH_APPROVAL` / `TEST_ONLY` / `HUMAN_OPERATOR` / `PLATFORM_APPROVAL`。
+
+- TEST_ONLY 在 `require_production=True` 下**拒绝**
+- 正式模式只接受 HUMAN_OPERATOR / PLATFORM_APPROVAL，且**必须有 proof**
+- `approved=true` 无 source → 拒绝
+- source 为 AGENT/SELF/MODEL/LLM → 拒绝
+
+**本会话审批提示禁用、Y6-P3 UNVERIFIED，本批未制造任何真实审批回执。**
+
+---
+
+## 本轮三个真缺陷
+
+1. **`plan_digest` 未重算** —— 只比字段，可被同时篡改绕过。改为重算比对。
+2. **tree 条目未校验** —— `sha="zzz"` 的损坏 tree 被当有效来源。已加结构校验。
+3. **payload 字段名踩 Storage 禁词** —— `authorization_ref` 含 `authorization` 被
+   `FORBIDDEN_FIELDS` 拒绝（正确护栏）。改名 `auth_ref`。
+
+---
+
+## 崩溃恢复
+
+C-1 快照后 SIGKILL → 重放不新增；C-2 Fact 后 → 同 fact_id；
+C-3 Claim 已写未验证 → 复用同一 Claim；C-4 回执丢失 → 复用同一 verification_id；
+UNKNOWN（只读超时）→ `uncertain_side_effect=True`，**不自动重试**（断言只调一次）。
+
+---
+
+## 验证
+
+```
+tests/runtime 45 / storage 53 / collector 48 / facts 44 / EC 36 / lifecycle 142   全 OK
+f2p3c 20/20  f2p3b 22/22  f2p3a 18/18  f2p2b 17/17  f2p2a 15/15
+f2p1c 22/22  f2p1b 16/16  f2p1a 22/22  f1d 26/26
+```
+
+368 项 unittest + 179 项验收断言，失败 0。冻结哈希 `42841207…` 未变。
+
+---
+
+## 下一步
+
+**B 类卡在真实授权通道（Y6-P3）与 BotHarness 端到端（Y6-P6）。**
+建议下一批做 **F2-P3D：结果消费与知识视图装配的最小契约**（只读、不发布），
+而不是直接跳 Research。

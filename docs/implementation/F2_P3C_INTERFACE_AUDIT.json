@@ -1,0 +1,39 @@
+{
+  "artifact": "F2_P3C_INTERFACE_AUDIT",
+  "generated_at": "2026-11-05T00:04:19+08:00",
+  "purpose": "题面 §1：逐项读代码核验真实接口，不根据交接文档猜字段",
+  "checks": {
+    "1_revalidation_candidate_structure": "src/lifecycle/revalidation_models.py 的 dataclass，21 字段",
+    "2_watch_queue_active_slot": "只在最新版本的 active_candidate_id（A 层历史版本不算）",
+    "3_plan_ready_conditions": "candidate.status==PROPOSED 且 source_level in DISPATCHABLE 且 conflict_state==NONE 且是当前活动候选",
+    "4_source_level_formation": "ref_observer 三条入口各写 provenance_level；planner 先扫 synthetic 标记",
+    "5_expected_target_claim_identity": "planner._expected_target_claim_id，用 P2B 同算法",
+    "6_claim_id_includes_commit": "是（P2B 契约，payload 含 commit_sha）",
+    "7_facts_rules": "file_path_observation@v1（唯一规则）",
+    "8_collector_fixed_commit": "**可以**：commit_for_ref(owner,name,<sha>) 就是 /commits/{sha}；tree(tree_ref=<tree sha>)",
+    "9_storage_expected_version": "append_asset_and_advance(draft, expected_version=...)，K4 事务内校验",
+    "10_operation_id_reconcile": "operation_log 记录 OP- 前缀；已覆盖 collector/facts/ec/lifecycle",
+    "11_runtime_execution_states": "src/runtime/execution_result.py：SUCCESS/FAILED/TIMEOUT/CANCELLED/UNKNOWN",
+    "12_approval_interface": "**不存在**。本会话审批提示被禁用；Y6-P3 UNVERIFIED",
+    "13_conflict_tristate": "P3B 加的 source_evidence_conflict，默认 CONFLICT_UNKNOWN",
+    "14_p3b_concurrency_tests": "test_revalidation_concurrency.py 8 项，含真实多进程 + SIGKILL"
+  },
+  "gaps": [
+    {
+      "gap": "无真实授权传递通道",
+      "impact": "B.REAL_HARNESS_AUTHORIZED_E2E 无法完成",
+      "handling": "只用 TEST_ONLY 隔离授权"
+    },
+    {
+      "gap": "Runtime 无 revalidation 专用阶段状态",
+      "impact": "需自建 run 记录",
+      "handling": "新建 revalidation_run，复用 execution_result 的状态词"
+    },
+    {
+      "gap": "Collector 无'给定 commit 收全量快照'的一体化入口",
+      "impact": "需在 executor 里组合 commit/tree/blob 调用",
+      "handling": "复用现有 GhClient 三方法，不新建 Collector"
+    }
+  ],
+  "verdict": "8 可行、1 缺失（审批）、3 需在本批组合现有能力"
+}

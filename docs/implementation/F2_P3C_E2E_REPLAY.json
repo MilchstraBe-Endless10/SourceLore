@@ -1,0 +1,62 @@
+{
+  "artifact": "F2_P3C_E2E_REPLAY",
+  "data_provenance": "HISTORICAL_REAL_DATA + SYNTHETIC_FIXTURE",
+  "live_github_refetch": false,
+  "real_human_authorization": false,
+  "authorization_kind_used": "TEST_ONLY",
+  "note": "基线来自 P1C 真实采集记录；目标 Commit B 与 tree 内容是 SYNTHETIC_FIXTURE。授权是 TEST_ONLY 隔离凭证，**不证明平台审批通过**",
+  "replayed_at": "2026-11-05T00:19:59+08:00",
+  "source": {
+    "commit": "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",
+    "claim_id": "SL-CLAIM-b2d90832050096e96bd83b284ae02bae1d817cf0",
+    "verification_id": "SL-VERIF-3543119f023fccee7e96f646ec382a8e831bb305",
+    "status": "supported"
+  },
+  "candidate": {
+    "state": "VERSION_ADDED",
+    "candidate_id": "SL-REVAL-a5c7b3d83ab2491ce2146e26d914f375",
+    "status": "BLOCKED",
+    "source_level": "HISTORICAL_REAL_DATA"
+  },
+  "plan": {
+    "gate": "PLAN_READY",
+    "plan_digest": "PLAN-ae23bf28b43a128ca45c87475a17c31b",
+    "intended_scope": "full_tree_enumeration"
+  },
+  "authorization": {
+    "authorization_id": "SL-TESTAUTH-7e79dab7eab960f1d036bfb0",
+    "authorization_kind": "TEST_ONLY",
+    "test_only": true,
+    "expires_at": "2027-01-01T00:00:00+08:00"
+  },
+  "execution_absent": {
+    "execution_status": "SUCCESS",
+    "verification_status": "refuted",
+    "error": null,
+    "source_snapshot": "SL-A-c4894842c015fe134f5d782e6177582b",
+    "collector_calls": [
+      [
+        "fetch_commit",
+        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      ],
+      [
+        "fetch_tree",
+        "1111111111111111111111111111111111111111"
+      ]
+    ]
+  },
+  "variants": {
+    "b_present": {
+      "execution_status": "SUCCESS",
+      "verification_status": "supported",
+      "expected": "supported",
+      "match": true
+    },
+    "b_partial": {
+      "execution_status": "SUCCESS",
+      "verification_status": "insufficient_evidence",
+      "expected": "insufficient_evidence",
+      "match": true
+    }
+  }
+}

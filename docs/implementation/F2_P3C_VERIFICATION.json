@@ -1,0 +1,137 @@
+{
+  "task": "M2 / F2-P3C（受控重新验证执行）",
+  "generated_by": "tools/f2p3c_verify.py",
+  "independent": true,
+  "git_head": "6ef7919a2caeb7c19d61c6813bd075379ec251df",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "data_provenance": "HISTORICAL_REAL_DATA + SYNTHETIC_FIXTURE",
+  "live_github_refetch": false,
+  "real_human_authorization": false,
+  "summary": {
+    "passed": 20,
+    "total": 20,
+    "result": "PASS"
+  },
+  "checks": [
+    {
+      "id": "c1",
+      "name": "P3C 全部 lifecycle 测试",
+      "passed": true,
+      "detail": "Lifecycle 套件 142 项 exit=0"
+    },
+    {
+      "id": "c2",
+      "name": "授权门禁测试",
+      "passed": true,
+      "detail": "授权测试 19 项 exit=0"
+    },
+    {
+      "id": "c3",
+      "name": "执行器测试",
+      "passed": true,
+      "detail": "执行测试 32 项 exit=0"
+    },
+    {
+      "id": "c4",
+      "name": "崩溃恢复测试",
+      "passed": true,
+      "detail": "崩溃恢复测试 6 项 exit=0"
+    },
+    {
+      "id": "c5",
+      "name": "端到端测试",
+      "passed": true,
+      "detail": "端到端测试 8 项 exit=0"
+    },
+    {
+      "id": "c6",
+      "name": "三态裁决都真实产生",
+      "passed": true,
+      "detail": "absent=refuted present=supported partial=insufficient_evidence"
+    },
+    {
+      "id": "c7",
+      "name": "执行成功与裁决状态分离",
+      "passed": true,
+      "detail": "执行 SUCCESS 与裁决独立：absent=SUCCESS/refuted；partial=SUCCESS/insufficient_evidence"
+    },
+    {
+      "id": "c8",
+      "name": "Collector 固定目标不漂移",
+      "passed": true,
+      "detail": "Collector 只按 B 取数，调用=[['fetch_commit', 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'], ['fetch_tree', '1111111111111111111111111111111111111111']]"
+    },
+    {
+      "id": "c9",
+      "name": "TEST_ONLY 授权隔离",
+      "passed": true,
+      "detail": "TEST_ONLY 授权隔离：kind=TEST_ONLY test_only=True"
+    },
+    {
+      "id": "c10",
+      "name": "如实报告未联网/无真实授权",
+      "passed": true,
+      "detail": "live_github_refetch=False real_human_authorization=False（如实报告）"
+    },
+    {
+      "id": "c11",
+      "name": "不自动 approved",
+      "passed": true,
+      "detail": "不自动 approved 断言在位=True"
+    },
+    {
+      "id": "c12",
+      "name": "旧 Claim/Verification 不可变",
+      "passed": true,
+      "detail": "旧历史不可变断言在位=True"
+    },
+    {
+      "id": "c13",
+      "name": "单活动候选仍由队列保障",
+      "passed": true,
+      "detail": "单活动候选仍由队列 CAS 保障=True"
+    },
+    {
+      "id": "c14",
+      "name": "未新建第二套引擎/数据库",
+      "passed": true,
+      "detail": "自建库: 无"
+    },
+    {
+      "id": "c15",
+      "name": "无 LLM/付费依赖",
+      "passed": true,
+      "detail": "LLM 依赖=无、付费域名=无"
+    },
+    {
+      "id": "c16",
+      "name": "payload 避开 Storage 禁字段",
+      "passed": true,
+      "detail": "实际 run payload 禁词键: 无"
+    },
+    {
+      "id": "c17",
+      "name": "P1A~P3B 全链回归",
+      "passed": true,
+      "detail": "runtime 45 exit=0; storage 53 exit=0; collector 48 exit=0; facts 44 exit=0; evidence_claims 36 exit=0"
+    },
+    {
+      "id": "c18",
+      "name": "F1-D 冻结哈希与验证",
+      "passed": true,
+      "detail": "SHA=42841207b8088c89… 未变=True f1d exit=0"
+    },
+    {
+      "id": "c19",
+      "name": "§1 接口审计记录了缺口",
+      "passed": true,
+      "detail": "§1 接口审计记录 3 个缺口，含授权通道=True"
+    },
+    {
+      "id": "c20",
+      "name": "B.REAL_HARNESS_AUTHORIZED_E2E 保持 OPEN",
+      "passed": true,
+      "detail": "B.REAL_HARNESS_AUTHORIZED_E2E=OPEN"
+    }
+  ]
+}

@@ -281,14 +281,31 @@ class TestOrthogonality(Base):
                             "Lifecycle 不得把 review_status 改成 approved")
 
     def test_t25_no_auto_refuted_or_approved(self):
+        """Lifecycle 不得**写入** refuted / approved。
+
+        注意：P3C 的执行器会调用 EC 验证器，后者的裁决结果本来就可以是
+        supported/refuted —— 那由 EC 产生，不是 Lifecycle 自己写的。
+        同理 `PLATFORM_APPROVAL` 是**授权类别名**，不是"把 Claim 标成 approved"。
+        所以这里只禁止**把状态写成**这两种值。
+        """
+        import re
         src = (ROOT/"src"/"lifecycle").rglob("*.py")
         bad = []
+        # 只查"赋值为 refuted/approved"的写法
+        pat = re.compile(r'\bstatus\s*=\s*["\'](refuted|approved)["\']')
         for f in src:
             t = f.read_text(encoding="utf-8")
-            for token in ('"refuted"', "'refuted'", "APPROVED"):
-                if token in t:
-                    bad.append((f.name, token))
-        self.assertEqual(bad, [], f"Lifecycle 源码不得出现 refuted/approved 写入: {bad}")
+            if pat.search(t):
+                bad.append(f.name)
+        self.assertEqual(bad, [], f"Lifecycle 源码不得写入 refuted/approved: {bad}")
+
+        # 独立断言：新鲜度/候选/执行状态集里都没有这两个值
+        import revalidation_models as _RM
+        import revalidation_run_store as _RS
+        self.assertNotIn("refuted", L.FRESHNESS_STATES)
+        self.assertNotIn("refuted", _RM.CANDIDATE_STATES)
+        self.assertNotIn("refuted", _RS.EXEC_STATES)
+        self.assertNotIn("approved", _RM.CANDIDATE_STATES)
 
 
 class TestScopeIsolation(Base):

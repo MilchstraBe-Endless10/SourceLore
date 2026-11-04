@@ -260,7 +260,24 @@ def build_candidate(gate_ctx: dict, *, created_at: str = "") -> R.RevalidationCa
         observation_id=None, expected_target_claim_identity=expected_target_claim,
         revalidation_of=gate_ctx["source_verification_id"],
         state_reason=state_reason, created_at=created_at,
-        conflict_state=gate_ctx["conflict_state"])
+        conflict_state=gate_ctx["conflict_state"],
+        target_claim_parameters=_target_claim_params(gate_ctx))
+
+
+def _target_claim_params(ctx: dict) -> dict:
+    """目标 Claim 的规范化参数（从源 Claim 拷贝语义，只改 Commit）。
+
+    ★ 不扩大命题范围：路径与 expected_exists 原样保留。
+    """
+    try:
+        cp = ctx["claim"]["payload"]
+        return {"normalized_path": cp["normalized_path"],
+                "expected_exists": cp["expected_exists"],
+                "claim_type": cp["claim_type"],
+                "claim_schema_version": cp.get("claim_schema_version",
+                                               "claim-schema/1")}
+    except (KeyError, TypeError):
+        return {}
 
 
 def _expected_target_claim_id(ctx: dict) -> str | None:

@@ -1,0 +1,76 @@
+{
+  "artifact": "F2_P3C_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-05T00:21:00+08:00",
+  "generated_by": "F2-P3C 实测回填",
+  "principle": "叠加观测，不覆盖 F1-D 冻结快照",
+  "local_controlled_execution": {
+    "verdict": "DONE",
+    "evidence": "docs/implementation/F2_P3C_VERIFICATION.json",
+    "tests": {
+      "runtime": 45,
+      "storage": 53,
+      "collector": 48,
+      "facts": 44,
+      "evidence_claims": 36,
+      "lifecycle": 142
+    },
+    "total_tests": 368,
+    "stages": [
+      "PREFLIGHT",
+      "AUTHORIZATION_CHECK",
+      "SNAPSHOT_COLLECT",
+      "FACT_EXTRACT",
+      "TARGET_CLAIM_CREATE",
+      "EVIDENCE_VERIFY",
+      "RESULT_PERSIST",
+      "COMPLETION_CHECK"
+    ],
+    "authorization_kind_used": "TEST_ONLY",
+    "test_only_isolated": true
+  },
+  "real_harness_authorized_e2e": {
+    "verdict": "OPEN",
+    "reason": "无真实可核验的人类授权通道；Y6-P3 审批传递 UNVERIFIED，Y6-P6 BotHarness 端到端 OPEN。本批未联网、未使用真实授权。",
+    "blockers": [
+      "Y6-P3",
+      "Y6-P6"
+    ],
+    "must_not_claim": "不得以 TEST_ONLY 授权代替真实审批"
+  },
+  "interface_gaps": [
+    "无真实授权传递通道",
+    "Runtime 无 revalidation 专用阶段状态",
+    "Collector 无'给定 commit 收全量快照'的一体化入口"
+  ],
+  "data_provenance": {
+    "baseline": "HISTORICAL_REAL_DATA（P1C 记录）",
+    "target_commit_and_tree": "SYNTHETIC_FIXTURE",
+    "live_github_refetch": false,
+    "real_human_authorization": false
+  },
+  "still_open": [
+    {
+      "gate": "Y6-P3 审批传递",
+      "status": "UNVERIFIED"
+    },
+    {
+      "gate": "Y6-P6 BotHarness 端到端",
+      "status": "OPEN"
+    },
+    {
+      "gate": "B-1/B-2/B-3 分发门禁",
+      "status": "OPEN"
+    },
+    {
+      "gate": "Research/Renderer/Skill",
+      "status": "NOT_STARTED"
+    }
+  ],
+  "explicitly_not_claimed": [
+    "候选入队或执行成功不等于知识已发布",
+    "TEST_ONLY 授权不代表平台审批通过",
+    "未执行真实联网重新验证",
+    "未修改任何人工审核状态或旧 Verification"
+  ]
+}

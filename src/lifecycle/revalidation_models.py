@@ -123,6 +123,8 @@ class RevalidationCandidate:
     superseded_by: Optional[str] = None
     conflict_state: str = L.CONFLICT_UNKNOWN
     conflict_fact_ids: list = field(default_factory=list)
+    # ★ P3C 需要它来确定目标路径与命题参数（由门禁从源 Claim 拷贝）
+    target_claim_parameters: dict = field(default_factory=dict)
 
     def __post_init__(self):
         if not SAFE_CANDIDATE_ID.match(self.candidate_id):
@@ -145,6 +147,8 @@ class RevalidationCandidate:
             raise ValueError(
                 "冲突未核验/已检测到冲突时不得进入 PROPOSED")
         # ★ 合成来源不得进入可执行调度
+        # ★ 非可调度来源必须是 BLOCKED（不能伪装成 PROPOSED）。
+        #   但隔离测试可以在 BLOCKED 上执行（executor 会检查 test_only 授权）。
         if self.status == PROPOSED and self.source_level not in DISPATCHABLE_SOURCES:
             raise ValueError(
                 f"{self.source_level} 来源不得进入可执行队列的 PROPOSED")
@@ -177,6 +181,7 @@ class RevalidationCandidate:
             "superseded_by": self.superseded_by,
             "conflict_state": self.conflict_state,
             "conflict_fact_ids": self.conflict_fact_ids,
+            "target_claim_parameters": self.target_claim_parameters,
         })
         return d
 

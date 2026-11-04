@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-04T23:27:29+08:00",
+  "updated_at": "2026-11-05T00:25:14+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -1205,6 +1205,44 @@
       "blocked_reason": null,
       "depends_on": [
         "M2-F2-P3A"
+      ]
+    },
+    {
+      "id": "M2-F2-P3C",
+      "milestone": "M2",
+      "goal": "F2-P3C：受控重新验证执行、版本隔离、跨阶段幂等与异常恢复",
+      "inputs": [
+        "docs/implementation/F2_P3B_EXECUTION_REPORT.md"
+      ],
+      "expected_outputs": [
+        "src/lifecycle/revalidation_authorization.py",
+        "src/lifecycle/revalidation_run_store.py",
+        "src/lifecycle/revalidation_executor.py",
+        "src/lifecycle/collector_adapter.py",
+        "tests/lifecycle/test_revalidation_authorization.py",
+        "tests/lifecycle/test_revalidation_execution.py",
+        "tests/lifecycle/test_revalidation_crash.py",
+        "tests/lifecycle/test_revalidation_end_to_end.py",
+        "tools/f2p3c_verify.py",
+        "tools/f2p3c_e2e_replay.py",
+        "docs/implementation/F2_P3C_EXECUTION_ARCHITECTURE.md",
+        "docs/implementation/F2_P3C_EXECUTION_REPORT.md",
+        "docs/implementation/F2_P3C_VERIFICATION.json"
+      ],
+      "status": "DONE_LOCAL_CONTROLLED_ONLY",
+      "verification_commands": [
+        "python3 -m unittest discover -s tests/lifecycle",
+        "python3 tools/f2p3c_verify.py"
+      ],
+      "evidence_paths": [
+        "docs/implementation/F2_P3C_VERIFICATION.json",
+        "docs/implementation/F2_P3C_E2E_REPLAY.json",
+        "docs/implementation/F2_P3C_INTERFACE_AUDIT.json"
+      ],
+      "git_commit": null,
+      "blocked_reason": "B.REAL_HARNESS_AUTHORIZED_E2E OPEN：无真实授权通道（Y6-P3 UNVERIFIED、Y6-P6 OPEN）",
+      "depends_on": [
+        "M2-F2-P3B"
       ]
     }
   ]
