@@ -1,0 +1,110 @@
+{
+  "task": "M2 / F2-P1B（权威知识资产 A/B/C 存储引擎）",
+  "generated_by": "tools/f2p1b_verify.py",
+  "independent": true,
+  "git_head": "6a744503343d149f550ea5d283d9e2d0a02ff9fc",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "summary": {
+    "passed": 16,
+    "total": 16,
+    "result": "PASS"
+  },
+  "checks": [
+    {
+      "id": "c1",
+      "name": "A 层追加不可变历史",
+      "passed": true,
+      "detail": "不可变追加套件 27 项，失败 0、错误 0；触发器断言存在=True"
+    },
+    {
+      "id": "c2",
+      "name": "B 层事务内 CAS 且 postcondition 先于 COMMIT",
+      "passed": true,
+      "detail": "postcondition 在 COMMIT 之前（pos=15661 < commit=16342）"
+    },
+    {
+      "id": "c3",
+      "name": "A/B 联合提交经并发与崩溃测试",
+      "passed": true,
+      "detail": "并发/崩溃 6 项 + 错误注入 13 项，失败/错误全 0"
+    },
+    {
+      "id": "c4",
+      "name": "C 层可删除并重建",
+      "passed": true,
+      "detail": "索引重建 indexed=3、A/B 不变=True"
+    },
+    {
+      "id": "c5",
+      "name": "身份与版本不混淆",
+      "passed": true,
+      "detail": "pointer_version=2（CAS 每步 +1）、asset_version=7（内容演进），两个量独立"
+    },
+    {
+      "id": "c6",
+      "name": "跨仓库关系不自动误合并",
+      "passed": true,
+      "detail": "跨仓库同名 2 条独立资产、asset_id 不同=True、各自指针独立"
+    },
+    {
+      "id": "c7",
+      "name": "checkpoint 与知识资产独立权威",
+      "passed": true,
+      "detail": "独立权威已声明=True、明确不依赖 ATTACH=True、独立连接=True"
+    },
+    {
+      "id": "c8",
+      "name": "跨数据库中断经 operation_id 对账",
+      "passed": true,
+      "detail": "跨库对账套件 6 项通过；含 operation_id 对账断言=True"
+    },
+    {
+      "id": "c9",
+      "name": "UNKNOWN 不当作失败后直接重试",
+      "passed": true,
+      "detail": "NEEDS_HUMAN 分支 auto_retry=False=True（UNKNOWN 不自动重试）"
+    },
+    {
+      "id": "c10",
+      "name": "路径与保密边界已测试",
+      "passed": true,
+      "detail": "路径/保密边界 13 项通过；磁盘失败实施边界已如实记录=True"
+    },
+    {
+      "id": "c11",
+      "name": "P1A 既有行为保持",
+      "passed": true,
+      "detail": "P1A 回归 exit=0，22/22 PASS -> F2_P1A_VERIFICATION.json"
+    },
+    {
+      "id": "c12",
+      "name": "F1-D 冻结哈希不变",
+      "passed": true,
+      "detail": "冻结 Crosswalk 哈希未变=True、git 无改动=True"
+    },
+    {
+      "id": "c13",
+      "name": "F1-D 验证器通过",
+      "passed": true,
+      "detail": "F1-D 验证器 exit=0，26/26 PASS -> F1D_VERIFICATION.json"
+    },
+    {
+      "id": "c14",
+      "name": "无 SQLite 数据库进仓库",
+      "passed": true,
+      "detail": "被追踪 DB=无；工作区残留=无"
+    },
+    {
+      "id": "c15",
+      "name": "A/B 无旁路写入",
+      "passed": true,
+      "detail": "单一写入口=True、A 层写保护触发器=True"
+    },
+    {
+      "id": "c16",
+      "name": "source_snapshot 三字段不混用",
+      "passed": true,
+      "detail": "三字段独立存在=True；存储套件失败 0"
+    }
+  ]
+}

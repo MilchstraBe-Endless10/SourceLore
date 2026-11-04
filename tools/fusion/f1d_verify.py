@@ -359,9 +359,13 @@ def main() -> int:
         # 有代码 → 必须落在**已授权批次**的目录内，且不得越界到知识资产或产品入口。
         # 注意：这里不读 F2 自己的验收结论——否则会形成循环依赖
         # （F2 验收要调 f1d → f1d 又要读 F2 结论）。作用域判断只靠路径与授权边界。
-        allowed_prefixes = ("src/runtime/", "tests/runtime/")
+        # 已获批的 F2 批次目录（P1A 建 runtime，P1B 建 storage）。
+        # 每个新批次获批后在此登记，越界即为越权。
+        allowed_prefixes = ("src/runtime/", "tests/runtime/",
+                            "src/storage/", "tests/storage/")
         outside = [str(p.relative_to(ROOT)) for p in code
-                   if not str(p.relative_to(ROOT)).startswith(allowed_prefixes)]
+                   if "__pycache__" not in str(p)
+                   and not str(p.relative_to(ROOT)).startswith(allowed_prefixes)]
         skill_ok = not skill_entry.exists()
         # 不得有被追踪的数据库
         tracked_db = [l for l in git("ls-files", "*.db", "*.sqlite", "*.sqlite3").stdout.splitlines() if l.strip()]

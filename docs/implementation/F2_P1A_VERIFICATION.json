@@ -2,7 +2,7 @@
   "task": "M2 / F2-P1A（本地执行状态存储与恢复）",
   "generated_by": "tools/f2p1a_verify.py",
   "independent": true,
-  "git_head": "f31254ae49bed1a4c960496cf7f1dac712019849",
+  "git_head": "6a744503343d149f550ea5d283d9e2d0a02ff9fc",
   "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
   "summary": {
     "passed": 22,

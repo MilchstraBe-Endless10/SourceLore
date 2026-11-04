@@ -35,3 +35,7 @@ secrets/
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Python 缓存
+__pycache__/
+*.pyc

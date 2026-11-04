@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-04T18:42:36+08:00",
+  "updated_at": "2026-11-04T19:09:20+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -1008,6 +1008,38 @@
       "blocked_reason": null,
       "depends_on": [
         "M2-F2-P0"
+      ]
+    },
+    {
+      "id": "M2-F2-P1B",
+      "milestone": "M2",
+      "goal": "F2-P1B：权威知识资产 A/B/C 存储引擎与跨库一致性",
+      "inputs": [
+        "docs/implementation/F2_P1A_STORAGE_DECISIONS.md"
+      ],
+      "expected_outputs": [
+        "src/storage/asset_models.py",
+        "src/storage/knowledge_store.py",
+        "src/storage/index_store.py",
+        "src/runtime/asset_checkpoint_coordinator.py",
+        "tests/storage/",
+        "tools/f2p1b_verify.py",
+        "docs/implementation/F2_P1B_STORAGE_ARCHITECTURE.md",
+        "docs/implementation/F2_P1B_EXECUTION_REPORT.md",
+        "docs/implementation/F2_P1B_VERIFICATION.json"
+      ],
+      "status": "DONE",
+      "verification_commands": [
+        "python3 -m unittest discover -s tests/storage",
+        "python3 tools/f2p1b_verify.py"
+      ],
+      "evidence_paths": [
+        "docs/implementation/F2_P1B_VERIFICATION.json"
+      ],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": [
+        "M2-F2-P1A"
       ]
     }
   ]

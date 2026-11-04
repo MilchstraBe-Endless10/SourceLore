@@ -1,0 +1,44 @@
+{
+  "artifact": "F2_P1B_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-04T19:07:46+08:00",
+  "generated_by": "F2-P1B 实测回填",
+  "principle": "叠加观测，不覆盖 F1-D 冻结快照",
+  "knowledge_storage_component": {
+    "verdict": "DONE",
+    "evidence": "docs/implementation/F2_P1B_VERIFICATION.json (16/16)",
+    "tests": "46 storage tests OK (knowledge_store 27 / cross_process 6 / error_injection 13)",
+    "covered": [
+      "A 层不可变追加",
+      "B 层事务内 CAS",
+      "A/B 同事务 postcondition 先于 COMMIT",
+      "C 层删除重建",
+      "跨仓库身份不误合并",
+      "operation_id 跨库对账",
+      "UNKNOWN 不自动重试",
+      "路径与保密边界",
+      "损坏检测与拒绝"
+    ]
+  },
+  "x5_knowledge_subgates": {
+    "knowledge_cas_crash_injected": "SATISFIED_AT_F2P1B",
+    "evidence": [
+      "4 进程真实竞争同一 pointer_version：1 胜 3 CONFLICT，终版 2",
+      "BEGIN IMMEDIATE 后 COMMIT 前 SIGKILL：未提交 A 不可见、B 不指向它",
+      "损坏副本：显式 CHECKPOINT_CORRUPT，不伪装 NOT_FOUND"
+    ],
+    "note": "这是**知识库侧**的 X-5 子门禁；checkpoint 侧的 X-5 在 F2-P1A 已满足。两者分开记，不互相代替。"
+  },
+  "harness_integration_component": {
+    "verdict": "PARTIALLY_VERIFIED",
+    "approval_transfer": "UNVERIFIED — 本会话审批提示禁用，未实测拒绝阻断",
+    "bot_harness_e2e": "OPEN — dsh headless 仍 MISSING_CREDENTIAL (provider route deepseek-official)",
+    "note": "知识库可靠性不依赖外部模型 API；集成门禁保持 OPEN 不阻塞本地 DONE"
+  },
+  "explicitly_not_claimed": [
+    "不声称跨两库存在全局 ACID 事务",
+    "不声称外部系统 exactly-once",
+    "未做真实 ENOSPC/EIO 注入（用只读目录做等价路径）",
+    "未设自定义数据库文件权限模型（保持默认 umask）"
+  ]
+}

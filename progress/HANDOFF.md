@@ -1998,3 +1998,82 @@ f2p0_verify                            16/16 PASS      exit 0
 3. 资产版本与 checkpoint_version 的**对齐规则**（两者不是同一个版本号，别混）
 
 Collector 起点：单源最小抓取 + 幂等键，验证"重复抓取不重复入库"。
+
+## M2 / F2-P1B 完成（2026-11-04 19:09 +08:00）
+
+### 结论：知识存储引擎 DONE，集成门禁仍 OPEN
+
+A/B/C 三层实现并验收 16/16；storage 测试 46 项全过。集成侧（审批、BotHarness 端到端）未变，仍 OPEN。
+
+### ★ 最重要的一个技术判断
+
+**实测了 ATTACH 跨库提交。** 两库均 WAL 时，正常 COMMIT 成功、SIGKILL 后两库都回滚——**看起来原子**。
+但 SQLite 只承诺"主库 WAL 时可经主库日志一次原子化"，**两个各自为 WAL 的库不承诺跨库原子提交**。
+
+因此：**A/B/C 全部放在同一个 `knowledge.db`，一个事务约束三层**；checkpoint 保持独立 `cp.db`；
+两者之间**没有全局事务**，靠 `operation_id` 对账收敛。这解决了 W-A/B 同事务，又不依赖未证明的保证。
+
+### 结构
+
+```
+assets          A 层不可变历史（触发器 assets_no_update/no_delete 抛 A_LAYER_IMMUTABLE）
+current_view    B 层指针（PRIMARY KEY (repository_id, logical_identity)）
+index_rows      C 层派生索引（可删重建）
+asset_fts       FTS5 全文（本地可用，但不强依赖）
+repo_bindings   跨仓库关联（必须带 evidence_ref）
+operation_log   跨库协调锚点
+```
+
+### 真实证据
+
+- **4 进程 CAS**：1 胜 3 CONFLICT，终版 `pointer_version=2`，assets 仍为 2 条。
+- **COMMIT 前 SIGKILL**：未提交 A 不可见，B 不指向它，先前已提交记录仍在。
+- **跨仓库同名**：两条独立资产、两个独立指针、不同 asset_id。
+- **operation_id 对账**：RECONCILED → 补写 → NOTHING_TO_DO，资产不重复创建，occurrences=1。
+- **损坏副本**：显式 CHECKPOINT_CORRUPT，**不伪装 NOT_FOUND**，备份保留。
+- **索引重建**：A/B 指纹前后完全一致。
+
+### ★ 四个真实缺陷（本批修掉）
+
+1. **跨仓库同名被静默合并（最严重）**：`asset_id` 初版不含 `repository_id`，两条本应独立的知识算出同一 ID 撞主键。
+   修法：ID 纳入 repository_id；A 唯一约束与 B 主键都带 repository_id；`current_pointer`/`history` 强制要求 repository_id。
+2. **对账把"有意图无回执"当一致**：`result_digest=None` 被误判无事，实际是漏窗。加显式 `RESULT_NOT_RECORDED` 分支。
+3. **摘要口径不一致**：`write_after_asset_commit` 用 payload 哈希，`operation_log` 存 content_hash，
+   两个口径必然不等 → 下次对账误报 DIGEST_MISMATCH。改为直接写回 `result_hash`。
+4. **FTS5 语法坑**：`MATCH 'LI-1'` 中 `-` 被当列限定符，报 `no such column: 1`。
+   改为整串双引号短语查询 + LIKE 兜底。
+
+### 已知限制（未修，如实记录）
+
+- `unicode61` 分词不切中文，**中文全文检索 count=0**；结构化查询不受影响。
+- **未做真实 ENOSPC/EIO 注入** —— 会影响同机其他会话，改用只读目录做等价路径；真实磁盘故障保持 OPEN。
+- **未设自定义数据库文件权限模型**（保持默认 umask）。
+
+### 明确不宣称
+
+- 不声称跨两库存在全局 ACID 事务。
+- 不声称外部系统（GitHub 等）exactly-once。
+
+### X-5 记录
+
+知识库侧子门禁 **SATISFIED_AT_F2P1B**；checkpoint 侧 **SATISFIED_AT_F2P1A**。**分开记，不互相代替。**
+
+### 验证
+
+```
+unittest discover -s tests/storage     46 tests OK   exit 0
+f2p1b_verify                          16/16 PASS    exit 0
+f2p1a_verify                          22/22 PASS    exit 0
+f1d_verify                            26/26 PASS    exit 0
+f2p0_verify                           16/16 PASS    exit 0
+```
+
+冻结哈希 `42841207…` 未变。0 个 .db 进仓库。
+
+### 下一步：F2-P1C Collector（**未启动，需独立批准**）
+
+1. 单源最小抓取（只取元数据，不调模型）
+2. 落资产 + 幂等键，重复抓取不重复入库
+3. **source_snapshot 三字段同时记录并断言不互相填充**（F0 勘误 E-01..E-06 的直接防线）
+4. 跨库协调：抓取→写资产→联系 checkpoint，中间杀进程验证对账
+5. 索引重建后 A/B 不变、查询一致
