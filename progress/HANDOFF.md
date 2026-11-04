@@ -1925,3 +1925,76 @@ F1-D 正是获授权的冻结批次。9 个 F1-B 验证器 + 4 个 F1-C 验证�
 1. Y6-P1..P6 六个运行时探测（H-B/D/E/F/H + BotHarness 能否加载 Skill）——失败走全自建
 2. X-5 崩溃注入 + 并发 CAS 实测
 3. 其余实现门禁按模块推进
+
+## M2 / F2-P1A 完成（2026-11-04 18:42 +08:00）
+
+### 结论：本地运行时底座 DONE，集成侧 PARTIALLY_VERIFIED
+
+**A. 本地运行时底座 —— DONE。** 22/22 验收通过，45 项测试全过。
+**B. Harness/BotHarness 集成 —— PARTIALLY_VERIFIED。** 审批 UNVERIFIED、端到端 OPEN。
+
+两者独立判定，没有把本地成功写成平台端到端通过。
+
+### 技术
+
+SQLite 3.54.0 / Python 3.14.8，WAL + synchronous=FULL + busy_timeout=5000，schema_version=1。
+
+checkpoint 主键是 `(task_id, run_id)` **复合键**；`subject_id` 刻意不进——
+它是被研究对象，不是执行实例，混入会违反"三者不可互换"。
+
+**CAS 实测：** 4 进程同争 expected_version=1 → 1 胜 3 CONFLICT，最终版本 2（无丢失更新）。
+
+### 真实崩溃证据（不是 mock）
+
+- **R-2**：在 `BEGIN IMMEDIATE` 后、`COMMIT` 前 SIGKILL → 未提交记录不可见，已提交记录仍在。
+- **R-5**：覆写 200 字节垃圾 → 显式 CHECKPOINT_CORRUPT，**不当作 NOT_FOUND**，不自动重建，保留 .backup。
+- **UNKNOWN**：子进程真写文件后 SIGKILL 自己 → 副作用确实发生、回执为空 → 只能判 UNKNOWN。
+- **CANCELLED**：真实 SIGTERM；**TIMEOUT**：timeout 返回 124；**SIGKILL(137) 映射 UNKNOWN，明确 ≠ CANCELLED**。
+
+### ★ 三个真实踩坑
+
+1. **PRAGMA 顺序**：先 WAL 后 busy_timeout → 6 进程并发首开新库全部 `database is locked`。
+   修法：busy_timeout 前置 + WAL 幂等重试。
+2. **plan_resume 损坏时抛异常而非返回错误** → 加 `open_store()` 结构化错误。
+3. **验收脚本与 f1d 循环依赖**（f1d c24 读 F2 结论）→ 改为作用域判断：
+   代码只准在 `src/runtime/`、`tests/runtime/`，且无产品 Skill 入口、无被追踪 .db。
+
+另：c4 又一次踩 tuple-newline 陷阱。
+
+### 诚实边界（不得夸大）
+
+- **本地幂等登记 ≠ 外部工具 exactly-once。** 漏窗（副作用已发生、提交前崩溃）无法用本地库消除。
+- **UNKNOWN 是非终态。** 必须禁自动重跑，需重新观测或人工收敛。
+- **审批未实测。** 本会话审批提示禁用，**没有通过改全局安全配置制造虚假 PASS**。
+- **BotHarness 端到端未打通。** `headless` 仍 `MISSING_CREDENTIAL`（route `deepseek-official`）。
+  本地底座可靠性不依赖外部模型 API，故未因此停工。
+
+### 文件
+
+```
+src/runtime/{checkpoint_store,execution_result,resume_coordinator}.py
+tests/runtime/{test_checkpoint_store,test_crash_recovery,test_execution_states,test_concurrency}.py
+tools/f2p1a_verify.py
+docs/implementation/F2_P1A_{STORAGE_DECISIONS.md,EXECUTION_REPORT.md,GATE_RESULTS.json,VERIFICATION.json}
+```
+
+**0 个 .db 进仓库。** 测试全用临时目录，跑完即删。
+
+### 验证
+
+```
+unittest discover -s tests/runtime      45 tests OK     exit 0
+f2p1a_verify                           22/22 PASS      exit 0
+f1d_verify                             26/26 PASS      exit 0
+f2p0_verify                            16/16 PASS      exit 0
+```
+
+冻结哈希 `42841207…` 未变。
+
+### 下一步：F2-P1B（**未启动，需独立批准**）
+
+1. 知识资产 A/B/C 层**物理存储选型**（本批刻意未决）
+2. 资产写入与 checkpoint 的**跨层一致性**（同一事务边界如何协调两套存储）
+3. 资产版本与 checkpoint_version 的**对齐规则**（两者不是同一个版本号，别混）
+
+Collector 起点：单源最小抓取 + 幂等键，验证"重复抓取不重复入库"。

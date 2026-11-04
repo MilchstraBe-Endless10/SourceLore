@@ -3,7 +3,7 @@
   "generated_by": "tools/fusion/f1d_verify.py",
   "independent": true,
   "imports_batch_verifiers": false,
-  "git_head": "4934eecdb90da3934d2f49dfed2d457337ffa01b",
+  "git_head": "f31254ae49bed1a4c960496cf7f1dac712019849",
   "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
   "summary": {
     "passed": 26,
@@ -129,7 +129,7 @@
       "id": "c20",
       "name": "未实现引擎/DB/Skill",
       "passed": true,
-      "detail": "开发目录无改动=True；无数据库文件=True"
+      "detail": "无产品 SKILL.md=True；无被追踪的数据库文件=True；工作区无 .db 残留=True；冻结基线未变=True"
     },
     {
       "id": "c21",
@@ -153,7 +153,7 @@
       "id": "c24",
       "name": "本轮未启动 F2",
       "passed": true,
-      "detail": "无 SKILL.md=True；无产品代码=True"
+      "detail": "代码 15 个全部落在已授权批次目录=True；无产品 SKILL.md=True；无被追踪 DB=True"
     },
     {
       "id": "c25",

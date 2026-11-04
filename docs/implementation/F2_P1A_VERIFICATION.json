@@ -1,0 +1,146 @@
+{
+  "task": "M2 / F2-P1A（本地执行状态存储与恢复）",
+  "generated_by": "tools/f2p1a_verify.py",
+  "independent": true,
+  "git_head": "f31254ae49bed1a4c960496cf7f1dac712019849",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "summary": {
+    "passed": 22,
+    "total": 22,
+    "result": "PASS"
+  },
+  "checks": [
+    {
+      "id": "c1",
+      "name": "Crosswalk 哈希不变",
+      "passed": true,
+      "detail": "冻结 Crosswalk sha256=42841207b8088c89… 未变=True"
+    },
+    {
+      "id": "c2",
+      "name": "checkpoint 独立于知识命名空间",
+      "passed": true,
+      "detail": "知识命名空间路径被拒，且未创建文件"
+    },
+    {
+      "id": "c3",
+      "name": "schema_version 合法",
+      "passed": true,
+      "detail": "schema_version=1"
+    },
+    {
+      "id": "c4",
+      "name": "创建与读取成功",
+      "passed": true,
+      "detail": "创建 ok=True，读取 stage=s0"
+    },
+    {
+      "id": "c5",
+      "name": "重复创建返回 CONFLICT",
+      "passed": true,
+      "detail": "重复创建 → CONFLICT（不静默覆盖）"
+    },
+    {
+      "id": "c6",
+      "name": "checkpoint_version 单调递增",
+      "passed": true,
+      "detail": "版本序列 [2, 3, 4] 单调递增"
+    },
+    {
+      "id": "c7",
+      "name": "错误 expected_version 无法覆盖",
+      "passed": true,
+      "detail": "错误版本被拒=True，内容未被覆盖（stage 仍为 s1）"
+    },
+    {
+      "id": "c8",
+      "name": "真实两进程并发 CAS",
+      "passed": true,
+      "detail": "并发套件 7 项，失败 0、错误 0"
+    },
+    {
+      "id": "c9",
+      "name": "正常退出后可恢复",
+      "passed": true,
+      "detail": "崩溃恢复套件 6 项，失败 0、错误 0"
+    },
+    {
+      "id": "c10",
+      "name": "受控异常中断后可恢复",
+      "passed": true,
+      "detail": "R-2 真实 SIGKILL 测试包含在崩溃套件中且通过"
+    },
+    {
+      "id": "c11",
+      "name": "不暴露半提交状态",
+      "passed": true,
+      "detail": "半提交断言存在=True；套件失败 0"
+    },
+    {
+      "id": "c12",
+      "name": "重复请求不重复受控副作用",
+      "passed": true,
+      "detail": "重复请求不重复副作用断言存在=True；失败 0"
+    },
+    {
+      "id": "c13",
+      "name": "UNKNOWN 不被误判为 NOT_FOUND",
+      "passed": true,
+      "detail": "UNKNOWN=UNKNOWN 与 NOT_FOUND 分离=True"
+    },
+    {
+      "id": "c14",
+      "name": "CANCELLED 与 TIMEOUT 区分",
+      "passed": true,
+      "detail": "CANCELLED=CANCELLED、TIMEOUT=TIMEOUT 可区分"
+    },
+    {
+      "id": "c15",
+      "name": "缺失记录显式 NOT_FOUND",
+      "passed": true,
+      "detail": "缺失记录 → NOT_FOUND"
+    },
+    {
+      "id": "c16",
+      "name": "权限拒绝显式返回",
+      "passed": true,
+      "detail": "敏感字段被拒；空 id → PERMISSION_DENIED"
+    },
+    {
+      "id": "c17",
+      "name": "损坏状态不可自动续跑",
+      "passed": true,
+      "detail": "损坏后 auto_resume=False（必须 False）"
+    },
+    {
+      "id": "c18",
+      "name": "失败不修改冻结 Crosswalk",
+      "passed": true,
+      "detail": "失败测试后冻结文件仍无改动=True、哈希不变=True"
+    },
+    {
+      "id": "c19",
+      "name": "工具执行有真实退出码",
+      "passed": true,
+      "detail": "测试含真实 returncode/SIGKILL/SIGTERM 断言=True"
+    },
+    {
+      "id": "c20",
+      "name": "测试未泄露凭据",
+      "passed": true,
+      "detail": "产物无凭据样式内容，问题 无"
+    },
+    {
+      "id": "c21",
+      "name": "F1-D 验证器继续通过",
+      "passed": true,
+      "detail": "f1d_verify exit=0，26/26 PASS -> F1D_VERIFICATION.json"
+    },
+    {
+      "id": "c22",
+      "name": "构建与测试产物可重复",
+      "passed": true,
+      "detail": "同输入两次 checkpoint_ref 一致=True"
+    }
+  ]
+}

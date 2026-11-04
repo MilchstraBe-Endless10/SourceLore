@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-04T18:16:28+08:00",
+  "updated_at": "2026-11-04T18:42:36+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -976,6 +976,38 @@
       "blocked_reason": null,
       "depends_on": [
         "M1-FUSION-GATE-F1-D"
+      ]
+    },
+    {
+      "id": "M2-F2-P1A",
+      "milestone": "M2",
+      "goal": "F2-P1A：本地执行状态存储、跨进程恢复、失败语义",
+      "inputs": [
+        "docs/implementation/F2_P0_ADAPTER_DECISIONS.md"
+      ],
+      "expected_outputs": [
+        "src/runtime/checkpoint_store.py",
+        "src/runtime/execution_result.py",
+        "src/runtime/resume_coordinator.py",
+        "tests/runtime/",
+        "tools/f2p1a_verify.py",
+        "docs/implementation/F2_P1A_STORAGE_DECISIONS.md",
+        "docs/implementation/F2_P1A_EXECUTION_REPORT.md",
+        "docs/implementation/F2_P1A_VERIFICATION.json"
+      ],
+      "status": "DONE",
+      "verification_commands": [
+        "python3 -m unittest discover -s tests/runtime",
+        "python3 tools/f2p1a_verify.py",
+        "python3 tools/fusion/f1d_verify.py"
+      ],
+      "evidence_paths": [
+        "docs/implementation/F2_P1A_VERIFICATION.json"
+      ],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": [
+        "M2-F2-P0"
       ]
     }
   ]

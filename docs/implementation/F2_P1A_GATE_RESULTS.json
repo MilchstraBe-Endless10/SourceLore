@@ -1,0 +1,53 @@
+{
+  "artifact": "F2_P1A_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-04T18:41:13+08:00",
+  "generated_by": "F2-P1A 实测回填",
+  "principle": "叠加观测，不覆盖 F1-D 冻结快照",
+  "local_runtime_component": {
+    "verdict": "DONE",
+    "evidence": "docs/implementation/F2_P1A_VERIFICATION.json (22/22)",
+    "tests": "45 tests OK (checkpoint_store 17 / crash_recovery 6 / execution_states 15 / concurrency 7)",
+    "covered": [
+      "checkpoint 持久化",
+      "CAS 乐观并发",
+      "跨进程恢复",
+      "崩溃恢复",
+      "幂等登记",
+      "结果五态",
+      "CANCELLED 实测",
+      "UNKNOWN 语义",
+      "损坏检测"
+    ]
+  },
+  "harness_integration_component": {
+    "verdict": "PARTIALLY_VERIFIED",
+    "approval_transfer": "UNVERIFIED — 本会话审批提示禁用，未实测拒绝阻断",
+    "bot_harness_e2e": "OPEN — dsh headless 仍 MISSING_CREDENTIAL (provider route deepseek-official)",
+    "note": "本地底座可靠性不依赖外部模型 API；集成门禁保持 OPEN 不阻塞本地 DONE"
+  },
+  "gate_observations": [
+    {
+      "gate_id": "Y6-P3",
+      "status": "UNVERIFIED",
+      "reason": "审批链路未实测；未通过修改全局安全配置制造虚假 PASS"
+    },
+    {
+      "gate_id": "Y6-P6",
+      "status": "OPEN",
+      "reason": "BotHarness 端到端未打通；headless 缺凭据"
+    }
+  ],
+  "newly_satisfied": [
+    {
+      "gate": "X-5 崩溃注入与并发 CAS",
+      "status": "SATISFIED_AT_F2P1A",
+      "evidence": "test_crash_recovery 真实 SIGKILL；test_concurrency 4 进程真实 CAS 一胜三冲突"
+    },
+    {
+      "gate": "检查点与知识权威数据隔离",
+      "status": "SATISFIED_AT_F2P1A",
+      "evidence": "路径黑名单 + c2 实测拒绝"
+    }
+  ]
+}

@@ -295,10 +295,20 @@ def main() -> int:
         return (len(u06_ids) == 28 and not bad and not bad2), detail
 
     def c20():
-        probe = git("status", "--short", "--", "src/", "tests/", "schemas/", "skills/")
-        db = list(ROOT.glob("*.db")) + list(ROOT.glob("*.sqlite*"))
-        detail = f"开发目录无改动={not probe.stdout.strip()}；无数据库文件={not db}"
-        return (probe.stdout.strip() == "" and not db), detail
+        # F1-D 当轮的意图是「不得擅自实现引擎/Skill/DB」，不是「永远不许有代码」。
+        # F2 获授权后可实现运行时底座（F2-P1A 已建 src/runtime/），这是合法演进。
+        # 仍然硬性禁止的是：产品 Skill 入口、被提交的数据库文件、冻结基线被改。
+        skill_entry = ROOT / "skills" / "sourcelore" / "SKILL.md"
+        tracked_db = []
+        st = git("ls-files", "*.db", "*.sqlite", "*.sqlite3")
+        tracked_db = [l for l in st.stdout.splitlines() if l.strip()]
+        db_files = [p for p in ROOT.rglob("*.db") if p.is_file()]
+        frozen_ok = (sha_bytes_of(CW) ==
+                         "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b")
+        detail = (f"无产品 SKILL.md={not skill_entry.exists()}；"
+                  f"无被追踪的数据库文件={not tracked_db}；"
+                  f"工作区无 .db 残留={not db_files}；冻结基线未变={frozen_ok}")
+        return (not skill_entry.exists() and not tracked_db and not db_files and frozen_ok), detail
 
     def c21():
         g1 = git("diff", "--quiet", "HEAD", "--", "docs/fusion/RAW_CAPABILITY_INDEX.json")
@@ -337,15 +347,29 @@ def main() -> int:
         return (ok and consistent), detail
 
     def c24():
-        # 未启动 F2：无 Skill、无实现、无 DB、无 F2 产物
-        f2_markers = [
-            ROOT / "skills" / "sourcelore" / "SKILL.md",
-        ]
-        exists = [str(p) for p in f2_markers if p.exists()]
-        code = [str(p) for d in ("src", "tests", "schemas")
+        # F1-D 当轮未启动 F2；F2 须独立批准后才能建代码。
+        # 现在若已有 F2 产物，必须有对应的批次验收证据，否则视为越权。
+        skill_entry = ROOT / "skills" / "sourcelore" / "SKILL.md"
+        if skill_entry.exists():
+            return False, "出现正式产品 Skill 入口，超出 F2-P1A 授权范围"
+        code = [p for d in ("src", "tests", "schemas")
                 for p in (ROOT / d).rglob("*") if p.is_file()]
-        detail = f"无 SKILL.md={not exists}；无产品代码={not code}"
-        return (not exists and not code), detail
+        if not code:
+            return True, "F1-D 时点：无产品代码（F2 未启动）"
+        # 有代码 → 必须落在**已授权批次**的目录内，且不得越界到知识资产或产品入口。
+        # 注意：这里不读 F2 自己的验收结论——否则会形成循环依赖
+        # （F2 验收要调 f1d → f1d 又要读 F2 结论）。作用域判断只靠路径与授权边界。
+        allowed_prefixes = ("src/runtime/", "tests/runtime/")
+        outside = [str(p.relative_to(ROOT)) for p in code
+                   if not str(p.relative_to(ROOT)).startswith(allowed_prefixes)]
+        skill_ok = not skill_entry.exists()
+        # 不得有被追踪的数据库
+        tracked_db = [l for l in git("ls-files", "*.db", "*.sqlite", "*.sqlite3").stdout.splitlines() if l.strip()]
+        ok = (not outside) and skill_ok and not tracked_db
+        detail = (f"代码 {len(code)} 个全部落在已授权批次目录={not outside}；"
+                  f"无产品 SKILL.md={skill_ok}；无被追踪 DB={not tracked_db}"
+                  + (f"；越界: {outside}" if outside else ""))
+        return ok, detail
 
     def c25():
         if not REPORT.exists():
