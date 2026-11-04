@@ -1,8 +1,8 @@
 {
   "task": "M1-FUSION-GATE-F1 / F1-B / Renderer",
-  "generated_at": "2026-11-04T12:09:41+08:00",
+  "generated_at": "2026-11-04T12:31:26+08:00",
   "generated_by": "tools/fusion/f1b_verify_renderer.py",
-  "git_head": "1ac00dbbddf020bf52ccb12d906d0455f22d0888",
+  "git_head": "7a4468aa6998c56182086d1e0c624c82d8208b14",
   "summary": {
     "passed": 48,
     "total": 48,
@@ -49,7 +49,7 @@
       "id": "c7",
       "name": "每个原始身份最多映射一次",
       "passed": true,
-      "detail": "每项原始能力最多正式映射一次，共 123 个身份"
+      "detail": "每项原始能力最多正式映射一次，共 131 个身份"
     },
     {
       "id": "c8",
@@ -79,13 +79,13 @@
       "id": "c12",
       "name": "三态守恒合计 143",
       "passed": true,
-      "detail": "mapped 123 + routed 0 + unreviewed 20 = 143；互斥=True"
+      "detail": "mapped 131 + routed 0 + unreviewed 12 = 143；互斥=True"
     },
     {
       "id": "c13",
       "name": "global_state_counts 与实算一致",
       "passed": true,
-      "detail": "global_state_counts 自洽 mapped=123 routed=0 unreviewed=20 canonical=75；不变量=True"
+      "detail": "global_state_counts 自洽 mapped=131 routed=0 unreviewed=12 canonical=75；不变量=True"
     },
     {
       "id": "c14",
@@ -271,7 +271,7 @@
       "id": "c44",
       "name": "stats 重算一致且幂等",
       "passed": true,
-      "detail": "stats 重算一致 mapped=123 routed=0 unrev=20；Renderer 重算 mapped=11=True"
+      "detail": "stats 重算一致 mapped=131 routed=0 unrev=12；Renderer 重算 mapped=11=True"
     },
     {
       "id": "c45",

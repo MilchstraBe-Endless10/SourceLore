@@ -370,10 +370,14 @@ def main() -> int:
             return False, f"决策文档不存在: {DOC.name}"
         txt = DOC.read_text(encoding="utf-8")
         missing = [i for i in OWN_IDS if i not in txt]
+        # 文档是**历史快照**，记的是本批当时的数字（12 mapped / 6 canonical / 4 redirected）。
+        # 后续批次合法承接会让 batches 的当前值增长，故不能用当前值去要求文档。
+        # 判据改为：文档里出现的是本批历史的固定数字，且 canonical_ids 数量 = 本批 6 条。
         b = next(x for x in draft["batches"] if x["module"] == MODULE)
-        nums = [b["raw_mapped_to_this_module"], len(b["canonical_ids"]),
-                b["raw_redirected_to_other_modules"]]
-        nums_ok = all(str(n) in txt for n in nums)
+        hist_nums = [12, 6, 4]   # 本批 DONE 时的 mapped / canonical / redirected
+        nums_ok = all(str(n) in txt for n in hist_nums)
+        # 当前 canonical_ids 必须仍含本批那 6 条
+        ids_ok = all(i in b["canonical_ids"] for i in OWN_IDS)
         g = draft["global_state_counts"]
         def snap(label):
             for line in txt.splitlines():
@@ -386,9 +390,10 @@ def main() -> int:
         sm, sr, su = snap("MAPPED"), snap("ROUTED"), snap("UNREVIEWED")
         total_ok = str(g["raw_total"]) in txt
         snap_ok = None not in (sm, sr, su) and (sm + sr + su == g["raw_total"])
-        return (not missing and nums_ok and total_ok and snap_ok,
-                f"缺失 ID={missing or '无'}；批次数字 {nums} 出现={nums_ok}；"
-                f"累计快照 {sm}/{sr}/{su} 自洽={snap_ok}；raw_total 出现={total_ok}")
+        detail = (f"缺失 ID={missing or '无'}；历史批次数字 {hist_nums} 出现={nums_ok}；"
+                  f"本批 6 条仍在={ids_ok}；"
+                  f"累计快照 {sm}/{sr}/{su} 自洽={snap_ok}；raw_total 出现={total_ok}")
+        return (not missing and nums_ok and ids_ok and total_ok and snap_ok), detail
 
     def c39():
         if not DOC.exists():

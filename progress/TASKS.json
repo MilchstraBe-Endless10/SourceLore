@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-04T12:10:25+08:00",
+  "updated_at": "2026-11-04T12:32:14+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -750,6 +750,36 @@
       "blocked_reason": null,
       "depends_on": [
         "M1-FUSION-GATE-F1C-B"
+      ]
+    },
+    {
+      "id": "M1-FUSION-GATE-F1C-C2",
+      "milestone": "M1-FUSION-GATE",
+      "goal": "F1-C-C2：UPSTREAM-05 全部剩余 UNREVIEWED（10 项）逐条终裁",
+      "inputs": [
+        "docs/fusion/F1C_REMAINDER_BASELINE.json",
+        "tools/fusion/f1c_c1_decisions.py"
+      ],
+      "expected_outputs": [
+        "docs/fusion/F1C_C2_U05_DECISIONS.md",
+        "docs/fusion/F1C_C2_U05_RECONCILIATION.json",
+        "docs/fusion/F1C_C2_VERIFICATION.json",
+        "docs/fusion/F1C_HISTORY_VERIFICATION.json"
+      ],
+      "status": "DONE",
+      "verification_commands": [
+        "python3 tools/fusion/f1c_apply_routed.py",
+        "python3 tools/fusion/f1c_c2_verify.py",
+        "python3 tools/fusion/f1c_history_verify.py"
+      ],
+      "evidence_paths": [
+        "docs/fusion/F1C_C2_U05_DECISIONS.md",
+        "docs/fusion/F1C_C2_VERIFICATION.json"
+      ],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": [
+        "M1-FUSION-GATE-F1C-C1"
       ]
     }
   ]

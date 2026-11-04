@@ -1,8 +1,8 @@
 {
   "task": "M1-FUSION-GATE-F1 / F1-C-A（归属争议裁决与遗留基线核对）",
-  "generated_at": "2026-11-04T12:09:41+08:00",
+  "generated_at": "2026-11-04T12:31:26+08:00",
   "generated_by": "tools/fusion/f1c_a_verify.py",
-  "git_head": "1ac00dbbddf020bf52ccb12d906d0455f22d0888",
+  "git_head": "7a4468aa6998c56182086d1e0c624c82d8208b14",
   "scope_note": "只读分析批次：未重跑 F1-B 构建器、未改动 Crosswalk、未启动 F1-C-B",
   "summary": {
     "passed": 17,
@@ -20,7 +20,7 @@
       "id": "c2",
       "name": "已映射 112 项保持不变",
       "passed": true,
-      "detail": "已映射 123 >= F1-C-A 基线 112；与 Crosswalk 一致=True"
+      "detail": "已映射 131 >= F1-C-A 基线 112；与 Crosswalk 一致=True"
     },
     {
       "id": "c3",
@@ -32,7 +32,7 @@
       "id": "c4",
       "name": "ROUTED 与 UNREVIEWED 不重叠",
       "passed": true,
-      "detail": "ROUTED 0 与 UNREVIEWED 20 不重叠=True（条数为当前实算，非 F1-C-A 时快照）"
+      "detail": "ROUTED 0 与 UNREVIEWED 12 不重叠=True（条数为当前实算，非 F1-C-A 时快照）"
     },
     {
       "id": "c5",

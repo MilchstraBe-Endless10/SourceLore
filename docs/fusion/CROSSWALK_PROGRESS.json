@@ -185,7 +185,7 @@
       "status": "DONE"
     }
   },
-  "next_batch_start": "F1-C-C2",
+  "next_batch_start": "F1-C-C3",
   "invariants": [
     "每个 (upstream_id, original_capability_id) 必须且只能映射一次",
     "每个 canonical 必须恰好一个 owner_module（十模块之一）",
@@ -197,9 +197,9 @@
   "last_updated": "2026-11-04T00:07:31+08:00",
   "totals": {
     "raw_total": 143,
-    "mapped_count": 123,
+    "mapped_count": 131,
     "routed_pending_count": 0,
-    "unreviewed_count": 20,
+    "unreviewed_count": 12,
     "canonical_count": 75,
     "sum_check": 143,
     "definitions": {
@@ -212,7 +212,8 @@
   "f1c_batches": {
     "F1-C-B": "DONE",
     "F1-C": "IN_PROGRESS",
-    "F1-C-C1": "DONE"
+    "F1-C-C1": "DONE",
+    "F1-C-C2": "DONE"
   },
-  "note": "F1-C-B 已清算 11 项 ROUTED；F1-C-C1 已将 3 项 DEFER 全部终裁（2 承接已有 + 1 新建 SL-CAP-0075）。剩余 20 项 UNREVIEWED 未处理。"
+  "note": "F1-C-B 清算 11 项 ROUTED；F1-C-C1 终裁 3 项 DEFER；F1-C-C2 终裁 U05 剩余 10 项未审（8 承接已有 + 2 REJECT 保持 UNREVIEWED）。剩余 10 项 UNREVIEWED 属 U01/U02/U03，未处理。"
 }

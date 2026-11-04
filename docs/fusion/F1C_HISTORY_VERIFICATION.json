@@ -1,0 +1,78 @@
+{
+  "task": "F1-C 全局历史验证（独立入口，供 F1-D 直接调用）",
+  "generated_at": "2026-11-04T12:31:26+08:00",
+  "generated_by": "tools/fusion/f1c_history_verify.py",
+  "git_head": "7a4468aa6998c56182086d1e0c624c82d8208b14",
+  "reconciliations_consumed": [
+    "F1C_B_ROUTED_RECONCILIATION",
+    "F1C_C1_RESOLUTION",
+    "F1C_C2_U05_RECONCILIATION"
+  ],
+  "summary": {
+    "passed": 10,
+    "total": 10,
+    "result": "PASS"
+  },
+  "checks": [
+    {
+      "id": "c1",
+      "name": "原始 143 项唯一且未变",
+      "passed": true,
+      "detail": "原始 143 项唯一；sha256 一致=True"
+    },
+    {
+      "id": "c2",
+      "name": "历史身份映射未被无记录替换",
+      "passed": true,
+      "detail": "历史映射 112 条：丢失 0、无登记变更 0、登记内迁移 0"
+    },
+    {
+      "id": "c3",
+      "name": "既有 canonical ID 未被复用",
+      "passed": true,
+      "detail": "历史 73 条 canonical ID 未被复用/删除，问题 无"
+    },
+    {
+      "id": "c4",
+      "name": "canonical 核心变更均有 amendment",
+      "passed": true,
+      "detail": "各批 amendment 均有留痕（共 13 条），问题 无"
+    },
+    {
+      "id": "c5",
+      "name": "REJECT 原始裁决未被擦除",
+      "passed": true,
+      "detail": "原始 REJECT 21 项全部保留；已绑 canonical 的 REJECT refs 13 条；问题 无"
+    },
+    {
+      "id": "c6",
+      "name": "许可证权限保持独立",
+      "passed": true,
+      "detail": "75 条 canonical 逐源许可完整，问题 无"
+    },
+    {
+      "id": "c7",
+      "name": "新旧能力无重复 owner",
+      "passed": true,
+      "detail": "75 条 owner 合法=True；名称唯一=True；问题 无"
+    },
+    {
+      "id": "c8",
+      "name": "身份唯一性与三态守恒未被削弱",
+      "passed": true,
+      "detail": "mapped 131 + routed 0 + unrev 12 = 143；互斥且守恒=True"
+    },
+    {
+      "id": "c9",
+      "name": "原始索引/审计/引擎/Schema 未变",
+      "passed": true,
+      "detail": "原始索引 / 六份上游审计 / 正式引擎与 Schema 均未改动"
+    },
+    {
+      "id": "c10",
+      "name": "本入口独立于历史批次验证器",
+      "passed": true,
+      "detail": "本入口不依赖任何历史批次验证器（泄漏 0 处）"
+    }
+  ]
+}

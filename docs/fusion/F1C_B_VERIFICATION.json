@@ -1,8 +1,8 @@
 {
   "task": "M1-FUSION-GATE-F1 / F1-C-B（11 项 ROUTED 全量清算）",
-  "generated_at": "2026-11-04T12:09:41+08:00",
+  "generated_at": "2026-11-04T12:31:26+08:00",
   "generated_by": "tools/fusion/f1c_b_verify.py",
-  "git_head": "1ac00dbbddf020bf52ccb12d906d0455f22d0888",
+  "git_head": "7a4468aa6998c56182086d1e0c624c82d8208b14",
   "summary": {
     "passed": 21,
     "total": 21,
@@ -61,7 +61,7 @@
       "id": "c9",
       "name": "每个原始身份最多映射一次",
       "passed": true,
-      "detail": "每个原始身份最多映射一次（共 123），重复 无"
+      "detail": "每个原始身份最多映射一次（共 131），重复 无"
     },
     {
       "id": "c10",
@@ -85,7 +85,7 @@
       "id": "c13",
       "name": "三态互斥且总数 143",
       "passed": true,
-      "detail": "mapped 123 + routed 0 + unreviewed 20 = 143；三态互斥"
+      "detail": "mapped 131 + routed 0 + unreviewed 12 = 143；三态互斥"
     },
     {
       "id": "c14",

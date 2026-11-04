@@ -1,8 +1,8 @@
 {
   "task": "M1-FUSION-GATE-F1 / F1-C-C1（3 项 DEFER 归属与承接裁决）",
-  "generated_at": "2026-11-04T12:09:41+08:00",
+  "generated_at": "2026-11-04T12:31:26+08:00",
   "generated_by": "tools/fusion/f1c_c1_verify.py",
-  "git_head": "1ac00dbbddf020bf52ccb12d906d0455f22d0888",
+  "git_head": "7a4468aa6998c56182086d1e0c624c82d8208b14",
   "summary": {
     "passed": 15,
     "total": 15,
@@ -73,7 +73,7 @@
       "id": "c11",
       "name": "三态互斥且合计 143",
       "passed": true,
-      "detail": "mapped 123 + routed 0 + unreviewed 20 = 143；互斥=True"
+      "detail": "mapped 131 + routed 0 + unreviewed 12 = 143；互斥=True"
     },
     {
       "id": "c12",

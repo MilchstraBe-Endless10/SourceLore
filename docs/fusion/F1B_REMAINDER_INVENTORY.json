@@ -1,7 +1,7 @@
 {
   "artifact": "F1B_REMAINDER_INVENTORY",
   "schema_version": 1,
-  "generated_at": "2026-11-04T12:05:45+08:00",
+  "generated_at": "2026-11-04T12:28:36+08:00",
   "generated_by": "tools/fusion/f1b_build_remainder.py",
   "computed_from": [
     "docs/fusion/RAW_CAPABILITY_INDEX.json",
@@ -10,9 +10,9 @@
   "source_index_sha256": "e62b68ed1658b95ebe73b37d8c991c995b1a18201faabbde81e41214c03a2f11",
   "disclaimer": "F1-B 十个模块批次全部完成，但不等于 143 项原始能力已全部完成归属裁决。本清单从当前 Crosswalk 计算得出，逐项标明仍待 F1-C 处理的条目。不得为了让统计变成 143/0/0 而人为制造 canonical。",
   "state_totals": {
-    "mapped": 123,
+    "mapped": 131,
     "routed": 0,
-    "unreviewed": 20,
+    "unreviewed": 12,
     "total": 143
   },
   "residue": {
@@ -31,14 +31,6 @@
         "UPSTREAM-04::C27 HTML/excalidraw 等具体产物格式"
       ],
       "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）": [
-        "UPSTREAM-05::C07 命令族与编号页集",
-        "UPSTREAM-05::C08 Phase 0 三分路由",
-        "UPSTREAM-05::C12 渐进式 AI 投喂",
-        "UPSTREAM-05::C13 C4 强制顺序",
-        "UPSTREAM-05::C15 发布节奏绑定",
-        "UPSTREAM-05::C16 测试用例维护触发",
-        "UPSTREAM-05::C21 冲突处理",
-        "UPSTREAM-05::C25 测试覆盖作为质量证据",
         "UPSTREAM-05::C27 产出面向人类的整册项目文档",
         "UPSTREAM-05::C28 双语 Sphinx 站与 gettext 流程"
       ],
@@ -1579,35 +1571,33 @@
       "upstream_id": "UPSTREAM-05",
       "original_capability_id": "C07",
       "capability": "命令族与编号页集",
-      "state": "UNREVIEWED",
-      "suggested_owner": null,
+      "state": "MAPPED",
+      "suggested_owner": "Lifecycle",
       "original_disposition": "ADAPT",
       "license": {
         "spdx": "Apache-2.0",
         "copy_permitted": true,
         "attribution_required": true
       },
-      "unprocessed_reason": "尚未初审归属",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true,
-      "semantic_class": "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）"
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-05",
       "original_capability_id": "C08",
       "capability": "Phase 0 三分路由",
-      "state": "UNREVIEWED",
-      "suggested_owner": null,
+      "state": "MAPPED",
+      "suggested_owner": "Research",
       "original_disposition": "ADAPT",
       "license": {
         "spdx": "Apache-2.0",
         "copy_permitted": true,
         "attribution_required": true
       },
-      "unprocessed_reason": "尚未初审归属",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true,
-      "semantic_class": "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）"
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-05",
@@ -1661,35 +1651,33 @@
       "upstream_id": "UPSTREAM-05",
       "original_capability_id": "C12",
       "capability": "渐进式 AI 投喂",
-      "state": "UNREVIEWED",
-      "suggested_owner": null,
+      "state": "MAPPED",
+      "suggested_owner": "Research",
       "original_disposition": "ADAPT",
       "license": {
         "spdx": "Apache-2.0",
         "copy_permitted": true,
         "attribution_required": true
       },
-      "unprocessed_reason": "尚未初审归属",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true,
-      "semantic_class": "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）"
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-05",
       "original_capability_id": "C13",
       "capability": "C4 强制顺序",
-      "state": "UNREVIEWED",
-      "suggested_owner": null,
+      "state": "MAPPED",
+      "suggested_owner": "Research",
       "original_disposition": "ADAPT",
       "license": {
         "spdx": "Apache-2.0",
         "copy_permitted": true,
         "attribution_required": true
       },
-      "unprocessed_reason": "尚未初审归属",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true,
-      "semantic_class": "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）"
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-05",
@@ -1711,35 +1699,33 @@
       "upstream_id": "UPSTREAM-05",
       "original_capability_id": "C15",
       "capability": "发布节奏绑定",
-      "state": "UNREVIEWED",
-      "suggested_owner": null,
+      "state": "MAPPED",
+      "suggested_owner": "Lifecycle",
       "original_disposition": "ADAPT",
       "license": {
         "spdx": "Apache-2.0",
         "copy_permitted": true,
         "attribution_required": true
       },
-      "unprocessed_reason": "尚未初审归属",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true,
-      "semantic_class": "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）"
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-05",
       "original_capability_id": "C16",
       "capability": "测试用例维护触发",
-      "state": "UNREVIEWED",
-      "suggested_owner": null,
+      "state": "MAPPED",
+      "suggested_owner": "Lifecycle",
       "original_disposition": "ADAPT",
       "license": {
         "spdx": "Apache-2.0",
         "copy_permitted": true,
         "attribution_required": true
       },
-      "unprocessed_reason": "尚未初审归属",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true,
-      "semantic_class": "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）"
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-05",
@@ -1809,18 +1795,17 @@
       "upstream_id": "UPSTREAM-05",
       "original_capability_id": "C21",
       "capability": "冲突处理",
-      "state": "UNREVIEWED",
-      "suggested_owner": null,
+      "state": "MAPPED",
+      "suggested_owner": "Evidence-Claims",
       "original_disposition": "REIMPLEMENT",
       "license": {
         "spdx": "Apache-2.0",
         "copy_permitted": true,
         "attribution_required": true
       },
-      "unprocessed_reason": "尚未初审归属",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true,
-      "semantic_class": "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）"
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-05",
@@ -1874,18 +1859,17 @@
       "upstream_id": "UPSTREAM-05",
       "original_capability_id": "C25",
       "capability": "测试覆盖作为质量证据",
-      "state": "UNREVIEWED",
-      "suggested_owner": null,
+      "state": "MAPPED",
+      "suggested_owner": "Evidence-Claims",
       "original_disposition": "REIMPLEMENT",
       "license": {
         "spdx": "Apache-2.0",
         "copy_permitted": true,
         "attribution_required": true
       },
-      "unprocessed_reason": "尚未初审归属",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true,
-      "semantic_class": "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）"
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-05",
