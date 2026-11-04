@@ -2077,3 +2077,88 @@ f2p0_verify                           16/16 PASS    exit 0
 3. **source_snapshot 三字段同时记录并断言不互相填充**（F0 勘误 E-01..E-06 的直接防线）
 4. 跨库协调：抓取→写资产→联系 checkpoint，中间杀进程验证对账
 5. 索引重建后 A/B 不变、查询一致
+
+## M2 / F2-P1C 完成（2026-11-04 20:30 +08:00）
+
+### 结论：Collector 与入库闭环 DONE，真实 GitHub 取数成功
+
+**真实取数**（无凭据、公开只读，非模拟）：
+
+| 项 | 值 |
+|---|---|
+| owner/repo | octocat/Hello-World |
+| repository_id | **1296269** |
+| commit_sha | **7fd1a60b01f91b314f59955a4e4d4e80d8edf11d** |
+| root_tree_sha | **b4eecafa9be2f2006ce1b709d6857b07069b4608** |
+| tree | COMPLETE，1 条目，未截断 |
+| blob | README，Git blob sha1 校验通过 |
+| 入库 | INGESTED → 重采 IDEMPOTENT，assets=1、pointer_version=1 |
+
+### ★ 本轮最有价值的一次实测
+
+配额恢复后专门做了对照（`F2_P1C_TREE_ECHO_EXPERIMENT.json`）：
+
+```
+用 root_tree_sha (b4eecafa…) 请求 trees → 响应 sha = b4eecafa…  ✓
+用 commit_sha    (7fd1a60b…) 请求 trees → 响应 sha = 7fd1a60b…  ✗ 不是 b4eecafa…
+```
+
+**Trees API 以请求 ref 回显 sha，即使 ref 是 commit_sha 也不展开成真实 tree sha。**
+这独立复现了 F0 勘误 E-01..E-06，并证明 `root_tree_sha` 只能取自 **Commit 对象的 `commit.tree.sha`**。
+
+如果当初取 Trees 响应的 sha 当 root_tree_sha，就会把 **commit_sha 记成 tree sha** ——
+F0 在 03/04/05/06 四份审计里踩的正是这个坑。
+
+### 真实限流处理
+
+第一次尝试时配额已耗尽（60/小时，remaining=0）：
+
+```
+error_code = RATE_LIMITED（不是 FORBIDDEN、不是"空仓库"）
+retry_after = 567 秒，http_status = 403
+```
+
+**停止请求、等 reset（约 21 分钟）后重试。没有绕过限流，没有重试循环试探。**
+
+### 本轮踩到的四个问题
+
+1. **入库 payload 与 content_hash 口径不一致** —— 曾把 `collected_at` 塞进入库 payload，
+   而 `content_hash()` 算的是不含它的 content_payload → 落库哈希 ≠ 快照哈希 → 重采被判 CONFLICT。
+   改为 payload = content_payload，观测时间单列 `observation_record()`。
+2. **条目上限 off-by-one** —— 先 append 再判上限，实际能存 limit+1 条。改成先判后加。
+3. **`//evil.example/x` 未被拦住** —— `"//" in path.lstrip("/")` 在 lstrip 后失效。
+   改为拼 URL 前显式拒绝、并二次校验 host 与 scheme。
+4. **两个 `test_crash_recovery.py` 同名** —— `tests/collector` 与 `tests/runtime` 冲突，
+   同进程 discover 报 "module incorrectly imported"。验收脚本改为**子进程分目录跑**。
+
+### 补录 P1B 四缺陷回归
+
+`tests/storage/test_p1b_regressions.py`（7 项），每条**修复前会失败**：
+asset_id 缺 repository_id、result_digest=None 当一致、摘要口径不一致、FTS5 连字符语法、f1d 作用域未登记 storage。
+
+### 明确不宣称
+
+- **采集资产 ≠ 已验证的 Facts/Claims**（payload 无 verified/claim_status）
+- 只做全树枚举，**不做全仓库语义分析**
+- **不执行**获取到的仓库代码
+- Token 不落任何产物（有测试断言）
+
+### 验证
+
+```
+unittest discover -s tests/runtime     45 tests OK   exit 0
+unittest discover -s tests/storage     53 tests OK   exit 0
+unittest discover -s tests/collector   46 tests OK   exit 0
+f2p1c_verify                          22/22 PASS    exit 0
+f2p1a_verify 22/22  f2p1b_verify 16/16  f1d_verify 26/26
+```
+
+冻结哈希 `42841207…` 未变。0 个 .db 进仓库。
+
+### 下一步：F2-P2 Facts（**未启动，需独立批准**）
+
+1. 输入只认已入库的 `repository_snapshot` 资产，**不直接读 GitHub**（Collector 与 Facts 分层）
+2. 一个最小抽取规则（如"仓库存在某路径的文件"），不引入 LLM
+3. `fact_id` 派生自 `(snapshot_logical_identity, 规则版本, 抽取参数)` —— 同快照同规则稳定身份
+4. Facts 仍不写 verified；验证是 Evidence-Claims 的事
+5. PARTIAL 快照的抽取策略必须明确并有测试

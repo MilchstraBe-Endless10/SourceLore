@@ -1,0 +1,61 @@
+{
+  "artifact": "F2_P1C_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-04T20:29:35+08:00",
+  "generated_by": "F2-P1C 实测回填",
+  "principle": "叠加观测，不覆盖 F1-D 冻结快照",
+  "collector_component": {
+    "verdict": "DONE",
+    "evidence": "docs/implementation/F2_P1C_VERIFICATION.json (22/22)",
+    "tests": "144 tests OK (runtime 45 / storage 53 / collector 46)",
+    "real_github": {
+      "result": "REAL_GITHUB_OK",
+      "repository_id": "1296269",
+      "commit_sha": "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",
+      "root_tree_sha": "b4eecafa9be2f2006ce1b709d6857b07069b4608",
+      "tree_entries": 1,
+      "ingest": "INGESTED"
+    }
+  },
+  "real_github_integration": {
+    "verdict": "SATISFIED_AT_F2P1C",
+    "note": "真实取数成功（无凭据、公开只读 API），非模拟",
+    "target": "octocat/Hello-World",
+    "commit_sha": "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",
+    "root_tree_sha": "b4eecafa9be2f2006ce1b709d6857b07069b4608"
+  },
+  "f0_errata_confirmed": {
+    "claim": "Trees API 以 commit-ish 为 ref 时，响应 sha 回显请求标识",
+    "independent_reproduction": true,
+    "evidence": "docs/implementation/F2_P1C_TREE_ECHO_EXPERIMENT.json",
+    "obs": "用 commit_sha(7fd1a60b…) 请求 trees → 响应 sha 仍是 7fd1a60b…，不等于 root_tree_sha(b4eecafa…)"
+  },
+  "still_open": [
+    {
+      "gate": "Y6-P3 审批传递",
+      "status": "UNVERIFIED",
+      "reason": "审批提示禁用，未造假 PASS"
+    },
+    {
+      "gate": "Y6-P6 BotHarness 端到端",
+      "status": "OPEN",
+      "reason": "headless 仍 MISSING_CREDENTIAL"
+    },
+    {
+      "gate": "B-1/B-2/B-3 分发门禁",
+      "status": "OPEN",
+      "reason": "未动，F5/法务处理"
+    },
+    {
+      "gate": "F2-P2 Facts",
+      "status": "NOT_STARTED",
+      "reason": "需独立批准"
+    }
+  ],
+  "explicitly_not_claimed": [
+    "采集资产不是已验证的 Facts/Claims",
+    "未做全仓库语义分析，仅全树枚举",
+    "未执行任何获取到的仓库代码",
+    "实时限流下限额 60/小时；本次耗尽后等待 21 分钟恢复，未绕过"
+  ]
+}

@@ -362,7 +362,8 @@ def main() -> int:
         # 已获批的 F2 批次目录（P1A 建 runtime，P1B 建 storage）。
         # 每个新批次获批后在此登记，越界即为越权。
         allowed_prefixes = ("src/runtime/", "tests/runtime/",
-                            "src/storage/", "tests/storage/")
+                            "src/storage/", "tests/storage/",
+                            "src/collector/", "tests/collector/")
         outside = [str(p.relative_to(ROOT)) for p in code
                    if "__pycache__" not in str(p)
                    and not str(p.relative_to(ROOT)).startswith(allowed_prefixes)]

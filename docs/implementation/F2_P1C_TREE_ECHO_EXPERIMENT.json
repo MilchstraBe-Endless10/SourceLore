@@ -1,0 +1,19 @@
+{
+  "experiment": "commit_vs_root_tree_echo",
+  "at": "2026-11-04T20:28:29+08:00",
+  "commit_sha": "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",
+  "root_tree_sha": "b4eecafa9be2f2006ce1b709d6857b07069b4608",
+  "tree_by_root_tree_sha": {
+    "ok": true,
+    "response_sha": "b4eecafa9be2f2006ce1b709d6857b07069b4608",
+    "entries": 1
+  },
+  "tree_by_commit_sha": {
+    "ok": true,
+    "response_sha": "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",
+    "entries": 1,
+    "error": null
+  },
+  "echo_confirmed": true,
+  "conclusion": "Trees API 以请求 ref 回显 sha；用 commit_sha 请求时响应 sha 仍为 commit_sha，不等于 root_tree_sha。故 root_tree_sha 必须来自 Commit 对象。"
+}

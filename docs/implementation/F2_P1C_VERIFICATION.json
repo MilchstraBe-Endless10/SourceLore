@@ -1,0 +1,153 @@
+{
+  "task": "M2 / F2-P1C（固定版本 GitHub Collector 与权威资产入库）",
+  "generated_by": "tools/f2p1c_verify.py",
+  "independent": true,
+  "git_head": "670267e591566f47d1ebef079e84328f8371247d",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "real_github": {
+    "result": "REAL_GITHUB_OK",
+    "repository_id": "1296269",
+    "commit_sha": "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",
+    "root_tree_sha": "b4eecafa9be2f2006ce1b709d6857b07069b4608",
+    "attempted_at": "2026-11-04T20:27:29+08:00"
+  },
+  "summary": {
+    "passed": 22,
+    "total": 22,
+    "result": "PASS"
+  },
+  "checks": [
+    {
+      "id": "c1",
+      "name": "Collector 确定性测试全过",
+      "passed": true,
+      "detail": "Collector 确定性套件 43 项，失败 0、错误 0"
+    },
+    {
+      "id": "c2",
+      "name": "T-1/T-2 身份与 ref 解析",
+      "passed": true,
+      "detail": "已含于 c1 套件"
+    },
+    {
+      "id": "c3",
+      "name": "T-3 Commit 与 Root Tree 分离",
+      "passed": true,
+      "detail": "源码明确 root_tree_sha 来源约束=True"
+    },
+    {
+      "id": "c4",
+      "name": "T-4 Tree Query Ref 记录准确",
+      "passed": true,
+      "detail": "tree_query_ref 记录实际请求 ref=bbbbbbbbbbbb…"
+    },
+    {
+      "id": "c5",
+      "name": "T-5/T-6/T-7 Tree 枚举与截断",
+      "passed": true,
+      "detail": "Tree 场景（扁平/嵌套/截断）覆盖=True，失败 0"
+    },
+    {
+      "id": "c6",
+      "name": "T-8 Blob 校验用 Git 对象规则",
+      "passed": true,
+      "detail": "Git blob 编码 ≠ 裸内容 sha1（plain=22596363… git=3b18e512…）"
+    },
+    {
+      "id": "c7",
+      "name": "T-9 异常对象类型处理",
+      "passed": true,
+      "detail": "异常对象类型/编码覆盖=True"
+    },
+    {
+      "id": "c8",
+      "name": "T-10/T-11 跨仓库身份与不碰撞",
+      "passed": true,
+      "detail": "仓库身份稳定=True、跨仓库不碰撞=True"
+    },
+    {
+      "id": "c9",
+      "name": "T-12 重复采集幂等",
+      "passed": true,
+      "detail": "重复采集幂等断言存在=True；真实侧 first=INGESTED second=IDEMPOTENT_ALREADY_PRESENT"
+    },
+    {
+      "id": "c10",
+      "name": "T-13 branch 变化不影响固定快照",
+      "passed": true,
+      "detail": "ref 变化不影响已固定快照身份=True"
+    },
+    {
+      "id": "c11",
+      "name": "T-14 错误分类 (401/403/404/429/5xx)",
+      "passed": true,
+      "detail": "六类错误码均有测试=True（401/403/404/429/5xx 未折成空仓库）"
+    },
+    {
+      "id": "c12",
+      "name": "T-15 限流与超时有限重试",
+      "passed": true,
+      "detail": "有限重试与退避上限有测试=True"
+    },
+    {
+      "id": "c13",
+      "name": "T-16 恶意路径不逃逸",
+      "passed": true,
+      "detail": "路径逃逸防护有测试=True"
+    },
+    {
+      "id": "c14",
+      "name": "T-17 跨库漏窗 SIGKILL 恢复",
+      "passed": true,
+      "detail": "跨库漏窗 SIGKILL 恢复 3 项，失败 0"
+    },
+    {
+      "id": "c15",
+      "name": "T-18 重复 operation_id 不推进版本",
+      "passed": true,
+      "detail": "重复 operation_id 不推进版本断言=True"
+    },
+    {
+      "id": "c16",
+      "name": "T-19 索引重建后 A/B 不变",
+      "passed": true,
+      "detail": "索引重建后 A/B 不变断言=True"
+    },
+    {
+      "id": "c17",
+      "name": "T-20 真实 GitHub 取数及入库",
+      "passed": true,
+      "detail": "真实取数成功：1296269 @7fd1a60b01f9… tree=1 项"
+    },
+    {
+      "id": "c18",
+      "name": "T-21 P1A/P1B 全部回归",
+      "passed": true,
+      "detail": "P1B 53 项 exit=0、P1A 45 项 exit=0、P1C 46 项 exit=0"
+    },
+    {
+      "id": "c19",
+      "name": "T-22 F1-D 冻结哈希与验证",
+      "passed": true,
+      "detail": "冻结哈希=42841207b8088c89… 未变=True、f1d exit=0"
+    },
+    {
+      "id": "c20",
+      "name": "资源上限可配置且有测试",
+      "passed": true,
+      "detail": "上限可配置且有测试=True（requests/tree/blob/bytes/retries）"
+    },
+    {
+      "id": "c21",
+      "name": "不执行第三方仓库代码",
+      "passed": true,
+      "detail": "明确不执行仓库代码=True"
+    },
+    {
+      "id": "c22",
+      "name": "凭据不落任何产物",
+      "passed": true,
+      "detail": "无凭据样式内容，问题 无"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "artifact": "F2_P1C_REAL_GITHUB",
+  "attempted_at": "2026-11-04T20:27:29+08:00",
+  "target": "octocat/Hello-World",
+  "requested_ref": "master",
+  "credential_used": false,
+  "stages": [
+    {
+      "stage": "repo_identity",
+      "ok": true,
+      "http_status": 200,
+      "request_count": 1,
+      "error": null
+    },
+    {
+      "stage": "resolve_ref",
+      "ok": true,
+      "http_status": 200,
+      "request_count": 2,
+      "error": null
+    },
+    {
+      "stage": "blob_fetch",
+      "ok": true,
+      "blob_sha": "980a0d5f19a64b4b30a87d4206aade58726b60e3"
+    }
+  ],
+  "repository_id": "1296269",
+  "resolved_repository": "octocat/Hello-World",
+  "commit_sha": "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",
+  "root_tree_sha": "b4eecafa9be2f2006ce1b709d6857b07069b4608",
+  "root_tree_sha_source": "commit.commit.tree.sha（非 Trees API 响应）",
+  "tree": {
+    "completeness_status": "COMPLETE",
+    "entry_count": 1,
+    "truncated_seen": false,
+    "deep_walk_used": false,
+    "tree_query_refs": [
+      "b4eecafa9be2f2006ce1b709d6857b07069b4608"
+    ],
+    "sample_paths": [
+      "README"
+    ]
+  },
+  "tree_query_ref": "b4eecafa9be2f2006ce1b709d6857b07069b4608",
+  "blob": {
+    "attempted": true,
+    "path": "README",
+    "blob_sha": "980a0d5f19a64b4b30a87d4206aade58726b60e3",
+    "ok": true,
+    "verified": true,
+    "size": 13,
+    "is_binary": false,
+    "sha256": "03ba204e50d126e4674c005e04d82e84c21366780af1f43bd54a37816b6ab340",
+    "error_code": null
+  },
+  "snapshot": {
+    "logical_identity": "SL-SNAP-f6a274fe1dbf2cedf71c4cc2492b207b806ec5b8",
+    "content_hash": "c15ea91f8d2e561987b8ba1943d52729c28e9a88ef31e9c8c5f18825a739e61f",
+    "tree_entry_count": 1,
+    "blob_refs_count": 1,
+    "commit_sha": "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",
+    "root_tree_sha": "b4eecafa9be2f2006ce1b709d6857b07069b4608",
+    "tree_query_ref": "b4eecafa9be2f2006ce1b709d6857b07069b4608"
+  },
+  "ingest": {
+    "first": "INGESTED",
+    "second": "IDEMPOTENT_ALREADY_PRESENT",
+    "operation_id": "OP-COL-e98f77d853740debe2e2054587fce3e7",
+    "assets_count": 1,
+    "operation_log_count": 1,
+    "pointer_version": 1,
+    "asset_id": "SL-A-98a06b7a7308346547db9ef2239340e1"
+  },
+  "request_count_total": 4,
+  "total_bytes": 9962,
+  "result": "REAL_GITHUB_OK"
+}

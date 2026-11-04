@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-04T19:09:20+08:00",
+  "updated_at": "2026-11-04T20:30:46+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -1040,6 +1040,39 @@
       "blocked_reason": null,
       "depends_on": [
         "M2-F2-P1A"
+      ]
+    },
+    {
+      "id": "M2-F2-P1C",
+      "milestone": "M2",
+      "goal": "F2-P1C：固定版本 GitHub Collector 与权威资产入库闭环",
+      "inputs": [
+        "docs/implementation/F2_P1B_STORAGE_ARCHITECTURE.md"
+      ],
+      "expected_outputs": [
+        "src/collector/",
+        "tests/collector/",
+        "tools/f2p1c_verify.py",
+        "tools/f2p1c_real_github.py",
+        "docs/implementation/F2_P1C_COLLECTOR_ARCHITECTURE.md",
+        "docs/implementation/F2_P1C_EXECUTION_REPORT.md",
+        "docs/implementation/F2_P1C_VERIFICATION.json",
+        "docs/implementation/F2_P1C_REAL_GITHUB.json"
+      ],
+      "status": "DONE",
+      "verification_commands": [
+        "python3 -m unittest discover -s tests/collector",
+        "python3 tools/f2p1c_verify.py",
+        "python3 tools/f2p1c_real_github.py"
+      ],
+      "evidence_paths": [
+        "docs/implementation/F2_P1C_VERIFICATION.json",
+        "docs/implementation/F2_P1C_REAL_GITHUB.json"
+      ],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": [
+        "M2-F2-P1B"
       ]
     }
   ]

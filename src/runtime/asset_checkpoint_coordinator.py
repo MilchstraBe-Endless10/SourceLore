@@ -29,6 +29,20 @@ for _p in (str(_HERE), str(_HERE.parent / "storage")):
 import execution_result as ER
 from knowledge_store import KnowledgeStore
 
+# checkpoint 库的安全打开（结构错误 → 结构化返回，不抛出）
+def open_store(db_path, *, create: bool = False):
+    """安全打开 checkpoint 库。损坏返回 (None, err)，供对账判定 NEEDS_HUMAN。"""
+    from checkpoint_store import CheckpointStore
+    try:
+        return CheckpointStore(db_path, create=create), {}
+    except (RuntimeError, sqlite3.DatabaseError) as e:
+        return None, {"ok": False, "error": "CHECKPOINT_CORRUPT",
+                      "detail": f"库不可用: {str(e)[:200]}"}
+    except FileNotFoundError as e:
+        return None, {"ok": False, "error": "NOT_FOUND", "detail": str(e)}
+    except PermissionError as e:
+        return None, {"ok": False, "error": "PERMISSION_DENIED", "detail": str(e)}
+
 # 对账判定
 RECONCILED = "RECONCILED"           # 资产已提交，checkpoint 需补齐
 RETRY_SAFE = "RETRY_SAFE"           # 资产确认未提交，可幂等重试
