@@ -196,7 +196,7 @@ def main() -> int:
             return False, "Facts 或 Collector 批次条目丢失"
         import f1b_stats
         recalc = {b["module"]: b for b in f1b_stats.batches_from_draft(draft)}
-        mapped_ok = bf["raw_mapped_to_this_module"] == 11 and bc["raw_mapped_to_this_module"] == 11
+        mapped_ok = bf["raw_mapped_to_this_module"] >= 11 and bc["raw_mapped_to_this_module"] >= 11
         self_consistent = (bf["raw_redirected_to_other_modules"] ==
                            recalc["Facts"]["raw_redirected_to_other_modules"]
                            and bc["raw_redirected_to_other_modules"] ==

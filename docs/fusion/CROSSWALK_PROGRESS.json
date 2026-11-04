@@ -2,7 +2,7 @@
   "artifact": "CROSSWALK_PROGRESS",
   "schema_version": 1,
   "task": "M1-FUSION-GATE-F1",
-  "phase": "F1-A_DONE / F1-B_ALL_BATCHES_DONE",
+  "phase": "F1-A_DONE / F1-B_ALL_BATCHES_DONE / F1-C_IN_PROGRESS",
   "updated_at": "2026-11-02T23:15:01+08:00",
   "batches": [
     {
@@ -185,10 +185,7 @@
       "status": "DONE"
     }
   },
-  "next_batch_start": {
-    "module_hint": "F1-C",
-    "note": "F1-B 十个模块批次全部完成。剩余待裁决项进入 F1-C：十项冲突裁决、27 项 UNREVIEWED 归属、11 项 ROUTED 去向、以及各批次登记的跨模块 owner 争议（U06-C25、SL-CAP-0009 等）。"
-  },
+  "next_batch_start": "F1-C-C",
   "invariants": [
     "每个 (upstream_id, original_capability_id) 必须且只能映射一次",
     "每个 canonical 必须恰好一个 owner_module（十模块之一）",
@@ -200,10 +197,10 @@
   "last_updated": "2026-11-04T00:07:31+08:00",
   "totals": {
     "raw_total": 143,
-    "mapped_count": 112,
-    "routed_pending_count": 11,
+    "mapped_count": 120,
+    "routed_pending_count": 3,
     "unreviewed_count": 20,
-    "canonical_count": 73,
+    "canonical_count": 74,
     "sum_check": 143,
     "definitions": {
       "mapped_count": "已归属某个 canonical_id 的原始身份数",
@@ -211,5 +208,10 @@
       "unreviewed_count": "既未映射也未分流的原始身份数",
       "canonical_count": "canonical 能力条目总数（非原始数量）"
     }
-  }
+  },
+  "f1c_batches": {
+    "F1-C-B": "DONE",
+    "F1-C": "IN_PROGRESS"
+  },
+  "note": "F1-C-B 已清算 11 项 ROUTED：7 承接到已有 canonical、1 新建 SL-CAP-0074、3 DEFER 待 F1-C-C 定 owner。剩余 20 项 UNREVIEWED 与 3 项 DEFER 未处理。"
 }

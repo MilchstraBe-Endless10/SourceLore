@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-04T01:18:57+08:00",
+  "updated_at": "2026-11-04T10:10:35+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -687,6 +687,38 @@
       "blocked_reason": null,
       "depends_on": [
         "M1-FUSION-GATE-F1B-DSH-ADAPTER"
+      ]
+    },
+    {
+      "id": "M1-FUSION-GATE-F1C-B",
+      "milestone": "M1-FUSION-GATE",
+      "goal": "F1-C 第二批：11 项 ROUTED 全量清算 + 前置两处勘误",
+      "inputs": [
+        "docs/fusion/F1C_B_ROUTED_AUDIT.json",
+        "docs/fusion/F1B_FROZEN_BASELINE.json",
+        "tools/fusion/f1c_routed_decisions.py"
+      ],
+      "expected_outputs": [
+        "docs/fusion/CAPABILITY_CROSSWALK.draft.json（增量：+SL-CAP-0074）",
+        "docs/fusion/F1C_B_ROUTED_DECISIONS.md",
+        "docs/fusion/F1C_B_ROUTED_RECONCILIATION.json",
+        "docs/fusion/F1C_B_VERIFICATION.json"
+      ],
+      "status": "DONE",
+      "verification_commands": [
+        "python3 tools/fusion/f1c_b_routed_audit.py",
+        "python3 tools/fusion/f1c_apply_routed.py",
+        "python3 tools/fusion/f1c_b_verify.py"
+      ],
+      "evidence_paths": [
+        "docs/fusion/F1C_B_ROUTED_DECISIONS.md",
+        "docs/fusion/F1C_B_ROUTED_RECONCILIATION.json",
+        "docs/fusion/F1C_B_VERIFICATION.json"
+      ],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": [
+        "M1-FUSION-GATE-F1C-A"
       ]
     }
   ]

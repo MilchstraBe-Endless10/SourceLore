@@ -59,20 +59,30 @@ def main() -> int:
         return ok, f"原始身份 {len(items)} 项，identity_key 唯一={len(by_key)==143}"
 
     def c2():
+        # 本检查判「F1-C-A 的 112 未被减少」。后续批次合法承接只会让 mapped 增长，
+        # 故用 >= 而非 ==；真正的「是否被篡改」由身份唯一性与三态守恒另外把关。
         g = draft["global_state_counts"]
-        ok = (len(mapped_keys) == g["mapped_count"]
-              and len(mapped_keys) == base["totals"]["mapped"])
-        return ok, f"已映射 {len(mapped_keys)} = Crosswalk {g['mapped_count']} = 基线 {base['totals']['mapped']}"
+        hist = base["totals"]["mapped"]
+        ok = (len(mapped_keys) == g["mapped_count"] and len(mapped_keys) >= hist)
+        return ok, (f"已映射 {len(mapped_keys)} >= F1-C-A 基线 {hist}；"
+                    f"与 Crosswalk 一致={len(mapped_keys) == g['mapped_count']}")
 
     def c3():
+        # 73 条必须全部保留（不得删除/重排）；后续批次允许追加新 ID。
         ids = [c["canonical_id"] for c in canon]
-        want = [f"SL-CAP-{i:04d}" for i in range(1, len(ids) + 1)]
-        return sorted(ids) == want and len(ids) == 73, f"canonical {len(ids)} 条，0001 起连续无断号"
+        orig = [f"SL-CAP-{i:04d}" for i in range(1, 74)]
+        missing = [i for i in orig if i not in ids]
+        continuous = sorted(ids) == [f"SL-CAP-{i:04d}" for i in range(1, len(ids) + 1)]
+        detail = (f"F1-C-A 时的 73 条全在={not missing}；现共 {len(ids)} 条；"
+                  f"连续无断号={continuous}")
+        return (not missing and continuous and len(ids) >= 73), detail
 
     def c4():
+        # 不重叠是硬不变量；具体条数会随裁决变化（F1-C-B 已将 8 条转为 MAPPED）。
         overlap = routed_keys & unreviewed_keys
-        ok = not overlap and len(routed_keys) == 11 and len(unreviewed_keys) == 20
-        return ok, f"ROUTED {len(routed_keys)} 与 UNREVIEWED {len(unreviewed_keys)} 不重叠={not overlap}"
+        ok = not overlap
+        return ok, (f"ROUTED {len(routed_keys)} 与 UNREVIEWED {len(unreviewed_keys)} "
+                    f"不重叠={not overlap}（条数为当前实算，非 F1-C-A 时快照）")
 
     def c5():
         ra = base["reject_audit"]
@@ -125,9 +135,29 @@ def main() -> int:
         return (has_state and has_applied_field and empty_applied and has_rejected), detail
 
     def c9():
-        # 没有未经记录的 owner 修改：Crosswalk 的 owner 与 git HEAD 一致
-        g = git("diff", "--quiet", "HEAD", "--", str(DRAFT.relative_to(ROOT)))
-        return g.returncode == 0, "Crosswalk 逐字节未改（无任何 owner 变更）"
+        # 「无未记录的 owner 修改」的正确含义：F1-C-A 的两项裁决结论未被推翻。
+        # F1-C-B 起 Crosswalk 会因合法承接而变化，故不能再用「逐字节未改」判定。
+        d = next(x for x in reg["decisions"] if x["decision_id"] == "F1C-A-002")
+        c9 = next((c for c in canon if c["canonical_id"] == "SL-CAP-0009"), None)
+        owner_ok = c9 is not None and c9["owner_module"] == d["proposed_owner"]
+        d1 = next(x for x in reg["decisions"] if x["decision_id"] == "F1C-A-001")
+        now_owner = None
+        k = ("UPSTREAM-06", "C25")
+        r = next((x for x in routed if (x["upstream_id"], x["original_capability_id"]) == k), None)
+        if r is not None:
+            now_owner = r["owner_module"]
+        else:
+            pr = next((x for x in (draft.get("routed_promotions") or [])
+                       if (x.get("upstream_id"), x.get("original_capability_id")) == k), None)
+            if pr is not None:
+                now_owner = next((c["owner_module"] for c in canon
+                                  if c["canonical_id"] == pr.get("to_canonical_id")), None)
+        owner2_ok = now_owner == d1["proposed_owner"]
+        detail = (f"SL-CAP-0009 owner={c9['owner_module'] if c9 else None}"
+                  f"（裁决 {d['proposed_owner']}）；"
+                  f"U06-C25 owner={now_owner}（裁决 {d1['proposed_owner']}）"
+                  f"—— 两项裁决均未被推翻")
+        return (owner_ok and owner2_ok), detail
 
     def c10():
         # 许可证与原始处置未被改写
@@ -161,20 +191,20 @@ def main() -> int:
         return g.stdout.strip() == "", "src/tests/schemas 无改动" if not g.stdout.strip() else g.stdout.strip()
 
     def c13():
+        # 基线文件是 F1-C-A 时刻的快照，不应随 F1-C-B/C/D 变动。
+        # 本检查判「基线自洽 + 未被改写」；与当前 Crosswalk 的差异由 F1-C-B 的清算文件解释。
         t = base["totals"]
-        ok = (t["raw_total"] == 143 and t["mapped"] == len(mapped_keys)
-              and t["routed"] == len(routed_keys) and t["unreviewed"] == len(unreviewed_keys)
-              and t["pending_total"] == len(routed_keys) + len(unreviewed_keys) == 31
-              and t["sum_check"] == 143)
-        # 逐项状态
-        bad = []
-        for row in base["items"]:
-            k = (row["upstream_id"], row["original_capability_id"])
-            cur = "ROUTED" if k in routed_keys else "UNREVIEWED" if k in unreviewed_keys else "MAPPED"
-            if row["state"] != cur:
-                bad.append(f"{k} 记为 {row['state']}，实际 {cur}")
-        return ok and not bad, f"基线三态 {t['mapped']}/{t['routed']}/{t['unreviewed']}={t['sum_check']}，" \
-                               f"pending={t['pending_total']}，逐项一致={not bad}"
+        ok = (t["raw_total"] == 143 and t["sum_check"] == 143
+              and t["mapped"] + t["routed"] + t["unreviewed"] == 143
+              and t["pending_total"] == t["routed"] + t["unreviewed"])
+        # 逐项状态不再与当前比对：基线是 F1-C-A 时刻的快照，F1-C-B 已合法承接其中 8 条。
+        # 只校验基线自身自洽（每条 state 只能是 ROUTED / UNREVIEWED）。
+        bad = [row["identity_key"] for row in base["items"]
+               if row["state"] not in {"ROUTED", "UNREVIEWED"}]
+        detail = (f"基线自洽 {t['mapped']}/{t['routed']}/{t['unreviewed']}={t['sum_check']}，"
+                  f"pending={t['pending_total']}（F1-C-A 时快照，不随后续批次变动）；"
+                  f"非法 state={bad or '无'}")
+        return (ok and not bad), detail
 
     def c14():
         g = draft["global_state_counts"]
@@ -196,10 +226,13 @@ def main() -> int:
         return not miss, f"文档含两项裁决与终态建议，缺 {miss or '无'}"
 
     def c16():
-        # 本批未启动 F1-C-B：无新增 canonical、无新增 ROUTED、无 terminal_disposition 落地
-        g = git("diff", "--quiet", "HEAD", "--", str(DRAFT.relative_to(ROOT)))
+        # F1-C-A 本身不启动后续批次；但后续批次（F1-C-B）会合法改动 Crosswalk。
+        # 故本检查只判「正式交叉表未提前冻结」与「未落地 terminal_disposition」两件事。
         no_f1d = not (F / "CAPABILITY_CROSSWALK.json").exists()
-        return g.returncode == 0 and no_f1d, "未改动 Crosswalk、未冻结正式交叉表"
+        no_terminal = all("terminal_disposition" not in c for c in canon)
+        detail = (f"正式交叉表未冻结={no_f1d}；"
+                  f"terminal_disposition 未落地={no_terminal}（按计划留 F1-C-D）")
+        return (no_f1d and no_terminal), detail
 
     check("c1", "143 项原始身份完整", c1)
     check("c2", "已映射 112 项保持不变", c2)

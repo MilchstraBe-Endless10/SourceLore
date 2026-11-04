@@ -1,0 +1,273 @@
+{
+  "artifact": "F1C_B_ROUTED_AUDIT",
+  "schema_version": 1,
+  "generated_at": "2026-11-04T10:03:28+08:00",
+  "generated_by": "tools/fusion/f1c_b_routed_audit.py（只读，不写 Crosswalk）",
+  "totals": {
+    "routed_unique": 11,
+    "global_state_routed": 11,
+    "batches_redirected_sum": 11,
+    "consistent": true
+  },
+  "distribution_by_current_owner": {
+    "Evidence-Claims": 7,
+    "Storage": 1,
+    "Lifecycle": 2,
+    "Renderer": 1
+  },
+  "distribution_reconciliation": {
+    "claimed_in_f1c_a_report": {
+      "Evidence-Claims": 5,
+      "Lifecycle": 4,
+      "Renderer": 4,
+      "Storage": 1
+    },
+    "claimed_sum": 14,
+    "actual": {
+      "Evidence-Claims": 7,
+      "Storage": 1,
+      "Lifecycle": 2,
+      "Renderer": 1
+    },
+    "actual_sum": 11,
+    "difference": 3,
+    "explanation": "F1-C-A 的报告数字有误，数据文件无误。真实集合 11 条，分布为 EC 7 / Lifecycle 2 / Renderer 1 / Storage 1。报告中的 14 是记忆串扰——F1-B 早期某时点的历史 ROUTED 峰值曾是 14。14 与 11 的差不是数据异常，是**汇报抄写错误**。可复算：本审计逐条枚举 cross_module_redirections，计数即为 11。",
+    "data_files_correct": true,
+    "conclusion": "真实集合为 11，未触发『停止应用阶段』的异常条件。"
+  },
+  "all_declared_targets_match": true,
+  "no_routed_is_formally_mapped": true,
+  "rows": [
+    {
+      "identity_key": "UPSTREAM-04::C24",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C24",
+      "upstream_capability": "无法复现的外部观察标记",
+      "current_target_owner": "Evidence-Claims",
+      "target_owner_batch_done": true,
+      "declared_by_batch": "Research",
+      "declared_target_at_source": "Evidence-Claims",
+      "declared_target_matches_current": true,
+      "original_disposition": "REIMPLEMENT",
+      "original_where": "全文缺失",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true
+      },
+      "referenced_by_canonical": null,
+      "is_formally_mapped": false,
+      "record_location": "docs/fusion/CAPABILITY_CROSSWALK.draft.json → cross_module_redirections",
+      "redirection_status": "DEFERRED_TO_MODULE"
+    },
+    {
+      "identity_key": "UPSTREAM-05::C24",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C24",
+      "upstream_capability": "不可复现外部观察标记",
+      "current_target_owner": "Evidence-Claims",
+      "target_owner_batch_done": true,
+      "declared_by_batch": "Research",
+      "declared_target_at_source": "Evidence-Claims",
+      "declared_target_matches_current": true,
+      "original_disposition": "REIMPLEMENT",
+      "original_where": "无字段定义",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true
+      },
+      "referenced_by_canonical": null,
+      "is_formally_mapped": false,
+      "record_location": "docs/fusion/CAPABILITY_CROSSWALK.draft.json → cross_module_redirections",
+      "redirection_status": "DEFERRED_TO_MODULE"
+    },
+    {
+      "identity_key": "UPSTREAM-05::C04",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C04",
+      "upstream_capability": "review_status 人机权限分离",
+      "current_target_owner": "Evidence-Claims",
+      "target_owner_batch_done": true,
+      "declared_by_batch": "Lifecycle",
+      "declared_target_at_source": "Evidence-Claims",
+      "declared_target_matches_current": true,
+      "original_disposition": "REUSE",
+      "original_where": "SKILL.md L262–L284；L372–L385（Phase C step 6）",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true
+      },
+      "referenced_by_canonical": null,
+      "is_formally_mapped": false,
+      "record_location": "docs/fusion/CAPABILITY_CROSSWALK.draft.json → cross_module_redirections",
+      "redirection_status": "DEFERRED_TO_MODULE"
+    },
+    {
+      "identity_key": "UPSTREAM-06::C10",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C10",
+      "upstream_capability": "动态否证只降级到人工复核",
+      "current_target_owner": "Evidence-Claims",
+      "target_owner_batch_done": true,
+      "declared_by_batch": "Security",
+      "declared_target_at_source": "Evidence-Claims",
+      "declared_target_matches_current": true,
+      "original_disposition": "REUSE",
+      "original_where": "references/phase5-validate-and-poc.md L795–L833",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false
+      },
+      "referenced_by_canonical": null,
+      "is_formally_mapped": false,
+      "record_location": "docs/fusion/CAPABILITY_CROSSWALK.draft.json → cross_module_redirections",
+      "redirection_status": "DEFERRED_TO_MODULE"
+    },
+    {
+      "identity_key": "UPSTREAM-06::C20",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C20",
+      "upstream_capability": "延迟裁决与跨仓库解析",
+      "current_target_owner": "Evidence-Claims",
+      "target_owner_batch_done": true,
+      "declared_by_batch": "Security",
+      "declared_target_at_source": "Evidence-Claims",
+      "declared_target_matches_current": true,
+      "original_disposition": "ADAPT",
+      "original_where": "references/phase7-synthesis.md L162–L219",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false
+      },
+      "referenced_by_canonical": null,
+      "is_formally_mapped": false,
+      "record_location": "docs/fusion/CAPABILITY_CROSSWALK.draft.json → cross_module_redirections",
+      "redirection_status": "DEFERRED_TO_MODULE"
+    },
+    {
+      "identity_key": "UPSTREAM-06::C25",
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C25",
+      "upstream_capability": "三态分离的产物契约（run-metadata / 各阶段 JSON / 报告）",
+      "current_target_owner": "Storage",
+      "target_owner_batch_done": true,
+      "declared_by_batch": "Security",
+      "declared_target_at_source": "Storage",
+      "declared_target_matches_current": true,
+      "original_disposition": "REIMPLEMENT",
+      "original_where": "SKILL.md L1122–L1206；phase6 L7–L58",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false
+      },
+      "referenced_by_canonical": null,
+      "is_formally_mapped": false,
+      "record_location": "docs/fusion/CAPABILITY_CROSSWALK.draft.json → cross_module_redirections",
+      "redirection_status": "DEFERRED_TO_MODULE"
+    },
+    {
+      "identity_key": "UPSTREAM-04::C16",
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C16",
+      "upstream_capability": "完成检查（三处 Completion Check）",
+      "current_target_owner": "Lifecycle",
+      "target_owner_batch_done": true,
+      "declared_by_batch": "Renderer",
+      "declared_target_at_source": "Lifecycle",
+      "declared_target_matches_current": true,
+      "original_disposition": "ADAPT",
+      "original_where": "external-probe.md L35；repository-impact.md L30–L32；SKILL.md L127",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true
+      },
+      "referenced_by_canonical": null,
+      "is_formally_mapped": false,
+      "record_location": "docs/fusion/CAPABILITY_CROSSWALK.draft.json → cross_module_redirections",
+      "redirection_status": "DEFERRED_TO_MODULE"
+    },
+    {
+      "identity_key": "UPSTREAM-05::C10",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C10",
+      "upstream_capability": "契约式 Postconditions",
+      "current_target_owner": "Lifecycle",
+      "target_owner_batch_done": true,
+      "declared_by_batch": "Renderer",
+      "declared_target_at_source": "Lifecycle",
+      "declared_target_matches_current": true,
+      "original_disposition": "ADAPT",
+      "original_where": "SKILL.md L99–L118",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true
+      },
+      "referenced_by_canonical": null,
+      "is_formally_mapped": false,
+      "record_location": "docs/fusion/CAPABILITY_CROSSWALK.draft.json → cross_module_redirections",
+      "redirection_status": "DEFERRED_TO_MODULE"
+    },
+    {
+      "identity_key": "UPSTREAM-05::C14",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C14",
+      "upstream_capability": "版本页脚七字段",
+      "current_target_owner": "Renderer",
+      "target_owner_batch_done": true,
+      "declared_by_batch": "Storage",
+      "declared_target_at_source": "Renderer",
+      "declared_target_matches_current": true,
+      "original_disposition": "ADAPT",
+      "original_where": "SKILL.md L262–L284",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true
+      },
+      "referenced_by_canonical": null,
+      "is_formally_mapped": false,
+      "record_location": "docs/fusion/CAPABILITY_CROSSWALK.draft.json → cross_module_redirections",
+      "redirection_status": "DEFERRED_TO_MODULE"
+    },
+    {
+      "identity_key": "UPSTREAM-05::C19",
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C19",
+      "upstream_capability": "人类主导的语义补充",
+      "current_target_owner": "Evidence-Claims",
+      "target_owner_batch_done": true,
+      "declared_by_batch": "Storage",
+      "declared_target_at_source": "Evidence-Claims",
+      "declared_target_matches_current": true,
+      "original_disposition": "REIMPLEMENT",
+      "original_where": "SKILL.md L138–L140；templates/adr/template.md L1–L5",
+      "license": {
+        "spdx": "Apache-2.0",
+        "copy_permitted": true
+      },
+      "referenced_by_canonical": null,
+      "is_formally_mapped": false,
+      "record_location": "docs/fusion/CAPABILITY_CROSSWALK.draft.json → cross_module_redirections",
+      "redirection_status": "DEFERRED_TO_MODULE"
+    },
+    {
+      "identity_key": "UPSTREAM-01::C12",
+      "upstream_id": "UPSTREAM-01",
+      "original_capability_id": "C12",
+      "upstream_capability": "eval baseline (gold + deterministic metrics + judge)",
+      "current_target_owner": "Evidence-Claims",
+      "target_owner_batch_done": true,
+      "declared_by_batch": "DSH-Adapter",
+      "declared_target_at_source": "Evidence-Claims",
+      "declared_target_matches_current": true,
+      "original_disposition": "ADAPT",
+      "original_where": "evals/",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true
+      },
+      "referenced_by_canonical": null,
+      "is_formally_mapped": false,
+      "record_location": "docs/fusion/CAPABILITY_CROSSWALK.draft.json → cross_module_redirections",
+      "redirection_status": "DEFERRED_TO_MODULE"
+    }
+  ]
+}

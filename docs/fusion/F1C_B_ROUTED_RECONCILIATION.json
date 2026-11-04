@@ -1,0 +1,142 @@
+{
+  "artifact": "F1C_B_ROUTED_RECONCILIATION",
+  "schema_version": 1,
+  "generated_by": "tools/fusion/f1c_apply_routed.py",
+  "source_baseline": "docs/fusion/F1B_FROZEN_BASELINE.json",
+  "decision_source": "tools/fusion/f1c_routed_decisions.py",
+  "principle": "每次运行都从 F1-B 基线重建再叠加裁决；不是打补丁，故撤销裁决不会遗留历史路由。",
+  "totals_after": {
+    "mapped": 120,
+    "routed": 3,
+    "unreviewed": 20,
+    "canonical": 74,
+    "sum_check": 143
+  },
+  "changes": [
+    {
+      "identity": "UPSTREAM-04::C24",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0020",
+      "owner": "Evidence-Claims",
+      "license_note": "MIT / copy_permitted=true（仅指可复制，不等于已复制）"
+    },
+    {
+      "identity": "UPSTREAM-05::C24",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0020",
+      "owner": "Evidence-Claims",
+      "license_note": "Apache-2.0 / copy_permitted=true"
+    },
+    {
+      "identity": "UPSTREAM-05::C04",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0028",
+      "owner": "Evidence-Claims",
+      "license_note": "Apache-2.0 / copy_permitted=true"
+    },
+    {
+      "identity": "-",
+      "action": "AMEND_CANONICAL",
+      "target": "SL-CAP-0028",
+      "note": "追加 F1-C-B 修订"
+    },
+    {
+      "identity": "UPSTREAM-06::C10",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0028",
+      "owner": "Evidence-Claims",
+      "license_note": "UPSTREAM-06 / copy_permitted=false —— 仅抽象设计借鉴"
+    },
+    {
+      "identity": "UPSTREAM-06::C20",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0028",
+      "owner": "Evidence-Claims",
+      "license_note": "UPSTREAM-06 / copy_permitted=false"
+    },
+    {
+      "identity": "UPSTREAM-06::C25",
+      "action": "NEW_CANONICAL",
+      "target": "SL-CAP-0074",
+      "license_note": "UPSTREAM-06 / copy_permitted=false"
+    },
+    {
+      "identity": "UPSTREAM-04::C16",
+      "action": "DEFER_WITH_REASON",
+      "target": null,
+      "owner": "Lifecycle",
+      "note": "保持 ROUTED 状态；终态处置待 terminal_disposition 迁移"
+    },
+    {
+      "identity": "UPSTREAM-05::C10",
+      "action": "DEFER_WITH_REASON",
+      "target": null,
+      "owner": "Lifecycle",
+      "note": "保持 ROUTED 状态；终态处置待 terminal_disposition 迁移"
+    },
+    {
+      "identity": "UPSTREAM-05::C14",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0060",
+      "owner": "Renderer",
+      "license_note": "Apache-2.0 / copy_permitted=true"
+    },
+    {
+      "identity": "-",
+      "action": "AMEND_CANONICAL",
+      "target": "SL-CAP-0060",
+      "note": "追加 F1-C-B 修订"
+    },
+    {
+      "identity": "UPSTREAM-05::C19",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0028",
+      "owner": "Evidence-Claims",
+      "license_note": "Apache-2.0 / copy_permitted=true"
+    },
+    {
+      "identity": "-",
+      "action": "AMEND_CANONICAL",
+      "target": "SL-CAP-0028",
+      "note": "追加 F1-C-B 修订"
+    },
+    {
+      "identity": "UPSTREAM-01::C12",
+      "action": "DEFER_WITH_REASON",
+      "target": null,
+      "owner": "Evidence-Claims",
+      "note": "保持 ROUTED 状态；终态处置待 terminal_disposition 迁移"
+    }
+  ],
+  "created_canonicals": [
+    {
+      "canonical_id": "SL-CAP-0074",
+      "name": "阶段产物完整性投影（跳过阶段显式缺失，禁止空对象冒充已完成）",
+      "from_identity": "UPSTREAM-06::C25"
+    }
+  ],
+  "errata": [
+    {
+      "errata_id": "F1C-B-E01",
+      "subject": "ROUTED 分布数字 14 与真实 11 的差异",
+      "claim_previous": "F1-C-A 汇报的模块分布写作 EC 5 + Lifecycle 4 + Renderer 4 + Storage 1 = 14",
+      "truth": "真实集合是 11 条（EC 7 + Lifecycle 2 + Renderer 1 + Storage 1），与 Routed 总数 11 一致。",
+      "root_cause": "数字来源错误，不是数据错误。`docs/fusion/F1C_REMAINDER_BASELINE.json` 里记录的分布是正确的（EC 7 / Lifecycle 2 / Renderer 1 / Storage 1，合计 11，可由该文件的 routed_by_module 逐个数出）。F1-C-A 的最终汇报把 14 这四个子数字抄错了（四个数字互不相关地拼成了 14），而 14 恰好是 F1-B 早期某一时点的历史 ROUTED 峰值（Facts/Collector 统计修订后的一段时间内曾是 14），属记忆串扰。",
+      "recomputable": "python3 tools/fusion/f1c_b_routed_audit.py —— 从草稿的 cross_module_redirections 逐条枚举，按 owner_module 计数，输出必须与 11 及 7/2/1/1 完全相符。",
+      "verdict": "数据文件正确，汇报数字有误。不修正任何数据文件，只记录勘误。",
+      "fixed": false,
+      "note": "按用户第 2 节要求：真实集合是 11，未触发应用阶段停止条件。"
+    },
+    {
+      "errata_id": "F1C-B-E02",
+      "subject": "SL-CAP-0071 的模块归属引用错误",
+      "claim_previous": "F1-C-A 的裁决文档与登记表把 SL-CAP-0071 写作「Storage 的 SL-CAP-0071」，原文：与 Storage 的 SL-CAP-0071 的「工具成功与模型生成成功分开记录」同族",
+      "truth": "SL-CAP-0071 的真实 owner 是 **DSH-Adapter**（name: 任务执行状态、检查点与幂等调用）。Storage 的四条相关 canonical 是 SL-CAP-0062（四层资产模型）、SL-CAP-0063（身份层级与版本标识）、SL-CAP-0064（原子写入、乐观并发与崩溃恢复）、SL-CAP-0065（可重建派生索引与跨会话查询）。",
+      "root_cause": "F1-C-A 论证 U06-C25「跳过阶段显式缺失而非空对象」时，把「用空值冒充已完成」类比到「工具执行成功与模型生成成功分开记录」。后者的真实编号是 SL-CAP-0071，但 owner 是 DSH-Adapter，不是 Storage。引用时把「Storage」与「SL-CAP-0071」错误地连在了一起。",
+      "recomputable": "python3 -c \"import json;d=json.load(open('docs/fusion/CAPABILITY_CROSSWALK.draft.json'));print([ (c['canonical_id'],c['owner_module']) for c in d['canonical_capabilities'] if c['canonical_id'] in ('SL-CAP-0071','SL-CAP-0062','SL-CAP-0063','SL-CAP-0064','SL-CAP-0065') ])\"",
+      "verdict": "**语义裁决不变**（U06-C25 → Storage 依然成立）。只修正引用：Storage 侧真正支撑「完整性约束」的是 SL-CAP-0062（D 层不得回写权威层）；SL-CAP-0071 是 DSH-Adapter 的任务级检查点语义，cross-module 依赖，不得当作 Storage 的能力举证。本批已在 F1C_DECISION_REGISTER.json 的 F1C-A-001 记录中写入勘误指针。",
+      "fixed": true,
+      "fix_location": "docs/fusion/F1C_DECISION_REGISTER.json → decisions[F1C-A-001].errata_applied"
+    }
+  ]
+}

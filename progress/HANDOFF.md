@@ -1228,3 +1228,82 @@ Crosswalk 逐字节未改（机检 `applied_changes_this_batch` 为空）。
 4. 8 项待裁 REJECT 逐条定性
 5. 十项冲突裁决（F1 原定任务）
 6. 实施终态模型扩展 + 配套验证器
+
+
+## M1-FUSION-GATE / F1-C-B 完成（2026-11-04 10:10 +08:00）
+
+### 一句话
+
+F1-C-B 完成：11 项 ROUTED 全部清算——7 项承接到已有 canonical、1 项新建 SL-CAP-0074、3 项 DEFER。
+两处前置勘误已处理。F1-C 总体仍 IN_PROGRESS。
+
+### 门禁一：ROUTED 是 11，不是 14
+
+真实集合 11，分布 **EC 7 / Lifecycle 2 / Renderer 1 / Storage 1**。
+`F1C_REMAINDER_BASELINE.json` 记的就是这个分布，可逐个数出。
+**14 是我上一轮汇报时抄错的**——恰好等于 F1-B 早期某时点的历史峰值，属记忆串扰。数据文件没错。
+未触发停止条件。
+
+### 门禁二：SL-CAP-0071 引用错误
+
+SL-CAP-0071 的真实 owner 是 **DSH-Adapter**，不是 Storage。
+修正：Storage 侧支撑完整性约束的是 SL-CAP-0062（D 层不得回写权威层）；
+SL-CAP-0071 作跨模块依赖引用，不得当 Storage 能力举证。
+**语义裁决不变（U06-C25 → Storage）。** 勘误已写入登记表 `decisions[F1C-A-001].errata_applied`。
+
+### 11 项裁决
+
+| 身份 | 方向 | 落实 |
+|---|---|---|
+| U04-C24 / U05-C24 | 承接 | SL-CAP-0020（reproducible 三态已覆盖） |
+| U05-C04 | 承接 | SL-CAP-0028 + 值域约束（approved 只能人设） |
+| U06-C10 / U06-C20 | 承接 | SL-CAP-0028（无许可，只借思想） |
+| U06-C25 | **新建** | **SL-CAP-0074 阶段产物完整性投影** |
+| U05-C14 | 承接 | SL-CAP-0060 + 呈现细则（content_hash 替代短 SHA） |
+| U05-C19 | 承接 | SL-CAP-0028 + 字段级约束（human_authored 拒 AI 写） |
+| U04-C16 | **DEFER** | owner 存疑：Lifecycle 无「任务完成判据」canonical |
+| U05-C10 | **DEFER** | 分流理由含双 owner，违反「一身份一 owner」 |
+| U01-C12 | **DEFER** | EC 无「评测集构建」canonical，指向悬空 |
+
+**3 项 DEFER 仍保持 ROUTED 状态，未假称 MAPPED。**
+
+### SL-CAP-0074 的独立必要性
+
+不并入 0062：0062 讲四层读写权限与单一权威，插入「阶段集合完整性」会混淆两个维度。
+不并入 0064：0064 讲单次写入原子性，不回答「整个 run 的产物集合是否完整」。
+新条专讲「跳过阶段必须显式缺失而非空对象」，作为 0062 D 层子契约。UPSTREAM-06 无许可，自建契约。
+
+### 应用方式（重要工程决定）
+
+`f1c_apply_routed.py` **从 `F1B_FROZEN_BASELINE.json` 重建再叠加裁决**，不是在当前草稿上打补丁。
+所以撤销裁决重跑**不会遗留历史路由**——不是靠手动删，是根本没有残留。
+已验证幂等（重跑逐字节一致）、ID 从真实最大值分配、重复映射会抛错。
+
+### 数字
+
+| 项 | 前 | 后 |
+|---|---|---|
+| MAPPED | 112 | **120** |
+| ROUTED | 11 | **3** |
+| UNREVIEWED | 20 | 20 |
+| canonical | 73 | **74** |
+
+### 验证
+
+`f1c_b_verify.py` 20/20；十二个验证器全链绿（12/30/50/43/46/48/53/48/54/56/16/20），全部 exit 0。
+
+### 本批修掉的问题
+
+1. **应用层真 bug**：首版只写 Crosswalk，没同步 `CROSSWALK_PROGRESS.json`，导致所有验证器「进度同源」检查全红。已并入应用层。
+2. **★ 元组换行写法又踩 5 次**（`return (expr),` 换行接字符串 → 单元素元组）。已加全局正则自检，写完立即扫。
+3. **历史验证器作用域 11 处**：mapped 定格 `==`→`>=`；Storage canonical_ids 改「本批 6 条全在」；
+   Storage c51/c53 改三分支；DSH-Adapter c44 改「清单不得陈旧」。核心不变量未放宽。
+
+### 下一步：F1-C-C
+
+1. 先裁 3 项 DEFER 的 owner（U04-C16、U05-C10、U01-C12）
+2. 20 项 UNREVIEWED，建议从 U05 系 11 项起
+3. 8 项待裁 REJECT 定性
+4. 十项冲突裁决
+
+F1-C-D 再统一实施 `terminal_disposition` 与交叉表冻结。

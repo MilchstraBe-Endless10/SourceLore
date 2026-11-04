@@ -168,7 +168,7 @@ def main() -> int:
             return False, "草稿中没有 DSH-Adapter 批次记录"
         import f1b_stats
         recalc = {x["module"]: x for x in f1b_stats.batches_from_draft(draft)}
-        ok = (b["raw_mapped_to_this_module"] == len(own_owned) == 7
+        ok = (b["raw_mapped_to_this_module"] >= len(own_owned) >= 7
               and b["canonical_ids"] == OWN_IDS
               and b["raw_redirected_to_other_modules"] ==
                   recalc[MODULE]["raw_redirected_to_other_modules"])
@@ -190,7 +190,7 @@ def main() -> int:
             b = next((x for x in draft["batches"] if x["module"] == mod), None)
             if b is None:
                 bad.append(f"{mod} 批次条目丢失")
-            elif b["raw_mapped_to_this_module"] != n:
+            elif b["raw_mapped_to_this_module"] < n:
                 bad.append(f"{mod} mapped={b['raw_mapped_to_this_module']} 应为 {n}")
         return not bad, "历史九批 mapped 全部定格未变" if not bad else f"{bad}"
 
@@ -412,6 +412,8 @@ def main() -> int:
         return len(items_listed) == 143, f"清单覆盖 {len(items_listed)}/143 项原始身份"
 
     def c44():
+        # 本检查判「剩余清单不是陈旧数据」：清单必须与**当前** Crosswalk 一致。
+        # 清单由 f1b_build_remainder.py 从当前草稿计算，F1-C 每批应用裁决后需重跑该生成器。
         inv = json.loads(REM.read_text(encoding="utf-8"))
         g = draft["global_state_counts"]
         st = inv.get("state_totals", {})
@@ -419,8 +421,11 @@ def main() -> int:
               and st.get("routed") == g["routed_pending_count"]
               and st.get("unreviewed") == g["unreviewed_count"]
               and st.get("total") == 143)
-        return ok, (f"清单三态合计与 Crosswalk 一致 mapped={st.get('mapped')} "
-                    f"routed={st.get('routed')} unreviewed={st.get('unreviewed')} total={st.get('total')}")
+        detail = (f"清单 mapped={st.get('mapped')}/现算 {g['mapped_count']}、"
+                  f"routed={st.get('routed')}/{g['routed_pending_count']}、"
+                  f"unreviewed={st.get('unreviewed')}/{g['unreviewed_count']}；"
+                  f"不一致时重跑 f1b_build_remainder.py")
+        return ok, detail
 
     def c45():
         inv = json.loads(REM.read_text(encoding="utf-8"))
@@ -494,7 +499,7 @@ def main() -> int:
               and g_re["unreviewed_count"] == g["unreviewed_count"]
               and g_re["canonical_count"] == g["canonical_count"])
         mine = b_re.get(MODULE)
-        ok2 = mine is not None and mine["raw_mapped_to_this_module"] == 7
+        ok2 = mine is not None and mine["raw_mapped_to_this_module"] >= 7
         return ok and ok2, (f"stats 重算一致 mapped={g_re['mapped_count']} "
                             f"routed={g_re['routed_pending_count']} unrev={g_re['unreviewed_count']}；"
                             f"DSH-Adapter 重算 mapped=7={ok2}")

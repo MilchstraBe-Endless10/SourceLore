@@ -1463,6 +1463,48 @@
             "license_link_required": false,
             "modification_notice_required": true
           }
+        },
+        {
+          "upstream_id": "UPSTREAM-04",
+          "original_capability_id": "C24",
+          "identity_key": "UPSTREAM-04::C24",
+          "upstream_capability": "无法复现的外部观察标记",
+          "upstream_where": "全文缺失",
+          "upstream_disposition": "REIMPLEMENT",
+          "verdict": "ADAPT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-04-audit.json",
+            "pointer": "capability_matrix[23]",
+            "where": "全文缺失"
+          },
+          "license": {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true
+          }
+        },
+        {
+          "upstream_id": "UPSTREAM-05",
+          "original_capability_id": "C24",
+          "identity_key": "UPSTREAM-05::C24",
+          "upstream_capability": "不可复现外部观察标记",
+          "upstream_where": "无字段定义",
+          "upstream_disposition": "REIMPLEMENT",
+          "verdict": "ADAPT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-05-audit.json",
+            "pointer": "capability_matrix[23]",
+            "where": "无字段定义"
+          },
+          "license": {
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true
+          }
         }
       ],
       "disposition": "ADAPT",
@@ -1483,6 +1525,22 @@
             "license_link_required": false,
             "modification_notice_required": true,
             "upstream_id": "UPSTREAM-04"
+          },
+          {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true,
+            "upstream_id": "UPSTREAM-04"
+          },
+          {
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "upstream_id": "UPSTREAM-05"
           }
         ],
         "copy_permitted": true,
@@ -2075,6 +2133,90 @@
             "license_link_required": false,
             "modification_notice_required": false
           }
+        },
+        {
+          "upstream_id": "UPSTREAM-05",
+          "original_capability_id": "C04",
+          "identity_key": "UPSTREAM-05::C04",
+          "upstream_capability": "review_status 人机权限分离",
+          "upstream_where": "SKILL.md L262–L284；L372–L385（Phase C step 6）",
+          "upstream_disposition": "REUSE",
+          "verdict": "ADAPT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-05-audit.json",
+            "pointer": "capability_matrix[3]",
+            "where": "SKILL.md L262–L284；L372–L385（Phase C step 6）"
+          },
+          "license": {
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true
+          }
+        },
+        {
+          "upstream_id": "UPSTREAM-06",
+          "original_capability_id": "C10",
+          "identity_key": "UPSTREAM-06::C10",
+          "upstream_capability": "动态否证只降级到人工复核",
+          "upstream_where": "references/phase5-validate-and-poc.md L795–L833",
+          "upstream_disposition": "REUSE",
+          "verdict": "ADAPT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-06-audit.json",
+            "pointer": "capability_matrix[9]",
+            "where": "references/phase5-validate-and-poc.md L795–L833"
+          },
+          "license": {
+            "spdx": null,
+            "copy_permitted": false,
+            "attribution_required": false,
+            "license_link_required": false,
+            "modification_notice_required": false
+          }
+        },
+        {
+          "upstream_id": "UPSTREAM-06",
+          "original_capability_id": "C20",
+          "identity_key": "UPSTREAM-06::C20",
+          "upstream_capability": "延迟裁决与跨仓库解析",
+          "upstream_where": "references/phase7-synthesis.md L162–L219",
+          "upstream_disposition": "ADAPT",
+          "verdict": "ADAPT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-06-audit.json",
+            "pointer": "capability_matrix[19]",
+            "where": "references/phase7-synthesis.md L162–L219"
+          },
+          "license": {
+            "spdx": null,
+            "copy_permitted": false,
+            "attribution_required": false,
+            "license_link_required": false,
+            "modification_notice_required": false
+          }
+        },
+        {
+          "upstream_id": "UPSTREAM-05",
+          "original_capability_id": "C19",
+          "identity_key": "UPSTREAM-05::C19",
+          "upstream_capability": "人类主导的语义补充",
+          "upstream_where": "SKILL.md L138–L140；templates/adr/template.md L1–L5",
+          "upstream_disposition": "REIMPLEMENT",
+          "verdict": "ADAPT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-05-audit.json",
+            "pointer": "capability_matrix[18]",
+            "where": "SKILL.md L138–L140；templates/adr/template.md L1–L5"
+          },
+          "license": {
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true
+          }
         }
       ],
       "disposition": "ADAPT",
@@ -2095,6 +2237,38 @@
             "license_link_required": false,
             "modification_notice_required": false,
             "upstream_id": "UPSTREAM-06"
+          },
+          {
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "upstream_id": "UPSTREAM-05"
+          },
+          {
+            "spdx": null,
+            "copy_permitted": false,
+            "attribution_required": false,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "upstream_id": "UPSTREAM-06"
+          },
+          {
+            "spdx": null,
+            "copy_permitted": false,
+            "attribution_required": false,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "upstream_id": "UPSTREAM-06"
+          },
+          {
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "upstream_id": "UPSTREAM-05"
           }
         ],
         "copy_permitted": false,
@@ -2128,7 +2302,11 @@
         "refuted 需要几条独立反证才算成立、反证的证据强度如何分级，V1 先要求至少一条已校验反证 + 人工确认",
         "依赖缺失导致的 adjudication_blocked 何时转回 unverified（依赖补齐后是否自动重开）待 F2"
       ],
-      "merge_note": "合并依据：U06-C07 提供状态机粒度与 report_tier 固定映射（这是状态机的骨），U06-C06 提供「不可验证该如何落状态」的判据（这是状态机的边）。若把 C06 单列，状态机会失去「查不到怎么算」这一关键分支；若把 C06 判 REUSE 原样搬用，则会把「不可验证」硬落成否定，与 SourceLore 的 insufficient 是成功结果直接冲突。故两者同条、均判 ADAPT。C07 判 ADAPT：九态偏多且与 SourceLore 四态 verification_status 不同构，本能力用六态（四主两辅）并保留逐条映射表，防止隐式换算。C06 判 ADAPT 并显式拒绝其原文语义：上游把「说不清」直接归入否定（can't prove → FALSE_POSITIVE），本能力只取其「必须给悬置一个确定去向」的取向，把去向改为 insufficient_evidence。该拒绝是裁决结论，不接受「不可验证即判否」作为可通过的规则。U06 两项均 copy_permitted=false，实现必须独立完成。"
+      "merge_note": "合并依据：U06-C07 提供状态机粒度与 report_tier 固定映射（这是状态机的骨），U06-C06 提供「不可验证该如何落状态」的判据（这是状态机的边）。若把 C06 单列，状态机会失去「查不到怎么算」这一关键分支；若把 C06 判 REUSE 原样搬用，则会把「不可验证」硬落成否定，与 SourceLore 的 insufficient 是成功结果直接冲突。故两者同条、均判 ADAPT。C07 判 ADAPT：九态偏多且与 SourceLore 四态 verification_status 不同构，本能力用六态（四主两辅）并保留逐条映射表，防止隐式换算。C06 判 ADAPT 并显式拒绝其原文语义：上游把「说不清」直接归入否定（can't prove → FALSE_POSITIVE），本能力只取其「必须给悬置一个确定去向」的取向，把去向改为 insufficient_evidence。该拒绝是裁决结论，不接受「不可验证即判否」作为可通过的规则。U06 两项均 copy_permitted=false，实现必须独立完成。",
+      "f1c_amendments": [
+        "补充值域约束（F1-C-B 由 U05-C04 引入）：review_status 的 approved 只能由人的动作产生；AI 只能置 pending，不得自行转换为 approved。该约束编码进字段值域，不写成文档建议。",
+        "补充字段级约束（F1-C-B 由 U05-C19 引入）：被标记为 human_authored 的字段，AI 写入必须被拒绝（不是警告）；人写字段带签名，签名验证失败即拒绝写入。"
+      ]
     },
     {
       "canonical_id": "SL-CAP-0029",
@@ -5231,10 +5409,41 @@
       "name": "确认等级与限制的忠实呈现（禁止视觉掩盖）",
       "description": "Renderer 的核心纪律是「忠实呈现上游判断，不自行改写」：R-1 有引用不等于引用支持结论。引用完整性由本条校验（链接能不能点、ID 存不存在），但「这条引用是否支持该结论」归 Evidence-Claims，Renderer 不得代为判断，也不得因为「有引用」就把措辞写得更确定。R-2 状态必须显式呈现：claim 处于 insufficient / conflict / 等待重新验证 / detection_incomplete 时，视图必须在正文可见位置呈现该状态，不得只在元数据里写。R-3 禁止把 facts_only 渲染成完整研究报告——facts_only 的视图必须自述「只有事实、没有解释性结论」，且不得填充解释性段落。R-4 禁止使用视觉样式掩盖数据缺失：不得用空白、省略号、「暂缺」之外的任何装饰替代明确的不完整标注；不得用颜色/图标暗示比数据更强的确定性。R-5 禁止使用未经校准的百分比表达真实性。R-6 不允许 Renderer 私自提高任何结论的确认等级；上游给的等级是渲染输入，不是可优化项。",
       "owner_module": "Renderer",
-      "upstream_refs": [],
+      "upstream_refs": [
+        {
+          "upstream_id": "UPSTREAM-05",
+          "original_capability_id": "C14",
+          "identity_key": "UPSTREAM-05::C14",
+          "upstream_capability": "版本页脚七字段",
+          "upstream_where": "SKILL.md L262–L284",
+          "upstream_disposition": "ADAPT",
+          "verdict": "ADAPT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-05-audit.json",
+            "pointer": "capability_matrix[13]",
+            "where": "SKILL.md L262–L284"
+          },
+          "license": {
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true
+          }
+        }
+      ],
       "disposition": "REIMPLEMENT",
       "license_permission": {
-        "per_upstream": [],
+        "per_upstream": [
+          {
+            "spdx": "Apache-2.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "upstream_id": "UPSTREAM-05"
+          }
+        ],
         "copy_permitted": true,
         "constraint": "无上游来源，本条为独立架构设计，不涉及第三方著作权"
       },
@@ -5264,7 +5473,10 @@
         "「等待重新验证」状态的显示是否与 insufficient 区分，待 F1-C",
         "R-2 的「正文可见位置」如何机械判定，待 F2"
       ],
-      "merge_note": "本条无上游来源，是独立设计。理由写清楚，否则读者会以为漏了引用。U02-C16（内联引用规则）已在 Research 批次由 SL-CAP-0039 正式承接，同一原始身份只能映射一次；本条与它的关系是「0039 定义引用约束、本条定义呈现忠实度」，属跨模块依赖而非重复占用。U02-C13 归 Research 的 SL-CAP-0038（质量三态），本条只消费其状态值。剩下的内容——有引用不等于支持、状态必须显式、facts_only 不得冒充完整报告、禁止视觉掩盖、禁止未校准百分比、不得提高确认等级——是六源中没有任何一处把它写成渲染侧约束的自建契约（上游都写在提示词里，没有对应的校验机制），属零来源独立设计。"
+      "merge_note": "本条无上游来源，是独立设计。理由写清楚，否则读者会以为漏了引用。U02-C16（内联引用规则）已在 Research 批次由 SL-CAP-0039 正式承接，同一原始身份只能映射一次；本条与它的关系是「0039 定义引用约束、本条定义呈现忠实度」，属跨模块依赖而非重复占用。U02-C13 归 Research 的 SL-CAP-0038（质量三态），本条只消费其状态值。剩下的内容——有引用不等于支持、状态必须显式、facts_only 不得冒充完整报告、禁止视觉掩盖、禁止未校准百分比、不得提高确认等级——是六源中没有任何一处把它写成渲染侧约束的自建契约（上游都写在提示词里，没有对应的校验机制），属零来源独立设计。",
+      "f1c_amendments": [
+        "补充呈现细则（F1-C-B 由 U05-C14 引入）：版本页脚至少含 last_updated、content_hash、updated_by、review_status、source_snapshot、generated_at、generator_version 七项；其中定位内容变化的字段必须是 content_hash，不得用短 commit SHA（粒度不足）。"
+      ]
     },
     {
       "canonical_id": "SL-CAP-0061",
@@ -6341,63 +6553,82 @@
         "错误码在各模块间的统一表示待 F2"
       ],
       "merge_note": "本条无上游来源，是内部设计能力。内部需求依据：SourceLore 有九个职责模块，而六源中的任何一个都不是「多模块编排器」——它们要么是单脚本、要么是单提示词流水线。本条把九个模块的调用契约集中定义，并钉死两条最容易出事的边界：**不绕过 Storage 改数据**、**不吞上游错误**。硬规则四是对「Skill 提示词膨胀」的直接防护：能力靠调用获得，不靠描述获得（与 SL-CAP-0068 的渐进加载互为表里）。"
+    },
+    {
+      "canonical_id": "SL-CAP-0074",
+      "name": "阶段产物完整性投影（跳过阶段显式缺失，禁止空对象冒充已完成）",
+      "description": "一次分析运行的产物是一组按阶段划分的记录，而非单一报告。三条硬规则：\nS-1 一阶段一产物：每个阶段各自落地自己的记录（阶段标识、输入快照引用、产出内容、状态），报告层只做聚合与引用，不复制阶段内容。\nS-2 跳过阶段必须显式缺失：某阶段未执行时，产物集合中该阶段记为 skipped 并附原因，**不得写入空对象、空数组或占位默认值**。空对象与「已执行但无产出」在设计上不可区分，是完整性失真的直接来源。\nS-3 完整性投影可机械判定：给定产物集合与预期阶段清单，必须能判定「哪些跑了、哪些跳了、哪些失败了」，且三种状态的判定不依赖读取产物内容之外的信息。\n硬规则一：本契约只定义产物集合的完整性，**不定义任何证据是否足以支撑结论**——那归 Evidence-Claims（SL-CAP-0028）。它不是第二套状态机。\n硬规则二：阶段产物属 SL-CAP-0062 的 D 层（展示产物）或 A 层（若为不可变记录），具体归层由该产物是否可重建决定；无论如何归属，都不得回写权威层。\n硬规则三：与 SL-CAP-0071（DSH-Adapter 的任务级检查点）是不同粒度：0071 管「任务中断后从哪续跑」，本条管「这次运行的产物集合是否完整」。两者可互引，不得互相替代。",
+      "owner_module": "Storage",
+      "upstream_refs": [
+        {
+          "upstream_id": "UPSTREAM-06",
+          "original_capability_id": "C25",
+          "identity_key": "UPSTREAM-06::C25",
+          "upstream_capability": "三态分离的产物契约（run-metadata / 各阶段 JSON / 报告）",
+          "upstream_where": "SKILL.md L1122–L1206；phase6 L7–L58",
+          "upstream_disposition": "REIMPLEMENT",
+          "verdict": "REIMPLEMENT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-06-audit.json",
+            "pointer": "capability_matrix[24]",
+            "where": "SKILL.md L1122–L1206；phase6 L7–L58"
+          },
+          "license": {
+            "spdx": null,
+            "copy_permitted": false,
+            "attribution_required": false,
+            "license_link_required": false,
+            "modification_notice_required": false
+          }
+        }
+      ],
+      "disposition": "REIMPLEMENT",
+      "license_permission": {
+        "per_upstream": [
+          {
+            "spdx": null,
+            "copy_permitted": false,
+            "attribution_required": false,
+            "license_link_required": false,
+            "modification_notice_required": false,
+            "upstream_id": "UPSTREAM-06"
+          }
+        ],
+        "copy_permitted": false,
+        "constraint": "UPSTREAM-06 无复制许可：只借抽象结构，不复制模板/脚本/格式"
+      },
+      "dependencies": [
+        "Storage",
+        "DSH-Adapter",
+        "Evidence-Claims"
+      ],
+      "overlaps": [],
+      "v1_scope": "V1_REQUIRED",
+      "input_boundary": [
+        "一次运行的阶段清单（expected_stages）",
+        "各阶段落地的产物记录"
+      ],
+      "output_boundary": [
+        "stage_product{stage_id, status: executed|skipped|failed, reason?, output_ref}",
+        "completeness_projection{expected[], executed[], skipped[], failed[], complete: bool}"
+      ],
+      "evidence": {
+        "raw_index_sha256": "e62b68ed1658b95ebe73b37d8c991c995b1a18201faabbde81e41214c03a2f11",
+        "ref_count": 1,
+        "sources": [
+          "UPSTREAM-06"
+        ]
+      },
+      "unresolved": [
+        "阶段清单由谁定义（固定枚举 vs 运行时注册）待 F2",
+        "skipped 与 failed 是否需要在产物集合外另行告警待 F1-C",
+        "与 SL-CAP-0071 检查点的物理共存方式待 F2"
+      ],
+      "merge_note": "本条由 F1-C-B 新建，承接 ROUTED 身份 UPSTREAM-06::C25。F1-C-A 已裁决其 owner=Storage（依据 mechanism 逐字：阶段各写 JSON、报告层聚合、跳过阶段显式缺失）；本批裁决其承接形态为**新建**而非并入 SL-CAP-0062，理由是 0062 讲四层读写权限、本条讲阶段集合完整性，两个维度不同，合并会混淆。UPSTREAM-06 无复制许可，本条为自建契约，未复制其模板与 JSON 格式。",
+      "created_in_batch": "F1-F1-C-B"
     }
   ],
   "cross_module_redirections": [
-    {
-      "upstream_id": "UPSTREAM-04",
-      "original_capability_id": "C24",
-      "identity_key": "UPSTREAM-04::C24",
-      "upstream_capability": "无法复现的外部观察标记",
-      "owner_module": "Evidence-Claims",
-      "reason": "「无法复现的外部观察标记」正是 EC 的 SL-CAP-0020 已定义的 reproducible 三态；本批不重复建条目，身份交 EC 归属",
-      "status": "DEFERRED_TO_MODULE"
-    },
-    {
-      "upstream_id": "UPSTREAM-05",
-      "original_capability_id": "C24",
-      "identity_key": "UPSTREAM-05::C24",
-      "upstream_capability": "不可复现外部观察标记",
-      "owner_module": "Evidence-Claims",
-      "reason": "与 U04-C24 同名同义（不可复现外部观察的字段缺失），同属 EC 的 SL-CAP-0020 reproducible 语义",
-      "status": "DEFERRED_TO_MODULE"
-    },
-    {
-      "upstream_id": "UPSTREAM-05",
-      "original_capability_id": "C04",
-      "identity_key": "UPSTREAM-05::C04",
-      "upstream_capability": "review_status 人机权限分离",
-      "owner_module": "Evidence-Claims",
-      "reason": "review_status 的人机权限分离已由 EC 的 SL-CAP-0028 裁决状态机承接（状态迁移凭证）；本批不重复建",
-      "status": "DEFERRED_TO_MODULE"
-    },
-    {
-      "upstream_id": "UPSTREAM-06",
-      "original_capability_id": "C10",
-      "identity_key": "UPSTREAM-06::C10",
-      "upstream_capability": "动态否证只降级到人工复核",
-      "owner_module": "Evidence-Claims",
-      "reason": "动态否证只降级到人工复核——这是通用 claim 状态机的人工复核分支，已由 EC 的 SL-CAP-0028（裁决状态机，含 insufficient_evidence 与人工确认）承接语义",
-      "status": "DEFERRED_TO_MODULE"
-    },
-    {
-      "upstream_id": "UPSTREAM-06",
-      "original_capability_id": "C20",
-      "identity_key": "UPSTREAM-06::C20",
-      "upstream_capability": "延迟裁决与跨仓库解析",
-      "owner_module": "Evidence-Claims",
-      "reason": "延迟裁决与跨仓库解析属 claim 裁决的时序与跨源聚合，归 EC 的裁决状态机",
-      "status": "DEFERRED_TO_MODULE"
-    },
-    {
-      "upstream_id": "UPSTREAM-06",
-      "original_capability_id": "C25",
-      "identity_key": "UPSTREAM-06::C25",
-      "upstream_capability": "三态分离的产物契约（run-metadata / 各阶段 JSON / 报告）",
-      "owner_module": "Storage",
-      "reason": "三态分离的产物契约（run-metadata / 各阶段 JSON / 报告）是持久化产物模型，归 Storage 的写入与契约职责；上游该契约无新鲜度与失效语义，需自建",
-      "status": "DEFERRED_TO_MODULE"
-    },
     {
       "upstream_id": "UPSTREAM-04",
       "original_capability_id": "C16",
@@ -6414,24 +6645,6 @@
       "upstream_capability": "契约式 Postconditions",
       "owner_module": "Lifecycle",
       "reason": "契约式 Postconditions（写入后校验）属变更动作的后置条件，归 Lifecycle 的增量调度与 Storage 的写入校验",
-      "status": "DEFERRED_TO_MODULE"
-    },
-    {
-      "upstream_id": "UPSTREAM-05",
-      "original_capability_id": "C14",
-      "identity_key": "UPSTREAM-05::C14",
-      "upstream_capability": "版本页脚七字段",
-      "owner_module": "Renderer",
-      "reason": "版本页脚七字段属产物呈现格式（作者、更新时间、版本等元信息的展示形态），归 Renderer 的视图契约",
-      "status": "DEFERRED_TO_MODULE"
-    },
-    {
-      "upstream_id": "UPSTREAM-05",
-      "original_capability_id": "C19",
-      "identity_key": "UPSTREAM-05::C19",
-      "upstream_capability": "人类主导的语义补充",
-      "owner_module": "Evidence-Claims",
-      "reason": "人类主导的语义补充（人写的字段带签名、AI 写入该字段直接拒绝）本质是「谁有权写哪个字段」的权限语义，已由 EC 的 SL-CAP-0028（裁决状态机，含人工确认分支）与 Security 的 SL-CAP-0053（发布门禁，P-3/P-4 只能由人触发）承接；Storage 只执行访问控制，不定义权限语义",
       "status": "DEFERRED_TO_MODULE"
     },
     {
@@ -6617,7 +6830,7 @@
         "SL-CAP-0027",
         "SL-CAP-0028"
       ],
-      "raw_mapped_to_this_module": 12,
+      "raw_mapped_to_this_module": 18,
       "raw_redirected_to_other_modules": 0,
       "dedup_ratio": 1.333,
       "dedup_ratio_definition": "raw_mapped_to_this_module / canonical_count",
@@ -6665,7 +6878,7 @@
         "SL-CAP-0039"
       ],
       "raw_mapped_to_this_module": 10,
-      "raw_redirected_to_other_modules": 2,
+      "raw_redirected_to_other_modules": 0,
       "dedup_ratio": 2.0,
       "dedup_ratio_definition": "raw_mapped_to_this_module / canonical_count",
       "per_source_mapped": {
@@ -6689,7 +6902,7 @@
         "SL-CAP-0045"
       ],
       "raw_mapped_to_this_module": 12,
-      "raw_redirected_to_other_modules": 1,
+      "raw_redirected_to_other_modules": 0,
       "dedup_ratio": 2.0,
       "dedup_ratio_definition": "raw_mapped_to_this_module / canonical_count",
       "per_source_mapped": {
@@ -6716,7 +6929,7 @@
         "SL-CAP-0054"
       ],
       "raw_mapped_to_this_module": 17,
-      "raw_redirected_to_other_modules": 3,
+      "raw_redirected_to_other_modules": 0,
       "dedup_ratio": 1.889,
       "dedup_ratio_definition": "raw_mapped_to_this_module / canonical_count",
       "per_source_mapped": {
@@ -6740,7 +6953,7 @@
         "SL-CAP-0060",
         "SL-CAP-0061"
       ],
-      "raw_mapped_to_this_module": 11,
+      "raw_mapped_to_this_module": 12,
       "raw_redirected_to_other_modules": 2,
       "dedup_ratio": 1.571,
       "dedup_ratio_definition": "raw_mapped_to_this_module / canonical_count",
@@ -6762,10 +6975,11 @@
         "SL-CAP-0064",
         "SL-CAP-0065",
         "SL-CAP-0066",
-        "SL-CAP-0067"
+        "SL-CAP-0067",
+        "SL-CAP-0074"
       ],
-      "raw_mapped_to_this_module": 11,
-      "raw_redirected_to_other_modules": 2,
+      "raw_mapped_to_this_module": 12,
+      "raw_redirected_to_other_modules": 0,
       "dedup_ratio": 1.833,
       "dedup_ratio_definition": "raw_mapped_to_this_module / canonical_count",
       "per_source_mapped": {
@@ -7628,6 +7842,70 @@
       "promoted_in_batch": "F1-B/DSH-Adapter",
       "reason": "Security 批次判定该身份属运行可观测性、改路由指向 DSH-Adapter，本批建 canonical 正式承接",
       "was_in_redirection_table": false
+    },
+    {
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C24",
+      "from": "cross_module_redirections",
+      "to_canonical_id": "SL-CAP-0020",
+      "promoted_in_batch": "F1-F1-C-B",
+      "reason": "该身份要求「无法复现的外部观察必须有标记」。SL-CAP-0020 已把 `reproducible` 三态列入强制元数据，并为 minimal 形态要求「不可复现说明」。归属 EC 已由 Collector 批次分流指定，本批将其正式写入 refs。"
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C24",
+      "from": "cross_module_redirections",
+      "to_canonical_id": "SL-CAP-0020",
+      "promoted_in_batch": "F1-F1-C-B",
+      "reason": "与 UPSTREAM-04::C24 是同一需求的两次独立记录（上游两份审计都发现「没有为当时观察到、现在无法复现的证据留字段」）。合并到同一条 canonical 的同一个字段，不新建。"
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C04",
+      "from": "cross_module_redirections",
+      "to_canonical_id": "SL-CAP-0028",
+      "promoted_in_batch": "F1-F1-C-B",
+      "reason": "上游把「谁有权批准」编码进字段值域而非写在文档里，是五源中最干净的权限边界表达。SL-CAP-0028 已有「状态不得由作者自评决定」的骨架，本批把「人机权限分离」作为值域约束登记进其补充约束。"
+    },
+    {
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C10",
+      "from": "cross_module_redirections",
+      "to_canonical_id": "SL-CAP-0028",
+      "promoted_in_batch": "F1-F1-C-B",
+      "reason": "「代码级证据与运行时证据冲突时仲裁权归人」是 SL-CAP-0028 已有的降级方向。UPSTREAM-06 无复制许可，本条只作设计思想来源，不复制任何原文。"
+    },
+    {
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C20",
+      "from": "cross_module_redirections",
+      "to_canonical_id": "SL-CAP-0028",
+      "promoted_in_batch": "F1-F1-C-B",
+      "reason": "「单仓库无法裁决是合法中间态」与 SL-CAP-0028 的 adjudication_blocked 同义。跨仓库证据解析的纪律（必须引入新证据）由其状态驱动规则承接。UPSTREAM-06 无许可，不复制原文。"
+    },
+    {
+      "upstream_id": "UPSTREAM-06",
+      "original_capability_id": "C25",
+      "from": "cross_module_redirections",
+      "to_canonical_id": "SL-CAP-0074",
+      "promoted_in_batch": "F1-F1-C-B",
+      "reason": "F1-C-B 的承接形态裁决：不并入 SL-CAP-0062（0062 讲四层读写权限与单一权威，插入「阶段完整性」会混淆两个维度），也不并入 0064（0064 讲单次写入的原子性，不回答「整个 run 的产物集合是否完整」）。新建一条，专讲「阶段产物完整性投影」，作为 SL-CAP-0062 D 层的一个具体子契约。"
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C14",
+      "from": "cross_module_redirections",
+      "to_canonical_id": "SL-CAP-0060",
+      "promoted_in_batch": "F1-F1-C-B",
+      "reason": "上游该能力有价值的部分是七字段清单，但其 `commit` 存短 SHA、粒度不足以定位内容变化（审计原文）。SourceLore 借字段名，值换成 content_hash——这正好落在 SL-CAP-0060「忠诚呈现确认等级与限制」与 SL-CAP-0063「内容身份用 content_hash」的交界。本批登记为 SL-CAP-0060 的呈现细则补充。"
+    },
+    {
+      "upstream_id": "UPSTREAM-05",
+      "original_capability_id": "C19",
+      "from": "cross_module_redirections",
+      "to_canonical_id": "SL-CAP-0028",
+      "promoted_in_batch": "F1-F1-C-B",
+      "reason": "「人类主导的语义补充」本质是「谁有权写哪个字段」。SL-CAP-0028 已有状态机与人工确认分支，本批将其登记为该状态机的字段级约束，与 U05-C04 的补充约束合并论述（同属人机权限分离）。"
     }
   ],
   "global_state_counts": {
@@ -7638,11 +7916,11 @@
     ],
     "raw_total": 143,
     "raw_unique": 143,
-    "mapped_count": 112,
-    "routed_pending_count": 11,
+    "mapped_count": 120,
+    "routed_pending_count": 3,
     "unreviewed_count": 20,
     "sum_check": 143,
-    "canonical_count": 73,
+    "canonical_count": 74,
     "routed_promotions_count": 92,
     "state_invariants": {
       "mutually_exclusive": true,

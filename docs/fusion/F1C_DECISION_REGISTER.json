@@ -77,7 +77,14 @@
       ],
       "verification_status": "evidence_reviewed",
       "decision_state": "adjudicated",
-      "note_on_state": "裁决已作出（保持 Storage），但 Crosswalk 未做任何改动——原判本就如此，故无迁移动作。"
+      "note_on_state": "裁决已作出（保持 Storage），但 Crosswalk 未做任何改动——原判本就如此，故无迁移动作。",
+      "errata_applied": {
+        "errata_id": "F1C-B-E02",
+        "what_was_wrong": "原文写作「Storage 的 SL-CAP-0071」，但 SL-CAP-0071 的真实 owner 是 DSH-Adapter",
+        "corrected_wording": "「用空值冒充已完成」这一约束与 Storage 的 SL-CAP-0062（D 层不得回写权威层、单一权威副本）同族，属产物完整性；SL-CAP-0071（任务执行状态与检查点，owner=DSH-Adapter）的「工具成功与模型生成成功分开记录」是**跨模块依赖**，可作为同族论据引用，但不得当作 Storage 自身的能力举证。",
+        "semantic_decision_unchanged": true,
+        "note": "语义裁决（U06-C25 → Storage）不变，只修正引用。"
+      }
     },
     {
       "decision_id": "F1C-A-002",
@@ -167,5 +174,10 @@
     }
   ],
   "pending_migrations": [],
-  "applied_changes_this_batch": []
+  "applied_changes_this_batch": [],
+  "registry_note": "F1-C-B 起，本表同时登记 FORWARDED 裁决（见 f1c_routed_decisions.py 与 F1C_B_ROUTED_RECONCILIATION.json）。",
+  "batches_registered": [
+    "F1-C-A",
+    "F1-C-B"
+  ]
 }

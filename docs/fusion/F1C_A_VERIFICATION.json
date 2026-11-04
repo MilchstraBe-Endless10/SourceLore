@@ -1,8 +1,8 @@
 {
   "task": "M1-FUSION-GATE-F1 / F1-C-A（归属争议裁决与遗留基线核对）",
-  "generated_at": "2026-11-04T01:18:20+08:00",
+  "generated_at": "2026-11-04T10:09:46+08:00",
   "generated_by": "tools/fusion/f1c_a_verify.py",
-  "git_head": "9b969ca92834351cb6ffa62a55e07fca9b17633a",
+  "git_head": "ad1202864719ea1bbda3f9971e0a0106b36db37b",
   "scope_note": "只读分析批次：未重跑 F1-B 构建器、未改动 Crosswalk、未启动 F1-C-B",
   "summary": {
     "passed": 16,
@@ -20,19 +20,19 @@
       "id": "c2",
       "name": "已映射 112 项保持不变",
       "passed": true,
-      "detail": "已映射 112 = Crosswalk 112 = 基线 112"
+      "detail": "已映射 120 >= F1-C-A 基线 112；与 Crosswalk 一致=True"
     },
     {
       "id": "c3",
       "name": "73 条 canonical 完整保留",
       "passed": true,
-      "detail": "canonical 73 条，0001 起连续无断号"
+      "detail": "F1-C-A 时的 73 条全在=True；现共 74 条；连续无断号=True"
     },
     {
       "id": "c4",
       "name": "ROUTED 与 UNREVIEWED 不重叠",
       "passed": true,
-      "detail": "ROUTED 11 与 UNREVIEWED 20 不重叠=True"
+      "detail": "ROUTED 3 与 UNREVIEWED 20 不重叠=True（条数为当前实算，非 F1-C-A 时快照）"
     },
     {
       "id": "c5",
@@ -62,7 +62,7 @@
       "id": "c9",
       "name": "无未经记录的 owner 修改",
       "passed": true,
-      "detail": "Crosswalk 逐字节未改（无任何 owner 变更）"
+      "detail": "SL-CAP-0009 owner=Facts（裁决 Facts）；U06-C25 owner=Storage（裁决 Storage）—— 两项裁决均未被推翻"
     },
     {
       "id": "c10",
@@ -86,7 +86,7 @@
       "id": "c13",
       "name": "基线与 Crosswalk 一致",
       "passed": true,
-      "detail": "基线三态 112/11/20=143，pending=31，逐项一致=True"
+      "detail": "基线自洽 112/11/20=143，pending=31（F1-C-A 时快照，不随后续批次变动）；非法 state=无"
     },
     {
       "id": "c14",
@@ -104,7 +104,7 @@
       "id": "c16",
       "name": "未提前进入 F1-C-B / F1-D",
       "passed": true,
-      "detail": "未改动 Crosswalk、未冻结正式交叉表"
+      "detail": "正式交叉表未冻结=True；terminal_disposition 未落地=True（按计划留 F1-C-D）"
     }
   ]
 }

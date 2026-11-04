@@ -1,7 +1,7 @@
 {
   "artifact": "F1B_REMAINDER_INVENTORY",
   "schema_version": 1,
-  "generated_at": "2026-11-04T00:10:39+08:00",
+  "generated_at": "2026-11-04T10:06:13+08:00",
   "generated_by": "tools/fusion/f1b_build_remainder.py",
   "computed_from": [
     "docs/fusion/RAW_CAPABILITY_INDEX.json",
@@ -10,8 +10,8 @@
   "source_index_sha256": "e62b68ed1658b95ebe73b37d8c991c995b1a18201faabbde81e41214c03a2f11",
   "disclaimer": "F1-B 十个模块批次全部完成，但不等于 143 项原始能力已全部完成归属裁决。本清单从当前 Crosswalk 计算得出，逐项标明仍待 F1-C 处理的条目。不得为了让统计变成 143/0/0 而人为制造 canonical。",
   "state_totals": {
-    "mapped": 112,
-    "routed": 11,
+    "mapped": 120,
+    "routed": 3,
     "unreviewed": 20,
     "total": 143
   },
@@ -50,15 +50,9 @@
       "Evidence-Claims": {
         "module": "Evidence-Claims",
         "module_batch_done": true,
-        "count": 7,
+        "count": 1,
         "items": [
-          "UPSTREAM-01::C12",
-          "UPSTREAM-04::C24",
-          "UPSTREAM-05::C04",
-          "UPSTREAM-05::C19",
-          "UPSTREAM-05::C24",
-          "UPSTREAM-06::C10",
-          "UPSTREAM-06::C20"
+          "UPSTREAM-01::C12"
         ]
       },
       "Lifecycle": {
@@ -68,22 +62,6 @@
         "items": [
           "UPSTREAM-04::C16",
           "UPSTREAM-05::C10"
-        ]
-      },
-      "Renderer": {
-        "module": "Renderer",
-        "module_batch_done": true,
-        "count": 1,
-        "items": [
-          "UPSTREAM-05::C14"
-        ]
-      },
-      "Storage": {
-        "module": "Storage",
-        "module_batch_done": true,
-        "count": 1,
-        "items": [
-          "UPSTREAM-06::C25"
         ]
       }
     },
@@ -1458,7 +1436,7 @@
       "upstream_id": "UPSTREAM-04",
       "original_capability_id": "C24",
       "capability": "无法复现的外部观察标记",
-      "state": "ROUTED",
+      "state": "MAPPED",
       "suggested_owner": "Evidence-Claims",
       "original_disposition": "REIMPLEMENT",
       "license": {
@@ -1466,9 +1444,9 @@
         "copy_permitted": true,
         "attribution_required": true
       },
-      "unprocessed_reason": "去向已裁决但目标模块尚未建 canonical 承接",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-04",
@@ -1571,7 +1549,7 @@
       "upstream_id": "UPSTREAM-05",
       "original_capability_id": "C04",
       "capability": "review_status 人机权限分离",
-      "state": "ROUTED",
+      "state": "MAPPED",
       "suggested_owner": "Evidence-Claims",
       "original_disposition": "REUSE",
       "license": {
@@ -1579,9 +1557,9 @@
         "copy_permitted": true,
         "attribution_required": true
       },
-      "unprocessed_reason": "去向已裁决但目标模块尚未建 canonical 承接",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-05",
@@ -1735,7 +1713,7 @@
       "upstream_id": "UPSTREAM-05",
       "original_capability_id": "C14",
       "capability": "版本页脚七字段",
-      "state": "ROUTED",
+      "state": "MAPPED",
       "suggested_owner": "Renderer",
       "original_disposition": "ADAPT",
       "license": {
@@ -1743,9 +1721,9 @@
         "copy_permitted": true,
         "attribution_required": true
       },
-      "unprocessed_reason": "去向已裁决但目标模块尚未建 canonical 承接",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-05",
@@ -1817,7 +1795,7 @@
       "upstream_id": "UPSTREAM-05",
       "original_capability_id": "C19",
       "capability": "人类主导的语义补充",
-      "state": "ROUTED",
+      "state": "MAPPED",
       "suggested_owner": "Evidence-Claims",
       "original_disposition": "REIMPLEMENT",
       "license": {
@@ -1825,9 +1803,9 @@
         "copy_permitted": true,
         "attribution_required": true
       },
-      "unprocessed_reason": "去向已裁决但目标模块尚未建 canonical 承接",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-05",
@@ -1898,7 +1876,7 @@
       "upstream_id": "UPSTREAM-05",
       "original_capability_id": "C24",
       "capability": "不可复现外部观察标记",
-      "state": "ROUTED",
+      "state": "MAPPED",
       "suggested_owner": "Evidence-Claims",
       "original_disposition": "REIMPLEMENT",
       "license": {
@@ -1906,9 +1884,9 @@
         "copy_permitted": true,
         "attribution_required": true
       },
-      "unprocessed_reason": "去向已裁决但目标模块尚未建 canonical 承接",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-05",
@@ -2125,7 +2103,7 @@
       "upstream_id": "UPSTREAM-06",
       "original_capability_id": "C10",
       "capability": "动态否证只降级到人工复核",
-      "state": "ROUTED",
+      "state": "MAPPED",
       "suggested_owner": "Evidence-Claims",
       "original_disposition": "REUSE",
       "license": {
@@ -2133,9 +2111,9 @@
         "copy_permitted": false,
         "attribution_required": false
       },
-      "unprocessed_reason": "去向已裁决但目标模块尚未建 canonical 承接",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-06",
@@ -2285,7 +2263,7 @@
       "upstream_id": "UPSTREAM-06",
       "original_capability_id": "C20",
       "capability": "延迟裁决与跨仓库解析",
-      "state": "ROUTED",
+      "state": "MAPPED",
       "suggested_owner": "Evidence-Claims",
       "original_disposition": "ADAPT",
       "license": {
@@ -2293,9 +2271,9 @@
         "copy_permitted": false,
         "attribution_required": false
       },
-      "unprocessed_reason": "去向已裁决但目标模块尚未建 canonical 承接",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-06",
@@ -2366,7 +2344,7 @@
       "upstream_id": "UPSTREAM-06",
       "original_capability_id": "C25",
       "capability": "三态分离的产物契约（run-metadata / 各阶段 JSON / 报告）",
-      "state": "ROUTED",
+      "state": "MAPPED",
       "suggested_owner": "Storage",
       "original_disposition": "REIMPLEMENT",
       "license": {
@@ -2374,14 +2352,14 @@
         "copy_permitted": false,
         "attribution_required": false
       },
-      "unprocessed_reason": "去向已裁决但目标模块尚未建 canonical 承接",
+      "unprocessed_reason": null,
       "owner_dispute": {
         "current_owner_in_crosswalk": "Storage",
         "disputed_owner": "Evidence-Claims",
         "note": "Security 批判 Storage；Storage 批复核认为其语义层（产物契约的含义）应由 EC 承接。按「不擅自改归属」保留原判，分歧交 F1-C。",
         "decision_ref": "F1B_STORAGE_DECISIONS.md 的 X-3"
       },
-      "f1c_decision_needed": true
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-06",

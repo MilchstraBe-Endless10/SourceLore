@@ -1,0 +1,133 @@
+{
+  "task": "M1-FUSION-GATE-F1 / F1-C-B（11 项 ROUTED 全量清算）",
+  "generated_at": "2026-11-04T10:09:46+08:00",
+  "generated_by": "tools/fusion/f1c_b_verify.py",
+  "git_head": "ad1202864719ea1bbda3f9971e0a0106b36db37b",
+  "summary": {
+    "passed": 20,
+    "total": 20,
+    "result": "PASS"
+  },
+  "checks": [
+    {
+      "id": "c1",
+      "name": "原始 143 项唯一且不变",
+      "passed": true,
+      "detail": "原始身份 143 项，unique=143"
+    },
+    {
+      "id": "c2",
+      "name": "F1-B 原有 73 条 canonical 可追溯",
+      "passed": true,
+      "detail": "F1-B 原有 73 条全在；缺失 无"
+    },
+    {
+      "id": "c3",
+      "name": "当前 11 项 ROUTED 身份准确",
+      "passed": true,
+      "detail": "审计逐条枚举 11 条，与 global_state 及 batches 合计三方一致"
+    },
+    {
+      "id": "c4",
+      "name": "14 与 11 的差异已解释",
+      "passed": true,
+      "detail": "14 为汇报抄错、真实 11；实际分布 {'Evidence-Claims': 7, 'Storage': 1, 'Lifecycle': 2, 'Renderer': 1}"
+    },
+    {
+      "id": "c5",
+      "name": "F1-C-A 错误交叉引用已更正",
+      "passed": true,
+      "detail": "E01/E02 均有可复算方法=True；E02 已修正引用=True；登记表已挂指针=True"
+    },
+    {
+      "id": "c6",
+      "name": "11 项逐项完成有来源的裁决",
+      "passed": true,
+      "detail": "11 项裁决覆盖基线全部 11 条 ROUTED，身份集合一致=True"
+    },
+    {
+      "id": "c7",
+      "name": "裁决登记与实际应用状态一致",
+      "passed": true,
+      "detail": "11 项裁决与应用逐条对齐，问题 无"
+    },
+    {
+      "id": "c8",
+      "name": "原始 REJECT 与最终处置分离",
+      "passed": true,
+      "detail": "11 项均带 verdict 与许可说明，且上游 disposition 未改；问题 无"
+    },
+    {
+      "id": "c9",
+      "name": "每个原始身份最多映射一次",
+      "passed": true,
+      "detail": "每个原始身份最多映射一次（共 120），重复 无"
+    },
+    {
+      "id": "c10",
+      "name": "新增 canonical 无语义重复",
+      "passed": true,
+      "detail": "名称唯一=True；与 0062/0071 边界已声明=True"
+    },
+    {
+      "id": "c11",
+      "name": "owner 唯一",
+      "passed": true,
+      "detail": "每条 canonical 一个合法 owner，问题 无"
+    },
+    {
+      "id": "c12",
+      "name": "许可证权限完整",
+      "passed": true,
+      "detail": "逐源许可完整，问题 无"
+    },
+    {
+      "id": "c13",
+      "name": "三态互斥且总数 143",
+      "passed": true,
+      "detail": "mapped 120 + routed 3 + unreviewed 20 = 143；三态互斥"
+    },
+    {
+      "id": "c14",
+      "name": "未强行映射隐藏 DEFER",
+      "passed": true,
+      "detail": "3 项 DEFER 仍为 ROUTED 且带延期条件，无问题"
+    },
+    {
+      "id": "c15",
+      "name": "所有路由迁移有完整历史",
+      "passed": true,
+      "detail": "8 项迁移均有晋升记录且目标一致，问题 无"
+    },
+    {
+      "id": "c16",
+      "name": "旧模块历史记录未被静默重写",
+      "passed": true,
+      "detail": "F1-B 历史 73 条未被静默重写，问题 无"
+    },
+    {
+      "id": "c17",
+      "name": "构建过程幂等",
+      "passed": true,
+      "detail": "重跑应用层后草稿逐字节一致（幂等）"
+    },
+    {
+      "id": "c18",
+      "name": "六份审计与原始索引未改",
+      "passed": true,
+      "detail": "原始索引与六份审计未改动"
+    },
+    {
+      "id": "c19",
+      "name": "正式引擎/Schema/测试未改",
+      "passed": true,
+      "detail": "src/tests/schemas 无改动"
+    },
+    {
+      "id": "c20",
+      "name": "决策文档完整",
+      "passed": true,
+      "detail": "文档含 11 项裁决 + 两处勘误，缺 无"
+    }
+  ]
+}
