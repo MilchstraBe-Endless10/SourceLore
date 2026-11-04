@@ -18,7 +18,7 @@
       "no": 3,
       "title": "每项已映射原始能力只映射到一个 canonical ID",
       "ok": true,
-      "detail": "已映射原始身份=131，重复归属=无"
+      "detail": "已映射原始身份=139，重复归属=无"
     },
     {
       "no": 4,
@@ -30,13 +30,13 @@
       "no": 5,
       "title": "最终处置与许可权限独立且逐源记录",
       "ok": true,
-      "detail": "逐源许可条目=131，问题=无"
+      "detail": "逐源许可条目=139，问题=无"
     },
     {
       "no": 6,
       "title": "全部映射引用可在原始索引中定位",
       "ok": true,
-      "detail": "引用总数=131，在原始索引中不可定位=无"
+      "detail": "引用总数=139，在原始索引中不可定位=无"
     },
     {
       "no": 7,
@@ -54,7 +54,7 @@
       "no": 9,
       "title": "未映射能力仍为待处理（不视为已裁决）",
       "ok": true,
-      "detail": "未处理=12，其中索引内仍标 UNMAPPED=True"
+      "detail": "未处理=4，其中索引内仍标 UNMAPPED=True"
     },
     {
       "no": 10,
@@ -66,7 +66,7 @@
       "no": 11,
       "title": "JSON 与决策文档一致",
       "ok": true,
-      "detail": "文档缺失的 ID=无；批次数字 [11, 10, 0] 出现=True；累计快照 MAPPED/ROUTED/UNREVIEWED=22/14/107 自洽=True；raw_total=143 出现=True"
+      "detail": "文档缺失的 ID=无；批次数字 [12, 10, 0] 出现=True；累计快照 MAPPED/ROUTED/UNREVIEWED=22/14/107 自洽=True；raw_total=143 出现=True"
     },
     {
       "no": 12,

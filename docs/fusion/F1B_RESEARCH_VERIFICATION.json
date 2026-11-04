@@ -1,8 +1,8 @@
 {
   "task": "M1-FUSION-GATE-F1 / F1-B / Research",
-  "generated_at": "2026-11-04T12:31:26+08:00",
+  "generated_at": "2026-11-04T14:39:49+08:00",
   "generated_by": "tools/fusion/f1b_verify_research.py",
-  "git_head": "7a4468aa6998c56182086d1e0c624c82d8208b14",
+  "git_head": "93c64ef0194ec10b41cb00dae034ddad8e9c323f",
   "summary": {
     "passed": 46,
     "total": 46,
@@ -49,7 +49,7 @@
       "id": "c7",
       "name": "每项原始能力最多正式映射一次",
       "passed": true,
-      "detail": "每项原始能力最多正式映射一次，共 131 个身份"
+      "detail": "每项原始能力最多正式映射一次，共 139 个身份"
     },
     {
       "id": "c8",
@@ -61,13 +61,13 @@
       "id": "c9",
       "name": "Research 来源证据可追溯",
       "passed": true,
-      "detail": "13 个原始来源全部可在索引定位"
+      "detail": "15 个原始来源全部可在索引定位"
     },
     {
       "id": "c10",
       "name": "已承接 ROUTED 项有正确晋升记录",
       "passed": true,
-      "detail": "晋升 13 条，问题 无"
+      "detail": "晋升 15 条，问题 无"
     },
     {
       "id": "c11",
@@ -79,13 +79,13 @@
       "id": "c12",
       "name": "三态守恒合计 143",
       "passed": true,
-      "detail": "mapped 131 + routed 0 + unreviewed 12 = 143；mapped∩routed 空=True"
+      "detail": "mapped 139 + routed 0 + unreviewed 4 = 143；mapped∩routed 空=True"
     },
     {
       "id": "c13",
       "name": "global_state_counts 与实算一致",
       "passed": true,
-      "detail": "global_state_counts 自洽 mapped=131 routed=0 unreviewed=12 canonical=75；不变量=True"
+      "detail": "global_state_counts 自洽 mapped=139 routed=0 unreviewed=4 canonical=75；不变量=True"
     },
     {
       "id": "c14",
@@ -97,7 +97,7 @@
       "id": "c15",
       "name": "Research 批次记录自洽",
       "passed": true,
-      "detail": "mapped=13（应 10）、redirected 现算一致=True（当前 0）、ids 齐备=True"
+      "detail": "mapped=15（应 10）、redirected 现算一致=True（当前 0）、ids 齐备=True"
     },
     {
       "id": "c16",
@@ -193,7 +193,7 @@
       "id": "c31",
       "name": "许可证权限独立存在",
       "passed": true,
-      "detail": "逐源许可 13 条独立存在，问题 无"
+      "detail": "逐源许可 15 条独立存在，问题 无"
     },
     {
       "id": "c32",
@@ -217,7 +217,7 @@
       "id": "c35",
       "name": "决策文档与 JSON 一致",
       "passed": true,
-      "detail": "缺失 ID=无；批次数字 [13, 5, 0] 出现=True；累计快照 54/9/80 自洽=True；raw_total 出现=True"
+      "detail": "缺失 ID=无；批次数字 [15, 5, 0] 出现=True；累计快照 54/9/80 自洽=True；raw_total 出现=True"
     },
     {
       "id": "c36",
@@ -271,7 +271,7 @@
       "id": "c44",
       "name": "stats 重算与落盘一致且幂等",
       "passed": true,
-      "detail": "stats 重算与落盘一致 mapped=131 routed=0 unrev=12；Research 批次重算 mapped=10 成立=True"
+      "detail": "stats 重算与落盘一致 mapped=139 routed=0 unrev=4；Research 批次重算 mapped=10 成立=True"
     },
     {
       "id": "c45",

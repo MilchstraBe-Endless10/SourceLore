@@ -1,8 +1,8 @@
 {
   "task": "M1-FUSION-GATE-F1 / F1-C-C2（U05 剩余未审终裁）",
-  "generated_at": "2026-11-04T12:31:26+08:00",
+  "generated_at": "2026-11-04T14:39:50+08:00",
   "generated_by": "tools/fusion/f1c_c2_verify.py",
-  "git_head": "7a4468aa6998c56182086d1e0c624c82d8208b14",
+  "git_head": "93c64ef0194ec10b41cb00dae034ddad8e9c323f",
   "summary": {
     "passed": 18,
     "total": 18,
@@ -43,7 +43,7 @@
       "id": "c6",
       "name": "每项只能有一个正式 owner",
       "passed": true,
-      "detail": "每项唯一 owner（共 131 项），重复 无"
+      "detail": "每项唯一 owner（共 139 项），重复 无"
     },
     {
       "id": "c7",
@@ -85,13 +85,13 @@
       "id": "c13",
       "name": "三态守恒合计 143",
       "passed": true,
-      "detail": "mapped 131 + routed 0 + unrev 12 = 143；互斥=True"
+      "detail": "mapped 139 + routed 0 + unrev 4 = 143；互斥=True"
     },
     {
       "id": "c14",
       "name": "登记/Crosswalk/进度账本一致",
       "passed": true,
-      "detail": "清算记录与 Crosswalk 一致=True；进度账本一致=True"
+      "detail": "清算快照自洽=True；当前未倒退=True（快照 mapped=131 → 当前 139）；进度账本一致=True"
     },
     {
       "id": "c15",

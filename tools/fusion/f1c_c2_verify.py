@@ -190,16 +190,20 @@ def main() -> int:
         return (total == 143 and mutual), detail
 
     def c14():
+        # totals_after 是 F1-C-C2 完成时的快照；后续批次合法承接会让 mapped 增长。
+        # 判据改为：快照本身自洽、且当前未反向倒退（不得少于本批记录）。
         g = draft["global_state_counts"]
         t = recon.get("totals_after", {})
-        ok = (t.get("mapped_count") == g["mapped_count"]
-              and t.get("routed_pending_count") == g["routed_pending_count"]
-              and t.get("unreviewed_count") == g["unreviewed_count"]
-              and t.get("canonical_count") == g["canonical_count"])
+        snap_ok = (t.get("mapped_count", 0) + t.get("routed_pending_count", 0)
+                   + t.get("unreviewed_count", 0) == 143)
+        ok = (snap_ok and g["mapped_count"] >= t.get("mapped_count", 0)
+              and g["canonical_count"] >= t.get("canonical_count", 0))
         prog = json.loads((F / "CROSSWALK_PROGRESS.json").read_text(encoding="utf-8"))
         p_ok = (prog["totals"]["mapped_count"] == g["mapped_count"]
                 and prog["totals"]["canonical_count"] == g["canonical_count"])
-        detail = f"清算记录与 Crosswalk 一致={ok}；进度账本一致={p_ok}"
+        detail = (f"清算快照自洽={snap_ok}；当前未倒退={ok}"
+                  f"（快照 mapped={t.get('mapped_count')} → 当前 {g['mapped_count']}）；"
+                  f"进度账本一致={p_ok}")
         return (ok and p_ok), detail
 
     def c15():

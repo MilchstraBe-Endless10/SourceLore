@@ -4,11 +4,11 @@
   "generated_by": "tools/fusion/f1c_apply_routed.py",
   "source_baseline": "docs/fusion/F1B_FROZEN_BASELINE.json",
   "decision_source": "tools/fusion/f1c_routed_decisions.py",
-  "principle": "每次运行都从 F1-B 基线重建再叠加裁决；不是打补丁，故撤销裁决不会遗留历史路由。叠加顺序：F1-B 基线 → F1-C-B（8 项 ROUTED 清算）→ F1-C-C1（3 项 DEFER 终裁）→ F1-C-C2（U05 剩余 10 项未审）。",
+  "principle": "每次运行都从 F1-B 基线重建再叠加裁决；不是打补丁，故撤销裁决不会遗留历史路由。叠加顺序：F1-B 基线 → F1-C-B（8 项 ROUTED 清算）→ F1-C-C1（3 项 DEFER 终裁）→ F1-C-C2（U05 剩余 10 项）→ F1-C-C3（U03/U04/U06 剩余 10 项）。",
   "totals_after": {
-    "mapped": 131,
+    "mapped": 139,
     "routed": 0,
-    "unreviewed": 12,
+    "unreviewed": 4,
     "canonical": 75,
     "sum_check": 143
   },
@@ -271,6 +271,130 @@
       "terminal_disposition": "REJECTED_WITH_REASON",
       "note": "保持 UNREVIEWED；终态处置待 F1-C-D 的 terminal_disposition 迁移",
       "license_note": "Apache-2.0 / copy_permitted=true（机制不采纳，不复制其构建链）"
+    }
+  ],
+  "changes_c3": [
+    {
+      "identity": "UPSTREAM-03::C23",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0037",
+      "owner": "Research",
+      "license_note": "CC-BY-4.0 / copy_permitted=true（只作反例引用，未复制其五档定义）"
+    },
+    {
+      "identity": "-",
+      "action": "AMEND_CANONICAL",
+      "target": "SL-CAP-0037",
+      "note": "追加 F1-C-B 修订"
+    },
+    {
+      "identity": "UPSTREAM-03::C24",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0057",
+      "owner": "Renderer",
+      "license_note": "CC-BY-4.0 / copy_permitted=true（只作反例引用，未复制其 D2 语法与模板）"
+    },
+    {
+      "identity": "-",
+      "action": "AMEND_CANONICAL",
+      "target": "SL-CAP-0057",
+      "note": "追加 F1-C-B 修订"
+    },
+    {
+      "identity": "UPSTREAM-03::C25",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0001",
+      "owner": "Facts",
+      "license_note": "CC-BY-4.0 / copy_permitted=true（只作反例引用，未复制其禁令原文）"
+    },
+    {
+      "identity": "-",
+      "action": "AMEND_CANONICAL",
+      "target": "SL-CAP-0001",
+      "note": "追加 F1-C-B 修订"
+    },
+    {
+      "identity": "UPSTREAM-03::C26",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0055",
+      "owner": "Renderer",
+      "license_note": "CC-BY-4.0 / copy_permitted=true（只借「两级策略」取向，未复制其术语页模板）"
+    },
+    {
+      "identity": "-",
+      "action": "AMEND_CANONICAL",
+      "target": "SL-CAP-0055",
+      "note": "追加 F1-C-B 修订"
+    },
+    {
+      "identity": "UPSTREAM-04::C05",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0068",
+      "owner": "DSH-Adapter",
+      "license_note": "MIT / copy_permitted=true（形态可直接复用）"
+    },
+    {
+      "identity": "-",
+      "action": "AMEND_CANONICAL",
+      "target": "SL-CAP-0068",
+      "note": "追加 F1-C-B 修订"
+    },
+    {
+      "identity": "UPSTREAM-04::C06",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0053",
+      "owner": "Security",
+      "license_note": "MIT / copy_permitted=true"
+    },
+    {
+      "identity": "-",
+      "action": "AMEND_CANONICAL",
+      "target": "SL-CAP-0053",
+      "note": "追加 F1-C-B 修订"
+    },
+    {
+      "identity": "UPSTREAM-04::C13",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0040",
+      "owner": "Lifecycle",
+      "license_note": "MIT / copy_permitted=true"
+    },
+    {
+      "identity": "-",
+      "action": "AMEND_CANONICAL",
+      "target": "SL-CAP-0040",
+      "note": "追加 F1-C-B 修订"
+    },
+    {
+      "identity": "UPSTREAM-04::C21",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0038",
+      "owner": "Research",
+      "license_note": "MIT / copy_permitted=true（上游无实现，本条为自建分流规则）"
+    },
+    {
+      "identity": "-",
+      "action": "AMEND_CANONICAL",
+      "target": "SL-CAP-0038",
+      "note": "追加 F1-C-B 修订"
+    },
+    {
+      "identity": "UPSTREAM-04::C27",
+      "action": "REJECT_WITH_REASON",
+      "target": null,
+      "owner": null,
+      "terminal_disposition": "REJECTED_WITH_REASON",
+      "note": "保持 UNREVIEWED；终态处置待 F1-C-D 的 terminal_disposition 迁移",
+      "license_note": "MIT / copy_permitted=true（机制不采纳，不复制其 HTML/excalidraw 文件）"
+    },
+    {
+      "identity": "UPSTREAM-06::C21",
+      "action": "REJECT_WITH_REASON",
+      "target": null,
+      "owner": null,
+      "terminal_disposition": "REJECTED_WITH_REASON",
+      "note": "保持 UNREVIEWED；终态处置待 F1-C-D 的 terminal_disposition 迁移",
+      "license_note": "**UPSTREAM-06 / copy_permitted=false —— 零复制，仅抽象思想**"
     }
   ],
   "created_canonicals": [

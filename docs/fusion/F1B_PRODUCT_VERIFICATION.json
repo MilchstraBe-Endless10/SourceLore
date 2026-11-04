@@ -1,8 +1,8 @@
 {
   "task": "M1-FUSION-GATE-F1 / F1-B / Product",
-  "generated_at": "2026-11-04T12:31:25+08:00",
+  "generated_at": "2026-11-04T14:39:49+08:00",
   "generated_by": "tools/fusion/f1b_verify_product.py",
-  "git_head": "7a4468aa6998c56182086d1e0c624c82d8208b14",
+  "git_head": "93c64ef0194ec10b41cb00dae034ddad8e9c323f",
   "summary": {
     "passed": 43,
     "total": 43,
@@ -49,7 +49,7 @@
       "id": "c7",
       "name": "每个原始身份最多一个 canonical",
       "passed": true,
-      "detail": "每项原始身份最多一个 canonical，共 131 个身份"
+      "detail": "每项原始身份最多一个 canonical，共 139 个身份"
     },
     {
       "id": "c8",
@@ -73,13 +73,13 @@
       "id": "c11",
       "name": "三态互斥且合计 143",
       "passed": true,
-      "detail": "mapped 131 + routed 0 + unreviewed 12 = 143；mapped∩routed 为空=True"
+      "detail": "mapped 139 + routed 0 + unreviewed 4 = 143；mapped∩routed 为空=True"
     },
     {
       "id": "c12",
       "name": "global_state_counts 与实算一致",
       "passed": true,
-      "detail": "global_state_counts 与实算一致 mapped=131 routed=0 unreviewed=12 canonical=75；四条不变量=True"
+      "detail": "global_state_counts 与实算一致 mapped=139 routed=0 unreviewed=4 canonical=75；四条不变量=True"
     },
     {
       "id": "c13",
@@ -103,7 +103,7 @@
       "id": "c16",
       "name": "历史三批 mapped 定格未变",
       "passed": true,
-      "detail": "Facts 11、Collector 11、EC 21 均定格未变"
+      "detail": "Facts 12、Collector 11、EC 21 均定格未变"
     },
     {
       "id": "c17",
@@ -229,7 +229,7 @@
       "id": "c37",
       "name": "增量构建可重复执行",
       "passed": true,
-      "detail": "stats 重算与草稿落盘一致 mapped=131 routed=0 unrev=12 canon=75"
+      "detail": "stats 重算与草稿落盘一致 mapped=139 routed=0 unrev=4 canon=75"
     },
     {
       "id": "c38",

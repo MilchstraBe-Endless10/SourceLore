@@ -80,6 +80,27 @@
             "license_link_required": true,
             "modification_notice_required": true
           }
+        },
+        {
+          "upstream_id": "UPSTREAM-03",
+          "original_capability_id": "C25",
+          "identity_key": "UPSTREAM-03::C25",
+          "upstream_capability": "「不得依赖 AST 解析器/图数据库/静态分析管线/索引系统」",
+          "upstream_where": "SKILL.md §2 L52–L53",
+          "upstream_disposition": "REJECT",
+          "verdict": "REJECT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-03-audit.json",
+            "pointer": "capability_matrix[24]",
+            "where": "SKILL.md §2 L52–L53"
+          },
+          "license": {
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true
+          }
         }
       ],
       "disposition": "REUSE",
@@ -100,6 +121,14 @@
             "license_link_required": true,
             "modification_notice_required": true,
             "upstream_id": "UPSTREAM-05"
+          },
+          {
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "upstream_id": "UPSTREAM-03"
           }
         ],
         "copy_permitted": true,
@@ -126,7 +155,10 @@
         ]
       },
       "unresolved": [],
-      "merge_note": "U01-C01 提供 extract/* 的分层零 LLM 实现；U05-C01 提供「哈希比对先行、不启模型」的调度取向。二者同一机制的不同侧面：前者是抽取器，后者是何时该调用抽取的规则，合并为一条能力并把调度语义下沉到 dependencies。"
+      "merge_note": "U01-C01 提供 extract/* 的分层零 LLM 实现；U05-C01 提供「哈希比对先行、不启模型」的调度取向。二者同一机制的不同侧面：前者是抽取器，后者是何时该调用抽取的规则，合并为一条能力并把调度语义下沉到 dependencies。",
+      "f1c_amendments": [
+        "补充技术选型立场（F1-C-C3 由 U03-C25 引入）：**明确拒绝「禁止使用 AST 解析器 / 图数据库 / 静态分析管线 / 索引系统」这条方法论设限**。硬规则：确定性事实抽取（本能力）**可以且应当**使用 AST 等确定性工具；派生索引的可重建性归 SL-CAP-0065。技术选型不设永久禁令——由 F2 按真实需求、性能、复杂度与风险决定；「上游不推荐某技术」不构成 SourceLore 的禁用理由。"
+      ]
     },
     {
       "canonical_id": "SL-CAP-0002",
@@ -3167,6 +3199,27 @@
             "license_link_required": false,
             "modification_notice_required": false
           }
+        },
+        {
+          "upstream_id": "UPSTREAM-03",
+          "original_capability_id": "C23",
+          "identity_key": "UPSTREAM-03::C23",
+          "upstream_capability": "五档证据优先级",
+          "upstream_where": "SKILL.md §12.2 L1142–L1154",
+          "upstream_disposition": "REJECT",
+          "verdict": "REJECT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-03-audit.json",
+            "pointer": "capability_matrix[22]",
+            "where": "SKILL.md §12.2 L1142–L1154"
+          },
+          "license": {
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true
+          }
         }
       ],
       "disposition": "ADAPT",
@@ -3187,6 +3240,14 @@
             "license_link_required": false,
             "modification_notice_required": false,
             "upstream_id": "UPSTREAM-02"
+          },
+          {
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "upstream_id": "UPSTREAM-03"
           }
         ],
         "copy_permitted": true,
@@ -3219,7 +3280,10 @@
         "verified_against_commit 为空的合法情形（纯生态研究无源码依赖时）需明确，待 F2",
         "本条与 Evidence-Claims 的 evidence_record 在产物中如何避免字段重复，待 F2"
       ],
-      "merge_note": "合并依据：C14 的来源分桶（Primary/Media/Academic/Community）是「这条材料是什么类型」，C12 的五层来源优先级是「不同类型该怎么排序」——两者是同一件事的正反两面，且都必须落成字段才能机器校验。合并后明确：分桶保留为 source_type，而优先级被显式降级为「不构成真伪排序」，这正是用户第 4.B 节要求的区分。C14 判 ADAPT：思想正确（全套资产里最接近来源类型标记的设计），但只是模板里的分组小标题，须升级为结构化字段 + retrieved_at + commit_sha。C12 判 ADAPT：分层直觉正确，但仅有序数无权重、且「verified media outlet」无定义——本条不追求量化权重，改采「有定义才可用」的立场：进层规则不可判定时该层不启用。这条裁决同时化解了用户第 5 节第 1 项冲突：来源优先级不得替代 Evidence-Claims 的验证规则。"
+      "merge_note": "合并依据：C14 的来源分桶（Primary/Media/Academic/Community）是「这条材料是什么类型」，C12 的五层来源优先级是「不同类型该怎么排序」——两者是同一件事的正反两面，且都必须落成字段才能机器校验。合并后明确：分桶保留为 source_type，而优先级被显式降级为「不构成真伪排序」，这正是用户第 4.B 节要求的区分。C14 判 ADAPT：思想正确（全套资产里最接近来源类型标记的设计），但只是模板里的分组小标题，须升级为结构化字段 + retrieved_at + commit_sha。C12 判 ADAPT：分层直觉正确，但仅有序数无权重、且「verified media outlet」无定义——本条不追求量化权重，改采「有定义才可用」的立场：进层规则不可判定时该层不启用。这条裁决同时化解了用户第 5 节第 1 项冲突：来源优先级不得替代 Evidence-Claims 的验证规则。",
+      "f1c_amendments": [
+        "补充反例约束（F1-C-C3 由 U03-C23 引入）：**明确拒绝「多档证据优先级排序」机制**。理由：五档无权重不构成全序、且允许任意层级，排序自我消解（上游审计 D10）；叠加会让 SourceLore 出现两套互不兼容的证据体系。硬规则：来源优先级**只能**用于「先看哪个资料」的取数次序，**不得**用于判定 claim 真伪、不得作为 report_tier 的输入——后者归 SL-CAP-0028。"
+      ]
     },
     {
       "canonical_id": "SL-CAP-0038",
@@ -3331,6 +3395,27 @@
             "license_link_required": false,
             "modification_notice_required": true
           }
+        },
+        {
+          "upstream_id": "UPSTREAM-04",
+          "original_capability_id": "C21",
+          "identity_key": "UPSTREAM-04::C21",
+          "upstream_capability": "冲突处理（两个报告判断不同）",
+          "upstream_where": "全文缺失",
+          "upstream_disposition": "REIMPLEMENT",
+          "verdict": "REIMPLEMENT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-04-audit.json",
+            "pointer": "capability_matrix[20]",
+            "where": "全文缺失"
+          },
+          "license": {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true
+          }
         }
       ],
       "disposition": "ADAPT",
@@ -3375,6 +3460,14 @@
             "license_link_required": false,
             "modification_notice_required": true,
             "upstream_id": "UPSTREAM-04"
+          },
+          {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true,
+            "upstream_id": "UPSTREAM-04"
           }
         ],
         "copy_permitted": false,
@@ -3411,7 +3504,10 @@
         "handoff_item 与 EC 的 conflict_item 在产物中如何避免双写，待 F2",
         "Research 与 Product 对同一功能的分析如何避免重复生成 claim：本批原则是「Product 产产品语义 claim 候选、Research 产生态与研究 claim 候选，两者都进 Evidence-Claims 去重」，具体去重键待 F2"
       ],
-      "merge_note": "合并依据：C13 给报告内容骨架，U06-C23 给「不评质量只评敢不敢用」的结论形态，U04-C26 与 U02-C15 是两个必须显式拒绝的反面约束（「必须产报告」「用百分比标置信度」），四者都指向同一件事：研究结论该以什么形态落地、什么叫「够了」。C13 判 ADAPT：九节划分覆盖面合理可作骨架，但必须去掉固定基数与无条件 Status: Complete，把置信度换成可机械复核的条件陈述。U06-C23 判 ADAPT：其「不评代码质量，只评敢不敢用、需要什么补偿控制」的裁决结构最接近SourceLore 的研究目的；只借裁决结构，不借其锁模型层与跳过阶段的做法。U04-C26 判 REJECT：要求「即使无新发现也必须产报告」在跨仓库跨会话场景会产生大量无价值写入；本条改采「允许只登记不产报告」。U02-C15 判 REJECT：90%+/70-89%/50-69% 未经任何校准，属虚假精准度；U03-C27 判 REJECT：上游允许「项目明确偏好时用百分比」却未给校准方法——两者是同一虚假精准度的两个出口，本条一并拒绝，明令禁止未校准百分比。"
+      "merge_note": "合并依据：C13 给报告内容骨架，U06-C23 给「不评质量只评敢不敢用」的结论形态，U04-C26 与 U02-C15 是两个必须显式拒绝的反面约束（「必须产报告」「用百分比标置信度」），四者都指向同一件事：研究结论该以什么形态落地、什么叫「够了」。C13 判 ADAPT：九节划分覆盖面合理可作骨架，但必须去掉固定基数与无条件 Status: Complete，把置信度换成可机械复核的条件陈述。U06-C23 判 ADAPT：其「不评代码质量，只评敢不敢用、需要什么补偿控制」的裁决结构最接近SourceLore 的研究目的；只借裁决结构，不借其锁模型层与跳过阶段的做法。U04-C26 判 REJECT：要求「即使无新发现也必须产报告」在跨仓库跨会话场景会产生大量无价值写入；本条改采「允许只登记不产报告」。U02-C15 判 REJECT：90%+/70-89%/50-69% 未经任何校准，属虚假精准度；U03-C27 判 REJECT：上游允许「项目明确偏好时用百分比」却未给校准方法——两者是同一虚假精准度的两个出口，本条一并拒绝，明令禁止未校准百分比。",
+      "f1c_amendments": [
+        "补充报告间冲突处理（F1-C-C3 由 U04-C21 引入）：两份研究对同一事实的解释不一致时，**必须先分辨两类**，不得直接当 claim 冲突：\nR-1 **视角差异**（如「架构好」vs「维护差」分别从不同维度评价，两者都成立）→ 并列呈现，各自标注适用条件与评价维度，**不判谁错**；\nR-2 **事实冲突**（对同一可验证断言给出互斥结论）→ 产出 handoff_item 移交 EC 的 SL-CAP-0028，**Research 不自行裁决**。\n硬规则：本条只负责**分辨与分流**，不拥有任何裁决权；**不得为报告冲突另建第二套状态机**——结论状态只有 SL-CAP-0028 一处。与 U05-C21 的边界：U05-C21 管 Claim 间证据矛盾，本条管报告间解释分歧，两者不得合并。"
+      ]
     },
     {
       "canonical_id": "SL-CAP-0039",
@@ -3573,6 +3669,27 @@
             "license_link_required": true,
             "modification_notice_required": true
           }
+        },
+        {
+          "upstream_id": "UPSTREAM-04",
+          "original_capability_id": "C13",
+          "identity_key": "UPSTREAM-04::C13",
+          "upstream_capability": "报告粒度禁令",
+          "upstream_where": "SKILL.md L67；L66（不强加固定段落）",
+          "upstream_disposition": "ADAPT",
+          "verdict": "ADAPT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-04-audit.json",
+            "pointer": "capability_matrix[12]",
+            "where": "SKILL.md L67；L66（不强加固定段落）"
+          },
+          "license": {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true
+          }
         }
       ],
       "disposition": "REIMPLEMENT",
@@ -3609,6 +3726,14 @@
             "license_link_required": true,
             "modification_notice_required": true,
             "upstream_id": "UPSTREAM-05"
+          },
+          {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true,
+            "upstream_id": "UPSTREAM-04"
           }
         ],
         "copy_permitted": true,
@@ -3647,7 +3772,8 @@
       ],
       "merge_note": "合并依据：C02 给「Subject 而非 Question 作为身份单位」的判据，C18 给 Reuse/Extend/Create 三态判定的目标，C12 给「优先扩展而非新建」的取向——三者是同一件事的定义、判定与取向。C02 判 REIMPLEMENT 而非 REUSE：上游 L37 的定义（能持续学习的对象）与四个举例确实是可用判据，但它没有给出任何可计算的身份键；下游要落库就必须有 subject_key 与 repo_binding，故须补实现。C18 判 REIMPLEMENT：上游四个关键判断（plausibly covers、already answers it、is still valid、no existing subject covers it）全是模型主观短语（审计 D1 blocker），照用会导致语料库碎片化。本条把它们拆成「确定性候选匹配 + 模型辅助判断」两段，且禁止把后者记成确定性校验通过。C12 判 ADAPT：方向正确（同一 Subject 出两份报告就是失败模式），但只是取向不是规则，本条改为硬顺序 Reuse > Extend > Create。",
       "f1c_amendments": [
-        "补充命名原则（F1-C-C2 由 U05-C07 引入）：Subject 的命名空间必须**可枚举**——subject_key 由确定性规则生成并可在已知集合内穷举，不得由作者自由起名。理由：自由命名会让同一实体在不同批次得到不同键，破坏身份稳定性。"
+        "补充命名原则（F1-C-C2 由 U05-C07 引入）：Subject 的命名空间必须**可枚举**——subject_key 由确定性规则生成并可在已知集合内穷举，不得由作者自由起名。理由：自由命名会让同一实体在不同批次得到不同键，破坏身份稳定性。",
+        "补充粒度门槛（F1-C-C3 由 U04-C13 引入）：**不得为每次搜索或次要子问题单建知识单元**。两条可判定门槛：\nK-1 subject_key 必须经规范化（同一实体不得产生多个键）；\nK-2 最小内容门槛——一个独立知识单元至少须有「可独立陈述的一句话结论 + 至少一条证据引用」；不满足者并入既有单元或进待定出口，**不得单建**。\n本条只定「什么算一个单元」，不规定报告的章节与排版（归 Renderer）。"
       ]
     },
     {
@@ -4944,6 +5070,27 @@
             "license_link_required": false,
             "modification_notice_required": false
           }
+        },
+        {
+          "upstream_id": "UPSTREAM-04",
+          "original_capability_id": "C06",
+          "identity_key": "UPSTREAM-04::C06",
+          "upstream_capability": "不存密钥/凭据/个人数据（全模式适用）",
+          "upstream_where": "SKILL.md L72；references/external-probe.md L10、L13",
+          "upstream_disposition": "REUSE",
+          "verdict": "REUSE",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-04-audit.json",
+            "pointer": "capability_matrix[5]",
+            "where": "SKILL.md L72；references/external-probe.md L10、L13"
+          },
+          "license": {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true
+          }
         }
       ],
       "disposition": "REIMPLEMENT",
@@ -4972,6 +5119,14 @@
             "license_link_required": false,
             "modification_notice_required": false,
             "upstream_id": "UPSTREAM-06"
+          },
+          {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true,
+            "upstream_id": "UPSTREAM-04"
           }
         ],
         "copy_permitted": false,
@@ -5008,7 +5163,10 @@
         "与 Storage 的实际访问控制接口：分级如何落地为读写权限，见跨模块 unresolved",
         "U05-C04（review_status 人机权限）已由 EC 的 SL-CAP-0028 承接部分语义，本条只登记跨模块依赖，不重新占用该原始身份"
       ],
-      "merge_note": "合并依据：U05-C20 给「分级写在元数据、strip 在构建后运行、顺序强制」的机制，U06-C17 给「密钥打码与原始输出清理」的具体规则，U06-C27 给「密钥/数据分级」的缺口定义——三者是同一条「分级 → 剥离 → 发布」链路的三段。拆开则分级无处落实、剥离无规则可依。U05-C20 判 REIMPLEMENT：这是 U05 唯一有真测试背书的机制（12 个用例覆盖三处脚本），设计可借，但 SourceLore 不需要文档投放分级，需要同构的「产物按敏感度分级 + 发布前机械剥离」，故不是原样沿用。许可 Apache-2.0，须履行署名、许可链接与修改声明。U06-C17 判 ADAPT：打码规则可采纳，但上游删除是尽力而为、失败仅告警（审计 D11），且不覆盖 P3 的原始 JSON（D12）；本条改为「原始扫描输出不落盘」的结构约束。U06-C27 判 REIMPLEMENT：上游分级没有落成可配置字段，无法表达「哪类内容可进报告、哪类只能留快照」；本条自建分级字段与判定。U06 两项均只取抽象思想。"
+      "merge_note": "合并依据：U05-C20 给「分级写在元数据、strip 在构建后运行、顺序强制」的机制，U06-C17 给「密钥打码与原始输出清理」的具体规则，U06-C27 给「密钥/数据分级」的缺口定义——三者是同一条「分级 → 剥离 → 发布」链路的三段。拆开则分级无处落实、剥离无规则可依。U05-C20 判 REIMPLEMENT：这是 U05 唯一有真测试背书的机制（12 个用例覆盖三处脚本），设计可借，但 SourceLore 不需要文档投放分级，需要同构的「产物按敏感度分级 + 发布前机械剥离」，故不是原样沿用。许可 Apache-2.0，须履行署名、许可链接与修改声明。U06-C17 判 ADAPT：打码规则可采纳，但上游删除是尽力而为、失败仅告警（审计 D11），且不覆盖 P3 的原始 JSON（D12）；本条改为「原始扫描输出不落盘」的结构约束。U06-C27 判 REIMPLEMENT：上游分级没有落成可配置字段，无法表达「哪类内容可进报告、哪类只能留快照」；本条自建分级字段与判定。U06 两项均只取抽象思想。",
+      "f1c_amendments": [
+        "补充覆盖面硬规则（F1-C-C3 由 U04-C06 引入）：密钥、凭据、个人数据**在任何模式下、任何保留产物中都不得存储**——不存在「宽松模式」或「调试模式」的例外。该约束覆盖产物全形态（报告、中间件、缓存、日志、索引）。"
+      ]
     },
     {
       "canonical_id": "SL-CAP-0054",
@@ -5110,6 +5268,27 @@
             "license_link_required": false,
             "modification_notice_required": false
           }
+        },
+        {
+          "upstream_id": "UPSTREAM-03",
+          "original_capability_id": "C26",
+          "identity_key": "UPSTREAM-03::C26",
+          "upstream_capability": "每个术语必须独立成页（含小仓库）",
+          "upstream_where": "SKILL.md §7.2 L530–L559（L534、L557）",
+          "upstream_disposition": "REJECT",
+          "verdict": "REJECT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-03-audit.json",
+            "pointer": "capability_matrix[25]",
+            "where": "SKILL.md §7.2 L530–L559（L534、L557）"
+          },
+          "license": {
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true
+          }
         }
       ],
       "disposition": "REIMPLEMENT",
@@ -5122,6 +5301,14 @@
             "license_link_required": false,
             "modification_notice_required": false,
             "upstream_id": "UPSTREAM-01"
+          },
+          {
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "upstream_id": "UPSTREAM-03"
           }
         ],
         "copy_permitted": true,
@@ -5157,7 +5344,10 @@
         "九节结构作为报告类槽位来源是否保留全部九节，待 F1-C",
         "source_snapshot 引用 commit_sha 还是 Bundle manifest 哈希，取决于 F2 的 Bundle 契约"
       ],
-      "merge_note": "合并依据：U01-C10 提供「report schema + markdown render」的呈现骨架，U02-C13 提供九节报告的内容槽位——两者一个是渲染机制、一个是内容划分，合起来才构成「同一事实源、多类型布局」的统一契约。U02-C13（九节报告结构）已在 Research 批次由 SL-CAP-0038 正式承接，同一原始身份只能映射一次，故本条的 refs 里只有 U01-C10；对九节结构的引用是跨模块依赖（「报告类视图的槽位来源之一」），不是身份复用。U01-C10 判 REIMPLEMENT 而非审计建议的 REUSE：上游的 13 顶层键结构确实合理，但它把 schema 与 render 焊在一个模块里，且 evidence 字段太窄（审计 D5 已记）。本条只取「结构化 schema 驱动渲染」的取向，四类视图的分层结构是自建。U02-C13 的正确归属是 Research 的 SL-CAP-0038（内容槽位），本条只作为跨模块依赖引用其槽位定义，不重复占用原始身份。"
+      "merge_note": "合并依据：U01-C10 提供「report schema + markdown render」的呈现骨架，U02-C13 提供九节报告的内容槽位——两者一个是渲染机制、一个是内容划分，合起来才构成「同一事实源、多类型布局」的统一契约。U02-C13（九节报告结构）已在 Research 批次由 SL-CAP-0038 正式承接，同一原始身份只能映射一次，故本条的 refs 里只有 U01-C10；对九节结构的引用是跨模块依赖（「报告类视图的槽位来源之一」），不是身份复用。U01-C10 判 REIMPLEMENT 而非审计建议的 REUSE：上游的 13 顶层键结构确实合理，但它把 schema 与 render 焊在一个模块里，且 evidence 字段太窄（审计 D5 已记）。本条只取「结构化 schema 驱动渲染」的取向，四类视图的分层结构是自建。U02-C13 的正确归属是 Research 的 SL-CAP-0038（内容槽位），本条只作为跨模块依赖引用其槽位定义，不重复占用原始身份。",
+      "f1c_amendments": [
+        "补充导航策略（F1-C-C3 由 U03-C26 引入）：**拒绝「每个术语强制独立成页」**（上游含小仓库也强制，与低 token 目标冲突）。采纳两级策略：默认以**术语表条目**呈现（摘要视图），当某术语满足「被多次引用 / 有独立证据链 / 人工要求升格」之一时，方可升格为独立页。硬规则：术语页只是既有 Subject 的**呈现单位**，**不得因建页而制造新的权威知识对象**——权威对象仍只由上游模块产生。"
+      ]
     },
     {
       "canonical_id": "SL-CAP-0056",
@@ -5256,6 +5446,27 @@
             "license_link_required": false,
             "modification_notice_required": false
           }
+        },
+        {
+          "upstream_id": "UPSTREAM-03",
+          "original_capability_id": "C24",
+          "identity_key": "UPSTREAM-03::C24",
+          "upstream_capability": "D2 图规范（强制 D2）",
+          "upstream_where": "SKILL.md §11.1–§11.6 L1044–L1113",
+          "upstream_disposition": "REJECT",
+          "verdict": "REJECT",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-03-audit.json",
+            "pointer": "capability_matrix[23]",
+            "where": "SKILL.md §11.1–§11.6 L1044–L1113"
+          },
+          "license": {
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true
+          }
         }
       ],
       "disposition": "REIMPLEMENT",
@@ -5268,6 +5479,14 @@
             "license_link_required": false,
             "modification_notice_required": false,
             "upstream_id": "UPSTREAM-02"
+          },
+          {
+            "spdx": "CC-BY-4.0",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": true,
+            "modification_notice_required": true,
+            "upstream_id": "UPSTREAM-03"
           }
         ],
         "copy_permitted": true,
@@ -5300,7 +5519,10 @@
         "图表格式中立性如何落到具体渲染目标，待 F2",
         "生成图表是否需要单独的发布审查（与 SL-CAP-0061 的门禁关系）待 F1-C"
       ],
-      "merge_note": "U02-C17 在原始索引中判 REJECT，理由是「为出图而出图：模板固定 4 节点 flowchart，与真实架构无关时也必须填，是形式驱动虚构的直接来源」。本批保留这一 REJECT 证据，并把它的处置改为 REIMPLEMENT——因为要拒绝的是**强制出图机制**，不是图表功能本身。把二者混为一谈会导致 SourceLore 连「有真实关系时画个图」都不敢做，那是另一个极端。本条把触发条件交给数据、把内容追溯钉到上游引用、把完成判据与图表解耦，三条硬规则正好对应上游的三处失误。该身份来自 Research 批次的既有分流（Research 判定「Mermaid 硬要求属呈现决策」）。"
+      "merge_note": "U02-C17 在原始索引中判 REJECT，理由是「为出图而出图：模板固定 4 节点 flowchart，与真实架构无关时也必须填，是形式驱动虚构的直接来源」。本批保留这一 REJECT 证据，并把它的处置改为 REIMPLEMENT——因为要拒绝的是**强制出图机制**，不是图表功能本身。把二者混为一谈会导致 SourceLore 连「有真实关系时画个图」都不敢做，那是另一个极端。本条把触发条件交给数据、把内容追溯钉到上游引用、把完成判据与图表解耦，三条硬规则正好对应上游的三处失误。该身份来自 Research 批次的既有分流（Research 判定「Mermaid 硬要求属呈现决策」）。",
+      "f1c_amendments": [
+        "补充反例约束（F1-C-C3 由 U03-C24 引入）：**明确拒绝「强制单一图示语法」**（上游强制 D2 却无工具链、无语法校验，且无「不适用」出口）。硬规则：任何具体图示语法（D2 / Mermaid / PlantUML / SVG）都只是**实现选择**，不得写入 canonical 作为必备产出，也不得因「没用某语法」判报告不完整。**不得为了使用某语法而编造数据关系**——与 0057 第二、三条硬规则同源。"
+      ]
     },
     {
       "canonical_id": "SL-CAP-0058",
@@ -6375,6 +6597,27 @@
             "license_link_required": false,
             "modification_notice_required": false
           }
+        },
+        {
+          "upstream_id": "UPSTREAM-04",
+          "original_capability_id": "C05",
+          "identity_key": "UPSTREAM-04::C05",
+          "upstream_capability": "按需加载的模式指引",
+          "upstream_where": "SKILL.md L78–L86（L80 \"Load only the guidance that matches the question\"）",
+          "upstream_disposition": "REUSE",
+          "verdict": "REUSE",
+          "evidence": {
+            "audit_file": "progress/UPSTREAM-04-audit.json",
+            "pointer": "capability_matrix[4]",
+            "where": "SKILL.md L78–L86（L80 \"Load only the guidance that matches the question\"）"
+          },
+          "license": {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true
+          }
         }
       ],
       "disposition": "REIMPLEMENT",
@@ -6387,6 +6630,14 @@
             "license_link_required": false,
             "modification_notice_required": false,
             "upstream_id": "UPSTREAM-01"
+          },
+          {
+            "spdx": "MIT",
+            "copy_permitted": true,
+            "attribution_required": true,
+            "license_link_required": false,
+            "modification_notice_required": true,
+            "upstream_id": "UPSTREAM-04"
           }
         ],
         "copy_permitted": true,
@@ -6416,7 +6667,10 @@
         "description 触发语的写法规范（何时触发、何时不触发）待 F2",
         "BotHarness 对 Skill 的发现是否与 DSH 完全一致，未经实测，标 UNVERIFIED_RUNTIME_CAPABILITY"
       ],
-      "merge_note": "U01-C11 判 ADAPT：上游把 prompt 资产当 markdown 知识组织，方向正确，但它没有「入口薄、能力按需读」的约束——上游倾向于把说明堆进单一文件。本条把该取向收紧为结构的硬规则：入口只放路由指针，约束下沉到独立文件。运行时事实 V-1/V-2 来自本机只读调查（~/.agents/skills/omarchy 的实际结构），V-3 是本项目的真实状态（skills/sourcelore 为空）。未实测的部分一律标 UNVERIFIED_RUNTIME_CAPABILITY，不写成平台现有功能。"
+      "merge_note": "U01-C11 判 ADAPT：上游把 prompt 资产当 markdown 知识组织，方向正确，但它没有「入口薄、能力按需读」的约束——上游倾向于把说明堆进单一文件。本条把该取向收紧为结构的硬规则：入口只放路由指针，约束下沉到独立文件。运行时事实 V-1/V-2 来自本机只读调查（~/.agents/skills/omarchy 的实际结构），V-3 是本项目的真实状态（skills/sourcelore 为空）。未实测的部分一律标 UNVERIFIED_RUNTIME_CAPABILITY，不写成平台现有功能。",
+      "f1c_amendments": [
+        "补充匹配细则（F1-C-C3 由 U04-C05 引入）：按需加载的触发条件必须**按问题类型匹配**，不得按「总是加载全部」或「随机选一份」。硬规则：指引文件的总行数可以增长，但**单次上下文只装载本次任务匹配的那几份**。"
+      ]
     },
     {
       "canonical_id": "SL-CAP-0069",
@@ -7137,7 +7391,7 @@
         "SL-CAP-0009",
         "SL-CAP-0010"
       ],
-      "raw_mapped_to_this_module": 11,
+      "raw_mapped_to_this_module": 12,
       "raw_redirected_to_other_modules": 0,
       "dedup_ratio": 1.1,
       "dedup_ratio_definition": "raw_mapped_to_this_module / canonical_count",
@@ -7239,7 +7493,7 @@
         "SL-CAP-0038",
         "SL-CAP-0039"
       ],
-      "raw_mapped_to_this_module": 13,
+      "raw_mapped_to_this_module": 15,
       "raw_redirected_to_other_modules": 0,
       "dedup_ratio": 2.0,
       "dedup_ratio_definition": "raw_mapped_to_this_module / canonical_count",
@@ -7263,7 +7517,7 @@
         "SL-CAP-0044",
         "SL-CAP-0045"
       ],
-      "raw_mapped_to_this_module": 15,
+      "raw_mapped_to_this_module": 16,
       "raw_redirected_to_other_modules": 0,
       "dedup_ratio": 2.0,
       "dedup_ratio_definition": "raw_mapped_to_this_module / canonical_count",
@@ -7290,7 +7544,7 @@
         "SL-CAP-0053",
         "SL-CAP-0054"
       ],
-      "raw_mapped_to_this_module": 17,
+      "raw_mapped_to_this_module": 18,
       "raw_redirected_to_other_modules": 0,
       "dedup_ratio": 1.889,
       "dedup_ratio_definition": "raw_mapped_to_this_module / canonical_count",
@@ -7315,7 +7569,7 @@
         "SL-CAP-0060",
         "SL-CAP-0061"
       ],
-      "raw_mapped_to_this_module": 12,
+      "raw_mapped_to_this_module": 14,
       "raw_redirected_to_other_modules": 0,
       "dedup_ratio": 1.571,
       "dedup_ratio_definition": "raw_mapped_to_this_module / canonical_count",
@@ -7364,7 +7618,7 @@
         "SL-CAP-0072",
         "SL-CAP-0073"
       ],
-      "raw_mapped_to_this_module": 8,
+      "raw_mapped_to_this_module": 9,
       "raw_redirected_to_other_modules": 0,
       "dedup_ratio": 1.167,
       "dedup_ratio_definition": "raw_mapped_to_this_module / canonical_count",
@@ -8356,6 +8610,70 @@
       "to_canonical_id": "SL-CAP-0075",
       "promoted_in_batch": "F1-C-C2",
       "reason": "机制「3 文件 19 方法」，why 写「存在测试这件事本身是相对 U04 的实质进步，但覆盖严重偏斜：18 个脚本里只有 3 个被测试触及，check_pkb_staleness.py / gen_index.py 零引用。SourceLore 若建脚本层，必须以『机制必被测』为准入，而非『有 tests 目录』」。核实四个问题：覆盖率只是**测试运行的测量结果**；**不能**证明某功能正确；**不能**证明某 Claim 得到支持；**可以**作为 SL-CAP-0075 评测基线的一项输入（但只是一项）。故归 0075，并补「覆盖率≠正确性」的硬规则。"
+    },
+    {
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C23",
+      "from": "unreviewed_adopted",
+      "to_canonical_id": "SL-CAP-0037",
+      "promoted_in_batch": "F1-C-C3",
+      "reason": "**拒绝的是「五档机械排序」这个机制，不是拒绝「给来源标类型」。**该机制有致命缺陷：五档无权重不构成全序，且同时允许「源码处任意层级」，排序机制自我消解。SourceLore 已有 `source_type` 四值（SL-CAP-0037）与确定性事实，再叠一套优先级会产生两套互不兼容的证据体系。**保留的合理部分是「资料收集与标注原则」**——已由 SL-CAP-0037 承载（标类型、记采集时刻、记覆盖状态），本批补一条：优先级不得用于判定真伪。"
+    },
+    {
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C24",
+      "from": "unreviewed_adopted",
+      "to_canonical_id": "SL-CAP-0057",
+      "promoted_in_batch": "F1-C-C3",
+      "reason": "**拒绝的是「强制单一图示语法 + 无校验」这个机制。**审计 why 写得很准：L1046 强制 D2 却无工具链、无语法校验，无法检测装饰性图表（§11.2）与一图一意（§11.6）（D12）。图形态应由渲染层决定，不应被锁定为 D2。SL-CAP-0057 已覆盖其合理部分（可选图表 + 可追溯 + 格式中立），本条无需新增能力，只需把「拒绝锁定具体语法」写成显式反例。"
+    },
+    {
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C25",
+      "from": "unreviewed_adopted",
+      "to_canonical_id": "SL-CAP-0001",
+      "promoted_in_batch": "F1-C-C3",
+      "reason": "该条与 SourceLore 确定性 CLI 架构**正面冲突**——审计 why 已明说「与 UPSTREAM-01 已确立的『确定性工具算事实、模型只解释含义』路线相反」、「本源最主要的架构不兼容点」。**拒绝的是这条自我设限的禁令，不是这四类技术。**Facts 需要 AST（SL-CAP-0001 确定性事实抽取）、Storage 需要可重建索引（SL-CAP-0065）。技术选型权留给 F2，按真实需求、性能、复杂度与风险决定。"
+    },
+    {
+      "upstream_id": "UPSTREAM-03",
+      "original_capability_id": "C26",
+      "from": "unreviewed_adopted",
+      "to_canonical_id": "SL-CAP-0055",
+      "promoted_in_batch": "F1-C-C3",
+      "reason": "审计 why 判准：「与低 token 目标冲突：小仓库也会被迫产出大量单句页，而 §15.1 只有散文级去重无检测手段。应改为术语表条目 + 按需升格为页的两级策略」。**拒绝的是「无条件强制逐术语建页」**，采纳其合理替代形态（两级策略），由 SL-CAP-0055 的多类型视图承载——术语表属摘要/索引视图，单页属完整卡片视图。**不因术语页存在就制造新的权威知识对象**——术语仍是既有 Subject 的呈现单位。"
+    },
+    {
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C05",
+      "from": "unreviewed_adopted",
+      "to_canonical_id": "SL-CAP-0068",
+      "promoted_in_batch": "F1-C-C3",
+      "reason": "该机制与 SL-CAP-0068「渐进加载」完全同构：都是「不把全部约束常驻上下文、按需加载」。本批价值在于**把它作为 0068 的上游来源正式登记**，并为「按问题类型匹配」补一条细则。不归 Lifecycle——原 disposition=REUSE 只说明可复用，与 owner 无关。"
+    },
+    {
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C06",
+      "from": "unreviewed_adopted",
+      "to_canonical_id": "SL-CAP-0053",
+      "promoted_in_batch": "F1-C-C3",
+      "reason": "上游的价值在于覆盖面措辞：不是「某些模式下不存」，而是「**每个保留产物、每种模式**」都不存。SL-CAP-0053 已覆盖分级与打码，但未明确「无模式例外」这一条。本批把它补成硬规则。不归 Lifecycle——落盘秘密约束与知识新鲜度无关。"
+    },
+    {
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C13",
+      "from": "unreviewed_adopted",
+      "to_canonical_id": "SL-CAP-0040",
+      "promoted_in_batch": "F1-C-C3",
+      "reason": "上游禁止「为每次搜索或次要子问题建报告」，其实质是**防止知识单元碎片化**——属 Subject 身份与复用判定，归 SL-CAP-0040。审计指出它「没有可判定的粒度标准」，本批补两条可判定门槛：一是 subject_key 必须经规范化（已由 0040 有），二是最小内容门槛（本批新增）。"
+    },
+    {
+      "upstream_id": "UPSTREAM-04",
+      "original_capability_id": "C21",
+      "from": "unreviewed_adopted",
+      "to_canonical_id": "SL-CAP-0038",
+      "promoted_in_batch": "F1-C-C3",
+      "reason": "**这是本批最易判错的一项。** 同名「冲突处理」但对象完全不同：U05-C21 是 Claim 级证据矛盾（已归 EC），U04-C21 是报告级解释分歧。报告间的分歧有两种性质：一是**视角差异**（两者都成立，应并列呈现并标注适用条件），二是**事实冲突**（须交 EC 裁决）。Research 的职责是**先分辨这两类**，不是自己当裁判。故归 SL-CAP-0038（研究质量状态与结论边界），补 report_conflict 的登记与分流规则。**不为所有冲突建第二套统一状态机**——裁决仍只由 EC 的 0028 一处拥有。"
     }
   ],
   "global_state_counts": {
@@ -8366,9 +8684,9 @@
     ],
     "raw_total": 143,
     "raw_unique": 143,
-    "mapped_count": 131,
+    "mapped_count": 139,
     "routed_pending_count": 0,
-    "unreviewed_count": 12,
+    "unreviewed_count": 4,
     "sum_check": 143,
     "canonical_count": 75,
     "routed_promotions_count": 92,

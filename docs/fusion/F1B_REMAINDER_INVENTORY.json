@@ -1,7 +1,7 @@
 {
   "artifact": "F1B_REMAINDER_INVENTORY",
   "schema_version": 1,
-  "generated_at": "2026-11-04T12:28:36+08:00",
+  "generated_at": "2026-11-04T14:34:22+08:00",
   "generated_by": "tools/fusion/f1b_build_remainder.py",
   "computed_from": [
     "docs/fusion/RAW_CAPABILITY_INDEX.json",
@@ -10,24 +10,14 @@
   "source_index_sha256": "e62b68ed1658b95ebe73b37d8c991c995b1a18201faabbde81e41214c03a2f11",
   "disclaimer": "F1-B 十个模块批次全部完成，但不等于 143 项原始能力已全部完成归属裁决。本清单从当前 Crosswalk 计算得出，逐项标明仍待 F1-C 处理的条目。不得为了让统计变成 143/0/0 而人为制造 canonical。",
   "state_totals": {
-    "mapped": 131,
+    "mapped": 139,
     "routed": 0,
-    "unreviewed": 12,
+    "unreviewed": 4,
     "total": 143
   },
   "residue": {
     "unreviewed_by_class": {
-      "知识页面与质量门（页面结构 / 一致性 / 措辞 / 反模式）": [
-        "UPSTREAM-03::C23 五档证据优先级",
-        "UPSTREAM-03::C24 D2 图规范（强制 D2）",
-        "UPSTREAM-03::C25 「不得依赖 AST 解析器/图数据库/静态分析管线/索引系统」",
-        "UPSTREAM-03::C26 每个术语必须独立成页（含小仓库）"
-      ],
       "知识库语义与生命周期（Subject / 复用 / 冲突 / 部署模型）": [
-        "UPSTREAM-04::C05 按需加载的模式指引",
-        "UPSTREAM-04::C06 不存密钥/凭据/个人数据（全模式适用）",
-        "UPSTREAM-04::C13 报告粒度禁令",
-        "UPSTREAM-04::C21 冲突处理（两个报告判断不同）",
         "UPSTREAM-04::C27 HTML/excalidraw 等具体产物格式"
       ],
       "知识库维护流程（更新梯度 / 发布节奏 / 索引 / 并发）": [
@@ -42,25 +32,25 @@
     "reject_classification": {
       "adjudicated": [],
       "design_counterexample": [
+        "UPSTREAM-03::C25 → SL-CAP-0001",
         "UPSTREAM-01::C15 → SL-CAP-0011",
         "UPSTREAM-02::C18 → SL-CAP-0011",
         "UPSTREAM-02::C09 → SL-CAP-0015",
         "UPSTREAM-02::C08 → SL-CAP-0017",
         "UPSTREAM-06::C13 → SL-CAP-0018",
+        "UPSTREAM-03::C23 → SL-CAP-0037",
         "UPSTREAM-02::C15 → SL-CAP-0038",
         "UPSTREAM-03::C27 → SL-CAP-0038",
         "UPSTREAM-04::C26 → SL-CAP-0038",
         "UPSTREAM-06::C28 → SL-CAP-0051",
+        "UPSTREAM-03::C26 → SL-CAP-0055",
+        "UPSTREAM-03::C24 → SL-CAP-0057",
         "UPSTREAM-04::C25 → SL-CAP-0067",
         "UPSTREAM-05::C26 → SL-CAP-0067",
         "UPSTREAM-01::C13 → SL-CAP-0070",
         "UPSTREAM-01::C14 → SL-CAP-0070"
       ],
       "pending_f1c": [
-        "UPSTREAM-03::C23 五档证据优先级",
-        "UPSTREAM-03::C24 D2 图规范（强制 D2）",
-        "UPSTREAM-03::C25 「不得依赖 AST 解析器/图数据库/静态分析管线/索引系统」",
-        "UPSTREAM-03::C26 每个术语必须独立成页（含小仓库）",
         "UPSTREAM-04::C27 HTML/excalidraw 等具体产物格式",
         "UPSTREAM-05::C27 产出面向人类的整册项目文档",
         "UPSTREAM-05::C28 双语 Sphinx 站与 gettext 流程",
@@ -954,69 +944,65 @@
       "upstream_id": "UPSTREAM-03",
       "original_capability_id": "C23",
       "capability": "五档证据优先级",
-      "state": "UNREVIEWED",
-      "suggested_owner": null,
+      "state": "MAPPED",
+      "suggested_owner": "Research",
       "original_disposition": "REJECT",
       "license": {
         "spdx": "CC-BY-4.0",
         "copy_permitted": true,
         "attribution_required": true
       },
-      "unprocessed_reason": "尚未初审归属",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true,
-      "semantic_class": "知识页面与质量门（页面结构 / 一致性 / 措辞 / 反模式）"
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-03",
       "original_capability_id": "C24",
       "capability": "D2 图规范（强制 D2）",
-      "state": "UNREVIEWED",
-      "suggested_owner": null,
+      "state": "MAPPED",
+      "suggested_owner": "Renderer",
       "original_disposition": "REJECT",
       "license": {
         "spdx": "CC-BY-4.0",
         "copy_permitted": true,
         "attribution_required": true
       },
-      "unprocessed_reason": "尚未初审归属",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true,
-      "semantic_class": "知识页面与质量门（页面结构 / 一致性 / 措辞 / 反模式）"
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-03",
       "original_capability_id": "C25",
       "capability": "「不得依赖 AST 解析器/图数据库/静态分析管线/索引系统」",
-      "state": "UNREVIEWED",
-      "suggested_owner": null,
+      "state": "MAPPED",
+      "suggested_owner": "Facts",
       "original_disposition": "REJECT",
       "license": {
         "spdx": "CC-BY-4.0",
         "copy_permitted": true,
         "attribution_required": true
       },
-      "unprocessed_reason": "尚未初审归属",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true,
-      "semantic_class": "知识页面与质量门（页面结构 / 一致性 / 措辞 / 反模式）"
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-03",
       "original_capability_id": "C26",
       "capability": "每个术语必须独立成页（含小仓库）",
-      "state": "UNREVIEWED",
-      "suggested_owner": null,
+      "state": "MAPPED",
+      "suggested_owner": "Renderer",
       "original_disposition": "REJECT",
       "license": {
         "spdx": "CC-BY-4.0",
         "copy_permitted": true,
         "attribution_required": true
       },
-      "unprocessed_reason": "尚未初审归属",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true,
-      "semantic_class": "知识页面与质量门（页面结构 / 一致性 / 措辞 / 反模式）"
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-03",
@@ -1102,35 +1088,33 @@
       "upstream_id": "UPSTREAM-04",
       "original_capability_id": "C05",
       "capability": "按需加载的模式指引",
-      "state": "UNREVIEWED",
-      "suggested_owner": null,
+      "state": "MAPPED",
+      "suggested_owner": "DSH-Adapter",
       "original_disposition": "REUSE",
       "license": {
         "spdx": "MIT",
         "copy_permitted": true,
         "attribution_required": true
       },
-      "unprocessed_reason": "尚未初审归属",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true,
-      "semantic_class": "知识库语义与生命周期（Subject / 复用 / 冲突 / 部署模型）"
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-04",
       "original_capability_id": "C06",
       "capability": "不存密钥/凭据/个人数据（全模式适用）",
-      "state": "UNREVIEWED",
-      "suggested_owner": null,
+      "state": "MAPPED",
+      "suggested_owner": "Security",
       "original_disposition": "REUSE",
       "license": {
         "spdx": "MIT",
         "copy_permitted": true,
         "attribution_required": true
       },
-      "unprocessed_reason": "尚未初审归属",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true,
-      "semantic_class": "知识库语义与生命周期（Subject / 复用 / 冲突 / 部署模型）"
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-04",
@@ -1232,18 +1216,17 @@
       "upstream_id": "UPSTREAM-04",
       "original_capability_id": "C13",
       "capability": "报告粒度禁令",
-      "state": "UNREVIEWED",
-      "suggested_owner": null,
+      "state": "MAPPED",
+      "suggested_owner": "Lifecycle",
       "original_disposition": "ADAPT",
       "license": {
         "spdx": "MIT",
         "copy_permitted": true,
         "attribution_required": true
       },
-      "unprocessed_reason": "尚未初审归属",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true,
-      "semantic_class": "知识库语义与生命周期（Subject / 复用 / 冲突 / 部署模型）"
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-04",
@@ -1361,18 +1344,17 @@
       "upstream_id": "UPSTREAM-04",
       "original_capability_id": "C21",
       "capability": "冲突处理（两个报告判断不同）",
-      "state": "UNREVIEWED",
-      "suggested_owner": null,
+      "state": "MAPPED",
+      "suggested_owner": "Research",
       "original_disposition": "REIMPLEMENT",
       "license": {
         "spdx": "MIT",
         "copy_permitted": true,
         "attribution_required": true
       },
-      "unprocessed_reason": "尚未初审归属",
+      "unprocessed_reason": null,
       "owner_dispute": null,
-      "f1c_decision_needed": true,
-      "semantic_class": "知识库语义与生命周期（Subject / 复用 / 冲突 / 部署模型）"
+      "f1c_decision_needed": false
     },
     {
       "upstream_id": "UPSTREAM-04",

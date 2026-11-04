@@ -1,8 +1,8 @@
 {
   "task": "F1-C 全局历史验证（独立入口，供 F1-D 直接调用）",
-  "generated_at": "2026-11-04T12:31:26+08:00",
+  "generated_at": "2026-11-04T14:39:50+08:00",
   "generated_by": "tools/fusion/f1c_history_verify.py",
-  "git_head": "7a4468aa6998c56182086d1e0c624c82d8208b14",
+  "git_head": "93c64ef0194ec10b41cb00dae034ddad8e9c323f",
   "reconciliations_consumed": [
     "F1C_B_ROUTED_RECONCILIATION",
     "F1C_C1_RESOLUTION",
@@ -36,13 +36,13 @@
       "id": "c4",
       "name": "canonical 核心变更均有 amendment",
       "passed": true,
-      "detail": "各批 amendment 均有留痕（共 13 条），问题 无"
+      "detail": "各批 amendment 均有留痕（共 21 条），问题 无"
     },
     {
       "id": "c5",
       "name": "REJECT 原始裁决未被擦除",
       "passed": true,
-      "detail": "原始 REJECT 21 项全部保留；已绑 canonical 的 REJECT refs 13 条；问题 无"
+      "detail": "原始 REJECT 21 项全部保留；已绑 canonical 的 REJECT refs 17 条；问题 无"
     },
     {
       "id": "c6",
@@ -60,7 +60,7 @@
       "id": "c8",
       "name": "身份唯一性与三态守恒未被削弱",
       "passed": true,
-      "detail": "mapped 131 + routed 0 + unrev 12 = 143；互斥且守恒=True"
+      "detail": "mapped 139 + routed 0 + unrev 4 = 143；互斥且守恒=True"
     },
     {
       "id": "c9",

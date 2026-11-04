@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-04T12:32:14+08:00",
+  "updated_at": "2026-11-04T14:41:04+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -780,6 +780,37 @@
       "blocked_reason": null,
       "depends_on": [
         "M1-FUSION-GATE-F1C-C1"
+      ]
+    },
+    {
+      "id": "M1-FUSION-GATE-F1C-C3",
+      "milestone": "M1-FUSION-GATE",
+      "goal": "F1-C-C3：剩余 10 项（U03×4 / U04×5 / U06×1）终裁 + F1-C-D 待收口清单",
+      "inputs": [
+        "docs/fusion/F1C_C2_U05_RECONCILIATION.json",
+        "docs/fusion/RAW_CAPABILITY_INDEX.json"
+      ],
+      "expected_outputs": [
+        "docs/fusion/F1C_C3_REMAINING_DECISIONS.md",
+        "docs/fusion/F1C_C3_RECONCILIATION.json",
+        "docs/fusion/F1C_C3_VERIFICATION.json",
+        "docs/fusion/F1C_D_HANDOFF_INVENTORY.json"
+      ],
+      "status": "DONE",
+      "verification_commands": [
+        "python3 tools/fusion/f1c_apply_routed.py",
+        "python3 tools/fusion/f1c_c3_verify.py",
+        "python3 tools/fusion/f1c_d_handoff.py",
+        "python3 tools/fusion/f1c_history_verify.py"
+      ],
+      "evidence_paths": [
+        "docs/fusion/F1C_C3_REMAINING_DECISIONS.md",
+        "docs/fusion/F1C_C3_VERIFICATION.json"
+      ],
+      "git_commit": null,
+      "blocked_reason": null,
+      "depends_on": [
+        "M1-FUSION-GATE-F1C-C2"
       ]
     }
   ]

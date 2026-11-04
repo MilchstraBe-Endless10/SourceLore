@@ -1,0 +1,594 @@
+{
+  "artifact": "F1C_C3_RECONCILIATION",
+  "schema_version": 1,
+  "generated_at": "2026-11-04T14:38:00+08:00",
+  "generated_by": "tools/fusion/f1c_apply_routed.py + f1c_c3_decisions.py",
+  "batch": "F1-C-C3",
+  "source_baseline": "docs/fusion/F1B_FROZEN_BASELINE.json",
+  "decision_source": "tools/fusion/f1c_c3_decisions.py",
+  "principle": "叠加顺序：F1-B 基线 → F1-C-B → F1-C-C1 → F1-C-C2 → F1-C-C3。",
+  "items": [
+    {
+      "identity_key": "UPSTREAM-03::C23",
+      "upstream_capability": "五档证据优先级",
+      "upstream_where": "SKILL.md §12.2 L1142–L1154",
+      "upstream_mechanism": null,
+      "upstream_why": "五档无权重不构成全序；L1152–L1153 又允许源码处任意层级，唯一排序机制自我消解（D10）。SourceLore 已有 source_type 四值与确定性事实，再叠一套优先级会产生两套互不兼容证据体系",
+      "original_disposition": "REJECT",
+      "final_verdict": "REJECT",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true
+      },
+      "direction": "ADOPT_EXISTING",
+      "resolved_canonical_id": "SL-CAP-0037",
+      "final_owner": "Research",
+      "license_note": "CC-BY-4.0 / copy_permitted=true（只作反例引用，未复制其五档定义）",
+      "interfaces": [
+        "SL-CAP-0028（真伪裁决，与本条严格分离）"
+      ],
+      "unresolved": [
+        "取数次序是否需显式记录待 F2"
+      ],
+      "evidence_basis": {
+        "what_five_levels_for": "上游用它给**研究资料排序**（哪个来源先看、更可信）。where 是 §12.2 L1142–L1154，属研究取数方法，不属 Claim 验证。",
+        "three_things_distinguished": "① 研究资料选择顺序——本条涉这个；② 来源可靠性判断——本条也涉，但只能做到「标类型」；③ Claim 的实际证据支持关系——**不属本条**，归 EC 的 SL-CAP-0028。",
+        "can_priority_replace_ec": "**不能。** 来源优先级不能替代验证规则。SL-CAP-0037 已有硬规则一「来源类型不构成真伪排序」——不因为来自 GitHub API 就认定内容为真。",
+        "mechanical_truth_ranking": "**是。** 审计 why 已指出「五档无权重不构成全序；L1152–L1153 又允许源码处任意层级，唯一排序机制自我消解（D10）」。它想做的正是机械真实性排序。"
+      },
+      "rationale": "**拒绝的是「五档机械排序」这个机制，不是拒绝「给来源标类型」。**该机制有致命缺陷：五档无权重不构成全序，且同时允许「源码处任意层级」，排序机制自我消解。SourceLore 已有 `source_type` 四值（SL-CAP-0037）与确定性事实，再叠一套优先级会产生两套互不兼容的证据体系。**保留的合理部分是「资料收集与标注原则」**——已由 SL-CAP-0037 承载（标类型、记采集时刻、记覆盖状态），本批补一条：优先级不得用于判定真伪。",
+      "terminal_disposition": null,
+      "awaiting": null,
+      "application_state": "applied"
+    },
+    {
+      "identity_key": "UPSTREAM-03::C24",
+      "upstream_capability": "D2 图规范（强制 D2）",
+      "upstream_where": "SKILL.md §11.1–§11.6 L1044–L1113",
+      "upstream_mechanism": null,
+      "upstream_why": "L1046 强制 D2 却无工具链、无语法校验、无法检测装饰性图表（§11.2 L1069）与一图一意（§11.6）（D12）。图形态应由渲染层决定，不应被锁定为 D2",
+      "original_disposition": "REJECT",
+      "final_verdict": "REJECT",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true
+      },
+      "direction": "ADOPT_EXISTING",
+      "resolved_canonical_id": "SL-CAP-0057",
+      "final_owner": "Renderer",
+      "license_note": "CC-BY-4.0 / copy_permitted=true（只作反例引用，未复制其 D2 语法与模板）",
+      "interfaces": [
+        "SL-CAP-0055（视图契约，图表属其可选形态）"
+      ],
+      "unresolved": [
+        "F2 若选型某语法，是否需在 Renderer 的 slot 中声明待议"
+      ],
+      "evidence_basis": {
+        "d2_requirements": "要求所有架构图用 D2（Declarative Diagramming）语法产出，§11.1–§11.6 L1044–L1113。但 L1046 强制 D2 却**无工具链、无语法校验**。",
+        "scope": "上游所有架构文档；无「不适用」出口。",
+        "covered_by_0057": "**部分覆盖且更严格。** SL-CAP-0057 已定「图表是可选手段、不是完成门禁」、「无法可靠提取关系时不生成图表」、「图表格式属实现选择，由渲染目标决定，不在本能力内锁定」。D2 强制恰恰违反这三条中的后两条。",
+        "global_dependency": "**不引入。** 不因上游强制 D2 就把 D2 变成 SourceLore 全局依赖。"
+      },
+      "rationale": "**拒绝的是「强制单一图示语法 + 无校验」这个机制。**审计 why 写得很准：L1046 强制 D2 却无工具链、无语法校验，无法检测装饰性图表（§11.2）与一图一意（§11.6）（D12）。图形态应由渲染层决定，不应被锁定为 D2。SL-CAP-0057 已覆盖其合理部分（可选图表 + 可追溯 + 格式中立），本条无需新增能力，只需把「拒绝锁定具体语法」写成显式反例。",
+      "terminal_disposition": null,
+      "awaiting": null,
+      "application_state": "applied"
+    },
+    {
+      "identity_key": "UPSTREAM-03::C25",
+      "upstream_capability": "「不得依赖 AST 解析器/图数据库/静态分析管线/索引系统」",
+      "upstream_where": "SKILL.md §2 L52–L53",
+      "upstream_mechanism": null,
+      "upstream_why": "与 SourceLore 确定性 CLI 架构正面冲突，且与 UPSTREAM-01 已确立的「确定性工具算事实、模型只解释含义」路线相反。本源最主要的架构不兼容点",
+      "original_disposition": "REJECT",
+      "final_verdict": "REJECT",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true
+      },
+      "direction": "ADOPT_EXISTING",
+      "resolved_canonical_id": "SL-CAP-0001",
+      "final_owner": "Facts",
+      "license_note": "CC-BY-4.0 / copy_permitted=true（只作反例引用，未复制其禁令原文）",
+      "interfaces": [
+        "SL-CAP-0065（索引需求，与本禁令直接冲突处）"
+      ],
+      "unresolved": [
+        "F2 是否最终引入图数据库待其自行按需求判断"
+      ],
+      "evidence_basis": {
+        "what_actually_banned": "上游 §2 L52–L53 明令**禁止其自身**依赖四类基础设施：AST 解析器、图数据库、静态分析管线、索引系统。这是**对上游自我设限**的声明，不是「这些技术有害」。",
+        "over_generalization_risk": "**有，且是本条最大的风险。** 不得把「上游不推荐」扩大成「SourceLore 永远不得采用」。SourceLore 的 Facts 模块**恰恰要**用 AST 解析器（确定性事实抽取），Storage **恰恰要**用可重建索引（SL-CAP-0065）。这两处若照搬该禁令会直接自毁。",
+        "conflict_with_storage": "**正面冲突。** SL-CAP-0065 已确立「C 层派生索引必须可重建」，SL-CAP-0065 硬规则四也说「不得在没有必要时引入向量/图数据库」——注意那是「没有必要时不引入」，不是「永远禁止」，且把判断权留给 F2。",
+        "what_to_record": "记录的是**拒绝「禁止使用确定性设施」这条方法论限制**，不是拒绝这些技术本身。"
+      },
+      "rationale": "该条与 SourceLore 确定性 CLI 架构**正面冲突**——审计 why 已明说「与 UPSTREAM-01 已确立的『确定性工具算事实、模型只解释含义』路线相反」、「本源最主要的架构不兼容点」。**拒绝的是这条自我设限的禁令，不是这四类技术。**Facts 需要 AST（SL-CAP-0001 确定性事实抽取）、Storage 需要可重建索引（SL-CAP-0065）。技术选型权留给 F2，按真实需求、性能、复杂度与风险决定。",
+      "terminal_disposition": null,
+      "awaiting": null,
+      "application_state": "applied"
+    },
+    {
+      "identity_key": "UPSTREAM-03::C26",
+      "upstream_capability": "每个术语必须独立成页（含小仓库）",
+      "upstream_where": "SKILL.md §7.2 L530–L559（L534、L557）",
+      "upstream_mechanism": null,
+      "upstream_why": "与低 token 目标冲突：小仓库也会被迫产出大量单句页，而 §15.1 只有散文级去重无检测手段。应改为术语表条目 + 按需升格为页的两级策略",
+      "original_disposition": "REJECT",
+      "final_verdict": "REJECT",
+      "license": {
+        "spdx": "CC-BY-4.0",
+        "copy_permitted": true
+      },
+      "direction": "ADOPT_EXISTING",
+      "resolved_canonical_id": "SL-CAP-0055",
+      "final_owner": "Renderer",
+      "license_note": "CC-BY-4.0 / copy_permitted=true（只借「两级策略」取向，未复制其术语页模板）",
+      "interfaces": [
+        "SL-CAP-0040（Subject 身份，术语不是新 Subject）"
+      ],
+      "unresolved": [
+        "升格条件的具体阈值待 F2"
+      ],
+      "evidence_basis": {
+        "renderer_nav_or_doc": "**是呈现/导航决策**，属 Renderer 的视图契约（SL-CAP-0055 的导航索引一型），不是知识对象定义。",
+        "forced_mechanism": "**是强制机制**：§7.2 L534、L557 要求「每个术语独立成页，**含小仓库**」，无「不必」出口。",
+        "existing_coverage": "SL-CAP-0055 多类型视图共享同一事实源，导航索引是其一型；「术语表条目 + 按需升格为页」正是 0055 允许的布局差异。",
+        "new_authoritative_object": "**不得。** 术语页存在不等于新知识对象——术语只是既有知识的一种呈现单位，不得因它存在就制造新的权威对象。"
+      },
+      "rationale": "审计 why 判准：「与低 token 目标冲突：小仓库也会被迫产出大量单句页，而 §15.1 只有散文级去重无检测手段。应改为术语表条目 + 按需升格为页的两级策略」。**拒绝的是「无条件强制逐术语建页」**，采纳其合理替代形态（两级策略），由 SL-CAP-0055 的多类型视图承载——术语表属摘要/索引视图，单页属完整卡片视图。**不因术语页存在就制造新的权威知识对象**——术语仍是既有 Subject 的呈现单位。",
+      "terminal_disposition": null,
+      "awaiting": null,
+      "application_state": "applied"
+    },
+    {
+      "identity_key": "UPSTREAM-04::C05",
+      "upstream_capability": "按需加载的模式指引",
+      "upstream_where": "SKILL.md L78–L86（L80 \"Load only the guidance that matches the question\"）",
+      "upstream_mechanism": null,
+      "upstream_why": "两个 reference 共 67 行不常驻上下文。直接对应低 token 目标，形态可直接复用",
+      "original_disposition": "REUSE",
+      "final_verdict": "REUSE",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true
+      },
+      "direction": "ADOPT_EXISTING",
+      "resolved_canonical_id": "SL-CAP-0068",
+      "final_owner": "DSH-Adapter",
+      "license_note": "MIT / copy_permitted=true（形态可直接复用）",
+      "interfaces": [
+        "SL-CAP-0070（上下文预算）"
+      ],
+      "unresolved": [
+        "问题类型到指引文件的映射表待 F2"
+      ],
+      "evidence_basis": {
+        "original_mechanism": "L78–L86：参考文档（共 67 行）不常驻上下文，按问题类型只加载匹配的指引。L80 原话「Load only the guidance that matches the question」。",
+        "not_deflt_lifecycle": "**不归 Lifecycle。** 它不涉及任何知识失效语义，纯属「运行时该加载哪份说明」。原始 disposition=REUSE 不代表 owner 就是 Lifecycle。",
+        "compare_with_capabilities": "对照五模块：Facts（源事实，无关）、Research（研究阶段，无关）、Lifecycle（失效，无关）、Storage（持久化，无关）、**DSH-Adapter（Skill 加载，直接对应）**。",
+        "which_owner": "**DSH-Adapter。** SL-CAP-0068 的「入口薄、能力按需读」正是同一机制，且已在 F1-B 定为 V1_REQUIRED。"
+      },
+      "rationale": "该机制与 SL-CAP-0068「渐进加载」完全同构：都是「不把全部约束常驻上下文、按需加载」。本批价值在于**把它作为 0068 的上游来源正式登记**，并为「按问题类型匹配」补一条细则。不归 Lifecycle——原 disposition=REUSE 只说明可复用，与 owner 无关。",
+      "terminal_disposition": null,
+      "awaiting": null,
+      "application_state": "applied"
+    },
+    {
+      "identity_key": "UPSTREAM-04::C06",
+      "upstream_capability": "不存密钥/凭据/个人数据（全模式适用）",
+      "upstream_where": "SKILL.md L72；references/external-probe.md L10、L13",
+      "upstream_mechanism": null,
+      "upstream_why": "L72 双重强调\"every retained artifact, in every investigation mode\"，是四源中最完整的秘密处理规则。可直接作为硬约束",
+      "original_disposition": "REUSE",
+      "final_verdict": "REUSE",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true
+      },
+      "direction": "ADOPT_EXISTING",
+      "resolved_canonical_id": "SL-CAP-0053",
+      "final_owner": "Security",
+      "license_note": "MIT / copy_permitted=true",
+      "interfaces": [
+        "SL-CAP-0062（四层资产，约束覆盖各层）"
+      ],
+      "unresolved": [
+        "个人数据的判定边界待 F2"
+      ],
+      "evidence_basis": {
+        "original_mechanism": "L72 双重强调「every retained artifact, in every investigation mode」；references/external-probe.md L10、L13。审计 why 称其为「四源中最完整的秘密处理规则」。",
+        "not_deflt_lifecycle": "**不归 Lifecycle。** 它不涉失效，是**持久化时的秘密约束**——对象是「落盘的每个产物」。",
+        "compare_with_capabilities": "Facts/Research/Product/Lifecycle 均不涉秘密处理；Storage 负责落盘但不定义分级；**Security 的 SL-CAP-0053 已是分级+脱敏+门禁**。",
+        "which_owner": "**Security。** 0053 已有「敏感信息分级、脱敏与发布门禁」与硬规则四「密钥打码规则必须覆盖所有产物形态」；本条补的是「**全模式适用**」这一覆盖面声明。"
+      },
+      "rationale": "上游的价值在于覆盖面措辞：不是「某些模式下不存」，而是「**每个保留产物、每种模式**」都不存。SL-CAP-0053 已覆盖分级与打码，但未明确「无模式例外」这一条。本批把它补成硬规则。不归 Lifecycle——落盘秘密约束与知识新鲜度无关。",
+      "terminal_disposition": null,
+      "awaiting": null,
+      "application_state": "applied"
+    },
+    {
+      "identity_key": "UPSTREAM-04::C13",
+      "upstream_capability": "报告粒度禁令",
+      "upstream_where": "SKILL.md L67；L66（不强加固定段落）",
+      "upstream_mechanism": null,
+      "upstream_why": "L67「不要为每次搜索或次要子问题建报告」是对的，但没有可判定的粒度标准。须补 subject_key 规范化规则与最小内容门槛",
+      "original_disposition": "ADAPT",
+      "final_verdict": "ADAPT",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true
+      },
+      "direction": "ADOPT_EXISTING",
+      "resolved_canonical_id": "SL-CAP-0040",
+      "final_owner": "Lifecycle",
+      "license_note": "MIT / copy_permitted=true",
+      "interfaces": [
+        "SL-CAP-0055（呈现层，不涉粒度）"
+      ],
+      "unresolved": [
+        "最小内容门槛的具体字数/字段数待 F2"
+      ],
+      "evidence_basis": {
+        "original_mechanism": "L67「不要为每次搜索或次要子问题建报告」；L66「不强加固定段落」。审计 why：方向对但「没有可判定的粒度标准，须补 subject_key 规范化规则与最小内容门槛」。",
+        "not_deflt_lifecycle": "**归 Lifecycle。** 其核心是「**什么构成一个独立的知识单元**」——这正是 SL-CAP-0040 的 Subject 身份与复用判定。不是 Renderer（不是排版）、不是 Research（不是研究范围）。",
+        "compare_with_capabilities": "0040 已有 subject_key 规范化 + claim_scope 重叠度；缺的是「**最小内容门槛**」与其与「报告粒度」的连接。",
+        "which_owner": "**Lifecycle（SL-CAP-0040）。**"
+      },
+      "rationale": "上游禁止「为每次搜索或次要子问题建报告」，其实质是**防止知识单元碎片化**——属 Subject 身份与复用判定，归 SL-CAP-0040。审计指出它「没有可判定的粒度标准」，本批补两条可判定门槛：一是 subject_key 必须经规范化（已由 0040 有），二是最小内容门槛（本批新增）。",
+      "terminal_disposition": null,
+      "awaiting": null,
+      "application_state": "applied"
+    },
+    {
+      "identity_key": "UPSTREAM-04::C21",
+      "upstream_capability": "冲突处理（两个报告判断不同）",
+      "upstream_where": "全文缺失",
+      "upstream_mechanism": null,
+      "upstream_why": "`SKILL.md` 通篇未提如何处理互斥结论（D5）。须自建 conflict 状态与裁决流程",
+      "original_disposition": "REIMPLEMENT",
+      "final_verdict": "REIMPLEMENT",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true
+      },
+      "direction": "ADOPT_EXISTING",
+      "resolved_canonical_id": "SL-CAP-0038",
+      "final_owner": "Research",
+      "license_note": "MIT / copy_permitted=true（上游无实现，本条为自建分流规则）",
+      "interfaces": [
+        "SL-CAP-0028（唯一裁决权）",
+        "SL-CAP-0042（版本失效，另一类时间差异）"
+      ],
+      "unresolved": [
+        "视角差异的判定是否需人工确认待 F2"
+      ],
+      "evidence_basis": {
+        "original_object": "**两份研究报告之间的解释不一致。** where 写「全文缺失」、why 写「SKILL.md 通篇未提如何处理互斥结论（D5）」——即上游根本没定义，而该上游的语境是「每次调查产出一份报告」，故其缺口是**报告与报告之间**的判断冲突。",
+        "four_possibilities": "① 两份研究报告之间的解释不一致——**是本条对象**；② 两次研究的时间版本差异——部分涉（属 Lifecycle 0042 的失效）；③ 证据来源相互矛盾——涉但不由本条裁决（转 EC）；④ 模型推断结果不一致——涉但转 EC。",
+        "vs_u05_c21": "**严格区分**：U05-C21 的对象是**两条 Claim 的证据互相矛盾**（已归 EC/SL-CAP-0028 的 conflict 旁支）；U04-C21 的对象是**两份研究的解释不一致**——这是研究层的「同一事实、两种读法」，可能两者都成立（视角不同），也可能是其一错了。**不能先验地当 claim 冲突处理。**",
+        "which_owner": "**Research。** SL-CAP-0038 已有硬规则三「多来源综合得出的推断若与已有 claim 冲突，不得自行裁决，必须产出 handoff_item 移交 EC」——本批补的是**报告间**那一层。"
+      },
+      "rationale": "**这是本批最易判错的一项。** 同名「冲突处理」但对象完全不同：U05-C21 是 Claim 级证据矛盾（已归 EC），U04-C21 是报告级解释分歧。报告间的分歧有两种性质：一是**视角差异**（两者都成立，应并列呈现并标注适用条件），二是**事实冲突**（须交 EC 裁决）。Research 的职责是**先分辨这两类**，不是自己当裁判。故归 SL-CAP-0038（研究质量状态与结论边界），补 report_conflict 的登记与分流规则。**不为所有冲突建第二套统一状态机**——裁决仍只由 EC 的 0028 一处拥有。",
+      "terminal_disposition": null,
+      "awaiting": null,
+      "application_state": "applied"
+    },
+    {
+      "identity_key": "UPSTREAM-04::C27",
+      "upstream_capability": "HTML/excalidraw 等具体产物格式",
+      "upstream_where": "仓库层面（README、docs/pipeline.excalidraw）",
+      "upstream_mechanism": null,
+      "upstream_why": "本源 spec 用 HTML（`spec.html`）、架构图用 excalidraw。SourceLore 用 Markdown + schema，形态不兼容，无复用价值",
+      "original_disposition": "REJECT",
+      "final_verdict": "REJECT",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true
+      },
+      "direction": "REJECT_WITH_REASON",
+      "resolved_canonical_id": null,
+      "final_owner": null,
+      "license_note": "MIT / copy_permitted=true（机制不采纳，不复制其 HTML/excalidraw 文件）",
+      "interfaces": [
+        "SL-CAP-0062（权威格式归 A/B 层）",
+        "SL-CAP-0055（富媒体属 D 层派生）"
+      ],
+      "unresolved": [
+        "无——已终裁"
+      ],
+      "evidence_basis": {
+        "specific_reject": "上游 spec 用 HTML（`spec.html`）、架构图用 excalidraw。审计 why：「SourceLore 用 Markdown + schema，形态不兼容，无复用价值」。",
+        "rejected_behavior": "**拒绝的是「以 HTML / excalidraw 文件作为权威产物格式」**，不是拒绝「人类可读的富媒体呈现」。",
+        "alternative": "SourceLore 用 **Markdown + schema（结构化契约）**；富媒体呈现若需要，属 Renderer 的 D 层实现选择（可生成派生 HTML/图），但**不得成为权威产物的存储格式**（权威层归 Storage 的 A/B 层，见 SL-CAP-0062）。",
+        "counterexample_use": "**可以作反面设计依据**：它说明「产物格式绑死具体工具」会导致形态不兼容。已可作为 SL-CAP-0062 的反例引用。"
+      },
+      "rationale": "原始 disposition 已是 **REJECT**，维持并给出终裁。拒绝的是「HTML/excalidraw 作为权威产物格式」这一具体机制；替代是 Markdown + schema。富媒体呈现允许作 Renderer 的**派生**产物，但不得成为权威层存储格式——这与 SL-CAP-0062 的 D 层「不得回写权威层」一致。",
+      "terminal_disposition": "REJECTED_WITH_REASON",
+      "awaiting": "F1-C-D terminal_disposition 迁移",
+      "application_state": "recorded_pending_terminal_schema"
+    },
+    {
+      "identity_key": "UPSTREAM-06::C21",
+      "upstream_capability": "模型分层（Deep / Standard）",
+      "upstream_where": "SKILL.md L130–L330",
+      "upstream_mechanism": "仅 Phase 2 用 Deep 层，其余全部 Standard；只按家族别名（opus/sonnet/haiku）派发，不固定版本",
+      "upstream_why": "整条机制绑死在 Claude 家族与 Agent 工具上，无法迁移到 DSH；且 Phase 4b/7 明确写「moved off the Deep tier」这类只对特定供应商有意义的说明。SourceLore 不应复制模型分层，应按任务复杂度与工具能力选路",
+      "original_disposition": "REJECT",
+      "final_verdict": "REJECT",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false
+      },
+      "direction": "REJECT_WITH_REASON",
+      "resolved_canonical_id": null,
+      "final_owner": null,
+      "license_note": "**UPSTREAM-06 / copy_permitted=false —— 零复制，仅抽象思想**",
+      "interfaces": [
+        "SL-CAP-0069（模型适配与能力边界）",
+        "SL-CAP-0070（预算成本）"
+      ],
+      "unresolved": [
+        "无——已终裁"
+      ],
+      "evidence_basis": {
+        "original_mechanism": "仅 Phase 2 用 Deep 层、其余全部 Standard；只按家族别名（opus/sonnet/haiku）派发，不固定版本。SKILL.md L130–L330。",
+        "binding_problem": "审计 why：「整条机制绑死在 Claude 家族与 Agent 工具上，无法迁移到 DSH；且 Phase 4b/7 明确写『moved off the Deep tier』这类只对特定供应商有意义的说明」。",
+        "reasonable_core": "其合理内核是「**按任务复杂度与工具能力选路**」——这与 SL-CAP-0069 的「能力要求必须来自实际运行时验证、未知能力标 UNVERIFIED」同源。但**不得把某供应商或具体模型名写死为架构前提**。",
+        "copy_boundary": "**copy_permitted=false。** UPSTREAM-06 无明确复制许可，不得复制其提示词、规则原文、代码或模板。只作抽象思想来源。"
+      },
+      "rationale": "原始 disposition 已是 **REJECT**，维持。拒绝的是「固定模型分层 + 按供应商家族别名派发」这一机制——它绑死 Claude 家族与 Agent 工具，无法迁移；且含只对特定供应商有意义的说明。**合理内核已被 SL-CAP-0069/0070 覆盖**：按任务复杂度与工具能力选路对应 0069 的三类操作边界（确定性/模型辅助/需 EC 校验），预算与成本对应 0070。**UPSTREAM-06 无复制许可**，本条只作抽象设计背景，未复制任何原文。",
+      "terminal_disposition": "REJECTED_WITH_REASON",
+      "awaiting": "F1-C-D terminal_disposition 迁移",
+      "application_state": "recorded_pending_terminal_schema"
+    }
+  ],
+  "changes_c3": [
+    {
+      "identity": "UPSTREAM-03::C23",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0037",
+      "owner": "Research",
+      "license_note": "CC-BY-4.0 / copy_permitted=true（只作反例引用，未复制其五档定义）"
+    },
+    {
+      "identity": "-",
+      "action": "AMEND_CANONICAL",
+      "target": "SL-CAP-0037",
+      "note": "追加 F1-C-B 修订"
+    },
+    {
+      "identity": "UPSTREAM-03::C24",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0057",
+      "owner": "Renderer",
+      "license_note": "CC-BY-4.0 / copy_permitted=true（只作反例引用，未复制其 D2 语法与模板）"
+    },
+    {
+      "identity": "-",
+      "action": "AMEND_CANONICAL",
+      "target": "SL-CAP-0057",
+      "note": "追加 F1-C-B 修订"
+    },
+    {
+      "identity": "UPSTREAM-03::C25",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0001",
+      "owner": "Facts",
+      "license_note": "CC-BY-4.0 / copy_permitted=true（只作反例引用，未复制其禁令原文）"
+    },
+    {
+      "identity": "-",
+      "action": "AMEND_CANONICAL",
+      "target": "SL-CAP-0001",
+      "note": "追加 F1-C-B 修订"
+    },
+    {
+      "identity": "UPSTREAM-03::C26",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0055",
+      "owner": "Renderer",
+      "license_note": "CC-BY-4.0 / copy_permitted=true（只借「两级策略」取向，未复制其术语页模板）"
+    },
+    {
+      "identity": "-",
+      "action": "AMEND_CANONICAL",
+      "target": "SL-CAP-0055",
+      "note": "追加 F1-C-B 修订"
+    },
+    {
+      "identity": "UPSTREAM-04::C05",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0068",
+      "owner": "DSH-Adapter",
+      "license_note": "MIT / copy_permitted=true（形态可直接复用）"
+    },
+    {
+      "identity": "-",
+      "action": "AMEND_CANONICAL",
+      "target": "SL-CAP-0068",
+      "note": "追加 F1-C-B 修订"
+    },
+    {
+      "identity": "UPSTREAM-04::C06",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0053",
+      "owner": "Security",
+      "license_note": "MIT / copy_permitted=true"
+    },
+    {
+      "identity": "-",
+      "action": "AMEND_CANONICAL",
+      "target": "SL-CAP-0053",
+      "note": "追加 F1-C-B 修订"
+    },
+    {
+      "identity": "UPSTREAM-04::C13",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0040",
+      "owner": "Lifecycle",
+      "license_note": "MIT / copy_permitted=true"
+    },
+    {
+      "identity": "-",
+      "action": "AMEND_CANONICAL",
+      "target": "SL-CAP-0040",
+      "note": "追加 F1-C-B 修订"
+    },
+    {
+      "identity": "UPSTREAM-04::C21",
+      "action": "ADOPT_EXISTING",
+      "target": "SL-CAP-0038",
+      "owner": "Research",
+      "license_note": "MIT / copy_permitted=true（上游无实现，本条为自建分流规则）"
+    },
+    {
+      "identity": "-",
+      "action": "AMEND_CANONICAL",
+      "target": "SL-CAP-0038",
+      "note": "追加 F1-C-B 修订"
+    },
+    {
+      "identity": "UPSTREAM-04::C27",
+      "action": "REJECT_WITH_REASON",
+      "target": null,
+      "owner": null,
+      "terminal_disposition": "REJECTED_WITH_REASON",
+      "note": "保持 UNREVIEWED；终态处置待 F1-C-D 的 terminal_disposition 迁移",
+      "license_note": "MIT / copy_permitted=true（机制不采纳，不复制其 HTML/excalidraw 文件）"
+    },
+    {
+      "identity": "UPSTREAM-06::C21",
+      "action": "REJECT_WITH_REASON",
+      "target": null,
+      "owner": null,
+      "terminal_disposition": "REJECTED_WITH_REASON",
+      "note": "保持 UNREVIEWED；终态处置待 F1-C-D 的 terminal_disposition 迁移",
+      "license_note": "**UPSTREAM-06 / copy_permitted=false —— 零复制，仅抽象思想**"
+    }
+  ],
+  "created_canonicals": [],
+  "totals_after": {
+    "note": "三态互斥；routed_pending 不得计入 mapped；三态并集等于 raw_total",
+    "computed_from": [
+      "docs/fusion/RAW_CAPABILITY_INDEX.json",
+      "docs/fusion/CAPABILITY_CROSSWALK.draft.json"
+    ],
+    "raw_total": 143,
+    "raw_unique": 143,
+    "mapped_count": 139,
+    "routed_pending_count": 0,
+    "unreviewed_count": 4,
+    "sum_check": 143,
+    "canonical_count": 75,
+    "routed_promotions_count": 92,
+    "state_invariants": {
+      "mutually_exclusive": true,
+      "union_equals_total": true,
+      "no_ghost_identities": true,
+      "routed_not_counted_as_mapped": true
+    },
+    "by_upstream": {
+      "UPSTREAM-01": {
+        "mapped": 14,
+        "routed": 1,
+        "unreviewed": 0
+      },
+      "UPSTREAM-02": {
+        "mapped": 18,
+        "routed": 0,
+        "unreviewed": 0
+      },
+      "UPSTREAM-03": {
+        "mapped": 23,
+        "routed": 0,
+        "unreviewed": 4
+      },
+      "UPSTREAM-04": {
+        "mapped": 20,
+        "routed": 2,
+        "unreviewed": 5
+      },
+      "UPSTREAM-05": {
+        "mapped": 13,
+        "routed": 5,
+        "unreviewed": 10
+      },
+      "UPSTREAM-06": {
+        "mapped": 24,
+        "routed": 3,
+        "unreviewed": 1
+      }
+    }
+  },
+  "reject_retained": [
+    {
+      "identity_key": "UPSTREAM-04::C27",
+      "upstream_capability": "HTML/excalidraw 等具体产物格式",
+      "upstream_where": "仓库层面（README、docs/pipeline.excalidraw）",
+      "upstream_mechanism": null,
+      "upstream_why": "本源 spec 用 HTML（`spec.html`）、架构图用 excalidraw。SourceLore 用 Markdown + schema，形态不兼容，无复用价值",
+      "original_disposition": "REJECT",
+      "final_verdict": "REJECT",
+      "license": {
+        "spdx": "MIT",
+        "copy_permitted": true
+      },
+      "direction": "REJECT_WITH_REASON",
+      "resolved_canonical_id": null,
+      "final_owner": null,
+      "license_note": "MIT / copy_permitted=true（机制不采纳，不复制其 HTML/excalidraw 文件）",
+      "interfaces": [
+        "SL-CAP-0062（权威格式归 A/B 层）",
+        "SL-CAP-0055（富媒体属 D 层派生）"
+      ],
+      "unresolved": [
+        "无——已终裁"
+      ],
+      "evidence_basis": {
+        "specific_reject": "上游 spec 用 HTML（`spec.html`）、架构图用 excalidraw。审计 why：「SourceLore 用 Markdown + schema，形态不兼容，无复用价值」。",
+        "rejected_behavior": "**拒绝的是「以 HTML / excalidraw 文件作为权威产物格式」**，不是拒绝「人类可读的富媒体呈现」。",
+        "alternative": "SourceLore 用 **Markdown + schema（结构化契约）**；富媒体呈现若需要，属 Renderer 的 D 层实现选择（可生成派生 HTML/图），但**不得成为权威产物的存储格式**（权威层归 Storage 的 A/B 层，见 SL-CAP-0062）。",
+        "counterexample_use": "**可以作反面设计依据**：它说明「产物格式绑死具体工具」会导致形态不兼容。已可作为 SL-CAP-0062 的反例引用。"
+      },
+      "rationale": "原始 disposition 已是 **REJECT**，维持并给出终裁。拒绝的是「HTML/excalidraw 作为权威产物格式」这一具体机制；替代是 Markdown + schema。富媒体呈现允许作 Renderer 的**派生**产物，但不得成为权威层存储格式——这与 SL-CAP-0062 的 D 层「不得回写权威层」一致。",
+      "terminal_disposition": "REJECTED_WITH_REASON",
+      "awaiting": "F1-C-D terminal_disposition 迁移",
+      "application_state": "recorded_pending_terminal_schema"
+    },
+    {
+      "identity_key": "UPSTREAM-06::C21",
+      "upstream_capability": "模型分层（Deep / Standard）",
+      "upstream_where": "SKILL.md L130–L330",
+      "upstream_mechanism": "仅 Phase 2 用 Deep 层，其余全部 Standard；只按家族别名（opus/sonnet/haiku）派发，不固定版本",
+      "upstream_why": "整条机制绑死在 Claude 家族与 Agent 工具上，无法迁移到 DSH；且 Phase 4b/7 明确写「moved off the Deep tier」这类只对特定供应商有意义的说明。SourceLore 不应复制模型分层，应按任务复杂度与工具能力选路",
+      "original_disposition": "REJECT",
+      "final_verdict": "REJECT",
+      "license": {
+        "spdx": null,
+        "copy_permitted": false
+      },
+      "direction": "REJECT_WITH_REASON",
+      "resolved_canonical_id": null,
+      "final_owner": null,
+      "license_note": "**UPSTREAM-06 / copy_permitted=false —— 零复制，仅抽象思想**",
+      "interfaces": [
+        "SL-CAP-0069（模型适配与能力边界）",
+        "SL-CAP-0070（预算成本）"
+      ],
+      "unresolved": [
+        "无——已终裁"
+      ],
+      "evidence_basis": {
+        "original_mechanism": "仅 Phase 2 用 Deep 层、其余全部 Standard；只按家族别名（opus/sonnet/haiku）派发，不固定版本。SKILL.md L130–L330。",
+        "binding_problem": "审计 why：「整条机制绑死在 Claude 家族与 Agent 工具上，无法迁移到 DSH；且 Phase 4b/7 明确写『moved off the Deep tier』这类只对特定供应商有意义的说明」。",
+        "reasonable_core": "其合理内核是「**按任务复杂度与工具能力选路**」——这与 SL-CAP-0069 的「能力要求必须来自实际运行时验证、未知能力标 UNVERIFIED」同源。但**不得把某供应商或具体模型名写死为架构前提**。",
+        "copy_boundary": "**copy_permitted=false。** UPSTREAM-06 无明确复制许可，不得复制其提示词、规则原文、代码或模板。只作抽象思想来源。"
+      },
+      "rationale": "原始 disposition 已是 **REJECT**，维持。拒绝的是「固定模型分层 + 按供应商家族别名派发」这一机制——它绑死 Claude 家族与 Agent 工具，无法迁移；且含只对特定供应商有意义的说明。**合理内核已被 SL-CAP-0069/0070 覆盖**：按任务复杂度与工具能力选路对应 0069 的三类操作边界（确定性/模型辅助/需 EC 校验），预算与成本对应 0070。**UPSTREAM-06 无复制许可**，本条只作抽象设计背景，未复制任何原文。",
+      "terminal_disposition": "REJECTED_WITH_REASON",
+      "awaiting": "F1-C-D terminal_disposition 迁移",
+      "application_state": "recorded_pending_terminal_schema"
+    }
+  ],
+  "note": "本批新增 canonical = 0；8 项全部复用已有 canonical + amendment；2 项 REJECT 保持 UNREVIEWED。"
+}

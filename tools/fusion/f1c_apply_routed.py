@@ -32,6 +32,10 @@ try:
     import f1c_c2_decisions as DEC3
 except ImportError:
     DEC3 = None
+try:
+    import f1c_c3_decisions as DEC4
+except ImportError:
+    DEC4 = None
 
 BATCH = "F1-C-B"
 
@@ -387,6 +391,71 @@ def apply_c2(d, raw, dry):
     return d, changes
 
 
+def apply_c3(d, raw, dry):
+    """F1-C-C3：剩余 10 项终裁。
+
+    ADOPT_EXISTING → 写入 refs + amendment + 晋升记录，离开 UNREVIEWED
+    REJECT_WITH_REASON → **保持 UNREVIEWED**，终态只记在裁决数据与 reconciliation
+    """
+    by = {(i["upstream_id"], i["original_capability_id"]): i for i in raw["items"]}
+    canon = d["canonical_capabilities"]
+    mapped_keys = {(r["upstream_id"], r["original_capability_id"])
+                   for c in canon for r in c["upstream_refs"]}
+    routed_keys = {(r["upstream_id"], r["original_capability_id"])
+                   for r in d["cross_module_redirections"]}
+    changes = []
+
+    for tested in DEC4.DECISIONS:
+        k = tuple(tested["identity"])
+        if k in mapped_keys or k in routed_keys:
+            raise SystemExit(f"ERROR: {k} 已映射或已分流，本批不应再处理")
+        direction = tested["direction"]
+
+        if direction == "ADOPT_EXISTING":
+            target = tested["target_canonical"]
+            c = next((x for x in canon if x["canonical_id"] == target), None)
+            if c is None:
+                raise SystemExit(f"ERROR: 目标 {target} 不存在")
+            if c["owner_module"] != tested["final_owner"]:
+                raise SystemExit(f"ERROR: {target} owner={c['owner_module']}，"
+                                 f"裁决写 {tested['final_owner']}")
+            if not any((r["upstream_id"], r["original_capability_id"]) == k
+                       for r in c["upstream_refs"]):
+                c["upstream_refs"].append(ref_from_raw(by[k], tested["verdict"]))
+                lic = by[k].get("license") or {}
+                c["license_permission"]["per_upstream"].append({
+                    "spdx": lic.get("spdx"),
+                    "copy_permitted": lic.get("copy_permitted"),
+                    "attribution_required": lic.get("attribution_required"),
+                    "license_link_required": lic.get("license_link_required"),
+                    "modification_notice_required": lic.get("modification_notice_required"),
+                    "upstream_id": k[0],
+                })
+            d["routed_promotions"].append({
+                "upstream_id": k[0], "original_capability_id": k[1],
+                "from": "unreviewed_adopted",
+                "to_canonical_id": target,
+                "promoted_in_batch": DEC4.BATCH,
+                "reason": tested["reason"][:400],
+            })
+            changes.append({"identity": f"{k[0]}::{k[1]}", "action": "ADOPT_EXISTING",
+                            "target": target, "owner": c["owner_module"],
+                            "license_note": tested["license_note"]})
+            if tested.get("amendment"):
+                amend_canonical(canon, tested["amendment"], changes)
+
+        elif direction == "REJECT_WITH_REASON":
+            changes.append({"identity": f"{k[0]}::{k[1]}", "action": "REJECT_WITH_REASON",
+                            "target": None, "owner": None,
+                            "terminal_disposition": tested["terminal_disposition"],
+                            "note": "保持 UNREVIEWED；终态处置待 F1-C-D 的 terminal_disposition 迁移",
+                            "license_note": tested["license_note"]})
+        else:
+            raise SystemExit(f"ERROR: 未知方向 {direction}")
+
+    return d, changes
+
+
 def recompute(d, base):
     canon = d["canonical_capabilities"]
     mapped = {(r["upstream_id"], r["original_capability_id"])
@@ -442,11 +511,13 @@ def update_progress(d):
     p["f1c_batches"]["F1-C-B"] = "DONE"
     p["f1c_batches"]["F1-C-C1"] = "DONE"
     p["f1c_batches"]["F1-C-C2"] = "DONE"
+    p["f1c_batches"]["F1-C-C3"] = "DONE"
     p["f1c_batches"]["F1-C"] = "IN_PROGRESS"
-    p["next_batch_start"] = "F1-C-C3"
+    p["next_batch_start"] = "F1-C-D"
     p["note"] = ("F1-C-B 清算 11 项 ROUTED；F1-C-C1 终裁 3 项 DEFER；"
-                 "F1-C-C2 终裁 U05 剩余 10 项未审（8 承接已有 + 2 REJECT 保持 UNREVIEWED）。"
-                 "剩余 10 项 UNREVIEWED 属 U01/U02/U03，未处理。")
+                 "F1-C-C2 终裁 U05 剩余 10 项；F1-C-C3 终裁 U03/U04/U06 剩余 10 项"
+                 "（8 承接已有 + 2 REJECT）。全部 143 项已有终裁；"
+                 "剩 4 项 REJECT 待 F1-C-D 的 terminal_disposition 迁移。")
     PROG.write_text(json.dumps(p, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"updated  -> {PROG.name}")
 
@@ -462,12 +533,17 @@ def main() -> int:
     c2_changes = []
     if DEC3 is not None:
         d, c2_changes = apply_c2(d, raw, dry)
+    c3_changes = []
+    if DEC4 is not None:
+        d, c3_changes = apply_c3(d, raw, dry)
     d = recompute(d, base)
     g = d["global_state_counts"]
     print(f"mapped={g['mapped_count']} routed={g['routed_pending_count']} "
           f"unreviewed={g['unreviewed_count']} sum={g['sum_check']} canonical={g['canonical_count']}")
-    for c in changes:
-        print(f"  {c['action']:18s} {c['identity']:20s} -> {c.get('target') or '(保持)'}")
+    for label, ch in (("B", changes), ("C1", c1_changes), ("C2", c2_changes), ("C3", c3_changes)):
+        for c in ch:
+            print(f"  [F1-C-{label}] {c['action']:18s} {c['identity']:20s} "
+                  f"-> {c.get('target') or '(保持)'}")
     for c in created:
         print(f"  * 新建 {c['canonical_id']}: {c['name']}")
 
@@ -479,7 +555,7 @@ def main() -> int:
         "decision_source": "tools/fusion/f1c_routed_decisions.py",
         "principle": ("每次运行都从 F1-B 基线重建再叠加裁决；不是打补丁，故撤销裁决不会遗留历史路由。"
                       "叠加顺序：F1-B 基线 → F1-C-B（8 项 ROUTED 清算）→ F1-C-C1（3 项 DEFER 终裁）"
-                      "→ F1-C-C2（U05 剩余 10 项未审）。"),
+                      "→ F1-C-C2（U05 剩余 10 项）→ F1-C-C3（U03/U04/U06 剩余 10 项）。"),
         "totals_after": {
             "mapped": g["mapped_count"], "routed": g["routed_pending_count"],
             "unreviewed": g["unreviewed_count"], "canonical": g["canonical_count"],
@@ -488,6 +564,7 @@ def main() -> int:
         "changes": changes,
         "changes_c1": c1_changes,
         "changes_c2": c2_changes,
+        "changes_c3": c3_changes,
         "created_canonicals": created,
         "errata": DEC.ERRATA,
     }

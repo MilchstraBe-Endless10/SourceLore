@@ -1,8 +1,8 @@
 {
   "task": "M1-FUSION-GATE-F1 / F1-B / DSH-Adapter（最后一批）",
-  "generated_at": "2026-11-04T12:31:26+08:00",
+  "generated_at": "2026-11-04T14:39:49+08:00",
   "generated_by": "tools/fusion/f1b_verify_dsh_adapter.py",
-  "git_head": "7a4468aa6998c56182086d1e0c624c82d8208b14",
+  "git_head": "93c64ef0194ec10b41cb00dae034ddad8e9c323f",
   "scope_note": "F1 设计与产物验证；未实现正式 Skill、未跑模型性能基准",
   "summary": {
     "passed": 56,
@@ -50,7 +50,7 @@
       "id": "c7",
       "name": "每个原始身份最多映射一次",
       "passed": true,
-      "detail": "每项原始能力最多正式映射一次，共 131 个身份"
+      "detail": "每项原始能力最多正式映射一次，共 139 个身份"
     },
     {
       "id": "c8",
@@ -62,13 +62,13 @@
       "id": "c9",
       "name": "来源证据可追溯",
       "passed": true,
-      "detail": "8 个原始来源全部可在索引定位"
+      "detail": "9 个原始来源全部可在索引定位"
     },
     {
       "id": "c10",
       "name": "ROUTED 晋升正确",
       "passed": true,
-      "detail": "晋升 8 条（路由表来源 2 条），问题 无"
+      "detail": "晋升 9 条（路由表来源 2 条），问题 无"
     },
     {
       "id": "c11",
@@ -80,13 +80,13 @@
       "id": "c12",
       "name": "三态互斥且总数 143",
       "passed": true,
-      "detail": "mapped 131 + routed 0 + unreviewed 12 = 143；互斥=True"
+      "detail": "mapped 139 + routed 0 + unreviewed 4 = 143；互斥=True"
     },
     {
       "id": "c13",
       "name": "global_state_counts 与实算一致",
       "passed": true,
-      "detail": "global_state_counts 自洽 mapped=131 routed=0 unreviewed=12 canonical=75；不变量=True"
+      "detail": "global_state_counts 自洽 mapped=139 routed=0 unreviewed=4 canonical=75；不变量=True"
     },
     {
       "id": "c14",
@@ -98,7 +98,7 @@
       "id": "c15",
       "name": "DSH-Adapter 批次记录自洽",
       "passed": true,
-      "detail": "mapped=8（应 7）、redirected 现算一致=True（当前 0）、ids 齐备=True"
+      "detail": "mapped=9（应 7）、redirected 现算一致=True（当前 0）、ids 齐备=True"
     },
     {
       "id": "c16",
@@ -248,7 +248,7 @@
       "id": "c40",
       "name": "决策文档与 JSON 一致",
       "passed": true,
-      "detail": "缺失 ID=无；批次数字 [8, 6, 0] 出现=True；累计快照 112/11/20 自洽=True；raw_total 出现=True"
+      "detail": "缺失 ID=无；批次数字 [9, 6, 0] 出现=True；累计快照 112/11/20 自洽=True；raw_total 出现=True"
     },
     {
       "id": "c41",
@@ -272,7 +272,7 @@
       "id": "c44",
       "name": "清单三态与 Crosswalk 一致",
       "passed": true,
-      "detail": "清单 mapped=131/现算 131、routed=0/0、unreviewed=12/12；不一致时重跑 f1b_build_remainder.py"
+      "detail": "清单 mapped=139/现算 139、routed=0/0、unreviewed=4/4；不一致时重跑 f1b_build_remainder.py"
     },
     {
       "id": "c45",
@@ -332,7 +332,7 @@
       "id": "c54",
       "name": "stats 重算一致且幂等",
       "passed": true,
-      "detail": "stats 重算一致 mapped=131 routed=0 unrev=12；DSH-Adapter 重算 mapped=7=True"
+      "detail": "stats 重算一致 mapped=139 routed=0 unrev=4；DSH-Adapter 重算 mapped=7=True"
     },
     {
       "id": "c55",

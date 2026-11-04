@@ -88,15 +88,25 @@ def main() -> int:
         ra = base["reject_audit"]
         pending = set(ra["pending_reject_items"])
         pending_keys = {(k.split("::")[0], k.split("::")[1]) for k in pending}
+        # 后续批次（F1-C-C2/C3）会合法承接部分 REJECT 身份（作为反例约束）。
+        # 故判据改为：「待裁 REJECT 要么仍在遗留集合，要么已被某 canonical 以 REJECT verdict 承接」。
         inside = pending_keys <= (routed_keys | unreviewed_keys)
         extra = pending_keys - (routed_keys | unreviewed_keys)
+        # 已被承接的：必须能在某 canonical 的 refs 里以 verdict=REJECT 找到
+        rej_refs = {(r["upstream_id"], r["original_capability_id"])
+                    for c in canon for r in c["upstream_refs"]
+                    if r.get("verdict") == "REJECT"}
+        unaccounted = [k for k in extra if k not in rej_refs]
         # 交集必须显式给出
         has_intersection = ("reject_intersection_with_routed" in ra
                             and "reject_intersection_with_unreviewed" in ra)
         cnt = len(pending_keys)
-        detail = (f"待裁 REJECT {cnt} 项全部落在遗留集合内={inside}；"
-                  f"交集字段齐备={has_intersection}；越界={sorted(extra) or '无'}")
-        return (inside and has_intersection and cnt == ra["pending_reject_count"]), detail
+        accounted = [k for k in extra if k in rej_refs]
+        detail = (f"待裁 REJECT {cnt} 项：仍在遗留集合 {cnt - len(extra)} 项、"
+                  f"已被 REJECT verdict 承接 {len(accounted)} 项、"
+                  f"无法归属 {sorted(unaccounted) or '无'}；交集字段齐备={has_intersection}")
+        return (has_intersection and not unaccounted
+                and cnt == ra["pending_reject_count"]), detail
 
     def c6():
         d = next(x for x in reg["decisions"] if x["decision_id"] == "F1C-A-001")
