@@ -1,7 +1,7 @@
 {
   "artifact": "F2_P4C_GATE_RESULTS",
   "schema_version": 1,
-  "generated_at": "2026-11-05T14:10:10+08:00",
+  "generated_at": "2026-11-05T15:00:44+08:00",
   "principle": "叠加观测，不覆盖 F1-D 冻结快照",
   "deterministic_synthesis_gate": {
     "verdict": "DONE",

@@ -59,3 +59,21 @@ packet_status / freshness / claim_refs）→ **digest 全部变化**。
 - 证据可信度按**可核对性**判定，不以非空为准
 - 排序必须用业务键（`run_id`/`logical_identity`+`asset_version`/`created_at`），
   **不得**用 `rowid`
+
+---
+
+## 状态更正（2026-11-05；以下取代上方旧的“尚未完成”列表）
+
+F2-P4C 确定性合成门禁已在提交 `056de101ab2dcc6a21cfcc1af0390a8f6102fc4e` 中实现，并已本地复核。P4C 组件、三个前置问题、Gold 与离线合成回放均已通过；`REAL_LLM_CALL_VERIFIED` 仍 OPEN。
+
+本次发现旧验收脚本误标为 P4B，且会重跑整个 `tests/research`。现已改成只运行 `test_synthesis.py` 与 `TestEvidenceIntegrity`，并实际运行 `tools/f2p4c_verify.py`：22 + 6 个定向测试、Gold 10/10、离线回放 6 场景、门禁 20/20。没有重跑 P4B 全套或前序模块回归。此前 599 项结果仍是历史证据。
+
+真实模型调用未启动：DSH Relay 的当前 allowlist 只含 Cosmos 项目根，不包含 SourceLore 的 GitHub Knowledge Base 路径。配置文件存在，但未读取其内容或凭证；未修改 allowlist、未派发 Relay 任务。下一步需先按项目权限流程明确允许目标 workspace，并完成所需 Host 刷新。
+
+### 验收版本证据（2026-11-05）
+
+- `verified_commit`: `056de101ab2dcc6a21cfcc1af0390a8f6102fc4e`
+- 验收时间：`2026-11-05T14:09:54+08:00`
+- 验收器：`p4c-scoped-v1`；SHA-256：`d2a69f8191ae9d0bb258dc7bcc2f8d1a23dc0c616c711ab16267716c13a91fad`
+- 验收工作树为 dirty；当时未提交路径为验收器与生成报告四项，`src/research/`、`tests/research/` 对 `verified_commit` 无差异。此结果不能表述为干净检出的 `056de10` 通过。
+- 随后发现的未跟踪 provider 预检检查点未参与上述运行，本轮保持原样。

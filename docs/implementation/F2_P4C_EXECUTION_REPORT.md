@@ -206,3 +206,30 @@ f2p4c 20/20
 4. 用现有 `citation_validator` 对真实模型输出跑同一套 Gold，
    观察真实模型是否比 stub 更容易越界
 5. 若真实模型反复越界，**不得放宽校验**，只能改 Prompt 或降级到草稿
+
+---
+
+## 11. 2026-11-05 本地复核与执行边界
+
+本机仓库当前 `HEAD=056de101ab2dcc6a21cfcc1af0390a8f6102fc4e`，为 F2-P4C 提交，父提交为 F2-P4B `40038d6`。工作树在本轮开始时干净。
+
+复核发现旧 `tools/f2p4c_verify.py` 的 docstring 和输出 `task` 错标为 P4B，而且会运行整个 `tests/research` 与前序模块回归；旧 `F2_P4C_VERIFICATION.json` 记录的 `git_head` 也是 P4B 基线提交。这些记录不能作为当前 P4C 提交的独立验收结果。
+
+已将验收入口收窄至 P4C 专项用例，并修正错误标签、摘要检查的布尔优先级，以及 `rowid` 扫描范围。实跑 `python3 tools/f2p4c_verify.py`：
+
+```
+P4C synthesis 22 / P4C evidence integrity 6
+P4C Gold 10/10；错误肯定 0；错误否定 0
+离线端到端回放 6 个场景
+F2-P4C verifier 20/20 PASS
+```
+
+本次**没有运行 `tests/research` 全套、没有重跑 P4B、没有重跑前序模块回归、没有调用 LLM 或访问 GitHub**。此前报告中的 599 项全量测试仅保留为历史记录，不能算作本次新结果。当前机读详情见 `F2_P4C_VERIFICATION.json` 和 `F2_P4C_GATE_RESULTS.json`。
+
+版本证据现已补齐：`verified_commit=056de101ab2dcc6a21cfcc1af0390a8f6102fc4e`，验收时间 `2026-11-05T14:09:54+08:00`。验收器标识为 `p4c-scoped-v1`，其 SHA-256 为 `d2a69f8191ae9d0bb258dc7bcc2f8d1a23dc0c616c711ab16267716c13a91fad`。该 SHA 由验收器在运行中通过 `hashlib.sha256(Path(__file__).read_bytes())` 计算并写入机读结果；运行后的源码 mtime 为 14:09:41.664，原始验证 JSON mtime 为 14:09:54.962，随后当前报告补充了版本溯源字段。`p4c-scoped-v1` 是后加的报告标签，SHA 是验收器内容身份。`verified_commit` 是运行时记录的 `git_head` 别名；工作树状态来自运行后的 `git status --short` 观察。当前 JSON 文件 mtime 已因这次元数据补充而更新，不能再用作原始验收时间。
+
+测试工作树**不干净**：当时有验收器及生成报告文件的未提交修改；`src/research/` 和 `tests/research/` 相对该提交没有差异。因此，本结果验证的是“`056de10` 加本地验收器修改”的工作树，不声称干净检出的 `056de10` 单独包含验收器修正。
+
+真实模型调用仍未完成。仅核对了受保护配置文件的存在元数据，没有读取配置内容或凭证。Harness Relay 报告 `configured-roots`，当前 `DSH_RELAY_ALLOWED_WORKSPACE_ROOTS` 仅包含 Cosmos 软件版本管理器目录；SourceLore 所在的 GitHub Knowledge Base 不在允许根内。为遵守 workspace 边界，本轮没有向 Relay 派发或发送研究包，也没有尝试绕过此限制。
+
+当前工作树包含本轮验证器修复及生成的 P4C 验收报告变更，均未提交。真实 DeepSeek 调用需在 SourceLore 路径被明确纳入 Relay 允许根、并按项目要求完成 Host 状态刷新后再进行。后续出现的 `progress/CHECKPOINT-F2-P4C-PROVIDER-PRECHECK.md` 为未跟踪文件，本轮仅只读检查，未修改。
