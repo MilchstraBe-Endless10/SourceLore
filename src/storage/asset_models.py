@@ -29,6 +29,8 @@ ASSET_TYPES = frozenset({
     "evidence_record",       # 证据
     "claim_record",          # 主张（本轮不做状态机）
     "relationship_record",   # 跨仓库关系
+    # F2-P5D：原始文件内容资产元数据（字节存内容寻址 store，见 blob_content_store）
+    "captured_blob_content",
     # F2-P2A：确定性抽取事实（按题面 §8 授权的最小等价类型）
     "extracted_fact",
     # F2-P2B：Claim 候选与证据评估记录（题面第 9 节授权的等价类型）

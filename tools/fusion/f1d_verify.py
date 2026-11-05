@@ -379,7 +379,9 @@ def main() -> int:
                             # F2-P5C 获批：文件内容级抽取与证据定位
                             "src/content/", "tests/content/",
                             "tools/sourcelore_rebuild_index.py",
-                            "tools/f2p5c_")
+                            "tools/f2p5c_",
+                            # F2-P5D 获批：真实 Blob 采集与不可变内容存储
+                            "tests/blob_capture/", "tools/f2p5d_")
         outside = [str(p.relative_to(ROOT)) for p in code
                    if "__pycache__" not in str(p)
                    and not str(p.relative_to(ROOT)).startswith(allowed_prefixes)]

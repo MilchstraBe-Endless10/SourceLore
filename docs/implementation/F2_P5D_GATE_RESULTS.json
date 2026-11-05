@@ -1,0 +1,218 @@
+{
+  "artifact": "F2_P5D_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-05T20:09:40+08:00",
+  "baseline_commit": "871264c",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "crosswalk_matches_frozen": true,
+  "five_distinctions": {
+    "SYNTHETIC_TESTED": {
+      "status": "DONE",
+      "evidence": "59 项 blob_capture 测试全绿；合成夹具原始字节+真实 Git OID 算法"
+    },
+    "REAL_FETCH_VERIFIED": {
+      "status": "DONE",
+      "evidence": "真实 GET /repos/octocat/Hello-World/git/blobs/980a0d5f... → FETCH_OK；bytes=b'Hello World!\\n'；len=13；git_blob_oid 计算值=980a0d5f...（与预期一致）；network_requests=1"
+    },
+    "REAL_BYTES_PERSISTED": {
+      "status": "BLOCKED",
+      "evidence": "preflight 判 AUTHORIZATION_UNKNOWN（LICENSE_UNKNOWN）→ **禁止写入原始字节**。这是授权门禁生效，不是能力缺失。"
+    },
+    "REAL_OFFLINE_RELOADED": {
+      "status": "NOT_VERIFIED",
+      "evidence": "因上一步阻断，真实字节未落库，故无法做真实离线读回。合成链路已完成：写入→新进程读回→逐字节一致。"
+    },
+    "CONTENT_FACTS_PERSISTED": {
+      "status": "NOT_STARTED",
+      "evidence": "本轮明确不做（题面 §9）"
+    }
+  },
+  "gates": {
+    "A_CONTENT_ACQUISITION_POLICY": {
+      "status": "DONE",
+      "evidence": "四档（ALLOWED/METADATA_ONLY/BLOCKED/UNKNOWN）+ 白名单 + 路径安全 + 用途限制 + 对象类型限制；19 项测试"
+    },
+    "B_GITHUB_BLOB_FETCH": {
+      "status": "DONE",
+      "evidence": "真实 HTTP 1 次，返回真实字节（见 REAL_FETCH_VERIFIED）"
+    },
+    "C_GIT_BLOB_INTEGRITY": {
+      "status": "DONE",
+      "evidence": "SHA1('blob '+len+'\\0'+raw) 算法用已知真值验证 MATCH=True；篡改/尺寸/base64/OID/传输预算全部有负例"
+    },
+    "D_IMMUTABLE_CONTENT_STORAGE": {
+      "status": "SYNTHETIC_ONLY",
+      "evidence": "内容寻址 store 幂等/原子替换/篡改检测/孤儿清理全部通过；A 层 payload 不可改（实测 A_LAYER_IMMUTABLE）"
+    },
+    "E_OFFLINE_BLOB_RELOAD": {
+      "status": "SYNTHETIC_ONLY",
+      "evidence": "独立进程写入 → 全新进程读回 → bytes_equal=True，两次读取网络请求 0"
+    },
+    "F_CAPTURE_IDEMPOTENCY": {
+      "status": "DONE",
+      "evidence": "三次重复采集 → 同一资产 ID，index_rows 仅 1 行"
+    },
+    "G_CONTENT_ENGINE_REAL_INPUT": {
+      "status": "BLOCKED",
+      "evidence": "真实字节未持久化，故解析器只能吃合成字节"
+    },
+    "H_CONTENT_FACTS_EC_PERSISTENCE": {
+      "status": "NOT_STARTED"
+    },
+    "I_REAL_GITHUB_BLOB_E2E": {
+      "status": "PARTIAL",
+      "evidence": "抓取+校验 DONE；持久化+离线读回 BLOCKED（授权）"
+    },
+    "J_NATURAL_LANGUAGE_AUTO_TRIGGER": {
+      "status": "NOT_VERIFIED"
+    },
+    "K_DISTRIBUTION_READY": {
+      "status": "NOT_READY",
+      "evidence": "B-1/B-2/B-3 OPEN"
+    }
+  },
+  "found_defects": [
+    {
+      "id": "D-9",
+      "title": "captured_blob_content 未注册为合法资产类型",
+      "impact": "AssetDraft 抛 ModelError，全部写入失败",
+      "fix": "加入 ASSET_TYPES",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-10",
+      "title": "logical_identity 不允许 / 字符",
+      "impact": "含路径的身份被拒；%% 编码不在允许集内",
+      "fix": "改用 _xXX_ 编码（下划线在允许集内）",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-11",
+      "title": "试图事后 UPDATE 回填 content_asset_id",
+      "impact": "A 层触发器 A_LAYER_IMMUTABLE 拒绝 → 字段恒 NULL",
+      "fix": "写入前用确定性 ID 预先计算，删掉 UPDATE",
+      "status": "FIXED"
+    }
+  ],
+  "budget": {
+    "max_blob_bytes": 262144,
+    "max_batch_bytes": 2097152,
+    "max_paths": 32,
+    "transport_budget": "4/3*max + 512B"
+  },
+  "whitelist": [
+    "readme.md",
+    "readme.markdown",
+    "readme.txt",
+    "package.json",
+    "pyproject.toml",
+    "cargo.toml",
+    "go.mod"
+  ],
+  "storage": {
+    "asset_type": "captured_blob_content",
+    "bytes_location": "<data_root>/blobs/<sha256>.bin",
+    "linkage": "payload.content_sha256 ↔ 文件内容",
+    "reason": "assets 只有 payload_json(TEXT)，无 BLOB 列；JSON 存字节会改变换行/BOM 且无法二进制校验"
+  },
+  "tests": {
+    "runtime": {
+      "tests": 45,
+      "ok": true,
+      "exit": 0
+    },
+    "storage": {
+      "tests": 53,
+      "ok": true,
+      "exit": 0
+    },
+    "collector": {
+      "tests": 48,
+      "ok": true,
+      "exit": 0
+    },
+    "facts": {
+      "tests": 44,
+      "ok": true,
+      "exit": 0
+    },
+    "evidence_claims": {
+      "tests": 36,
+      "ok": true,
+      "exit": 0
+    },
+    "lifecycle": {
+      "tests": 142,
+      "ok": true,
+      "exit": 0
+    },
+    "views": {
+      "tests": 50,
+      "ok": true,
+      "exit": 0
+    },
+    "renderer": {
+      "tests": 59,
+      "ok": true,
+      "exit": 0
+    },
+    "research": {
+      "tests": 122,
+      "ok": true,
+      "exit": 0
+    },
+    "skill_interface": {
+      "tests": 69,
+      "ok": true,
+      "exit": 0
+    },
+    "content": {
+      "tests": 77,
+      "ok": true,
+      "exit": 0
+    },
+    "blob_capture": {
+      "tests": 59,
+      "ok": true,
+      "exit": 0
+    }
+  },
+  "total_tests": 804,
+  "all_tests_ok": true,
+  "blocking_metrics_zero": {
+    "wrong_blob_accepted": 0,
+    "unauthorized_bytes_persisted": 0,
+    "wrong_commit_bound": 0,
+    "incomplete_marked_complete": 0,
+    "readonly_query_triggered_network": 0,
+    "authoritative_asset_modified": 0,
+    "unlicensed_text_in_distributable_output": 0
+  },
+  "still_open": [
+    {
+      "gate": "REAL_BYTES_PERSISTED",
+      "status": "BLOCKED",
+      "reason": "需要明确授权依据"
+    },
+    {
+      "gate": "REAL_OFFLINE_RELOADED",
+      "status": "NOT_VERIFIED",
+      "reason": "依赖上一条"
+    },
+    {
+      "gate": "CONTENT_FACTS_PERSISTED",
+      "status": "NOT_STARTED"
+    },
+    {
+      "gate": "DISTRIBUTION_READY",
+      "status": "NOT_READY"
+    }
+  ],
+  "explicitly_not_claimed": [
+    "抓取成功 != 已持久化",
+    "合成链路通过 != 真实链路通过",
+    "公开可见 != 允许永久复制原文",
+    "采集成功 != 内容 Facts 已验证",
+    "内部采集 != 公开分发授权"
+  ]
+}

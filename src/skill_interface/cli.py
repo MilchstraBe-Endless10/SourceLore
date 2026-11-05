@@ -42,8 +42,12 @@ def build_parser():
     a.add_argument("--refresh", action="store_true", help="显式要求重新获取远程版本")
     a.add_argument("--no-token", action="store_true",
                    help="本次不使用 GITHUB_TOKEN（即便环境里有）")
+    a.add_argument("--license-known", action="store_true",
+                   help="声明该仓库有明确授权依据（内部采集用）；默认不声明")
     a.add_argument("--include-content", action="store_true",
                    help="对已保存快照做内容级抽取（读 Blob；无字节则明确报告）")
+    a.add_argument("--content-status", action="store_true",
+                   help="只报内容可用性，不采集、不联网")
     a.add_argument("--content-path", action="append", default=None,
                    help="限定内容抽取的路径（可重复）")
 
@@ -150,12 +154,22 @@ def _dispatch(cmd, args):
                         refresh=getattr(args, "refresh", False),
                         use_token=not getattr(args, "no_token", False))
         S.record_operation("analyze", out)
-        if getattr(args, "include_content", False):
-            import content_analyze as CA
-            out["content"] = CA.content_analyze(
+        if (getattr(args, "include_content", False)
+                or getattr(args, "content_status", False)):
+            import content_capture as CC
+            status_only = (getattr(args, "content_status", False)
+                           and not getattr(args, "include_content", False))
+            src_url = args.url
+            parts = src_url.rstrip("/").split("/")
+            owner = parts[-2] if len(parts) >= 2 else None
+            repo = parts[-1] if parts else None
+            out["content"] = CC.capture(
                 repository_id=out["repository_id"],
                 commit_sha=out["commit_sha"], data_root=root,
-                paths=args.content_path)
+                paths=args.content_path, owner=owner, repo=repo,
+                license_known=getattr(args, "license_known", False),
+                offline=bool(getattr(args, "offline", False)) or status_only,
+                dry_run=status_only)
         return emit_ok(out)
 
     if cmd == "query":
