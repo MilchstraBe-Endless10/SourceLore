@@ -1,0 +1,104 @@
+---
+name: sourcelore
+description: >
+  GitHub 知识库工具：采集公开仓库的固定 Commit、生成可回查的路径观察事实与证据裁决，
+  并按需查询、生成知识卡片。用法是先调用 scripts/sourcelore.py 执行真实 CLI，
+  再由 CLI 的结构化 JSON 来回答；不得由模型自行编造仓库分析结果。
+  触发词：SourceLore、分析 GitHub 仓库、为仓库建知识库、查询仓库知识、查 Commit 知识、
+  生成知识卡片、对比两个 Commit、读取已有研究报告。
+  不适用：需要模型推理/总结的开放式提问、私有仓库、需要修改远程仓库的操作。
+---
+
+# SourceLore · GitHub 知识库 Skill
+
+## 这是什么
+
+SourceLore 是一个**本地知识库工具**，不是模型服务。它做的事只有一件：
+
+> 采集一个公开 GitHub 仓库的**固定 Commit**，把"某个路径是否存在"这类可验证命题
+> 登记为 Fact，用既有的 verification 规则给出 supported / refuted / insufficient_evidence
+> 裁决，并保留全部证据引用与限制。
+
+**它不做的事**：不推断项目功能是否实现、不判断文档是否完善、不做代码质量评价、
+不替你做开放式总结。凡超出"路径观察"范围的问题，它只会回答"现有知识库证据不足"。
+
+## 何时使用
+
+| 用户说的话 | 应当执行的命令 |
+|---|---|
+| 用 SourceLore 分析 / 建库 | `analyze <url>` |
+| 有哪些已建的仓库 | `repositories` |
+| 看看这个仓库的知识 | `inspect <repository_id>` |
+| 这个 Commit 里 X 存在吗 | `query <repo_id> --commit <sha> --type path --path X` |
+| 有哪些已登记命题 | `query <repo_id> --commit <sha> --type claims` |
+| 对比两个 Commit | `query <repo_id> --commit A --compare-commit B --type version` |
+| 生成知识卡片 | `card --repository-id <id> --claim-id <id>` |
+| 历史版本 | `history <repository_id>` |
+
+## 何时不要使用
+
+- 用户问"这个项目好不好 / 功能齐不齐 / 文档完善吗" → **不要用**，直接说明知识库无此类证据。
+- 用户要求分析私有仓库 → 拒绝（无凭据通道）。
+- 用户要求创建 Issue / 提交代码 / 执行仓库脚本 → 拒绝。
+
+## 入口
+
+```bash
+python3 <技能目录>/scripts/sourcelore.py <子命令> [参数]
+```
+
+技能目录由安装位置决定；脚本会自行定位 SourceLore 工程根
+（也可用 `SOURCELORE_PROJECT_ROOT` 指定）。
+
+**所有输出都是 JSON，走 stdout；错误走 stderr；退出码非 0 表示真实失败。**
+不要只凭 Agent 自己的话判断成功与否，要读退出码和 stdout。
+
+## 数据位置
+
+- 默认知识库根：`~/.sourcelore/`
+- 可用 `--data-root <path>` 或环境变量 `SOURCELORE_DATA_ROOT` 覆盖
+- 数据库文件 `kb.db` **永不写入 Git 仓库**（脚本会拒绝）
+- 卡片与报告输出到 `<数据根>/preview/`
+
+## 已支持
+
+- 公开 GitHub 仓库的只读采集（受 `--max-requests` 限额控制）
+- 固定 Commit 与 Tree 完整性标记（截断即标 `PARTIAL`，不会标 `COMPLETE`）
+- 路径存在命题的 Fact 生成与裁决
+- 按仓库 / Commit / 路径 / Claim 查询
+- 知识卡片 HTML（本地可打开）
+- 历史版本列举
+
+## 尚未支持
+
+- 功能实现、测试覆盖、代码质量等任何非路径类结论
+- 私有仓库与需要认证的采集
+- 全量 Blob 内容分析（仅路径观察）
+- 对外发布（输出恒为内部预览）
+
+## 错误处理
+
+| 退出码 | 含义 |
+|---|---|
+| 0 | 成功 |
+| 1 | 执行失败（含 GitHub 错误） |
+| 2 | 参数错误 |
+| 3 | 知识库不可用（未建立） |
+
+错误 JSON 形如 `{"ok": false, "error": "...", "message": "..."}`，位于 stdout；
+同时 stderr 有一行可读摘要。看到 `ok:false` 就要如实告诉用户失败，不要粉饰。
+
+## 安全边界
+
+- 只接受 `https://github.com/<owner>/<repo>`；拒绝内网地址、非 github 主机、异常端口
+- 只读：不推送、不建 Issue、不执行仓库脚本
+- 知识卡片保留来源等级、审核状态、Commit 与限制；来源为 `TEST_ONLY` 时必须显式说明
+- 卡片与报告标 `distribution_allowed: false` —— 内部预览，不是正式发布
+
+## 关键判读纪律（务必遵守）
+
+1. **`completeness_status: PARTIAL`** → 未覆盖部分不得判为"不存在"。
+2. **`insufficient_evidence`** → 只能说"证据不足"，**不得**说"该命题错误"。
+3. **`refuted`** → 只对该 Commit 成立，不得外推到别的版本或"该项目不存在"。
+4. **`coverage_state: INSUFFICIENT_EVIDENCE`** → 必须如实告知用户知识库回答不了。
+5. 不要用 Agent 自己的推理去补足 CLI 返回的数据。

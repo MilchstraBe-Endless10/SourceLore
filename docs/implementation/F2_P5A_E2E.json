@@ -1,0 +1,260 @@
+{
+  "artifact": "F2_P5A_E2E",
+  "generated_at": "2026-11-05T17:29:55+08:00",
+  "skill_path": "/home/arlune_innersea/.agents/skills/sourcelore/scripts/sourcelore.py",
+  "data_root": "/tmp/sl_e2e",
+  "scenarios": {
+    "1_analyze": {
+      "cmd": "analyze https://github.com/octocat/Hello-World",
+      "exit": 1,
+      "duration_s": 2.9,
+      "ok": false,
+      "body": {
+        "detail": {
+          "error_code": "RATE_LIMITED",
+          "hint": "GitHub 已限流（未认证配额 60/h）。本 Skill 不会绕过限流，也不会长时间等待；请稍后重试或提供 GITHUB_TOKEN 环境变量。",
+          "retry_after": 1511,
+          "status": 403
+        },
+        "error": "RATE_LIMITED",
+        "message": "GitHub 限流：RATE_LIMITED，重试等待 1511 秒",
+        "ok": false
+      },
+      "stderr_first": "错误[RATE_LIMITED]: GitHub 限流：RATE_LIMITED，重试等待 1511 秒",
+      "note": "真实 GitHub 采集；若被限流则 exit=1 且 error=RATE_LIMITED，该场景即为 BLOCKED_BY_RATE_LIMIT 而非伪造成功"
+    },
+    "2_query_path": {
+      "cmd": "query 1296269 --commit 7fd1a60b01f91b314f59955a4e4d4e80d8edf11d --type path --path README",
+      "exit": 0,
+      "duration_s": 0.1,
+      "ok": true,
+      "body": {
+        "answerable": true,
+        "commit_sha": "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",
+        "coverage_meaning": "现有知识资产足以回答该研究问题。",
+        "coverage_state": "ANSWERABLE_FROM_EXISTING_EVIDENCE",
+        "distribution_restrictions": {
+          "blockers": [
+            {
+              "id": "B-1",
+              "status": "OPEN",
+              "title": "第三方声明措辞（THIRD_PARTY_NOTICES 越界）"
+            },
+            {
+              "id": "B-2",
+              "status": "OPEN",
+              "title": "UPSTREAM-06 法律审查（28 项 copy_permitted=false）"
+            },
+            {
+              "id": "B-3",
+              "status": "OPEN",
+              "title": "CC BY 4.0 署名（SL-CAP-0023 含 6 词原句）"
+            }
+          ],
+          "distribution_allowed": false,
+          "freeze_state": "FROZEN_INTERNAL_RESTRICTED",
+          "note": "知识验证结果与来源许可证是两个独立结论；supported 不推导出 distribution_allowed=true",
+          "scope": "LOCAL_INTERNAL_TEST_ONLY"
+        },
+        "findings": [
+          {
+            "claim_id": "SL-CLAIM-b2d90832050096e96bd83b284ae02bae1d817cf0",
+            "commit_sha": "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",
+            "evidence_integrity": "FULLY_LOCATABLE",
+            "evidence_refs": [
+              "fact:SL-FACT-23fb9eaf7edad041595ead0a3af938350c90bfab",
+              "{\"blob_sha\":\"980a0d5f19a64b4b30a87d4206aade58726b60e3\",\"kind\":\"tree_entry\",\"mode\":\"100644\",\"object_type\":\"blob\",\"path\":\"README\"}",
+              "{\"commit_sha\":\"7fd1a60b01f91b314f59955a4e4d4e80d8edf11d\",\"completeness_status\":\"COMPLETE\",\"kind\":\"source_snapshot\",\"manifest_version\":2,\"repository_id\":\"1296269\",\"root_tree_sha\":\"b4eecafa9be2f2006ce1b709d6857b07069b4608\",\"rule_id\":\"file_path_observation\",\"rule_version\":\"v1\",\"snapshot_asset_id\":\"SL-A-ab121baa40b37a8a9d959a143b1d1b22\",\"snapshot_logical_identity\":\"SL-SNAP-5a414a4b81e4c2d4a77a03fc2ca154b1201e6b6b\",\"tree_query_ref\":\"b4eecafa9be2f2006ce1b709d6857b07069b4608\"}"
+            ],
+            "finding_id": "SL-F-321f3f0922e9047362fe3386",
+            "limitations": [],
+            "meaning": "在指定范围内，现有经过验证的证据支持该命题。",
+            "review_status": "pending_review",
+            "verdict_status": "supported",
+            "verification_id": "SL-VERIF-3543119f023fccee7e96f646ec382a8e831bb305"
+          }
+        ],
+        "gaps": [
+          {
+            "detail": "结论仅适用于所记录的版本与证据范围",
+            "gap": "SCOPE_BOUND"
+          }
+        ],
+        "is_knowledge_authority": false,
+        "limitations": [
+          "Research 产物不是知识权威，不得作为 Claim 裁决或发布依据",
+          "分发门禁仍为 FROZEN_INTERNAL_RESTRICTED，仅限本地内部消费",
+          "结论仅适用于所记录的版本与证据范围"
+        ],
+        "note": "本结果是知识库检索结果，不是模型推断；证据不足时不得据此得出肯定或否定结论",
+        "ok": true,
+        "query_id": "SL-Q-e2502d31a8515096c533ca95909f77fe",
+        "repository_id": "1296269",
+        "research_id": "SL-R-2c0c57ce0e5f81bfc8f9fed026261503",
+        "untrusted_findings": []
+      },
+      "stderr_first": ""
+    },
+    "3_card": {
+      "cmd": "card --repository-id 1296269 --claim-id SL-CLAIM-b2d90832050096e96bd83b284ae02bae1d817cf0",
+      "exit": 0,
+      "duration_s": 0.1,
+      "ok": true,
+      "body": {
+        "card_id": "SL-CARD-f48cdf104a99f75bcfb629aaf4392adf",
+        "distribution_allowed": false,
+        "html_path": "/tmp/sl_e2e/preview/SL-CARD-f48cdf104a99f75bcfb629aaf4392adf.html",
+        "json_path": "/tmp/sl_e2e/preview/SL-CARD-f48cdf104a99f75bcfb629aaf4392adf.json",
+        "note": "本地内部预览产物，不是对外发布的正式知识",
+        "ok": true,
+        "preview_allowed": true
+      },
+      "stderr_first": ""
+    },
+    "4_history": {
+      "cmd": "history 1296269",
+      "exit": 0,
+      "duration_s": 0.1,
+      "ok": true,
+      "body": {
+        "note": "不同 Commit 各自成立；本接口不推断先后或祖先关系",
+        "ok": true,
+        "repository_id": "1296269",
+        "versions": [
+          {
+            "commit_sha": "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",
+            "completeness_status": "COMPLETE",
+            "snapshot_asset_id": "SL-A-ab121baa40b37a8a9d959a143b1d1b22"
+          }
+        ]
+      },
+      "stderr_first": ""
+    },
+    "5_insufficient": {
+      "cmd": "query 1296269 --commit 7fd1a60b01f91b314f59955a4e4d4e80d8edf11d --type path --path src/main.rs",
+      "exit": 0,
+      "duration_s": 0.1,
+      "ok": true,
+      "body": {
+        "answerable": false,
+        "commit_sha": "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",
+        "coverage_meaning": "现有知识资产不足以回答该研究问题（证据缺口已列出）。",
+        "coverage_state": "INSUFFICIENT_EVIDENCE",
+        "distribution_restrictions": {
+          "blockers": [
+            {
+              "id": "B-1",
+              "status": "OPEN",
+              "title": "第三方声明措辞（THIRD_PARTY_NOTICES 越界）"
+            },
+            {
+              "id": "B-2",
+              "status": "OPEN",
+              "title": "UPSTREAM-06 法律审查（28 项 copy_permitted=false）"
+            },
+            {
+              "id": "B-3",
+              "status": "OPEN",
+              "title": "CC BY 4.0 署名（SL-CAP-0023 含 6 词原句）"
+            }
+          ],
+          "distribution_allowed": false,
+          "freeze_state": "FROZEN_INTERNAL_RESTRICTED",
+          "note": "知识验证结果与来源许可证是两个独立结论；supported 不推导出 distribution_allowed=true",
+          "scope": "LOCAL_INTERNAL_TEST_ONLY"
+        },
+        "findings": [],
+        "gaps": [
+          {
+            "detail": "现有资产中没有与该问题匹配的 Claim；这**不**意味着命题为假",
+            "gap": "NO_REGISTERED_CLAIM"
+          }
+        ],
+        "is_knowledge_authority": false,
+        "limitations": [
+          "Research 产物不是知识权威，不得作为 Claim 裁决或发布依据",
+          "分发门禁仍为 FROZEN_INTERNAL_RESTRICTED，仅限本地内部消费",
+          "现有资产中没有与该问题匹配的 Claim；这**不**意味着命题为假",
+          "证据不足，不得据此得出肯定或否定结论"
+        ],
+        "note": "本结果是知识库检索结果，不是模型推断；证据不足时不得据此得出肯定或否定结论",
+        "ok": true,
+        "query_id": "SL-Q-c0924eb7232ce8caad53eabdcd550de4",
+        "repository_id": "1296269",
+        "research_id": "SL-R-9b11f8a363de4ba313aad0d32d2afb9a",
+        "untrusted_findings": []
+      },
+      "stderr_first": ""
+    },
+    "6_repositories": {
+      "cmd": "repositories",
+      "exit": 0,
+      "duration_s": 0.1,
+      "ok": true,
+      "body": {
+        "count": 1,
+        "ok": true,
+        "repositories": [
+          {
+            "claim_count": 1,
+            "commits": [
+              "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d"
+            ],
+            "fact_count": 1,
+            "knowledge_state": "HAS_KNOWLEDGE",
+            "note": "commits 为已登记快照的 Commit，不代表该仓库当前最新状态",
+            "repository_id": "1296269",
+            "snapshot_count": 1,
+            "verification_count": 1
+          }
+        ]
+      },
+      "stderr_first": ""
+    },
+    "7_status": {
+      "cmd": "status",
+      "exit": 0,
+      "duration_s": 0.1,
+      "ok": true,
+      "body": {
+        "data_root": "/tmp/sl_e2e",
+        "db_exists": true,
+        "db_path": "/tmp/sl_e2e/kb.db",
+        "db_size_bytes": 155648,
+        "last_operation": {
+          "at": "2026-11-05T17:29:58+08:00",
+          "ok": true,
+          "operation": "query",
+          "summary": {
+            "commit_sha": "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",
+            "coverage_state": "INSUFFICIENT_EVIDENCE",
+            "repository_id": "1296269"
+          }
+        },
+        "note": "不输出任何凭据或敏感配置",
+        "ok": true,
+        "project_root": "/mnt/Server_Data_Center/Team_Flie(团队文件)/GitHub_Knowledge_Base(Gihub知识库)/SourceLore",
+        "repository_count": 1,
+        "schema_version": 1,
+        "skill_version": "f2p5a/1.0",
+        "storage_available": true
+      },
+      "stderr_first": ""
+    },
+    "8_bad_url": {
+      "cmd": "analyze https://evil.com/x/y",
+      "exit": 1,
+      "duration_s": 0.1,
+      "ok": false,
+      "body": {
+        "detail": {
+          "host": "evil.com"
+        },
+        "error": "HOST_NOT_ALLOWED",
+        "message": "只允许 github.com（收到 evil.com）；拒绝内网或未知主机",
+        "ok": false
+      },
+      "stderr_first": "错误[HOST_NOT_ALLOWED]: 只允许 github.com（收到 evil.com）；拒绝内网或未知主机"
+    }
+  }
+}

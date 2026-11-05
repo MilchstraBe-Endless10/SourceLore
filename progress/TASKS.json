@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-05T15:00:44+08:00",
+  "updated_at": "2026-11-05T17:31:45+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -1399,9 +1399,28 @@
         "docs/preview/f2p4c/s1_synthesis/synthesis.json"
       ],
       "git_commit": "056de101ab2dcc6a21cfcc1af0390a8f6102fc4e",
-      "blocked_reason": "REAL_LLM_CALL_VERIFIED OPEN —— DSH Relay 的 configured-roots 仅含 Cosmos 软件版本管理器目录，SourceLore 所在 GitHub Knowledge Base 路径不在允许根内；未读取凭证、扩展权限或派发任务。需明确允许该 workspace 并按项目规则刷新 Host 后再验收真实调用。",
+      "blocked_reason": "REAL_LLM_CALL_VERIFIED OPEN —— 当前 Relay roots 仅含 Cosmos 软件版本管理器目录；SourceLore 的父 workspace 不在允许根，且不应扩大到整个 Knowledge Base。Provider Precheck 还显示 headless profile 未配置 OmniRoute provider。未改 Relay/provider 配置、未读取凭证或派发任务；需先明确授权 SourceLore 专用 workspace/精确根目录并完成无真实推理的 provider 预检，真实调用另需授权。",
       "depends_on": [
         "M2-F2-P4B"
+      ]
+    },
+    {
+      "id": "M2-F2-P5A",
+      "milestone": "M2",
+      "goal": "SourceLore GitHub 知识库 Skill 安装、集成与真实调用",
+      "status": "DONE_PARTIAL",
+      "verification_commands": [
+        "python3 -m unittest discover -s tests/skill_interface -t .",
+        "python3 tools/f2p5a_e2e.py"
+      ],
+      "evidence_paths": [
+        "docs/implementation/F2_P5A_GATE_RESULTS.json",
+        "docs/implementation/F2_P5A_E2E.json"
+      ],
+      "git_commit": null,
+      "blocked_reason": "GitHub 未认证限流 60/h 已用尽；话术自动触发未验",
+      "depends_on": [
+        "M2-F2-P4C"
       ]
     }
   ]

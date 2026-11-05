@@ -1,17 +1,18 @@
 # SourceLore 交接文档
 
 > 本文件是跨会话恢复的唯一入口。任何新会话第一件事就是读它。
-> 最后更新：2026-11-05T15:00:44+08:00
+> 最后更新：2026-11-05T15:12:38+08:00
 
 ## 当前状态（2026-11-05）
 
 - 当前里程碑/任务：**M2 / F2-P4C**。F2-P4C 确定性合成门禁已完成；真实 DeepSeek 调用仍 OPEN。
-- 当前 Git HEAD：`056de101ab2dcc6a21cfcc1af0390a8f6102fc4e`，F2-P4C 实现提交。
-- 本轮已修复 P4C verifier 的错误 P4B 标签和全量测试范围；P4C 专项测试 22/22 + 6/6，Gold 10/10，离线回放 6 场景，门禁 20/20。
+- 当前 Git HEAD：`8c6c087b06f6807598f741b43842cedb382df4fd`，包含 F2-P4C-R1 verifier/报告刷新。20/20 的历史运行记录仍对应 `verified_commit=056de101ab2dcc6a21cfcc1af0390a8f6102fc4e`，时间为 2026-11-05 14:09:54 +08:00。
+- P4C 专项测试 22/22 + 6/6、Gold 10/10、离线回放 6 场景、门禁 20/20 是上述历史运行结果；本轮未重跑。当前 `tools/f2p4c_verify.py` 的 SHA-256 与历史 JSON 记录一致，但这不把历史测试改写成 HEAD `8c6c087` 上的新运行。
 - 机器报告现明确记录 `verified_commit=056de10…`、验收时间、非干净测试工作树、`p4c-scoped-v1` 与验收器 SHA-256。SHA 由验收器在运行时生成；版本标签和提交/工作树说明是在结果后补的溯源元数据。P4C 源码/测试目录相对该提交无差异，不能宣称干净检出单独通过。
 - **本轮没有重跑 F2-P4B 全套、前序全模块回归、真实 LLM 或 GitHub 请求。** 此前 599 项测试结果是历史报告，不是本轮结果。
 - 真实模型调用受 Harness workspace allowlist 阻塞：当前 `DSH_RELAY_ALLOWED_WORKSPACE_ROOTS` 只有 Cosmos 软件版本管理器目录，SourceLore 路径不在其中。provider 配置文件存在，但未读其内容或凭证；未改 allowlist、未派发任务。
-- 当前工作树包含本轮 P4C 验收脚本及报告更新，均未提交或推送；另有未跟踪文件 `progress/CHECKPOINT-F2-P4C-PROVIDER-PRECHECK.md`，仅只读检查，未修改。
+- Provider Precheck 检查点要求预检阶段不做真实推理、不改全局配置/凭证/当前 Web 默认模型、不装插件；其结果还显示 headless profile 未配置 OmniRoute provider。最小工作区范围应是专用 SourceLore workspace 与精确 SourceLore 根目录，不能放宽到整个 Knowledge Base；当前注册的是其父目录且不在 allowlist，Relay capabilities 未暴露 workspace-create 能力。即使工作区授权解决，provider 预检仍须另行完成，真实推理仍需独立授权。
+- 当前工作树有未提交状态记录改动：`progress/HANDOFF.md`、`progress/STATE.json`、`progress/TASKS.json`。`progress/CHECKPOINT-F2-P4C-PROVIDER-PRECHECK.md` 是已跟踪且未修改的文件；本轮未提交或推送。
 
 下方原始 M1 状态段是历史快照，不能据此恢复到 F1；最新证据见 `progress/STATE.json`、`progress/TASKS.json`、`progress/CHECKPOINT-F2-P4C.md` 和 `docs/implementation/F2_P4C_VERIFICATION.json`。
 

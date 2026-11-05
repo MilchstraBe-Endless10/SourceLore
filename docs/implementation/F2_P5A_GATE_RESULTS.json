@@ -1,0 +1,193 @@
+{
+  "artifact": "F2_P5A_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-05T17:30:40+08:00",
+  "baseline_commit": "8c6c087",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "crosswalk_matches_frozen": true,
+  "gate_verdicts": {
+    "SKILL_PACKAGE": {
+      "status": "DONE",
+      "evidence": "skill/sourcelore/{SKILL.md,scripts/sourcelore.py,references/*.md} 6 文件；安装到 ~/.agents/skills/sourcelore，含 .sourcelore-skill.json 记录工程根与源树哈希。"
+    },
+    "SKILL_DISCOVERY": {
+      "status": "DONE",
+      "evidence": "本会话 available_skills 目录中出现 `sourcelore` 条目（系统提示实证）；并通过 skill 工具实际加载，返回 skill_content 与 base directory。"
+    },
+    "SKILL_CLI": {
+      "status": "DONE",
+      "evidence": "7 个子命令在安装路径下全部可执行；status/repositories/inspect/history/query/card 退出码 0-3 均已验证。41 项 skill_interface 测试全绿。"
+    },
+    "GITHUB_KNOWLEDGE_WORKFLOW": {
+      "status": "PARTIAL",
+      "evidence": "**首次真实采集成功**：octocat/Hello-World → commit 7fd1a60b01f91b314f59955a4e4d4e80d8edf11d、1 tree entry、completeness=COMPLETE、1 Fact、裁决 supported。但**后续复跑被 GitHub 限流阻断**（未认证 60/h 已用尽，remaining=0）。限流不作为失败掩盖：CLI 2 秒内返回 RATE_LIMITED + hint。"
+    },
+    "KNOWLEDGE_QUERY": {
+      "status": "DONE",
+      "evidence": "query path=README → ANSWERABLE_FROM_EXISTING_EVIDENCE，verdict=supported，带 evidence_refs；query path=src/main.rs → INSUFFICIENT_EVIDENCE，answerable=false，findings=0。"
+    },
+    "KNOWLEDGE_CARD": {
+      "status": "DONE",
+      "evidence": "生成 HTML 到 <data_root>/preview/；CSP script-src 'none'、无 <script>、无 on* 属性；distribution_allowed=false，B-1/B-2/B-3 阻断项齐备。"
+    },
+    "HARNESS_SKILL_E2E": {
+      "status": "PARTIAL",
+      "evidence": "**Skill 被发现并实际加载**（available_skills + skill 工具返回体为证）；**CLI 由外部子进程真实调用**（f2p5a_e2e 记录命令/退出码/耗时）。但**未记录到 Agent 在自然语言对话中被自动触发后调用**的独立证据 —— 本轮的调用是 Agent 主动发起，不是用户话术自动触发。"
+    }
+  },
+  "e2e_scenarios": {
+    "1_analyze": {
+      "exit": 1,
+      "duration_s": 2.9,
+      "ok": false
+    },
+    "2_query_path": {
+      "exit": 0,
+      "duration_s": 0.1,
+      "ok": true
+    },
+    "3_card": {
+      "exit": 0,
+      "duration_s": 0.1,
+      "ok": true
+    },
+    "4_history": {
+      "exit": 0,
+      "duration_s": 0.1,
+      "ok": true
+    },
+    "5_insufficient": {
+      "exit": 0,
+      "duration_s": 0.1,
+      "ok": true
+    },
+    "6_repositories": {
+      "exit": 0,
+      "duration_s": 0.1,
+      "ok": true
+    },
+    "7_status": {
+      "exit": 0,
+      "duration_s": 0.1,
+      "ok": true
+    },
+    "8_bad_url": {
+      "exit": 1,
+      "duration_s": 0.1,
+      "ok": false
+    }
+  },
+  "tests": {
+    "runtime": {
+      "tests": 45,
+      "ok": true,
+      "exit": 0
+    },
+    "storage": {
+      "tests": 53,
+      "ok": true,
+      "exit": 0
+    },
+    "collector": {
+      "tests": 48,
+      "ok": true,
+      "exit": 0
+    },
+    "facts": {
+      "tests": 44,
+      "ok": true,
+      "exit": 0
+    },
+    "evidence_claims": {
+      "tests": 36,
+      "ok": true,
+      "exit": 0
+    },
+    "lifecycle": {
+      "tests": 142,
+      "ok": true,
+      "exit": 0
+    },
+    "views": {
+      "tests": 50,
+      "ok": true,
+      "exit": 0
+    },
+    "renderer": {
+      "tests": 59,
+      "ok": true,
+      "exit": 0
+    },
+    "research": {
+      "tests": 122,
+      "ok": true,
+      "exit": 0
+    },
+    "skill_interface": {
+      "tests": 41,
+      "ok": true,
+      "exit": 0
+    }
+  },
+  "total_tests": 640,
+  "all_tests_ok": true,
+  "found_defects": [
+    {
+      "id": "D-1",
+      "title": "index_rows.commit_sha 全为 NULL",
+      "impact": "repositories 的 commits 为空，看似无版本",
+      "fix": "回读 snapshot payload；已加测试",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-2",
+      "title": "GitHub 限流导致 CLI 挂起约 8 分钟",
+      "impact": "RATE_LIMITED 属 RETRYABLE，retry_after 被截 120s×4 次",
+      "fix": "analyze 实例 max_retries=0/max_retry_after=0；限流 2 秒内返回",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-3",
+      "title": "测试裸子串匹配 \"requests\" 误报",
+      "impact": "断言过宽，把注释里的中文误判为 import",
+      "fix": "改用正则匹配 import 行",
+      "status": "FIXED"
+    }
+  ],
+  "still_open": [
+    {
+      "gate": "SKILL_AUTO_TRIGGER_E2E",
+      "status": "NOT_VERIFIED",
+      "reason": "未验证用户自然语言话术能否自动触发 Skill（需独立会话观察）"
+    },
+    {
+      "gate": "GITHUB_TOKEN_ROBUSTNESS",
+      "status": "NOT_VERIFIED",
+      "reason": "未用 token 跑过；限流场景已实测 403"
+    },
+    {
+      "gate": "MULTI_COMMIT_COMPARE",
+      "status": "NOT_VERIFIED",
+      "reason": "库里只有 1 个 commit，version 查询未在有双版本数据上验证"
+    },
+    {
+      "gate": "DISTRIBUTION_READY",
+      "status": "NOT_READY",
+      "reason": "B-1/B-2/B-3 OPEN"
+    },
+    {
+      "gate": "Y6-P3",
+      "status": "UNVERIFIED"
+    },
+    {
+      "gate": "Y6-P6",
+      "status": "OPEN"
+    }
+  ],
+  "explicitly_not_claimed": [
+    "Skill 被发现 ≠ 用户话术能自动触发",
+    "首次采集成功 ≠ 限流下仍可用",
+    "卡片能打开 ≠ 可对外分发",
+    "CLI 可被 subprocess 调用 ≠ Harness 审批链路通过"
+  ]
+}
