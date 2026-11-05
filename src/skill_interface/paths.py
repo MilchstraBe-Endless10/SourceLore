@@ -26,7 +26,8 @@ SKILL_VERSION = "f2p5a/1.0"
 def ensure_import_path() -> None:
     """把 src/ 下各模块目录加入 sys.path（现有工程是扁平模块，无统一包）。"""
     for name in ("runtime", "storage", "collector", "facts", "evidence_claims",
-                 "lifecycle", "views", "renderer", "research", "skill_interface", "content", "content_persistence"):
+                 "lifecycle", "views", "renderer", "research", "skill_interface", "content", "content_persistence",
+                 "source_analysis"):
         p = SRC_ROOT / name
         if p.is_dir() and str(p) not in sys.path:
             sys.path.insert(0, str(p))

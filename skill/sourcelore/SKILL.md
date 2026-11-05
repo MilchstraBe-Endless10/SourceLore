@@ -40,6 +40,8 @@ SourceLore 是一个**本地知识库工具**，不是模型服务。它做的�
 | 查内容级知识 | `query <rid> --commit <sha> --type content --path <p>` |
 | 内容概览 | `inspect <rid> --content-summary` |
 | 内容知识卡片 | `card --repository-id <rid> --commit <sha> --path <p>` |
+| 查源码结构知识 | `query <rid> --commit <sha> --type code` |
+| 源码结构卡片 | `card --repository-id <rid> --commit <sha> --path <p> --code` |
 | 历史版本 | `history <repository_id>` |
 
 ## 何时不要使用
@@ -154,6 +156,50 @@ card --repository-id <rid> --content-fact-id F
 | `unique_blobs` | 唯一 Git Blob OID 数 |
 | `content_assets` | 内容资产数 |
 | `facts` | 已登记事实数 |
+
+## 源码结构知识（F2-P5G）
+
+```
+query <rid> --commit <sha> --type code [--path P] [--symbol NAME] [--symbol-kind K] [--module M]
+card  --repository-id <rid> --commit <sha> --path P --code
+```
+
+**只支持 Python（`.py`）**，用标准库 `ast`。JS/TS 为 `NOT_IMPLEMENTED`（无可靠解析器时不使用正则凑数）。
+
+**绝不执行仓库代码**：不 `exec`、不 `eval`、不 import、不跑测试、不执行 shell。
+
+### 能确认什么
+
+| 命题 | 能确认 | 不能确认 |
+|---|---|---|
+| `SOURCE_SYMBOL_DECLARED` | 某文件声明了该类/函数/方法 | 函数被执行、能完成某任务、被其他模块使用 |
+| `SOURCE_IMPORT_DECLARED` | 存在该静态导入声明 | 依赖已安装、导入成功、运行时必执行 |
+| `SOURCE_LOCAL_MODULE_RESOLVED` | 当前 Commit Tree 中有唯一候选路径 | 运行时导入成功；**不构成依赖图** |
+
+### 符号语义
+
+- `qualified_name` 按语法嵌套生成（`Worker.run`），**不是同名拼接**
+- 同名定义按出现序号区分，**各自保留位置，不覆盖**
+- 装饰器只记录存在性，**不解释运行效果**
+- 异步定义保留 `async` 属性
+
+### 导入语义
+
+- 支持 `import x` / `import x.y` / `from x import y` / `from . import x` / `from ..x import y`
+- 记录 `relative_level`、`alias`、`star_import`、`source_scope`
+- 条件导入、`TYPE_CHECKING`、函数内导入均保留语境，**不提升为无条件依赖**
+
+### 本地模块解析五态
+
+`LOCAL_MODULE_RESOLVED` / `EXTERNAL_OR_UNRESOLVED` / `AMBIGUOUS_CANDIDATES` /
+`INSUFFICIENT_TREE_COVERAGE` / `UNSUPPORTED_IMPORT_FORM`
+
+仅在**当前 Commit 已登记 Tree** 内有唯一候选时才判 RESOLVED；绝不跨 Commit 补全，
+绝不从本机已安装包推断。
+
+### 明确不做
+
+函数调用图、运行时依赖图、数据流图、动态分派、程序行为图。
 
 ## 尚未支持
 

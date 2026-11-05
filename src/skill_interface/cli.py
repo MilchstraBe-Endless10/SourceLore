@@ -64,10 +64,13 @@ def build_parser():
     q.add_argument("--commit", default=None,
                    help="固定 Commit（content 类型必需）")
     q.add_argument("--type", default="path",
-                   choices=["path", "claims", "version", "content"])
+                   choices=["path", "claims", "version", "content", "code"])
     q.add_argument("--path", default=None)
     q.add_argument("--compare-commit", default=None)
     q.add_argument("--max-results", type=int, default=50)
+    q.add_argument("--symbol", default=None, help="按符号 qualified_name 或 name 查")
+    q.add_argument("--symbol-kind", default=None, help="按符号类型过滤")
+    q.add_argument("--module", default=None, help="按静态导入模块名过滤")
 
     c = sub.add_parser("card", help="生成知识卡片（本地 HTML）")
     c.add_argument("--repository-id", required=True)
@@ -78,6 +81,8 @@ def build_parser():
     c.add_argument("--content-claim-id", default=None)
     c.add_argument("--commit", default=None)
     c.add_argument("--path", default=None)
+    c.add_argument("--code", action="store_true",
+                   help="生成源码结构卡片")
 
     return p
 
@@ -179,6 +184,15 @@ def _dispatch(cmd, args):
         return emit_ok(out)
 
     if cmd == "query":
+        if getattr(args, "type", None) == "code":
+            import source_knowledge as SK
+            return emit_ok(SK.query_code(
+                repository_id=args.repository_id, commit_sha=args.commit,
+                file_path=args.path,
+                symbol_name=getattr(args, "symbol", None),
+                symbol_kind=getattr(args, "symbol_kind", None),
+                module_name=getattr(args, "module", None),
+                data_root=root))
         if getattr(args, "type", None) == "content":
             # ★ 必须用专属名：content_query 已被 P5C 的同名模块占用
             import content_knowledge_query as CQ
@@ -201,6 +215,12 @@ def _dispatch(cmd, args):
     if cmd == "card":
         has_content = any(getattr(args, k, None) for k in
                           ("content_fact_id", "content_claim_id"))
+        if getattr(args, "code", False):
+            import source_knowledge as SK
+            return emit_ok(SK.render_source_card(
+                repository_id=args.repository_id,
+                commit_sha=getattr(args, "commit", None),
+                file_path=getattr(args, "path", None), data_root=root))
         if has_content or (getattr(args, "path", None)
                            and getattr(args, "commit", None)):
             import content_card as CCARD

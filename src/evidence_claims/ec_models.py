@@ -60,7 +60,13 @@ CLAIM_MANIFEST_DEP = "manifest_dependency_declared"
 CLAIM_MANIFEST_FIELD = "manifest_field_present"
 CONTENT_CLAIM_TYPES = frozenset({CLAIM_README_HEADING, CLAIM_MANIFEST_DEP,
                                  CLAIM_MANIFEST_FIELD})
-SUPPORTED_CLAIM_TYPES = frozenset({CLAIM_PATH_EXISTS}) | CONTENT_CLAIM_TYPES
+# F2-P5G：源码结构命题
+CLAIM_SYMBOL = "source_symbol_declared"
+CLAIM_IMPORT = "source_import_declared"
+CLAIM_LOCAL_MODULE = "source_local_module_resolved"
+SOURCE_CLAIM_TYPES = frozenset({CLAIM_SYMBOL, CLAIM_IMPORT, CLAIM_LOCAL_MODULE})
+SUPPORTED_CLAIM_TYPES = (frozenset({CLAIM_PATH_EXISTS})
+                         | CONTENT_CLAIM_TYPES | SOURCE_CLAIM_TYPES)
 CLAIM_SCHEMA_VERSION = "claim-schema/1"
 
 SAFE_CLAIM_ID = re.compile(r"^SL-CLAIM-[0-9a-f]{40}$")

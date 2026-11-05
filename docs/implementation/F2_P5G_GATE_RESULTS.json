@@ -1,0 +1,233 @@
+{
+  "artifact": "F2_P5G_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-05T23:27:10+08:00",
+  "baseline_commit": "efd4e43",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "crosswalk_matches_frozen": true,
+  "gates": {
+    "A_PACKAGE_IMPORT_INTEGRITY": {
+      "status": "DONE",
+      "evidence": "tools/f2p5g_import_audit.py 四场景 0 问题：项目根 / /tmp / 人为注入同名干扰模块 / 安装版 Skill 独立进程（走 launcher 自身解析）。15 个关键模块全部命中正确 src 子目录"
+    },
+    "B_PYTHON_AST_EXTRACTION": {
+      "status": "DONE",
+      "evidence": "ast.parse 支持 Module/ClassDef/FunctionDef/AsyncFunctionDef/方法/嵌套/静态导入；88 项测试（34 解析 + 22 集成 + 30 Gold + 2 指标）"
+    },
+    "C_SOURCE_EVIDENCE_VERIFIED": {
+      "status": "DONE",
+      "evidence": "AST col_offset 按 UTF-8 字节语义换算；实测中文注释/中文标识符/CRLF/BOM 定位正确；每条符号与导入均有 byte_range + line_range + snippet_sha256"
+    },
+    "D_SOURCE_FACT_PERSISTENCE": {
+      "status": "DONE",
+      "evidence": "SOURCE_SYMBOL_DECLARED / SOURCE_IMPORT_DECLARED 真实写入 A 层 extracted_fact；幂等复用"
+    },
+    "E_SOURCE_CLAIM_VERIFICATION": {
+      "status": "DONE",
+      "evidence": "复用既有 EC 三态；PARTIAL/不可用/解析失败 → 一律 insufficient，绝不 refuted；reason_code 全部映射到 EC 封闭码表（D-17 回归通过）"
+    },
+    "F_LOCAL_MODULE_RESOLUTION": {
+      "status": "DONE",
+      "evidence": "五态实现；仅在当前 Commit Tree 有唯一候选时 RESOLVED；from X import Y 时子模块优先"
+    },
+    "G_SOURCE_RESEARCH_QUERY": {
+      "status": "DONE",
+      "evidence": "安装版 CLI query --type code 实测：state=FOUND symbols=6 imports=5 network=0；--symbol / --module 过滤生效"
+    },
+    "H_SOURCE_KNOWLEDGE_CARDS": {
+      "status": "DONE",
+      "evidence": "SOURCE_FILE_CARD 6556 字节 HTML；CSP 存在、无 script、无 on*、HTML 转义生效；四型卡片 + 证据链不完整只出诊断卡"
+    },
+    "I_INSTALLED_SKILL_SOURCE_E2E": {
+      "status": "DONE",
+      "evidence": "~/.agents/skills/sourcelore 实测 query + card 全通；逐文件哈希与源一致"
+    },
+    "J_MULTI_COMMIT_SOURCE_ISOLATION": {
+      "status": "DONE",
+      "evidence": "Commit A = Worker.run；Commit B = Worker.execute；各自独立 11 条事实；跨 Commit 证据不得确认命题"
+    },
+    "K_JS_TS_PARSER": {
+      "status": "NOT_IMPLEMENTED",
+      "evidence": "无可靠 AST 解析器；按任务书要求不使用正则凑数，返回 PARSER_UNAVAILABLE"
+    },
+    "L_REAL_GITHUB_SOURCE_E2E": {
+      "status": "NOT_VERIFIED",
+      "evidence": "无已核验真实仓库授权"
+    },
+    "M_NATURAL_LANGUAGE_AUTO_TRIGGER": {
+      "status": "NOT_VERIFIED",
+      "evidence": "无独立 Harness 用户会话证据"
+    },
+    "N_DISTRIBUTION_READY": {
+      "status": "NOT_READY",
+      "evidence": "B-1/B-2/B-3 OPEN"
+    }
+  },
+  "found_defects": [
+    {
+      "id": "D-19",
+      "title": "方法被误判为嵌套函数",
+      "impact": "Worker.run 报成 nested_function，符号类型语义错误",
+      "fix": "_ctx_of 显式记录 parent_is_class（isinstance(child, ast.ClassDef)）",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-20",
+      "title": "装饰器取父节点而非自身",
+      "impact": "@staticmethod 等装饰器全部丢失",
+      "fix": "新增 _decorators_of(node) 读节点自身 decorator_list",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-21",
+      "title": "本地模块候选匹配过宽",
+      "impact": "import pkg 把 pkg/core.py 也算候选 → 假歧义",
+      "fix": "改精确路径构造；from X import Y 子模块优先（Python 语义非歧义）",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-22",
+      "title": "查询结果缺 repository_id",
+      "impact": "源码命题的 repo 比对恒失败 → 全部 abstain",
+      "fix": "query_source_facts 补该字段",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-23",
+      "title": "裁决不兼容扁平查询形态",
+      "impact": "_matches 只认 normalized_parameters → 查无匹配",
+      "fix": "兼容两种形态",
+      "status": "FIXED"
+    }
+  ],
+  "test_metrics": {
+    "source_gold": "30/30 通过",
+    "symbol_false_positive": 0,
+    "symbol_false_negative": 0,
+    "correct_abstention": "不存在的符号/错 kind/错 Commit/错文件/PARTIAL/解析失败 → 全部 insufficient",
+    "evidence_binding": "100%（byte+line range 齐备）",
+    "multicommit_isolation": "A=Worker.run / B=Worker.execute 各自独立",
+    "installed_cli_e2e": "query 与 card 全通，network=0",
+    "card_security": "CSP 存在、无 script、无 on*、HTML 转义生效",
+    "no_code_execution": "解析器无 exec/eval/importlib/__import__"
+  },
+  "blocking_metrics_zero": {
+    "wrong_symbol_accepted": 0,
+    "wrong_commit_fact_accepted": 0,
+    "cross_repo_confusion": 0,
+    "bad_evidence": 0,
+    "untrusted_code_executed": 0,
+    "implicit_network_on_query": 0,
+    "implicit_knowledge_write_on_query": 0,
+    "illegal_reason_code": 0,
+    "wrong_module_imported": 0
+  },
+  "tests": {
+    "runtime": {
+      "tests": 45,
+      "ok": true,
+      "exit": 0
+    },
+    "storage": {
+      "tests": 53,
+      "ok": true,
+      "exit": 0
+    },
+    "collector": {
+      "tests": 48,
+      "ok": true,
+      "exit": 0
+    },
+    "facts": {
+      "tests": 44,
+      "ok": true,
+      "exit": 0
+    },
+    "evidence_claims": {
+      "tests": 36,
+      "ok": true,
+      "exit": 0
+    },
+    "lifecycle": {
+      "tests": 142,
+      "ok": true,
+      "exit": 0
+    },
+    "views": {
+      "tests": 50,
+      "ok": true,
+      "exit": 0
+    },
+    "renderer": {
+      "tests": 59,
+      "ok": true,
+      "exit": 0
+    },
+    "research": {
+      "tests": 122,
+      "ok": true,
+      "exit": 0
+    },
+    "skill_interface": {
+      "tests": 69,
+      "ok": true,
+      "exit": 0
+    },
+    "content": {
+      "tests": 77,
+      "ok": true,
+      "exit": 0
+    },
+    "blob_capture": {
+      "tests": 59,
+      "ok": true,
+      "exit": 0
+    },
+    "content_persistence": {
+      "tests": 63,
+      "ok": true,
+      "exit": 0
+    },
+    "content_skill": {
+      "tests": 49,
+      "ok": true,
+      "exit": 0
+    },
+    "source_analysis": {
+      "tests": 88,
+      "ok": true,
+      "exit": 0
+    }
+  },
+  "total_tests": 1004,
+  "all_tests_ok": true,
+  "still_open": [
+    {
+      "gate": "JS_TS_PARSER",
+      "status": "NOT_IMPLEMENTED",
+      "reason": "无可靠解析器"
+    },
+    {
+      "gate": "REAL_GITHUB_SOURCE_E2E",
+      "status": "NOT_VERIFIED",
+      "reason": "缺授权"
+    },
+    {
+      "gate": "NATURAL_LANGUAGE_AUTO_TRIGGER",
+      "status": "NOT_VERIFIED",
+      "reason": "缺独立会话"
+    },
+    {
+      "gate": "DISTRIBUTION_READY",
+      "status": "NOT_READY"
+    }
+  ],
+  "explicitly_not_claimed": [
+    "原创夹具 != 真实 GitHub 源码知识",
+    "静态声明 != 运行时行为",
+    "导入声明 != 依赖已安装",
+    "符号存在 != 函数被执行",
+    "路径匹配 != 导入成功",
+    "无调用图/数据流图"
+  ]
+}
