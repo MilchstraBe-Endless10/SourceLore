@@ -1,11 +1,23 @@
 # SourceLore 交接文档
 
 > 本文件是跨会话恢复的唯一入口。任何新会话第一件事就是读它。
-> 最后更新：2026-11-03T05:50:00+08:00
+> 最后更新：2026-11-05T15:00:44+08:00
+
+## 当前状态（2026-11-05）
+
+- 当前里程碑/任务：**M2 / F2-P4C**。F2-P4C 确定性合成门禁已完成；真实 DeepSeek 调用仍 OPEN。
+- 当前 Git HEAD：`056de101ab2dcc6a21cfcc1af0390a8f6102fc4e`，F2-P4C 实现提交。
+- 本轮已修复 P4C verifier 的错误 P4B 标签和全量测试范围；P4C 专项测试 22/22 + 6/6，Gold 10/10，离线回放 6 场景，门禁 20/20。
+- 机器报告现明确记录 `verified_commit=056de10…`、验收时间、非干净测试工作树、`p4c-scoped-v1` 与验收器 SHA-256。SHA 由验收器在运行时生成；版本标签和提交/工作树说明是在结果后补的溯源元数据。P4C 源码/测试目录相对该提交无差异，不能宣称干净检出单独通过。
+- **本轮没有重跑 F2-P4B 全套、前序全模块回归、真实 LLM 或 GitHub 请求。** 此前 599 项测试结果是历史报告，不是本轮结果。
+- 真实模型调用受 Harness workspace allowlist 阻塞：当前 `DSH_RELAY_ALLOWED_WORKSPACE_ROOTS` 只有 Cosmos 软件版本管理器目录，SourceLore 路径不在其中。provider 配置文件存在，但未读其内容或凭证；未改 allowlist、未派发任务。
+- 当前工作树包含本轮 P4C 验收脚本及报告更新，均未提交或推送；另有未跟踪文件 `progress/CHECKPOINT-F2-P4C-PROVIDER-PRECHECK.md`，仅只读检查，未修改。
+
+下方原始 M1 状态段是历史快照，不能据此恢复到 F1；最新证据见 `progress/STATE.json`、`progress/TASKS.json`、`progress/CHECKPOINT-F2-P4C.md` 和 `docs/implementation/F2_P4C_VERIFICATION.json`。
 
 ---
 
-## 一、现状
+## 历史 M1-F1 快照（已过期）
 
 M1-FUSION-GATE 进行中。**F0 完成并提交；F1 已按批次推进，F1-A、F1-B/Facts、F1-B/Collector 均已 DONE 并各自独立提交。**
 

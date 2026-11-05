@@ -1,7 +1,7 @@
 {
   "artifact": "F2_P4C_GATE_RESULTS",
   "schema_version": 1,
-  "generated_at": "2026-11-05T13:44:21+08:00",
+  "generated_at": "2026-11-05T14:10:10+08:00",
   "principle": "叠加观测，不覆盖 F1-D 冻结快照",
   "deterministic_synthesis_gate": {
     "verdict": "DONE",
@@ -13,17 +13,45 @@
     ],
     "evidence": "docs/implementation/F2_P4C_VERIFICATION.json",
     "tests": {
-      "runtime": 45,
-      "storage": 53,
-      "collector": 48,
-      "facts": 44,
-      "evidence_claims": 36,
-      "lifecycle": 142,
-      "views": 50,
-      "renderer": 59,
-      "research": 122
+      "p4c_synthesis": 22,
+      "p4c_evidence_integrity": 6
     },
-    "total_tests": 599
+    "total_tests": 28,
+    "previous_full_regression": {
+      "recorded_at": "2026-11-05T13:44:21+08:00",
+      "test_counts": {
+        "runtime": 45,
+        "storage": 53,
+        "collector": 48,
+        "facts": 44,
+        "evidence_claims": 36,
+        "lifecycle": 142,
+        "views": 50,
+        "renderer": 59,
+        "research": 122
+      },
+      "total_tests": 599,
+      "status": "HISTORICAL_NOT_RERUN"
+    },
+    "latest_verification": {
+      "git_head": "056de101ab2dcc6a21cfcc1af0390a8f6102fc4e",
+      "verified_commit": "056de101ab2dcc6a21cfcc1af0390a8f6102fc4e",
+      "verified_at": "2026-11-05T14:09:54+08:00",
+      "verifier_version": "p4c-scoped-v1",
+      "verifier_sha256": "d2a69f8191ae9d0bb258dc7bcc2f8d1a23dc0c616c711ab16267716c13a91fad",
+      "verifier_sha256_emitted_during_run": true,
+      "post_run_metadata_enrichment": [
+        "verified_commit aliases the runtime git_head",
+        "test_worktree_state was collected from git status after the run",
+        "verifier_version is a report label; SHA-256 identifies exact code"
+      ],
+      "result": "20/20 PASS",
+      "test_worktree_clean": false,
+      "p4c_implementation_or_test_diff_paths": [],
+      "p4b_full_suite_rerun": false,
+      "gold_synthesis": "10/10 PASS",
+      "offline_replay_scenarios": 6
+    }
   },
   "prerequisites_fixed": {
     "1_evidence_integrity": {
@@ -45,7 +73,15 @@
   },
   "real_llm_call_verified": {
     "verdict": "OPEN",
-    "reason": "本机无 cordis.patch.yml，无证据证明 DeepSeek-V4.1 Flash 真实调用成功；adapter 只有离线 stub"
+    "reason": "本轮未发起真实模型调用。DSH Relay 可用，但 DSH_RELAY_ALLOWED_WORKSPACE_ROOTS 仅含 Cosmos 项目根；SourceLore 所在 Knowledge_Base 路径不在允许根内。未扩展权限或派发任务。"
+  },
+  "provider_route_audit": {
+    "configuration_path": "/home/arlune_innersea/.config/open-deepseek-harness-desktop/dsh-home/profiles/web/cordis.patch.yml",
+    "configuration_exists": true,
+    "configuration_contents_read": false,
+    "relay_ready": true,
+    "source_lore_workspace_allowed": false,
+    "real_call_started": false
   },
   "autonomous_research_agent": {
     "verdict": "NOT_STARTED"

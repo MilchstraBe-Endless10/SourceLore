@@ -1,0 +1,135 @@
+{
+  "artifact": "F2_P4C_R1_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-05T15:01:01+08:00",
+  "baseline_commit": "056de10",
+  "cli_version": "0.2.1-rc.2",
+  "gateway": {
+    "program": "omniroute (v16.3.8)",
+    "port": 20128,
+    "systemd_unit": "omniroute.service",
+    "state": "active",
+    "config_root": "$HOME/omniroute-deployment/.config/omniroute",
+    "cli_default_root": "~/.config/omniroute (空库,连了会误判)"
+  },
+  "gate_verdicts": {
+    "HEADLESS_PROVIDER_REGISTERED": {
+      "status": "SYNTHESIZED_ONLY",
+      "evidence": "临时 patch 合成 exit=0；llm-pi-ai 注册 omniroute、baseURL/apiKeyEnv/api 三项齐备。**正式 profile 未改动**(md5 7390256202c2b81f4dcdcd743a9875b3 未变)。因此只能证明「合成可行」，不能证明「headless 已具备」。"
+    },
+    "GATEWAY_CLIENT_AUTH_VERIFIED": {
+      "status": "NOT_VERIFIED",
+      "evidence": "未创建专用客户端 Key；未读取任何 key 值。现有 api_keys 1 行带 manage 权限，不符要求。"
+    },
+    "REAL_LLM_CALL_VERIFIED": {
+      "status": "OPEN",
+      "evidence": "**本轮未发出任何 HTTP 请求**。无 HTTP 状态、无请求 ID、无 token 用量。"
+    },
+    "UPSTREAM_MODEL_IDENTITY_VERIFIED": {
+      "status": "NOT_VERIFIED",
+      "evidence": "仅确认网关 model_context_overrides 存在 deepseek/deepseek-v4.1-flash 条目；未验证该 ID 实际路由到哪个上游 provider，也无响应体证据。"
+    },
+    "SOURCELORE_REAL_ADAPTER_VERIFIED": {
+      "status": "NOT_VERIFIED",
+      "evidence": "llm_adapter.py 仍无 HTTP 实现（http/requests/urllib 行数=0）。D 段未开始。"
+    },
+    "SYNTHESIS_GROUNDING_VERIFIED": {
+      "status": "DONE_FOR_STUB_ONLY",
+      "evidence": "P4C 已验证校验通路（Gold 10/10，错误肯定0/错误否定0），但全部基于离线 stub，**未经真实模型输出**。"
+    },
+    "REAL_HARNESS_AUTHORIZED_E2E": {
+      "status": "OPEN",
+      "evidence": "Y6-P3 UNVERIFIED、Y6-P6 OPEN；无人工审批链路证据。"
+    }
+  },
+  "a_section": {
+    "status": "INCOMPLETE",
+    "done": [
+      "两个配置根区分",
+      "两类 key 区分(provider凭据 vs 客户端key)",
+      "api_keys 权限字段能力确认(可做仅推理+限额+无manage)",
+      "创建入口定位(regenerate/rotate/policy set；新建入口需 Dashboard/REST)"
+    ],
+    "blocked": "专用客户端 Key 需用户自行创建，不得由 Agent 生成或导出"
+  },
+  "b_section": {
+    "status": "PASS",
+    "checks": 7,
+    "exit_code": 0,
+    "no_credential_leak": true,
+    "official_profile_hash_unchanged": true,
+    "api_key_env_isolated": "SOURCELORE_OMNIROUTE_CLIENT_KEY (非 OMNIROUTE_API_KEY)"
+  },
+  "c_section": {
+    "status": "NOT_EXECUTED",
+    "reason": "未获用户真实调用授权。按协议停止于此。"
+  },
+  "d_section": {
+    "status": "NOT_STARTED"
+  },
+  "tests": {
+    "runtime": 45,
+    "storage": 53,
+    "collector": 48,
+    "facts": 44,
+    "evidence_claims": 36,
+    "lifecycle": 142,
+    "views": 50,
+    "renderer": 59,
+    "research": 122
+  },
+  "total_tests": 599,
+  "still_open": [
+    {
+      "gate": "GATEWAY_CLIENT_AUTH_VERIFIED",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "gate": "REAL_LLM_CALL_VERIFIED",
+      "status": "OPEN"
+    },
+    {
+      "gate": "UPSTREAM_MODEL_IDENTITY_VERIFIED",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "gate": "SOURCELORE_REAL_ADAPTER_VERIFIED",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "gate": "REAL_HARNESS_AUTHORIZED_E2E",
+      "status": "OPEN"
+    },
+    {
+      "gate": "DISTRIBUTION_READY",
+      "status": "NOT_READY"
+    },
+    {
+      "gate": "FULL_RENDERER",
+      "status": "NOT_STARTED"
+    },
+    {
+      "gate": "正式 Skill 集成",
+      "status": "NOT_STARTED"
+    },
+    {
+      "gate": "B-1/B-2/B-3",
+      "status": "OPEN"
+    },
+    {
+      "gate": "Y6-P3",
+      "status": "UNVERIFIED"
+    },
+    {
+      "gate": "Y6-P6",
+      "status": "OPEN"
+    }
+  ],
+  "explicitly_not_claimed": [
+    "dump-config 成功 ≠ 模型调用成功",
+    "网关存在 ≠ 客户端鉴权可用",
+    "模型 ID 存在 ≠ 上游身份已验证",
+    "stub 校验通过 ≠ 真实模型输出通过",
+    "本轮未发请求、未改正式配置、未创建或读取任何凭据"
+  ]
+}

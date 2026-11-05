@@ -1,8 +1,47 @@
 {
-  "task": "M2 / F2-P4B（确定性研究检索与研究包）",
+  "task": "M2 / F2-P4C（确定性 LLM 综合门禁，不含真实模型调用）",
   "generated_by": "tools/f2p4c_verify.py",
   "independent": true,
-  "git_head": "40038d6ea406a1ff1f000dd61e68fe8241306349",
+  "git_head": "056de101ab2dcc6a21cfcc1af0390a8f6102fc4e",
+  "verified_commit": "056de101ab2dcc6a21cfcc1af0390a8f6102fc4e",
+  "verified_at": "2026-11-05T14:09:54+08:00",
+  "test_worktree_state": {
+    "clean": false,
+    "base_commit": "056de101ab2dcc6a21cfcc1af0390a8f6102fc4e",
+    "snapshot_source": "git status --short observed after the verifier process; this is not an in-process clean-checkout claim",
+    "modified_paths_at_verification": [
+      "docs/fusion/F1D_VERIFICATION.json",
+      "docs/implementation/F2_P4C_E2E_REPLAY.json",
+      "docs/implementation/F2_P4C_VERIFICATION.json",
+      "tools/f2p4c_verify.py"
+    ],
+    "untracked_paths_at_verification": [],
+    "p4c_implementation_or_test_diff_paths": [],
+    "note": "验收运行于 HEAD 加本地 P4C 专项验收器及生成报告的工作树；不等同于干净检出。"
+  },
+  "verifier_version": "p4c-scoped-v1",
+  "verifier_sha256": "d2a69f8191ae9d0bb258dc7bcc2f8d1a23dc0c616c711ab16267716c13a91fad",
+  "provenance_capture": {
+    "verifier_sha256_emitted_during_run": true,
+    "runtime_git_head_recorded_during_run": true,
+    "verified_commit_is_runtime_git_head_alias": true,
+    "verified_at_derived_from_initial_artifact_mtime_before_enrichment": true,
+    "worktree_status_observed_after_run": true,
+    "version_label_added_as_report_metadata": true,
+    "content_hash_is_authoritative_verifier_identity": true
+  },
+  "verification_scope": {
+    "ran": [
+      "tests/research/test_synthesis.py",
+      "tests.research.test_evidence.TestEvidenceIntegrity",
+      "tests/research/gold/evaluate_synthesis.py",
+      "tools/f2p4c_e2e_replay.py"
+    ],
+    "did_not_run": [
+      "tests/research full suite (F2-P4B included)",
+      "prior-module regression suites"
+    ]
+  },
   "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
   "llm_called": false,
   "live_github_refetch": false,
@@ -15,15 +54,15 @@
   "checks": [
     {
       "id": "c1",
-      "name": "research 全套测试",
+      "name": "P4C 专项测试（不含 P4B 全套）",
       "passed": true,
-      "detail": "research 套件 122 项 exit=0"
+      "detail": "P4C synthesis 22 exit=0; P4C evidence integrity 6 exit=0"
     },
     {
       "id": "c2",
       "name": "P4C Gold 全通过",
       "passed": true,
-      "detail": "P4C Gold 10 项，成功率 1.0"
+      "detail": "P4C Gold 10 项，成功率 1.0 exit=0"
     },
     {
       "id": "c3",
@@ -36,6 +75,12 @@
       "name": "错误否定为 0",
       "passed": true,
       "detail": "错误否定=0"
+    },
+    {
+      "id": "c0",
+      "name": "P4C 离线端到端回放",
+      "passed": true,
+      "detail": "P4C 离线回放 exit=0 scenarios=6"
     },
     {
       "id": "c5",
@@ -108,12 +153,6 @@
       "name": "预览/分发门禁分离",
       "passed": true,
       "detail": "预览/分发门禁分离=True"
-    },
-    {
-      "id": "c17",
-      "name": "既有模块全链回归",
-      "passed": true,
-      "detail": "runtime 45 exit=0; storage 53 exit=0; collector 48 exit=0; facts 44 exit=0; evidence_claims 36 exit=0; lifecycle 142 exit=0; views 50 exit=0; renderer 59 exit=0"
     },
     {
       "id": "c18",
