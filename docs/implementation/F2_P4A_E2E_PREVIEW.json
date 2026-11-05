@@ -1,0 +1,164 @@
+{
+  "artifact": "F2_P4A_E2E_PREVIEW",
+  "generated_at": "2026-11-05T11:39:37+08:00",
+  "data_provenance": "HISTORICAL_REAL_DATA + SYNTHETIC_FIXTURE",
+  "live_github_refetch": false,
+  "real_human_authorization": false,
+  "authorization_kind_used": "TEST_ONLY",
+  "output_dir": "docs/preview/f2p4a",
+  "note": "所有 HTML/JSON 均为本地内部预览产物；未联网、未使用真实人类授权；不是对外发布的正式知识",
+  "scenarios": {
+    "s1_refuted": {
+      "name": "s1_refuted",
+      "view_count": 2,
+      "cards": [
+        {
+          "card_id": "SL-CARD-2eb562517e0c241ed3965cd66550a715",
+          "commit": "7fd1a60b01f9",
+          "verdict": "supported",
+          "review": "pending_review",
+          "provenance": null,
+          "test_only": false,
+          "local_coverage_only": false
+        },
+        {
+          "card_id": "SL-CARD-1c0cc8e08444ea9d229afefea67828fc",
+          "commit": "bbbbbbbbbbbb",
+          "verdict": "refuted",
+          "review": "pending_review",
+          "provenance": "SYNTHETIC_FIXTURE",
+          "test_only": true,
+          "local_coverage_only": false
+        }
+      ],
+      "blocked": [],
+      "files": {
+        "card_json": "docs/preview/f2p4a/s1_refuted/rendered_card.json",
+        "card_html": "docs/preview/f2p4a/s1_refuted/knowledge_card.html",
+        "report_html": "docs/preview/f2p4a/s1_refuted/knowledge_report.html"
+      },
+      "html_sha": "50b2bacafe80b9f3615e0836b1b9261f",
+      "card_html_sha": "9a0e82c7b4c9ad62ddcd6152b957ac26",
+      "json_sha": "50aae2baada46878f8935fa5461f4b40"
+    },
+    "s2_supported": {
+      "name": "s2_supported",
+      "view_count": 2,
+      "cards": [
+        {
+          "card_id": "SL-CARD-2eb562517e0c241ed3965cd66550a715",
+          "commit": "7fd1a60b01f9",
+          "verdict": "supported",
+          "review": "pending_review",
+          "provenance": null,
+          "test_only": false,
+          "local_coverage_only": false
+        },
+        {
+          "card_id": "SL-CARD-0f19d2b2b0ed2df4e9b52ab7a83b39cd",
+          "commit": "bbbbbbbbbbbb",
+          "verdict": "supported",
+          "review": "pending_review",
+          "provenance": "SYNTHETIC_FIXTURE",
+          "test_only": true,
+          "local_coverage_only": false
+        }
+      ],
+      "blocked": [],
+      "files": {
+        "card_json": "docs/preview/f2p4a/s2_supported/rendered_card.json",
+        "card_html": "docs/preview/f2p4a/s2_supported/knowledge_card.html",
+        "report_html": "docs/preview/f2p4a/s2_supported/knowledge_report.html"
+      },
+      "html_sha": "c792211832e38dc6a89777c5d9cf2242",
+      "card_html_sha": "9a0e82c7b4c9ad62ddcd6152b957ac26",
+      "json_sha": "50aae2baada46878f8935fa5461f4b40"
+    },
+    "s3_partial": {
+      "name": "s3_partial",
+      "view_count": 2,
+      "cards": [
+        {
+          "card_id": "SL-CARD-2eb562517e0c241ed3965cd66550a715",
+          "commit": "7fd1a60b01f9",
+          "verdict": "supported",
+          "review": "pending_review",
+          "provenance": null,
+          "test_only": false,
+          "local_coverage_only": false
+        },
+        {
+          "card_id": "SL-CARD-167431e3c5bad575632cc96f817b28ac",
+          "commit": "bbbbbbbbbbbb",
+          "verdict": "insufficient_evidence",
+          "review": "pending_review",
+          "provenance": "SYNTHETIC_FIXTURE",
+          "test_only": true,
+          "local_coverage_only": true
+        }
+      ],
+      "blocked": [],
+      "files": {
+        "card_json": "docs/preview/f2p4a/s3_partial/rendered_card.json",
+        "card_html": "docs/preview/f2p4a/s3_partial/knowledge_card.html",
+        "report_html": "docs/preview/f2p4a/s3_partial/knowledge_report.html"
+      },
+      "html_sha": "c302b05ddd57a82665b1583aae74e361",
+      "card_html_sha": "9a0e82c7b4c9ad62ddcd6152b957ac26",
+      "json_sha": "50aae2baada46878f8935fa5461f4b40"
+    },
+    "s4_multi": {
+      "name": "s4_multi",
+      "view_count": 2,
+      "cards": [
+        {
+          "card_id": "SL-CARD-2eb562517e0c241ed3965cd66550a715",
+          "commit": "7fd1a60b01f9",
+          "verdict": "supported",
+          "review": "pending_review",
+          "provenance": null,
+          "test_only": false,
+          "local_coverage_only": false
+        },
+        {
+          "card_id": "SL-CARD-1c0cc8e08444ea9d229afefea67828fc",
+          "commit": "bbbbbbbbbbbb",
+          "verdict": "refuted",
+          "review": "pending_review",
+          "provenance": "SYNTHETIC_FIXTURE",
+          "test_only": true,
+          "local_coverage_only": false
+        }
+      ],
+      "blocked": [],
+      "files": {
+        "card_json": "docs/preview/f2p4a/s4_multi/rendered_card.json",
+        "card_html": "docs/preview/f2p4a/s4_multi/knowledge_card.html",
+        "report_html": "docs/preview/f2p4a/s4_multi/knowledge_report.html"
+      },
+      "html_sha": "50b2bacafe80b9f3615e0836b1b9261f",
+      "card_html_sha": "9a0e82c7b4c9ad62ddcd6152b957ac26",
+      "json_sha": "50aae2baada46878f8935fa5461f4b40"
+    }
+  },
+  "pre_publish_check": {
+    "scenario": "s1_refuted",
+    "preview_allowed": true,
+    "distribution_allowed": false,
+    "publish_blocked": true,
+    "findings": [
+      {
+        "code": "DISTRIBUTION_GATE_OPEN",
+        "severity": "blocker",
+        "detail": "分发门禁仍 OPEN：['B-1', 'B-2', 'B-3']"
+      },
+      {
+        "code": "FALSE_CURRENT_CLAIM",
+        "severity": "blocker",
+        "detail": "出现未经证明的时效宣称：当前最新"
+      }
+    ],
+    "blocker_count": 2,
+    "statement": "内部预览：允许本地打开。对外分发：拒绝。预览许可不等于分发许可。"
+  }
+}

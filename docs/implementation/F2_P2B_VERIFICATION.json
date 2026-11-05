@@ -2,7 +2,7 @@
   "task": "M2 / F2-P2B（Evidence-Claims 确定性裁决）",
   "generated_by": "tools/f2p2b_verify.py",
   "independent": true,
-  "git_head": "7119b4cb9db7491a09761047ca8ae6ac72d3a113",
+  "git_head": "db65ce7681fa7d0e7422709febc2a5b67d0867b9",
   "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
   "data_provenance": "HISTORICAL_REAL_DATA",
   "summary": {

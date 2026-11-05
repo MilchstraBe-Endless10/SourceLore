@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; script-src 'none'; object-src 'none'; frame-src 'none'; form-action 'none'; base-uri 'none'">
+<meta name="referrer" content="no-referrer">
+<title>多版本知识对照报告</title>
+<style>
+:root {
+  --fg: #1a1a1a; --bg: #ffffff; --muted: #5a5a5a; --line: #d8d8d8;
+  --ok: #0b6b3a; --bad: #a11b1b; --unk: #6a4b00; --panel: #f7f7f7;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 24px; background: var(--bg); color: var(--fg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans CJK SC",
+               "Microsoft YaHei", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 15px; line-height: 1.65;
+}
+.wrap { max-width: 1040px; margin: 0 auto; }
+h1 { font-size: 1.6rem; margin: 0 0 4px; line-height: 1.3; word-break: break-word; }
+h2 { font-size: 1.12rem; margin: 26px 0 10px; padding-bottom: 6px;
+     border-bottom: 1px solid var(--line); }
+h3 { font-size: 1rem; margin: 18px 0 8px; }
+p, li { margin: 6px 0; }
+.meta { color: var(--muted); font-size: .9rem; margin-bottom: 14px;
+        word-break: break-all; }
+.sha { font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+       word-break: break-all; }
+.panel { background: var(--panel); border: 1px solid var(--line);
+         border-radius: 6px; padding: 14px 16px; margin: 12px 0; }
+.badge { display: inline-block; padding: 3px 9px; border-radius: 4px;
+         font-size: .86rem; font-weight: 600; border: 1px solid currentColor; }
+.badge.ok { color: var(--ok); } .badge.bad { color: var(--bad); }
+.badge.unk { color: var(--unk); }
+.badge.neutral { color: var(--muted); }
+/* ★ 状态不只靠颜色：每个 badge 都带文字标签 */
+dl { display: grid; grid-template-columns: minmax(140px, 220px) 1fr;
+     gap: 6px 16px; margin: 8px 0; }
+dt { color: var(--muted); font-size: .9rem; }
+dd { margin: 0; word-break: break-word; }
+table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: .92rem; }
+th, td { text-align: left; padding: 7px 10px; border: 1px solid var(--line);
+         vertical-align: top; word-break: break-word; }
+th { background: #ededed; font-weight: 600; }
+ul { padding-left: 20px; }
+code { font-family: ui-monospace, Consolas, monospace; font-size: .9em;
+       background: #efefef; padding: 1px 4px; border-radius: 3px;
+       word-break: break-all; }
+.foot { margin-top: 30px; padding-top: 14px; border-top: 1px solid var(--line);
+        color: var(--muted); font-size: .85rem; }
+@media (max-width: 720px) {
+  body { padding: 14px; font-size: 14px; }
+  dl { grid-template-columns: 1fr; gap: 2px 0; }
+  dt { margin-top: 8px; }
+  table { font-size: .86rem; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>多版本知识对照报告</h1>
+<div class="panel"><p>本报告并列展示<strong>不同 Commit</strong> 上的独立结论。它们各自成立于自己的版本，<strong>不构成同一事实的矛盾</strong>。</p><p>报告不推断这些 Commit 之间的祖先/先后关系——除非有真实 Git 图证据，本报告不做任何版本先后假设。</p></div>
+<h2>版本总览</h2>
+<table><thead><tr><th>#</th><th>Commit</th><th>命题</th><th>证据裁决</th><th>新鲜度</th><th>人工审核</th><th>来源</th><th>授权</th></tr></thead><tbody>
+<tr><td>1</td><td><span class="sha">7fd1a60b01f91b314f59955a4e4d4e80d8edf11d</span></td><td>仓库路径「README」存在</td><td>supported<br><span class="meta">支持</span></td><td>可能已过时</td><td>待人工审核</td><td>来源未知</td><td>未知授权类别</td></tr>
+<tr><td>2</td><td><span class="sha">bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb</span></td><td>仓库路径「README」存在</td><td>insufficient_evidence<br><span class="meta">证据不足</span></td><td>新鲜度未知</td><td>待人工审核</td><td>合成夹具</td><td>隔离测试授权（TEST_ONLY）</td></tr>
+</tbody></table>
+<h2>版本 1：<span class="sha">7fd1a60b01f91b314f59955a4e4d4e80d8edf11d</span></h2>
+<dl>
+<dt>命题</dt><dd>仓库路径「README」存在</dd>
+<dt>Claim</dt><dd><span class="sha">SL-CLAIM-b2d90832050096e96bd83b284ae02bae1d817cf0</span></dd>
+<dt>Verification</dt><dd><span class="sha">SL-VERIF-3543119f023fccee7e96f646ec382a8e831bb305</span></dd>
+<dt>裁决</dt><dd><span class="badge ok">supported</span> 在指定范围内，现有经过验证的证据支持该命题。</dd>
+<dt>新鲜度</dt><dd>所跟踪版本已经变化，旧结论对该 Ref 的当前适用性有待核查。这不表示旧结论已经失效或错误。</dd>
+<dt>审核</dt><dd>待人工审核</dd>
+<dt>来源</dt><dd>来源未知</dd>
+<dt>执行来源</dt><dd><code>未知</code></dd>
+<dt>授权</dt><dd>未知授权类别</dd>
+</dl>
+<p class="meta">限制：</p><ul>
+<li>POSSIBLY_STALE 表示 Ref 已移动，基线结论可能不再适用；不等于旧结论被推翻</li>
+<li>人工审核状态为 pending_review，未经人工批准</li>
+<li>分发门禁仍为 FROZEN_INTERNAL_RESTRICTED，仅限本地内部消费</li>
+</ul>
+<h2>版本 2：<span class="sha">bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb</span></h2>
+<dl>
+<dt>命题</dt><dd>仓库路径「README」存在</dd>
+<dt>Claim</dt><dd><span class="sha">SL-CLAIM-2f7ccfeac52b8bb34cf588e737398a98e61c95f1</span></dd>
+<dt>Verification</dt><dd><span class="sha">SL-VERIF-72df43b7b7a911f15b11ed08886788566052aeb9</span></dd>
+<dt>裁决</dt><dd><span class="badge unk">insufficient_evidence</span> 证据不足，无法作出支持或反驳裁决。</dd>
+<dt>新鲜度</dt><dd>没有足够证据判断当前适用性。</dd>
+<dt>审核</dt><dd>待人工审核</dd>
+<dt>来源</dt><dd>合成夹具</dd>
+<dt>执行来源</dt><dd><code>SYNTHETIC_FIXTURE</code></dd>
+<dt>授权</dt><dd>隔离测试授权（TEST_ONLY）</dd>
+<dt>历史关系</dt><dd><code>revalidated_at_newer_commit</code> ・ 原 Claim <span class="sha">SL-CLAIM-b2d90832050096e96bd83b284ae02bae1d817cf0</span></dd>
+</dl>
+<p class="meta">限制：</p><ul>
+<li>来源为合成夹具，仅证明状态转换，不代表真实仓库内容</li>
+<li>证据不足，不得据此得出肯定或否定结论</li>
+<li>仅覆盖局部范围（PARTIAL），未覆盖部分不得判为不存在</li>
+<li>人工审核状态为 pending_review，未经人工批准</li>
+<li>分发门禁仍为 FROZEN_INTERNAL_RESTRICTED，仅限本地内部消费</li>
+<li>insufficient_evidence 不得转写为否定结论</li>
+</ul>
+<h2>分发门禁</h2>
+<dl>
+<dt>允许分发</dt><dd>否</dd>
+<dt>冻结状态</dt><dd><code>FROZEN_INTERNAL_RESTRICTED</code></dd>
+</dl>
+<div class="panel"><p>本报告是<strong>本地内部预览</strong>，不是对外发布的正式知识产品。</p></div>
+<div class="foot">
+<p>卡片身份：
+<span class="sha">SL-CARD-2eb562517e0c241ed3965cd66550a715</span><br>
+<span class="sha">SL-CARD-167431e3c5bad575632cc96f817b28ac</span><br>
+</p>
+<p>渲染器版本 <code>renderer/1</code></p>
+<p>本文件为本地内部预览产物，不是对外发布的正式知识。</p>
+<p>渲染时刻（诊断用，不参与确定性身份）：2026-11-05T11:39:37+08:00</p>
+</div>
+</div>
+</body>
+</html>

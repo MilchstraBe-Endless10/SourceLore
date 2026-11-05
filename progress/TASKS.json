@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-05T10:31:21+08:00",
+  "updated_at": "2026-11-05T11:52:45+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -1281,6 +1281,47 @@
       "blocked_reason": "Renderer/Research/真实平台端到端仍 OPEN：Y6-P3 UNVERIFIED、Y6-P6 OPEN",
       "depends_on": [
         "M2-F2-P3C"
+      ]
+    },
+    {
+      "id": "M2-F2-P4A",
+      "milestone": "M2",
+      "goal": "F2-P4A：安全渲染引擎、结构化知识卡片与本地可视化预览",
+      "inputs": [
+        "docs/implementation/F2_P3D_VIEW_CONTRACT.md"
+      ],
+      "expected_outputs": [
+        "src/renderer/safe_html.py",
+        "src/renderer/card_models.py",
+        "src/renderer/card_renderer.py",
+        "src/renderer/report_renderer.py",
+        "src/renderer/pre_publish_check.py",
+        "tests/renderer/test_cards.py",
+        "tests/renderer/test_html_security.py",
+        "tests/renderer/test_read_only.py",
+        "tests/renderer/test_render_multiversion.py",
+        "tests/renderer/test_distribution_gates.py",
+        "tools/f2p4a_verify.py",
+        "tools/f2p4a_e2e_preview.py",
+        "docs/implementation/F2_P4A_RENDERER_CONTRACT.md",
+        "docs/implementation/F2_P4A_EXECUTION_REPORT.md",
+        "docs/implementation/F2_P4A_VERIFICATION.json"
+      ],
+      "status": "DONE_RENDERER_CORE_AND_PREVIEW_ONLY",
+      "verification_commands": [
+        "python3 -m unittest discover -s tests/renderer -t .",
+        "python3 tools/f2p4a_verify.py"
+      ],
+      "evidence_paths": [
+        "docs/implementation/F2_P4A_VERIFICATION.json",
+        "docs/implementation/F2_P4A_E2E_PREVIEW.json",
+        "docs/implementation/F2_P4A_STATS_AUDIT.json",
+        "docs/preview/f2p4a/s1_refuted/preview.png"
+      ],
+      "git_commit": null,
+      "blocked_reason": "DISTRIBUTION_READY / FULL_RENDERER / RESEARCH 均未达：B-1/B-2/B-3 全 OPEN；Y6-P3 UNVERIFIED、Y6-P6 OPEN",
+      "depends_on": [
+        "M2-F2-P3D"
       ]
     }
   ]

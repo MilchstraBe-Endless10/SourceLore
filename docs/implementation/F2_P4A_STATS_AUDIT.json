@@ -1,0 +1,109 @@
+{
+  "artifact": "F2_P4A_STATS_AUDIT",
+  "generated_at": "2026-11-05T11:53:44+08:00",
+  "generated_by": "tools/f2p4a_stats_audit.py（实跑取数，禁止手工相加）",
+  "method": "逐个 subprocess 运行验证器，解析 `N/M PASS`，累计通过项",
+  "verifiers_actually_run": {
+    "f1d": {
+      "exists": true,
+      "passed": 26,
+      "total": 26,
+      "exit": 0
+    },
+    "f2p1a": {
+      "exists": true,
+      "passed": 22,
+      "total": 22,
+      "exit": 0
+    },
+    "f2p1b": {
+      "exists": true,
+      "passed": 16,
+      "total": 16,
+      "exit": 0
+    },
+    "f2p1c": {
+      "exists": true,
+      "passed": 22,
+      "total": 22,
+      "exit": 0
+    },
+    "f2p2a": {
+      "exists": true,
+      "passed": 15,
+      "total": 15,
+      "exit": 0
+    },
+    "f2p2b": {
+      "exists": true,
+      "passed": 17,
+      "total": 17,
+      "exit": 0
+    },
+    "f2p3a": {
+      "exists": true,
+      "passed": 18,
+      "total": 18,
+      "exit": 0
+    },
+    "f2p3b": {
+      "exists": true,
+      "passed": 22,
+      "total": 22,
+      "exit": 0
+    },
+    "f2p3c": {
+      "exists": true,
+      "passed": 20,
+      "total": 20,
+      "exit": 0
+    },
+    "f2p3d": {
+      "exists": true,
+      "passed": 24,
+      "total": 24,
+      "exit": 0
+    },
+    "f2p4a": {
+      "exists": true,
+      "passed": 23,
+      "total": 24,
+      "exit": 1
+    }
+  },
+  "p3d_reconciliation": {
+    "reported_list": [
+      24,
+      20,
+      22,
+      18,
+      17,
+      15,
+      22,
+      16,
+      22,
+      26
+    ],
+    "reported_total": 203,
+    "arithmetic_sum_of_list": 202,
+    "difference": 1,
+    "actual_by_rerun": {
+      "f1d": 26,
+      "f2p1a": 22,
+      "f2p1b": 16,
+      "f2p1c": 22,
+      "f2p2a": 15,
+      "f2p2b": 17,
+      "f2p3a": 18,
+      "f2p3b": 22,
+      "f2p3c": 20,
+      "f2p3d": 24,
+      "f2p4a": 23
+    },
+    "actual_total": 202,
+    "all_exit_zero": false,
+    "cause": "报告总和 203 与清单算术和 202 差 1 —— 人工加法错误，不是验证遗漏；十个验证器实跑全部 exit 0，检查项无一缺失"
+  },
+  "correction_policy": "不修改历史报告（它是当时的记录）；以本文件为唯一权威统计口径",
+  "grand_total": 225
+}

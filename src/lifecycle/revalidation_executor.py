@@ -80,6 +80,7 @@ def execute_revalidation(store, *, candidate_id: str, repository_id: str,
 
     # ── PREFLIGHT：从 Storage 重新读全部对象（§4）──────────
     out.stage = "PREFLIGHT"
+    # ★ run_id 此时尚未创建，PREFLIGHT 的 RUNNING 记录在 create_run 之后补（见下）
     out._store, out._repo, out._now = store, str(repository_id), now
     cand = RQ.read_candidate(store, candidate_id=candidate_id,
                              repository_id=repository_id)
@@ -104,6 +105,9 @@ def execute_revalidation(store, *, candidate_id: str, repository_id: str,
             run_id = None
             out.detail = f"run 记录创建失败: {type(e).__name__}"
     out._run_id = run_id
+    # ★ P4A §13：run 建好后立刻把 PREFLIGHT 置为 RUNNING，再往下走
+    _stage(store, run_id, str(repository_id), "PREFLIGHT",
+           RS.STAGE_RUNNING, now=now)
 
     if c.get("status") == R.SUPERSEDED:
         return _fail(out, E_PREFLIGHT_SUPERSEDED,
@@ -148,7 +152,11 @@ def execute_revalidation(store, *, candidate_id: str, repository_id: str,
                      "计划目标与候选不一致")
 
     # ── AUTHORIZATION_CHECK ────────────────────────────────
+    _stage(store, run_id, str(repository_id), "PREFLIGHT",
+           RS.STAGE_COMMITTED, now=now)
     out.stage = "AUTHORIZATION_CHECK"
+    _stage(store, run_id, str(repository_id),
+           "AUTHORIZATION_CHECK", RS.STAGE_RUNNING, now=now)
     auth_res = AUTH.validate_execution_authorization(
         candidate=c, plan=plan, authorization=authorization, now=now,
         require_production=require_production)
@@ -157,7 +165,11 @@ def execute_revalidation(store, *, candidate_id: str, repository_id: str,
                      f"{auth_res['reason']}: {auth_res['detail']}")
 
     # ── SNAPSHOT_COLLECT：固定目标 B ───────────────────────
+    _stage(store, run_id, str(repository_id), "AUTHORIZATION_CHECK",
+           RS.STAGE_COMMITTED, now=now)
     out.stage = "SNAPSHOT_COLLECT"
+    _stage(store, run_id, str(repository_id),
+           "SNAPSHOT_COLLECT", RS.STAGE_RUNNING, now=now)
     snap_res = _collect_fixed_target(
         store, candidate=c, adapter=adapter, now=now)
     if not snap_res.get("ok"):
@@ -175,7 +187,11 @@ def execute_revalidation(store, *, candidate_id: str, repository_id: str,
         return _fail(out, E_AUTH_REVOKED_MIDRUN, auth_mid["detail"])
 
     # ── FACT_EXTRACT ─────────────────────────────────────
+    _stage(store, run_id, str(repository_id), "SNAPSHOT_COLLECT",
+           RS.STAGE_COMMITTED, now=now)
     out.stage = "FACT_EXTRACT"
+    _stage(store, run_id, str(repository_id),
+           "FACT_EXTRACT", RS.STAGE_RUNNING, now=now)
     tparams = c.get("target_claim_parameters") or {}
     target_path = tparams.get("normalized_path")
     if not target_path:
@@ -190,7 +206,11 @@ def execute_revalidation(store, *, candidate_id: str, repository_id: str,
                      fact_res.get("detail", ""))
 
     # ── TARGET_CLAIM_CREATE ───────────────────────────────
+    _stage(store, run_id, str(repository_id), "FACT_EXTRACT",
+           RS.STAGE_COMMITTED, now=now)
     out.stage = "TARGET_CLAIM_CREATE"
+    _stage(store, run_id, str(repository_id),
+           "TARGET_CLAIM_CREATE", RS.STAGE_RUNNING, now=now)
     claim_res = _create_target_claim(store, candidate=c, repository_id=repository_id)
     if not claim_res.get("ok"):
         return _fail(out, claim_res.get("error_code",
@@ -212,7 +232,11 @@ def execute_revalidation(store, *, candidate_id: str, repository_id: str,
             pass
 
     # ── EVIDENCE_VERIFY ──────────────────────────────────
+    _stage(store, run_id, str(repository_id), "TARGET_CLAIM_CREATE",
+           RS.STAGE_COMMITTED, now=now)
     out.stage = "EVIDENCE_VERIFY"
+    _stage(store, run_id, str(repository_id),
+           "EVIDENCE_VERIFY", RS.STAGE_RUNNING, now=now)
     verify_res = _verify_target(store, claim=target_claim,
                                fact_id=fact_res.get("fact_id"),
                                repository_id=repository_id)
@@ -222,7 +246,11 @@ def execute_revalidation(store, *, candidate_id: str, repository_id: str,
     verif = verify_res["verification"]
 
     # ── RESULT_PERSIST ──────────────────────────────────
+    _stage(store, run_id, str(repository_id), "EVIDENCE_VERIFY",
+           RS.STAGE_COMMITTED, now=now)
     out.stage = "RESULT_PERSIST"
+    _stage(store, run_id, str(repository_id),
+           "RESULT_PERSIST", RS.STAGE_RUNNING, now=now)
     out.execution_status = RS.SUCCESS
     out.verification_status = verif.status
     out.ok = True
@@ -278,9 +306,29 @@ def execute_revalidation(store, *, candidate_id: str, repository_id: str,
         except Exception:
             pass
 
+    _stage(store, run_id, str(repository_id), "RESULT_PERSIST",
+           RS.STAGE_COMMITTED, now=now)
     out.stage = "COMPLETION_CHECK"
+    _stage(store, run_id, str(repository_id), "COMPLETION_CHECK",
+           RS.STAGE_COMMITTED, now=now)
     _persist_end(store, run_id, repository_id, out, now=now)
     return out
+
+
+def _stage(store, run_id, repository_id, stage, state, *, now,
+           error_code=None, op_id=""):
+    """★ P4A §13 修复：P3C 只写了 out.stage，从未调用 RS.set_stage，
+    导致 run 记录里 8 个阶段全部停在 PENDING —— 不可宣称八阶段追踪完成。
+    这里做最小补齐：每个阶段进入时记 RUNNING，离开时记 COMMITTED/FAILED。
+    """
+    if not run_id:
+        return
+    try:
+        RS.set_stage(store, run_id=run_id, repository_id=repository_id,
+                     stage=stage, state=state, operation_id=op_id,
+                     error_code=error_code, updated_at=now)
+    except Exception:
+        pass
 
 
 def candidate_ref(c):
@@ -315,6 +363,12 @@ def _fail(out, code, detail) -> ExecResult:
     out.ok = False
     out.error_code = code
     out.detail = detail
+    # ★ 失败时把所在阶段标为 FAILED_FATAL，避免阶段永远停在 RUNNING
+    st, rid, repo = getattr(out, "_store", None), getattr(out, "_run_id", None), \
+        getattr(out, "_repo", None)
+    if st is not None and rid and out.stage:
+        _stage(st, rid, repo, out.stage, RS.STAGE_FAILED_FATAL,
+               now=getattr(out, "_now", ""), error_code=code)
     # 失败也必须在 run 记录里留下真实状态（不伪造成功）
     _persist_end(getattr(out, "_store", None), getattr(out, "_run_id", None),
                  getattr(out, "_repo", None), out,

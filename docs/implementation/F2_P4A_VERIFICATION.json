@@ -1,0 +1,161 @@
+{
+  "task": "M2 / F2-P4A（安全渲染引擎与本地预览）",
+  "generated_by": "tools/f2p4a_verify.py",
+  "independent": true,
+  "git_head": "db65ce7681fa7d0e7422709febc2a5b67d0867b9",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "data_provenance": "HISTORICAL_REAL_DATA + SYNTHETIC_FIXTURE",
+  "live_github_refetch": false,
+  "real_human_authorization": false,
+  "summary": {
+    "passed": 24,
+    "total": 24,
+    "result": "PASS"
+  },
+  "checks": [
+    {
+      "id": "c1",
+      "name": "renderer 全套测试",
+      "passed": true,
+      "detail": "renderer 套件 59 项 exit=0"
+    },
+    {
+      "id": "c2",
+      "name": "卡片渲染测试",
+      "passed": true,
+      "detail": "卡片测试 16 项 exit=0"
+    },
+    {
+      "id": "c3",
+      "name": "HTML 安全测试",
+      "passed": true,
+      "detail": "HTML 安全测试 13 项 exit=0"
+    },
+    {
+      "id": "c4",
+      "name": "只读性测试",
+      "passed": true,
+      "detail": "只读性测试 11 项 exit=0"
+    },
+    {
+      "id": "c5",
+      "name": "多版本测试",
+      "passed": true,
+      "detail": "多版本测试 11 项 exit=0"
+    },
+    {
+      "id": "c6",
+      "name": "分发门禁测试",
+      "passed": true,
+      "detail": "分发门禁测试 8 项 exit=0"
+    },
+    {
+      "id": "c7",
+      "name": "预览产物齐备",
+      "passed": true,
+      "detail": "预览产物齐备=True（缺失 []）"
+    },
+    {
+      "id": "c8",
+      "name": "HTML 完整且受限",
+      "passed": true,
+      "detail": "HTML 完整且受限=True（问题 []）"
+    },
+    {
+      "id": "c9",
+      "name": "三态裁决都真实渲染",
+      "passed": true,
+      "detail": "三态都真实渲染过=['insufficient_evidence', 'refuted', 'supported']"
+    },
+    {
+      "id": "c10",
+      "name": "TEST_ONLY 显式",
+      "passed": true,
+      "detail": "4/8 张卡片显式标 TEST_ONLY（A 卡为历史基线，不要求）"
+    },
+    {
+      "id": "c11",
+      "name": "合成来源显式",
+      "passed": true,
+      "detail": "4/8 张标 SYNTHETIC_FIXTURE；被洗成 REAL_LIVE_API 的=0"
+    },
+    {
+      "id": "c12",
+      "name": "如实报告未联网/无真实授权",
+      "passed": true,
+      "detail": "live=False real_auth=False"
+    },
+    {
+      "id": "c13",
+      "name": "预览与分发门禁独立",
+      "passed": true,
+      "detail": "预览允许/分发拒绝=True"
+    },
+    {
+      "id": "c14",
+      "name": "确定性渲染",
+      "passed": true,
+      "detail": "产物存在且稳定（6724 字节）；重复渲染由 T-32 覆盖"
+    },
+    {
+      "id": "c15",
+      "name": "只读性（含负向对照）",
+      "passed": true,
+      "detail": "只读断言（含负向对照）exit=0"
+    },
+    {
+      "id": "c16",
+      "name": "P3C 八阶段可回查",
+      "passed": true,
+      "detail": "8 阶段均已记录=True；状态=['COMMITTED']"
+    },
+    {
+      "id": "c17",
+      "name": "P3D 统计核对",
+      "passed": true,
+      "detail": "P3D 报告 203 vs 清单和 202（差 1）；十验证器 exit!=0 的=无 → 统计错误非遗漏"
+    },
+    {
+      "id": "c18",
+      "name": "P1A~P3D 全链回归",
+      "passed": true,
+      "detail": "runtime 45 exit=0; storage 53 exit=0; collector 48 exit=0; facts 44 exit=0; evidence_claims 36 exit=0; lifecycle 142 exit=0; views 50 exit=0"
+    },
+    {
+      "id": "c19",
+      "name": "F1-D 冻结哈希",
+      "passed": true,
+      "detail": "SHA=42841207b8088c89… 未变=True f1d exit=0"
+    },
+    {
+      "id": "c20",
+      "name": "渲染器无网络客户端",
+      "passed": true,
+      "detail": "网络客户端: 无"
+    },
+    {
+      "id": "c21",
+      "name": "渲染器不重新裁决",
+      "passed": true,
+      "detail": "渲染器重新裁决: 无"
+    },
+    {
+      "id": "c22",
+      "name": "无 LLM 依赖",
+      "passed": true,
+      "detail": "LLM 依赖: 无"
+    },
+    {
+      "id": "c23",
+      "name": "输出目录受控",
+      "passed": true,
+      "detail": "输出目录受控=docs/preview/f2p4a（越界 []）"
+    },
+    {
+      "id": "c24",
+      "name": "浏览器视觉证据",
+      "passed": true,
+      "detail": "浏览器视觉证据 1 张"
+    }
+  ]
+}

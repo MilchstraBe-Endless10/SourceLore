@@ -2854,3 +2854,115 @@ f2p2a 15/15  f2p1c 22/22  f2p1b 16/16  f2p1a 22/22  f1d 26/26
 4. **DISTRIBUTION** 只能在 B-1/B-2/B-3 全关后讨论
 
 **阻塞**：真实平台端到端仍需 Y6-P3 + Y6-P6。
+
+## M2 / F2-P4A 完成（2026-11-05 11:55 +08:00）
+
+### 结论
+
+**`SAFE_RENDERER_CORE = DONE`；`LOCAL_VISUAL_PREVIEW = DONE`（含真实浏览器实测）。**
+`DISTRIBUTION_READY` 保持 `NOT_READY`；`FULL_RENDERER` / `RESEARCH` 未启动、未声称。
+
+---
+
+## Renderer 五模块
+
+```
+safe_html.py          转义/清洗/URL 白名单/可信模板/CSP
+card_models.py        视图→卡片投影 + 措辞约束 + card_id
+card_renderer.py      JSON + HTML + 阻断页
+report_renderer.py    多版本对照
+pre_publish_check.py  8 类分发检查
+```
+
+无状态、无网络、无数据库写入；写文件只在 `tools/f2p4a_e2e_preview.py`。
+
+---
+
+## HTML 安全（结构式，非过滤式）
+
+唯一入口 `html.escape(quote=True)`；结构由可信模板拼装。
+12 种攻击向量逐项负向测试：script/属性注入/js URL/data URL/iframe/
+object/svg/body onload/markdown 原标签/样式注入/闭环注释。
+
+URL 白名单：只 `https` + github.com 系三域（含子域）；
+拒绝 `javascript:`/`data:`/`vbscript:`/`file:`、userinfo、端口≠443、路径含 `..`。
+
+CSP 内联七项：`default-src 'none'; script-src 'none'; object-src 'none'; ...`
+
+剥离控制字符与双向文本符（U+200B–200F、U+202A–202E、U+2066–2069、BOM）+ NFC 归一化。
+
+---
+
+## 浏览器实测（Playwright，本地 HTTP，1920×1080）
+
+| 项 | 卡片 | 报告 |
+|---|---|---|
+| 横向溢出 | **false** | **false** |
+| script / iframe / img | 0 / 0 / 0 | 0 / 0 / 0 |
+| 事件属性 | **0** | **0** |
+| CSP | 有 | 有 |
+| 语义 h2 | 8 | 5 |
+
+视觉证据：`docs/preview/f2p4a/s1_refuted/preview.png`（1920×2036）。
+
+---
+
+## 预览许可 ≠ 分发许可
+
+```
+preview_allowed      = True
+distribution_allowed = False    ← 恒定
+publish_blocked      = True
+```
+
+**即使裁决 supported + 审核 approved，分发仍拒绝**（有测试固化）。
+
+---
+
+## 阻断策略
+
+证据损坏/来源缺失 → 输出"无法生成可信知识卡片"，
+不含任何裁决徽章与裁决措辞；不生成看似完整的半成品。
+
+---
+
+## §13 补验：发现并修复 P3C 真缺陷
+
+`set_stage` **从未被调用** → 八阶段全停在 `PENDING`。
+已补 `RUNNING`/`COMMITTED`/`FAILED_FATAL`，实测八阶段全 `COMMITTED`。
+P3C 142 + P3D 50 回归全绿。
+
+---
+
+## §14 统计核实
+
+P3D 清单算术和 **202**，报告写 **203**，差 1 —— **人工加法错误，非遗漏**。
+十验证器实跑全 `exit 0`。已建 `tools/f2p4a_stats_audit.py` 自动汇总，
+权威口径 `F2_P4A_STATS_AUDIT.json`；历史报告未改。
+
+顺带发现并打破一个**自指循环**：f2p4a 的统计核对原要求"全部验证器 exit 0"
+（含它自己），导致永远无法收敛；改为只核对 P3D 那十项。
+
+---
+
+## 验证
+
+```
+runtime 45 / storage 53 / collector 48 / facts 44 / EC 36 /
+lifecycle 142 / views 50 / renderer 59   全 OK
+f2p4a 24/24  f2p3d 24/24  f2p3c 20/20  f2p3b 22/22  f2p3a 18/18
+f2p2b 17/17  f2p2a 15/15  f2p1c 22/22  f2p1b 16/16  f2p1a 22/22  f1d 26/26
+```
+
+477 项 unittest。冻结哈希 `42841207…` 未变。
+
+---
+
+## 下一步：Research 最小可执行起点
+
+1. 只消费 `rendered_card.json` 或 `KnowledgeView`，**不读数据库**、不重新裁决
+2. 产出只作**待审材料**，不得回写 Claim/Verification/review_status
+3. 必须原样带出 limitations 与 distribution_restrictions
+4. 不得推断 Commit 祖先关系；不得把 B 的结论当 C 的有效结论
+5. 证据不足/来源损坏时必须输出"无法给出结论"
+6. 必测：输入顺序无关、确定性、注入防护、分发恒 False
