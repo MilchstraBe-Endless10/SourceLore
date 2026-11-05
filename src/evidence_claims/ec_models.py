@@ -64,7 +64,9 @@ CONTENT_CLAIM_TYPES = frozenset({CLAIM_README_HEADING, CLAIM_MANIFEST_DEP,
 CLAIM_SYMBOL = "source_symbol_declared"
 CLAIM_IMPORT = "source_import_declared"
 CLAIM_LOCAL_MODULE = "source_local_module_resolved"
-SOURCE_CLAIM_TYPES = frozenset({CLAIM_SYMBOL, CLAIM_IMPORT, CLAIM_LOCAL_MODULE})
+CLAIM_EXPORT = "source_export_declared"
+SOURCE_CLAIM_TYPES = frozenset({CLAIM_SYMBOL, CLAIM_IMPORT,
+                                CLAIM_LOCAL_MODULE, CLAIM_EXPORT})
 SUPPORTED_CLAIM_TYPES = (frozenset({CLAIM_PATH_EXISTS})
                          | CONTENT_CLAIM_TYPES | SOURCE_CLAIM_TYPES)
 CLAIM_SCHEMA_VERSION = "claim-schema/1"

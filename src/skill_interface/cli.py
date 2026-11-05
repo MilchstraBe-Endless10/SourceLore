@@ -71,6 +71,8 @@ def build_parser():
     q.add_argument("--symbol", default=None, help="按符号 qualified_name 或 name 查")
     q.add_argument("--symbol-kind", default=None, help="按符号类型过滤")
     q.add_argument("--module", default=None, help="按静态导入模块名过滤")
+    q.add_argument("--language", default=None,
+                   help="按源码语言过滤（python/javascript/typescript/jsx/tsx）")
 
     c = sub.add_parser("card", help="生成知识卡片（本地 HTML）")
     c.add_argument("--repository-id", required=True)

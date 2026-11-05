@@ -59,6 +59,7 @@ def render_source_card_html(card):
     parts.append(_kv([
         ("已登记符号", SH.esc(cnt.get("symbols"))),
         ("已登记导入", SH.esc(cnt.get("imports"))),
+        ("已登记导出", SH.esc(cnt.get("exports"))),
         ("事实总数", SH.esc(cnt.get("facts"))),
     ]))
 
@@ -99,7 +100,26 @@ def render_source_card_html(card):
     else:
         parts.append("<p>无已登记导入声明。</p>")
 
-    parts.append('<h2>五 · 限制与免责</h2>')
+    parts.append('<h2>五 · 静态导出声明</h2>')
+    exps = card.get("exports") or []
+    if exps:
+        rows = ["<table><tr><th>Fact ID</th><th>导出类型</th><th>名称</th>"
+                "<th>来源</th><th>证据</th></tr>"]
+        for e in exps:
+            subj = e.get("subject") or {}
+            nm = subj.get("exported_name")
+            rows.append(
+                f'<tr><td>{_mono(e.get("fact_id"), 60)}</td>'
+                f'<td>{SH.esc(subj.get("export_kind"))}</td>'
+                f'<td>{SH.esc(nm if nm is not None else "（匿名）")}</td>'
+                f'<td>{SH.esc(subj.get("source_reference"))}</td>'
+                f'<td>{SH.esc(e.get("evidence_label"))}</td></tr>')
+        rows.append("</table>")
+        parts.append("".join(rows))
+    else:
+        parts.append("<p>无已登记导出声明。</p>")
+
+    parts.append('<h2>六 · 限制与免责</h2>')
     parts.append("<ul>" + "".join(
         f"<li>{SH.esc(x)}</li>" for x in (card.get("limitations") or [])) + "</ul>")
     dr = card.get("distribution_restrictions") or {}

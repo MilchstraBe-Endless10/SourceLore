@@ -1,0 +1,269 @@
+{
+  "artifact": "F2_P5H_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-06T00:32:58+08:00",
+  "baseline_commit": "467603d",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "crosswalk_matches_frozen": true,
+  "tree_sitter": {
+    "core": "0.26.0",
+    "javascript": "0.25.0",
+    "typescript": "0.23.2",
+    "python": "3.14.8",
+    "install_mode": "项目内 .venv（不入库），不修改系统 Python",
+    "abi": {
+      "javascript": 15,
+      "typescript": 14,
+      "tsx": 14,
+      "note": "core 用 cp314 wheel；两个 grammar 用 abi3 稳定 ABI"
+    }
+  },
+  "gates": {
+    "A_TREE_SITTER_RUNTIME": {
+      "status": "DONE",
+      "evidence": "四 grammar 真实加载成功；探针断言 6 项（加载/构建/节点类型/字节范围/错误检测/确定性）"
+    },
+    "B_JAVASCRIPT_AST": {
+      "status": "DONE",
+      "evidence": "14 类符号 + 7 类导入 + 6 类导出；45 项 Gold 覆盖"
+    },
+    "C_TYPESCRIPT_AST": {
+      "status": "DONE",
+      "evidence": "interface/type_alias/enum/namespace 与 class 严格区分"
+    },
+    "D_JSX_TSX_AST": {
+      "status": "DONE",
+      "evidence": "分别用 JS grammar 与 tsx grammar；实测 TS grammar 解析 JSX 会报错，证明必须分开"
+    },
+    "E_JS_TS_SYMBOL_SEMANTICS": {
+      "status": "DONE",
+      "evidence": "arrow 绑定 ≠ function declaration；interface ≠ class；匿名 default 不编造名字"
+    },
+    "F_JS_TS_IMPORT_EXPORT": {
+      "status": "DONE",
+      "evidence": "require() 记为调用观察；dynamic specifier 明确；import type 标 type_only"
+    },
+    "G_JS_TS_MODULE_RESOLUTION": {
+      "status": "DONE",
+      "evidence": "七态；只支持相对路径，裸模块/alias/hash 一律 UNSUPPORTED_RESOLUTION_POLICY"
+    },
+    "H_JS_TS_EVIDENCE": {
+      "status": "DONE",
+      "evidence": "tree-sitter start_byte/end_byte 为绝对字节，直接校验边界；行号由字节二分反查"
+    },
+    "I_JS_TS_FACT_PERSISTENCE": {
+      "status": "DONE",
+      "evidence": "E2E 实测 JS 10 条 / TS 8 条事实真实入 A 层"
+    },
+    "J_JS_TS_CLAIM_VERIFICATION": {
+      "status": "DONE",
+      "evidence": "复用 EC 三态；语法错误/PARTIAL/不可用一律 insufficient"
+    },
+    "K_JS_TS_RESEARCH_QUERY": {
+      "status": "DONE",
+      "evidence": "安装版 CLI query --type code 通用于 Python 与 JS/TS"
+    },
+    "L_JS_TS_KNOWLEDGE_CARDS": {
+      "status": "DONE",
+      "evidence": "JAVASCRIPT_SOURCE_CARD / TYPESCRIPT_SOURCE_CARD 生成成功；CSP/无 script/转义全过"
+    },
+    "M_INSTALLED_SKILL_JS_TS_E2E": {
+      "status": "DONE",
+      "evidence": "~/.agents/skills/sourcelore 实测：sym=5 imp=2 exp=3 network=0"
+    },
+    "N_PYTHON_ANALYSIS_REGRESSION": {
+      "status": "DONE",
+      "evidence": "source_analysis 88 项全绿，未退化"
+    },
+    "O_MULTI_COMMIT_JS_TS_ISOLATION": {
+      "status": "DONE",
+      "evidence": "A=Worker.run / B=Worker.execute 各自独立"
+    },
+    "P_REAL_GITHUB_JS_TS_E2E": {
+      "status": "NOT_VERIFIED",
+      "evidence": "无已核验真实仓库授权"
+    },
+    "Q_NATURAL_LANGUAGE_AUTO_TRIGGER": {
+      "status": "NOT_VERIFIED",
+      "evidence": "无独立会话证据"
+    },
+    "R_DISTRIBUTION_READY": {
+      "status": "NOT_READY",
+      "evidence": "B-1/B-2/B-3 OPEN"
+    }
+  },
+  "found_defects": [
+    {
+      "id": "D-24",
+      "title": "generator 声明完全丢失",
+      "impact": "function* 未识别（tree-sitter 用独立节点 generator_function_declaration）",
+      "fix": "增加 GEN_FUNC_DECL 判断",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-25",
+      "title": "对象方法用 pair 查找无效",
+      "impact": "const o = { m() {} } 中的 m 未被识别",
+      "fix": "tree-sitter 实际产出 method_definition，改为按 parent(type=object) 分派",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-26",
+      "title": "限定名重复 name.name",
+      "impact": "const start = ... 得到 start.start",
+      "fix": "变量声明作前缀时继续向外找作用域",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-27",
+      "title": "JS/TS 符号缺 symbol_id",
+      "impact": "同名声明无法区分，下游无法构建稳定身份",
+      "fix": "按 (kind,qualified,start_byte,occurrence) 生成确定性 ID",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-28",
+      "title": "同一节点被重复计入符号",
+      "impact": "lexical_declaration 内外层各遍历一次",
+      "fix": "按 (kind,name,start_byte) 去重",
+      "status": "FIXED"
+    }
+  ],
+  "test_metrics": {
+    "gold": "45/45（≥40 要求）",
+    "parser_success": "72 项解析测试全通过",
+    "symbol_type_accuracy": "14 类符号逐条断言",
+    "import_type_accuracy": "7 类导入逐条断言",
+    "export_type_accuracy": "6 类导出逐条断言",
+    "evidence_accuracy": "100%（字节边界+行长二分）",
+    "false_positive": 0,
+    "false_negative": 0,
+    "correct_abstention": "语法错误/不完整/动态说明符/别名 → 一律 abstain"
+  },
+  "blocking_metrics_zero": {
+    "wrong_symbol_type": 0,
+    "arrow_as_function_decl": 0,
+    "interface_as_class": 0,
+    "fabricated_anonymous_name": 0,
+    "error_tree_as_authoritative": 0,
+    "dynamic_specifier_guessed": 0,
+    "code_executed": 0,
+    "illegal_reason_code": 0,
+    "wrong_module_imported": 0
+  },
+  "tests": {
+    "runtime": {
+      "tests": 45,
+      "ok": true,
+      "exit": 0
+    },
+    "storage": {
+      "tests": 53,
+      "ok": true,
+      "exit": 0
+    },
+    "collector": {
+      "tests": 48,
+      "ok": true,
+      "exit": 0
+    },
+    "facts": {
+      "tests": 44,
+      "ok": true,
+      "exit": 0
+    },
+    "evidence_claims": {
+      "tests": 36,
+      "ok": true,
+      "exit": 0
+    },
+    "lifecycle": {
+      "tests": 142,
+      "ok": true,
+      "exit": 0
+    },
+    "views": {
+      "tests": 50,
+      "ok": true,
+      "exit": 0
+    },
+    "renderer": {
+      "tests": 59,
+      "ok": true,
+      "exit": 0
+    },
+    "research": {
+      "tests": 122,
+      "ok": true,
+      "exit": 0
+    },
+    "skill_interface": {
+      "tests": 69,
+      "ok": true,
+      "exit": 0
+    },
+    "content": {
+      "tests": 77,
+      "ok": true,
+      "exit": 0
+    },
+    "blob_capture": {
+      "tests": 59,
+      "ok": true,
+      "exit": 0
+    },
+    "content_persistence": {
+      "tests": 63,
+      "ok": true,
+      "exit": 0
+    },
+    "content_skill": {
+      "tests": 49,
+      "ok": true,
+      "exit": 0
+    },
+    "source_analysis": {
+      "tests": 88,
+      "ok": true,
+      "exit": 0
+    },
+    "js_ts_analysis": {
+      "tests": 72,
+      "ok": true,
+      "exit": 0
+    }
+  },
+  "total_tests": 1076,
+  "all_tests_ok": true,
+  "evidence_levels": {
+    "PARSER_AVAILABLE": "DONE",
+    "PARSER_TESTED": "DONE",
+    "FACTS_PERSISTED": "DONE",
+    "CLAIMS_VERIFIED": "DONE",
+    "INSTALLED_SKILL_E2E": "DONE",
+    "REAL_GITHUB_E2E": "NOT_VERIFIED"
+  },
+  "still_open": [
+    {
+      "gate": "REAL_GITHUB_JS_TS_E2E",
+      "status": "NOT_VERIFIED",
+      "reason": "缺授权"
+    },
+    {
+      "gate": "NATURAL_LANGUAGE_AUTO_TRIGGER",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "gate": "DISTRIBUTION_READY",
+      "status": "NOT_READY"
+    }
+  ],
+  "explicitly_not_claimed": [
+    "原创夹具 != 真实 GitHub 源码",
+    "静态声明 != 运行时行为",
+    "路径候选 != 导入成功",
+    "interface == 运行时对象",
+    "不建调用图/数据流图",
+    "不支持 alias/bare module 解析"
+  ]
+}

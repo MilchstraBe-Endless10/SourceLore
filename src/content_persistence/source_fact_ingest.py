@@ -13,6 +13,7 @@ for _p in ("facts", "storage", "source_analysis", "content_persistence"):
 
 RULE_SYMBOL = "SOURCE_SYMBOL_DECLARED"
 RULE_IMPORT = "SOURCE_IMPORT_DECLARED"
+RULE_EXPORT = "SOURCE_EXPORT_DECLARED"
 RULE_LOCAL = "SOURCE_LOCAL_MODULE_RESOLVED"
 RULE_VERSION = "source-facts/1"
 
@@ -141,23 +142,45 @@ def ingest_source_facts(store, *, observation, source_snapshot_id=None):
             skipped.append({"rule_id": rule_id,
                             "reason": res.get("error") or res.get("detail")})
 
+    # ★ 支持 Python 与 JS/TS 两套符号类型
+    py_kinds = ("class", "function", "async_function", "method",
+                "async_method", "nested_function")
+    js_kinds = ("js_function", "js_async_function", "js_generator_function",
+                "js_class", "js_method", "js_object_method", "js_variable",
+                "js_arrow_function", "js_function_expression",
+                "js_anonymous_function",
+                "ts_interface", "ts_type_alias", "ts_enum", "ts_namespace")
     for sym in observation["observed_symbols"]:
         kind = sym["symbol_kind"]
-        if kind not in ("class", "function", "async_function", "method",
-                        "async_method", "nested_function"):
+        if kind not in py_kinds + js_kinds:
             continue
         _put(RULE_SYMBOL,
              {"qualified_name": sym["qualified_name"],
               "symbol_kind": kind,
-              "symbol_name": sym["symbol_name"]},
+              "symbol_name": sym["symbol_name"],
+              "language": observation["language"]},
              sym["evidence_ref"])
 
     for imp in observation["observed_imports"]:
         _put(RULE_IMPORT,
-             {"module_name": imp["module_name"],
-              "imported_name": imp["imported_name"],
-              "import_syntax": imp["import_syntax"],
-              "relative_level": imp["relative_level"]},
+             {"module_name": imp.get("module_name"),
+              "imported_name": imp.get("imported_name"),
+              "import_syntax": imp.get("import_syntax")
+                  or imp.get("import_kind"),
+              "relative_level": imp.get("relative_level", 0),
+              "module_specifier": imp.get("module_specifier"),
+              "is_type_only": bool(imp.get("is_type_only")),
+              "language": observation["language"]},
              imp["evidence_ref"])
+
+    # ★ JS/TS 导出事实（Python 无此结构，列表为空则跳过）
+    for exp in observation.get("observed_exports") or []:
+        _put(RULE_EXPORT,
+             {"export_kind": exp["export_kind"],
+              "exported_name": exp.get("exported_name"),
+              "source_reference": exp.get("source_reference"),
+              "is_type_only": bool(exp.get("is_type_only")),
+              "language": observation["language"]},
+             exp["evidence_ref"])
 
     return {"written": written, "reused": reused, "skipped": skipped}

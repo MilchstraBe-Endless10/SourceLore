@@ -11,6 +11,9 @@ SOURCE_SYMBOL_CARD = "SOURCE_SYMBOL_CARD"
 SOURCE_IMPORT_CARD = "SOURCE_IMPORT_CARD"
 SOURCE_MODULE_RELATION_CARD = "SOURCE_MODULE_RELATION_CARD"
 SOURCE_ERROR_CARD = "SOURCE_EVIDENCE_ERROR"
+JS_SOURCE_CARD = "JAVASCRIPT_SOURCE_CARD"
+TS_SOURCE_CARD = "TYPESCRIPT_SOURCE_CARD"
+SOURCE_IMPORT_EXPORT_CARD = "SOURCE_IMPORT_EXPORT_CARD"
 
 DISCLAIMERS = {
     SOURCE_FILE_CARD: [
@@ -31,6 +34,12 @@ DISCLAIMERS = {
         "不构成依赖图；不做调用图/数据流图",
     ],
     SOURCE_ERROR_CARD: ["证据链不完整；此卡不构成源码知识结论"],
+    JS_SOURCE_CARD: ["静态声明 ≠ 运行时行为",
+                     "不执行仓库代码，不推断函数调用关系"],
+    TS_SOURCE_CARD: ["类型声明 ≠ 运行时对象",
+                     "interface/type-only 不代表实际运行时存在"],
+    SOURCE_IMPORT_EXPORT_CARD: ["静态引用 ≠ 运行时加载成功",
+                                "被导出 ≠ 其他模块已成功导入"],
 }
 
 
@@ -61,10 +70,15 @@ def build_source_card(q, *, card_type=None):
                       detail="；".join(problems))
 
     if card_type is None:
-        card_type = SOURCE_FILE_CARD
+        lang = (facts[0].get("language") if facts else None)
+        card_type = {"javascript": JS_SOURCE_CARD,
+                     "jsx": JS_SOURCE_CARD,
+                     "typescript": TS_SOURCE_CARD,
+                     "tsx": TS_SOURCE_CARD}.get(lang, SOURCE_FILE_CARD)
 
     symbols = [f for f in facts if f["rule_id"] == "SOURCE_SYMBOL_DECLARED"]
     imports = [f for f in facts if f["rule_id"] == "SOURCE_IMPORT_DECLARED"]
+    exports = [f for f in facts if f["rule_id"] == "SOURCE_EXPORT_DECLARED"]
 
     model = {
         "card_schema_version": CARD_SCHEMA,
@@ -85,8 +99,9 @@ def build_source_card(q, *, card_type=None):
         } for c in caps],
         "symbols": [_row(f, "symbol") for f in symbols],
         "imports": [_row(f, "import") for f in imports],
+        "exports": [_row(f, "export") for f in exports],
         "counts": {"symbols": len(symbols), "imports": len(imports),
-                   "facts": len(facts)},
+                   "exports": len(exports), "facts": len(facts)},
         "limitations": (q.get("limitations") or [])
             + DISCLAIMERS.get(card_type, []),
         "distribution_restrictions": q.get("distribution_restrictions")

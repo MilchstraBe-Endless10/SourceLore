@@ -45,7 +45,8 @@ def query_source_facts(*, store, repository_id, commit_sha=None,
             continue
         if symbol_kind and subj.get("symbol_kind") != symbol_kind:
             continue
-        if module_name and subj.get("module_name") != module_name:
+        if module_name and subj.get("module_name") != module_name \
+                and subj.get("module_specifier") != module_name:
             continue
         out.append({
             "fact_id": pl.get("fact_id"),
@@ -128,6 +129,7 @@ def source_query(*, repository_id, commit_sha=None, file_path=None,
 
         symbols = [f for f in facts if f["rule_id"] == "SOURCE_SYMBOL_DECLARED"]
         imports = [f for f in facts if f["rule_id"] == "SOURCE_IMPORT_DECLARED"]
+        exports = [f for f in facts if f["rule_id"] == "SOURCE_EXPORT_DECLARED"]
 
         return {
             "state": FOUND,
@@ -138,8 +140,9 @@ def source_query(*, repository_id, commit_sha=None, file_path=None,
             "facts": facts,
             "symbols": symbols,
             "imports": imports,
+            "exports": exports,
             "counts": {"facts": len(facts), "symbols": len(symbols),
-                       "imports": len(imports)},
+                       "imports": len(imports), "exports": len(exports)},
             "captured": captured,
             "coverage_status": "COVERED_BY_EXTRACTED_SOURCE",
             "provenance_level": facts[0].get("provenance_level"),

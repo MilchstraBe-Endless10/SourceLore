@@ -20,6 +20,7 @@ RULE_VERSION = "source-verifier/1"
 CLAIM_SYMBOL = "source_symbol_declared"
 CLAIM_IMPORT = "source_import_declared"
 CLAIM_LOCAL_MODULE = "source_local_module_resolved"
+CLAIM_EXPORT = "source_export_declared"
 
 # 裁决契约（显式，供测试逐条核对）
 CONTRACTS = {
@@ -34,6 +35,12 @@ CONTRACTS = {
         "refuted": "文件 COMPLETE 且解析成功，确无该导入声明",
         "insufficient": "解析失败或内容不完整",
         "forbidden": "静态导入 ≠ 依赖已安装 ≠ 导入一定成功 ≠ 运行时必执行",
+    },
+    CLAIM_EXPORT: {
+        "supported": "文件包含该静态导出声明，且字节范围可核验",
+        "refuted": "文件 COMPLETE、解析成功，且确无该导出声明",
+        "insufficient": "解析失败或不完整 → 一律 abstain",
+        "forbidden": "被导出 ≠ 其他模块已成功导入 ≠ 运行时可用",
     },
     CLAIM_LOCAL_MODULE: {
         "supported": "在**当前 Commit 已登记 Tree** 中存在唯一候选路径",
@@ -153,6 +160,7 @@ def _matches(claim, fact, binding):
     """★ 逐字段比对：rule + file_path + commit + repo + 类型化 Subject。"""
     want_rule = {"source_symbol_declared": "SOURCE_SYMBOL_DECLARED",
                  "source_import_declared": "SOURCE_IMPORT_DECLARED",
+                 "source_export_declared": "SOURCE_EXPORT_DECLARED",
                  }.get(claim.claim_type)
     if fact.get("rule_id") != want_rule:
         return False

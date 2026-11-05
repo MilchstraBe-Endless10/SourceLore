@@ -389,7 +389,9 @@ def main() -> int:
                             "tests/content_skill/", "tools/f2p5f_",
                             # F2-P5G 获批：源码符号、静态导入与模块关系抽取
                             "src/source_analysis/", "tests/source_analysis/",
-                            "tools/f2p5g_")
+                            "tools/f2p5g_",
+                            # F2-P5H 获批：JS/TS 语法解析与导入导出抽取
+                            "tests/js_ts_analysis/", "tools/f2p5h_")
         outside = [str(p.relative_to(ROOT)) for p in code
                    if "__pycache__" not in str(p)
                    and not str(p.relative_to(ROOT)).startswith(allowed_prefixes)]

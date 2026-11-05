@@ -164,7 +164,51 @@ query <rid> --commit <sha> --type code [--path P] [--symbol NAME] [--symbol-kind
 card  --repository-id <rid> --commit <sha> --path P --code
 ```
 
-**只支持 Python（`.py`）**，用标准库 `ast`。JS/TS 为 `NOT_IMPLEMENTED`（无可靠解析器时不使用正则凑数）。
+支持 **Python（`.py`）** 用标准库 `ast`；**JS/JSX/TS/TSX** 用 tree-sitter（版本固定，见 `requirements-treesitter.txt`）。
+
+| 扩展名 | 解析器 | grammar |
+|---|---|---|
+| `.py` | Python `ast` | — |
+| `.js/.mjs/.cjs` | tree-sitter | tree-sitter-javascript 0.25.0 |
+| `.jsx` | tree-sitter | tree-sitter-javascript 0.25.0 |
+| `.ts/.mts/.cts` | tree-sitter | tree-sitter-typescript 0.23.2 |
+| `.tsx` | tree-sitter | tree-sitter-typescript 0.23.2 (tsx) |
+
+**依赖隔离**：安装在项目内 `.venv/`（不入库）。不修改系统 Python，不自动下载 grammar。
+缺失时返回 `PARSER_UNAVAILABLE`，**不使用正则凑数**。
+
+### JS/TS 符号类型
+
+`js_function` / `js_async_function` / `js_generator_function` / `js_class` /
+`js_method` / `js_object_method` / `js_variable` / `js_arrow_function` /
+`js_function_expression` / `ts_interface` / `ts_type_alias` / `ts_enum` / `ts_namespace`
+
+★ **arrow 绑定 ≠ function declaration**；**interface ≠ class**；**匿名 default export 不编造名字**。
+
+### 导入/导出
+
+导入：default / named / namespace / side-effect / `require()` 字面量调用 / `import()`。
+导出：named / default / declaration / list / re-export / export-all。
+
+★ `require("x")` 是**调用观察**（`LITERAL_REQUIRE_CALL_OBSERVED`），不是 ESM 声明。
+★ `require(var)` / `import(var)` → `DYNAMIC_MODULE_SPECIFIER`，不猜目标。
+★ `import type` → `is_type_only=true`，**不是运行时依赖**。
+
+### JS/TS 模块解析七态
+
+`LOCAL_MODULE_RESOLVED` / `RELATIVE_PATH_CANDIDATE_FOUND` / `AMBIGUOUS_CANDIDATES` /
+`EXTERNAL_OR_UNRESOLVED` / `UNSUPPORTED_RESOLUTION_POLICY` / `INSUFFICIENT_TREE_COVERAGE` / `DYNAMIC_SPECIFIER`
+
+**本版只支持明确的相对路径**（`./x`、`../y`）。
+裸模块名、`@/alias`、`#hash` 一律 `UNSUPPORTED_RESOLUTION_POLICY`——不猜。
+
+### 解析完整性
+
+`PARSE_COMPLETE` / `PARSE_WITH_ERRORS` / `PARSE_UNSUPPORTED_SYNTAX` /
+`PARSER_UNAVAILABLE` / `SOURCE_INCOMPLETE` / `CONTENT_INTEGRITY_FAILED`
+
+★ **语法错误时不产生任何权威符号/导入/导出事实**，只记录诊断。
+★ 不完整源码不得作出文件范围的确定否定。
 
 **绝不执行仓库代码**：不 `exec`、不 `eval`、不 import、不跑测试、不执行 shell。
 
