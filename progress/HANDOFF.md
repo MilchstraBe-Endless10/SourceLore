@@ -2747,3 +2747,110 @@ f2p1c 22/22  f2p1b 16/16  f2p1a 22/22  f1d 26/26
 **B 类卡在真实授权通道（Y6-P3）与 BotHarness 端到端（Y6-P6）。**
 建议下一批做 **F2-P3D：结果消费与知识视图装配的最小契约**（只读、不发布），
 而不是直接跳 Research。
+
+## M2 / F2-P3D 完成（2026-11-05 10:37 +08:00）
+
+### 结论
+
+**`READ_ONLY_VIEW_ASSEMBLY = DONE`。**
+`RENDERER` / `RESEARCH` / `REAL_HARNESS_AUTHORIZED_E2E` / `DISTRIBUTION_READY` 全部未达，未声称。
+
+---
+
+## 五条状态轴结构分离
+
+```
+A. verification_status     EC 裁决
+B. freshness_state         Lifecycle 适用性
+C. review_status           人工审核（只有人能改）
+D. execution_status        Runtime 执行
+E. provenance_level + authorization_class   来源与授权，分别判断
+```
+
+视图里**没有** `is_valid` / `combined_status` / `final_verdict` —— 有测试逐个断言不存在。
+
+---
+
+## 只读性（实测，不是口头承诺）
+
+| 项 | 结果 |
+|---|---|
+| A 层资产指纹（16 个） | 完全不变 |
+| B 层指针版本 | 不变 |
+| C 层索引 | 不变 |
+| operation_log | 不变 |
+| Collector 调用 | 零 |
+| 重复装配 3 次 | 资产数不变 |
+
+**负向对照**：测试主动写一条资产后断言指纹**确实变化** —— 证明"不变"不是空转。
+
+---
+
+## view_id
+
+`SL-VIEW-` + H(query_scope, subject_id, sorted(refs), sorted(digests), schema, rule)
+
+同输入同身份、顺序无关、时间戳不参与、A/B 不碰撞。
+
+---
+
+## 来源分三层
+
+```
+evidence_source_level    观测/评估来源
+execution_source_level   本次取数 adapter 来源
+snapshot_source_level    快照自身记录（如存在）
+provenance_level         取最弱；不一致时 mixed_provenance=true
+```
+
+无法判定时 `provenance_level=None`，**不猜**。
+
+**如实记录**：快照 payload **不含 `provenance_level`**（只有 `source_provider`），
+已用测试固化，视图不凭空给快照编等级。
+
+---
+
+## 本批修的真缺陷
+
+1. **P3C 的 `revalidation_run_store` 从未被调用** —— 执行状态完全不可追溯。
+   补 `create_run` / `finish_run` / 目标 Claim 关联，**P3C 142 项回归全绿**。
+2. **`no_usable_evidence` 被误判成 `EVIDENCE_CORRUPT`** —— EC 的 insufficient
+   裁决 `fact_ids=["None"]` 是正常形态，初版报"证据损坏"，导致合法裁决无法装配。
+3. **先查仓库导致 `REPOSITORY_MISMATCH` 误报成 `NOT_FOUND`** —— 改为先定位再比对。
+4. **局部覆盖只看 EC 标记** —— 改为看快照完整性 + 执行记录。
+5. **三处验证器假阳性**：裸 `completion` 误伤 `COMPLETION_CHECK`、
+   `APPROVED` 误伤 `PLATFORM_APPROVAL`。改精确匹配，**强度不降**。
+
+---
+
+## 统计核对（§15）
+
+| 项 | 报告写 | 列表算术和 | 实跑 |
+|---|---|---|---|
+| P3C | **179** | **178** | 20/20 通过 |
+| P3B | **159** | **158** | 22/22 通过 |
+
+**两处都是加法统计错误，不是验证遗漏。** 历史报告未改，权威口径在 `F2_STATS_AUDIT.json`。
+
+---
+
+## 验证
+
+```
+tests/runtime 45 / storage 53 / collector 48 / facts 44 / EC 36 / lifecycle 142 / views 50   全 OK
+f2p3d 24/24  f2p3c 20/20  f2p3b 22/22  f2p3a 18/18  f2p2b 17/17
+f2p2a 15/15  f2p1c 22/22  f2p1b 16/16  f2p1a 22/22  f1d 26/26
+```
+
+418 项 unittest + 203 项验收断言，失败 0。冻结哈希 `42841207…` 未变。
+
+---
+
+## 下一步建议顺序
+
+1. **Renderer 最小安全契约**（只读消费视图、绝不写权威库、转义与发布前检查）
+2. **Research**（输出不得回写 Claim）
+3. **正式 Skill 集成**（需先解决 Y6-P3 授权通道）
+4. **DISTRIBUTION** 只能在 B-1/B-2/B-3 全关后讨论
+
+**阻塞**：真实平台端到端仍需 Y6-P3 + Y6-P6。

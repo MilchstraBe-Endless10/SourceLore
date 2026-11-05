@@ -2,7 +2,7 @@
   "task": "M2 / F2-P3B（重新验证候选队列与受控授权边界）",
   "generated_by": "tools/f2p3b_verify.py",
   "independent": true,
-  "git_head": "24baa283744635f3a7630c2dd8e35b7654347c77",
+  "git_head": "7119b4cb9db7491a09761047ca8ae6ac72d3a113",
   "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
   "data_provenance": "HISTORICAL_REAL_DATA",
   "live_github_refetch": false,
@@ -16,7 +16,7 @@
       "id": "c1",
       "name": "P3B 测试套件",
       "passed": true,
-      "detail": "Lifecycle 套件 77 项 exit=0"
+      "detail": "Lifecycle 套件 142 项 exit=0"
     },
     {
       "id": "c2",

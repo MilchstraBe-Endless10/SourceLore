@@ -63,6 +63,11 @@ class ExecResult:
         self.payload = {}
         self.verification_status = None
         self.uncertain_side_effect = False
+        # 内部上下文（供失败路径落库）
+        self._store = None
+        self._run_id = None
+        self._repo = None
+        self._now = ""
 
 
 def execute_revalidation(store, *, candidate_id: str, repository_id: str,
@@ -75,11 +80,30 @@ def execute_revalidation(store, *, candidate_id: str, repository_id: str,
 
     # ── PREFLIGHT：从 Storage 重新读全部对象（§4）──────────
     out.stage = "PREFLIGHT"
+    out._store, out._repo, out._now = store, str(repository_id), now
     cand = RQ.read_candidate(store, candidate_id=candidate_id,
                              repository_id=repository_id)
     if not cand.get("ok"):
         return _fail(out, E_PREFLIGHT_CANDIDATE_NOT_FOUND, "候选不存在")
     c = cand["payload"]
+
+    # ★ P3D §1-13 修复：P3C 建了 revalidation_run_store，但执行器从未落库，
+    #   导致执行状态无法追溯。这里最小向后兼容补上（只在候选可执行时建）。
+    run_id = None
+    if c.get("status") in (R.PROPOSED, R.BLOCKED):
+        try:
+            aid = (authorization or {}).get("authorization_id", "none") \
+                if isinstance(authorization, dict) else "none"
+            cr = RS.create_run(
+                store, candidate=candidate_ref(c),
+                plan_digest=plan.get("plan_digest") or "",
+                authorization_id=aid, authorization_ref=aid,
+                created_at=now)
+            run_id = cr.get("run_id")
+        except Exception as e:
+            run_id = None
+            out.detail = f"run 记录创建失败: {type(e).__name__}"
+    out._run_id = run_id
 
     if c.get("status") == R.SUPERSEDED:
         return _fail(out, E_PREFLIGHT_SUPERSEDED,
@@ -174,6 +198,19 @@ def execute_revalidation(store, *, candidate_id: str, repository_id: str,
                      claim_res.get("detail", ""))
     target_claim = claim_res["claim"]
 
+    # ★ 把目标 Claim 关联写回 run 记录，供只读视图追溯（不伪造任何状态）
+    if run_id:
+        try:
+            def _link(p_):
+                p_["target_claim_id"] = target_claim.claim_id
+                p_["expected_target_claim_identity"] = c.get(
+                    "expected_target_claim_identity")
+                p_["source_level"] = c.get("source_level")
+            RS.update_run(store, run_id=run_id, repository_id=str(repository_id),
+                          mutate=_link, updated_at=now)
+        except Exception:
+            pass
+
     # ── EVIDENCE_VERIFY ──────────────────────────────────
     out.stage = "EVIDENCE_VERIFY"
     verify_res = _verify_target(store, claim=target_claim,
@@ -213,14 +250,75 @@ def execute_revalidation(store, *, candidate_id: str, repository_id: str,
         "evidence_refs": list(getattr(verif, "evidence_refs", []) or []),
         "completed_at": completed_at,
     }
+    if run_id:
+        verif_id = verif.verification_id
+        exec_prov = getattr(adapter, "provenance", None)
+
+        def _fin(p_):
+            p_["target_verification_id"] = verif_id
+            p_["verification_status"] = verif.status
+            p_["execution_status"] = RS.SUCCESS
+            # ★ 来源与授权类别随执行记录落库，供只读视图追溯。
+            #   只存**引用与类别**，不存任何凭据本体。
+            p_["auth_kind"] = authorization.get("authorization_kind") \
+                if isinstance(authorization, dict) else None
+            p_["test_only"] = bool(authorization.get("test_only")) \
+                if isinstance(authorization, dict) else False
+            p_["auth_ref"] = authorization.get("authorization_id") \
+                if isinstance(authorization, dict) else None
+            # ★ 来源真实性分两层记录，不混为一谈：
+            #   execution_source_level = 实际取数用的 adapter 来源
+            #   evidence_source_level  = 候选/评估观测的来源
+            p_["execution_source_level"] = exec_prov
+            p_["evidence_source_level"] = p_.get("source_level")
+            p_["source_snapshot_completeness"] = snap_res.get("completeness")
+        try:
+            RS.update_run(store, run_id=run_id, repository_id=str(repository_id),
+                          mutate=_fin, updated_at=now)
+        except Exception:
+            pass
+
     out.stage = "COMPLETION_CHECK"
+    _persist_end(store, run_id, repository_id, out, now=now)
     return out
+
+
+def candidate_ref(c):
+    """create_run 需要最小候选信息；这里只取它用到的字段。"""
+    return {
+        "candidate_id": c.get("candidate_id"),
+        "repository_id": c.get("repository_id"),
+        "source_claim_id": c.get("source_claim_id"),
+        "source_verification_id": c.get("source_verification_id"),
+        "target_commit_sha": c.get("target_commit_sha"),
+        "baseline_commit_sha": c.get("baseline_commit_sha"),
+        "requested_ref": c.get("requested_ref"),
+    }
+
+
+def _persist_end(store, run_id, repository_id, out, *, now):
+    """落库执行结局。★ 只写 run 记录，不伪造成功。"""
+    if not run_id:
+        return
+    try:
+        st = out.execution_status if out.ok else (
+            out.execution_status or RS.FAILED)
+        RS.finish_run(store, run_id=run_id, repository_id=str(repository_id),
+                      execution_status=st,
+                      result_ref=out.payload.get("target_verification_id")
+                      if out.payload else None, updated_at=now)
+    except Exception:
+        pass
 
 
 def _fail(out, code, detail) -> ExecResult:
     out.ok = False
     out.error_code = code
     out.detail = detail
+    # 失败也必须在 run 记录里留下真实状态（不伪造成功）
+    _persist_end(getattr(out, "_store", None), getattr(out, "_run_id", None),
+                 getattr(out, "_repo", None), out,
+                 now=getattr(out, "_now", ""))
     return out
 
 

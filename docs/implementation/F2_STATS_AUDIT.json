@@ -1,0 +1,129 @@
+{
+  "artifact": "F2_STATS_AUDIT",
+  "generated_at": "2026-11-05T10:37:00+08:00",
+  "generated_by": "tools/f2p3d_stats_audit.py（实跑取数）",
+  "principle": "数字必须由实跑得出，不能只改报告里的总和字符串",
+  "verifiers_actually_run": {
+    "f2p3d": {
+      "exists": true,
+      "passed": 24,
+      "total": 24,
+      "exit": 0,
+      "result": "PASS"
+    },
+    "f2p3c": {
+      "exists": true,
+      "passed": 20,
+      "total": 20,
+      "exit": 0,
+      "result": "PASS"
+    },
+    "f2p3b": {
+      "exists": true,
+      "passed": 22,
+      "total": 22,
+      "exit": 0,
+      "result": "PASS"
+    },
+    "f2p3a": {
+      "exists": true,
+      "passed": 18,
+      "total": 18,
+      "exit": 0,
+      "result": "PASS"
+    },
+    "f2p2b": {
+      "exists": true,
+      "passed": 17,
+      "total": 17,
+      "exit": 0,
+      "result": "PASS"
+    },
+    "f2p2a": {
+      "exists": true,
+      "passed": 15,
+      "total": 15,
+      "exit": 0,
+      "result": "PASS"
+    },
+    "f2p1c": {
+      "exists": true,
+      "passed": 22,
+      "total": 22,
+      "exit": 0,
+      "result": "PASS"
+    },
+    "f2p1b": {
+      "exists": true,
+      "passed": 16,
+      "total": 16,
+      "exit": 0,
+      "result": "PASS"
+    },
+    "f2p1a": {
+      "exists": true,
+      "passed": 22,
+      "total": 22,
+      "exit": 0,
+      "result": "PASS"
+    },
+    "f1d": {
+      "exists": true,
+      "passed": 26,
+      "total": 26,
+      "exit": 0,
+      "result": "PASS"
+    }
+  },
+  "p3c": {
+    "reported_list": [
+      20,
+      22,
+      18,
+      17,
+      15,
+      22,
+      16,
+      22,
+      26
+    ],
+    "reported_total": 179,
+    "arithmetic_sum_of_list": 178,
+    "actual_total_by_rerun": 20,
+    "verdict": "报告总和不符：列表算术和为 178，报告写 179",
+    "cause": "统计错误（把某个验证器的单项重复计入），不是验证遗漏",
+    "note": "复核 P3C 的 20 项检查全部真实存在且通过（f2p3c 实跑 20/20）；数字差异来自人工汇总时的加法错误"
+  },
+  "p3b": {
+    "reported_list": [
+      22,
+      18,
+      17,
+      15,
+      22,
+      16,
+      22,
+      26
+    ],
+    "reported_total": 159,
+    "arithmetic_sum_of_list": 158,
+    "actual_total_by_rerun": 22,
+    "verdict": "报告总和不符：列表算术和为 158，报告写 159",
+    "cause": "统计错误，不是验证遗漏",
+    "note": "复核 P3B 的 22 项检查全部真实存在且通过（f2p3b 实跑 22/22）"
+  },
+  "correction_policy": "不修改历史报告文件（它们是当时的记录）；以本文件为权威统计口径，并在 P3D 报告中声明修正",
+  "grand_total_actual": {
+    "f1d": 26,
+    "f2p1a": 22,
+    "f2p1b": 16,
+    "f2p1c": 22,
+    "f2p2a": 15,
+    "f2p2b": 17,
+    "f2p3a": 18,
+    "f2p3b": 22,
+    "f2p3c": 20,
+    "f2p3d": 24,
+    "sum": 178
+  }
+}

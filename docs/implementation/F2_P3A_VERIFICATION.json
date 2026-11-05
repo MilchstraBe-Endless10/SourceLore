@@ -2,7 +2,7 @@
   "task": "M2 / F2-P3A（Lifecycle 版本观测与时效评估）",
   "generated_by": "tools/f2p3a_verify.py",
   "independent": true,
-  "git_head": "08271e018ad39bca4bf5a96c28cae838939c50ca",
+  "git_head": "7119b4cb9db7491a09761047ca8ae6ac72d3a113",
   "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
   "data_provenance": "HISTORICAL_REAL_DATA",
   "live_github_refetch": false,
@@ -16,7 +16,7 @@
       "id": "c1",
       "name": "Lifecycle 测试套件",
       "passed": true,
-      "detail": "Lifecycle 套件 40 项 exit=0"
+      "detail": "Lifecycle 套件 142 项 exit=0"
     },
     {
       "id": "c2",
@@ -52,7 +52,7 @@
       "id": "c7",
       "name": "源码无 refuted/approved 写入",
       "passed": true,
-      "detail": "源码出现 refuted/approved: 无"
+      "detail": "状态词表禁值: 无"
     },
     {
       "id": "c8",

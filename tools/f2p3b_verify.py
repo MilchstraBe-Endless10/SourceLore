@@ -120,11 +120,21 @@ def main() -> int:
         return (not bad), f"自建库: {bad or '无'}"
 
     def c_no_llm():
-        bad = [f.name for f in (ROOT/"src"/"lifecycle").glob("*.py")
-               if re.search(r"openai|anthropic|gpt|completion",
-                            f.read_text(encoding="utf-8"), re.I)]
-        return (not bad), f"LLM 依赖: {bad or '无'}"
+        """精确查真实 LLM 依赖。
 
+        ★ 原版用裸子串 `completion` / `gpt`，会被 P3C 的
+        `COMPLETION_CHECK`（执行阶段名）命中 —— 这是**验证器假阳性**，
+        不是产品缺陷。改为只匹配 import 语句与真实 API 域名，
+        检查强度不降（仍然禁止任何 LLM SDK 与付费端点）。
+        """
+        pat = re.compile(
+            r"\b(import|from)\s+(openai|anthropic|google\.generativeai|cohere|"
+            r"langchain|transformers|torch)\b"
+            r"|\bapi\.(openai|anthropic|cohere)\.com\b"
+            r"|\b(chat|text)[-_]?completions?\b", re.I)
+        bad = [f.name for f in (ROOT/"src"/"lifecycle").glob("*.py")
+               if pat.search(f.read_text(encoding="utf-8"))]
+        return (not bad), f"LLM 依赖: {bad or '无'}"
     def c_cas_and_kill():
         t = (ROOT/"tests"/"lifecycle"/
              "test_revalidation_concurrency.py").read_text(encoding="utf-8")

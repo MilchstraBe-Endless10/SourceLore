@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-05T00:25:14+08:00",
+  "updated_at": "2026-11-05T10:31:21+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -1243,6 +1243,44 @@
       "blocked_reason": "B.REAL_HARNESS_AUTHORIZED_E2E OPEN：无真实授权通道（Y6-P3 UNVERIFIED、Y6-P6 OPEN）",
       "depends_on": [
         "M2-F2-P3B"
+      ]
+    },
+    {
+      "id": "M2-F2-P3D",
+      "milestone": "M2",
+      "goal": "F2-P3D：只读知识视图装配、五状态轴分离与来源可信度隔离",
+      "inputs": [
+        "docs/implementation/F2_P3C_EXECUTION_REPORT.md"
+      ],
+      "expected_outputs": [
+        "src/views/view_models.py",
+        "src/views/view_integrity.py",
+        "src/views/knowledge_view_assembler.py",
+        "tests/views/test_knowledge_view.py",
+        "tests/views/test_read_only.py",
+        "tests/views/test_multiversion.py",
+        "tests/views/test_provenance.py",
+        "tools/f2p3d_verify.py",
+        "tools/f2p3d_e2e_replay.py",
+        "tools/f2p3d_stats_audit.py",
+        "docs/implementation/F2_P3D_VIEW_CONTRACT.md",
+        "docs/implementation/F2_P3D_EXECUTION_REPORT.md",
+        "docs/implementation/F2_P3D_VERIFICATION.json"
+      ],
+      "status": "DONE_READ_ONLY_VIEW_ONLY",
+      "verification_commands": [
+        "python3 -m unittest discover -s tests/views",
+        "python3 tools/f2p3d_verify.py"
+      ],
+      "evidence_paths": [
+        "docs/implementation/F2_P3D_VERIFICATION.json",
+        "docs/implementation/F2_P3D_E2E_REPLAY.json",
+        "docs/implementation/F2_STATS_AUDIT.json"
+      ],
+      "git_commit": null,
+      "blocked_reason": "Renderer/Research/真实平台端到端仍 OPEN：Y6-P3 UNVERIFIED、Y6-P6 OPEN",
+      "depends_on": [
+        "M2-F2-P3C"
       ]
     }
   ]

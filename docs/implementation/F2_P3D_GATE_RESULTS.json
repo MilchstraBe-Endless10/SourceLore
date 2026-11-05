@@ -1,0 +1,126 @@
+{
+  "artifact": "F2_P3D_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-05T10:23:58+08:00",
+  "generated_by": "F2-P3D 实测回填",
+  "principle": "叠加观测，不覆盖 F1-D 冻结快照",
+  "read_only_view_assembly": {
+    "verdict": "DONE",
+    "evidence": "docs/implementation/F2_P3D_VERIFICATION.json",
+    "tests": {
+      "runtime": 45,
+      "storage": 53,
+      "collector": 48,
+      "facts": 44,
+      "evidence_claims": 36,
+      "lifecycle": 142,
+      "views": 50
+    },
+    "total_tests": 418,
+    "components": [
+      "src/views/view_models.py",
+      "src/views/view_integrity.py",
+      "src/views/knowledge_view_assembler.py"
+    ],
+    "five_axes": [
+      "verification_status",
+      "freshness_state",
+      "review_status",
+      "execution_status",
+      "provenance_level+authorization_class"
+    ],
+    "read_only_proven": {
+      "assets_unchanged": true,
+      "asset_count": 16,
+      "pointers_unchanged": true,
+      "index_unchanged": true,
+      "operation_log_unchanged": true,
+      "collector_calls_during_assembly": 0
+    }
+  },
+  "renderer": {
+    "verdict": "NOT_STARTED",
+    "note": "本轮不生成任何对外展示物"
+  },
+  "research": {
+    "verdict": "NOT_STARTED"
+  },
+  "formal_skill_integration": {
+    "verdict": "NOT_STARTED"
+  },
+  "real_harness_authorized_e2e": {
+    "verdict": "OPEN",
+    "reason": "无真实可核验的人类授权通道；Y6-P3 UNVERIFIED、Y6-P6 OPEN；本批未联网、未使用真实人类授权"
+  },
+  "distribution_ready": {
+    "verdict": "NOT_READY",
+    "reason": "F1-D 仍 FROZEN_INTERNAL_RESTRICTED",
+    "blockers": [
+      {
+        "id": "B-1",
+        "status": "OPEN"
+      },
+      {
+        "id": "B-2",
+        "status": "OPEN"
+      },
+      {
+        "id": "B-3",
+        "status": "OPEN"
+      }
+    ]
+  },
+  "data_provenance": {
+    "baseline": "HISTORICAL_REAL_DATA（P1C 记录）",
+    "target_commit_and_tree": "SYNTHETIC_FIXTURE",
+    "live_github_refetch": false,
+    "real_human_authorization": false
+  },
+  "stats_correction": {
+    "p3c": {
+      "reported": 179,
+      "actual_arithmetic": 178,
+      "cause": "统计错误，非验证遗漏"
+    },
+    "p3b": {
+      "reported": 159,
+      "actual_arithmetic": 158,
+      "cause": "统计错误，非验证遗漏"
+    },
+    "authority": "docs/implementation/F2_STATS_AUDIT.json"
+  },
+  "still_open": [
+    {
+      "gate": "Renderer",
+      "status": "NOT_STARTED"
+    },
+    {
+      "gate": "Research",
+      "status": "NOT_STARTED"
+    },
+    {
+      "gate": "正式 Skill 集成",
+      "status": "NOT_STARTED"
+    },
+    {
+      "gate": "Y6-P3 审批传递",
+      "status": "UNVERIFIED"
+    },
+    {
+      "gate": "Y6-P6 BotHarness 端到端",
+      "status": "OPEN"
+    },
+    {
+      "gate": "B-1/B-2/B-3 分发门禁",
+      "status": "OPEN"
+    }
+  ],
+  "explicitly_not_claimed": [
+    "视图装配 DONE 不等于 Renderer DONE",
+    "视图装配 DONE 不等于 Research DONE",
+    "视图装配 DONE 不等于 REAL_HARNESS_AUTHORIZED_E2E DONE",
+    "视图装配 DONE 不等于 DISTRIBUTION_READY",
+    "所有 Claim supported 也不推导出 distribution_allowed=true",
+    "未联网、未使用真实人类授权"
+  ]
+}

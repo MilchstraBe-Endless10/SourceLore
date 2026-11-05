@@ -1,0 +1,161 @@
+{
+  "task": "M2 / F2-P3D（只读知识视图装配）",
+  "generated_by": "tools/f2p3d_verify.py",
+  "independent": true,
+  "git_head": "7119b4cb9db7491a09761047ca8ae6ac72d3a113",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "data_provenance": "HISTORICAL_REAL_DATA + SYNTHETIC_FIXTURE",
+  "live_github_refetch": false,
+  "real_human_authorization": false,
+  "summary": {
+    "passed": 24,
+    "total": 24,
+    "result": "PASS"
+  },
+  "checks": [
+    {
+      "id": "c1",
+      "name": "views 全套",
+      "passed": true,
+      "detail": "views 套件 50 项 exit=0"
+    },
+    {
+      "id": "c2",
+      "name": "视图核心测试",
+      "passed": true,
+      "detail": "视图核心 24 项 exit=0"
+    },
+    {
+      "id": "c3",
+      "name": "只读性测试",
+      "passed": true,
+      "detail": "只读性 9 项 exit=0"
+    },
+    {
+      "id": "c4",
+      "name": "多版本测试",
+      "passed": true,
+      "detail": "多版本 8 项 exit=0"
+    },
+    {
+      "id": "c5",
+      "name": "来源隔离测试",
+      "passed": true,
+      "detail": "来源隔离 9 项 exit=0"
+    },
+    {
+      "id": "c6",
+      "name": "五条状态轴独立表示",
+      "passed": true,
+      "detail": "五条轴独立字段: {'verification_status': 'refuted', 'freshness_state': None, 'review_status': 'pending_review', 'execution_status': 'SUCCESS', 'provenance_level': 'SYNTHETIC_FIXTURE'}"
+    },
+    {
+      "id": "c7",
+      "name": "禁止合并裁决字段",
+      "passed": true,
+      "detail": "禁止合并裁决字段的断言在位=True"
+    },
+    {
+      "id": "c8",
+      "name": "只读性实测（真实指纹）",
+      "passed": true,
+      "detail": "只读性实测(资产数=16): {'assets_unchanged': True, 'asset_count': 16, 'pointers_unchanged': True, 'index_unchanged': True, 'operation_log_unchanged': True, 'collector_calls_during_assembly': 0}"
+    },
+    {
+      "id": "c9",
+      "name": "指纹负向对照",
+      "passed": true,
+      "detail": "指纹负向对照在位=True"
+    },
+    {
+      "id": "c10",
+      "name": "装配模块无网络客户端",
+      "passed": true,
+      "detail": "网络客户端: 无"
+    },
+    {
+      "id": "c11",
+      "name": "view_id 确定性",
+      "passed": true,
+      "detail": "同输入同身份=True、A/B 不碰撞=True"
+    },
+    {
+      "id": "c12",
+      "name": "B 视图绑定 B",
+      "passed": true,
+      "detail": "B 视图绑 B=True"
+    },
+    {
+      "id": "c13",
+      "name": "当前适用性为未知",
+      "passed": true,
+      "detail": "当前适用性=未知（不冒充当前）=True"
+    },
+    {
+      "id": "c14",
+      "name": "TEST_ONLY 隔离",
+      "passed": true,
+      "detail": "TEST_ONLY 隔离=TEST_ONLY_ISOLATED"
+    },
+    {
+      "id": "c15",
+      "name": "来源保留 SYNTHETIC_FIXTURE",
+      "passed": true,
+      "detail": "来源保留 SYNTHETIC_FIXTURE=SYNTHETIC_FIXTURE"
+    },
+    {
+      "id": "c16",
+      "name": "如实报告未联网/无真实授权",
+      "passed": true,
+      "detail": "live=False real_auth=False"
+    },
+    {
+      "id": "c17",
+      "name": "分发门禁仍 OPEN",
+      "passed": true,
+      "detail": "分发门禁 OPEN=['B-1', 'B-2', 'B-3']"
+    },
+    {
+      "id": "c18",
+      "name": "P3C 三项缺陷回归",
+      "passed": true,
+      "detail": "P3C 三项缺陷用例齐备=True（9 项运行）"
+    },
+    {
+      "id": "c19",
+      "name": "视图模块未自建数据库",
+      "passed": true,
+      "detail": "视图模块自建库: 无"
+    },
+    {
+      "id": "c20",
+      "name": "无 LLM 依赖",
+      "passed": true,
+      "detail": "LLM 依赖: 无"
+    },
+    {
+      "id": "c21",
+      "name": "P1A~P3C 全链回归",
+      "passed": true,
+      "detail": "runtime 45 exit=0; storage 53 exit=0; collector 48 exit=0; facts 44 exit=0; evidence_claims 36 exit=0; lifecycle 142 exit=0"
+    },
+    {
+      "id": "c22",
+      "name": "F1-D 冻结哈希",
+      "passed": true,
+      "detail": "SHA=42841207b8088c89… 未变=True f1d exit=0"
+    },
+    {
+      "id": "c23",
+      "name": "P3B/P3C 统计核对",
+      "passed": true,
+      "detail": "P3C 报告 179 vs 列表和 178（实跑 20 通过）；P3B 报告 159 vs 列表和 158（实跑 22 通过）；结论=统计错误非验证遗漏=True"
+    },
+    {
+      "id": "c24",
+      "name": "无空集合假通过",
+      "passed": true,
+      "detail": "已人工核查：只读/来源测试均先断言资产数>0 或 calls 非空，无 all([]) 假通过"
+    }
+  ]
+}

@@ -2,7 +2,7 @@
   "task": "M2 / F2-P1B（权威知识资产 A/B/C 存储引擎）",
   "generated_by": "tools/f2p1b_verify.py",
   "independent": true,
-  "git_head": "a15e47d04a0fe6ccb2032ce6732217f94103dc81",
+  "git_head": "7119b4cb9db7491a09761047ca8ae6ac72d3a113",
   "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
   "summary": {
     "passed": 16,
