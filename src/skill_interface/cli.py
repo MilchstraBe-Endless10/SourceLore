@@ -73,6 +73,11 @@ def build_parser():
     c.add_argument("--repository-id", required=True)
     c.add_argument("--claim-id", default=None)
     c.add_argument("--verification-id", default=None)
+    # F2-P5F：内容知识卡片
+    c.add_argument("--content-fact-id", default=None)
+    c.add_argument("--content-claim-id", default=None)
+    c.add_argument("--commit", default=None)
+    c.add_argument("--path", default=None)
 
     return p
 
@@ -126,8 +131,9 @@ def _dispatch(cmd, args):
         try:
             res = K.inspect_repository(store, args.repository_id)
             if getattr(args, "content_summary", False):
-                import content_analyze as CA
-                res["content_summary"] = CA.content_analyze(
+                # ★ F2-P5F：改用持久化内容知识概览（计数口径分离）
+                import content_knowledge_query as CKQ
+                res["content_summary"] = CKQ.content_knowledge_summary(
                     repository_id=args.repository_id,
                     commit_sha=(res.get("commits") or [None])[0],
                     data_root=root)
@@ -174,7 +180,8 @@ def _dispatch(cmd, args):
 
     if cmd == "query":
         if getattr(args, "type", None) == "content":
-            import content_query as CQ
+            # ★ 必须用专属名：content_query 已被 P5C 的同名模块占用
+            import content_knowledge_query as CQ
             if not args.commit:
                 raise SkillError("content 查询需要 --commit",
                                  code="MISSING_COMMIT", exit_code=EXIT_USAGE)
@@ -192,6 +199,17 @@ def _dispatch(cmd, args):
         return emit_ok(out)
 
     if cmd == "card":
+        has_content = any(getattr(args, k, None) for k in
+                          ("content_fact_id", "content_claim_id"))
+        if has_content or (getattr(args, "path", None)
+                           and getattr(args, "commit", None)):
+            import content_card as CCARD
+            return emit_ok(CCARD.render_content_card(
+                repository_id=args.repository_id,
+                commit_sha=args.commit, file_path=args.path,
+                content_fact_id=getattr(args, "content_fact_id", None),
+                content_claim_id=getattr(args, "content_claim_id", None),
+                data_root=root))
         import render as R
         out = R.render_card(claim_id=args.claim_id,
                             verification_id=args.verification_id,

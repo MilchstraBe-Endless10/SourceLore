@@ -384,7 +384,9 @@ def main() -> int:
                             "tests/blob_capture/", "tools/f2p5d_",
                             # F2-P5E 获批：授权内容持久化与内容知识入库
                             "src/content_persistence/", "tests/content_persistence/",
-                            "tools/f2p5e_")
+                            "tools/f2p5e_",
+                            # F2-P5F 获批：内容知识查询、证据卡片与 Skill 端到端
+                            "tests/content_skill/", "tools/f2p5f_")
         outside = [str(p.relative_to(ROOT)) for p in code
                    if "__pycache__" not in str(p)
                    and not str(p.relative_to(ROOT)).startswith(allowed_prefixes)]

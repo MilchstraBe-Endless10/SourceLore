@@ -39,6 +39,7 @@ SourceLore 是一个**本地知识库工具**，不是模型服务。它做的�
 | 抽取文件内容知识 | `analyze <url> --commit <sha> --include-content` |
 | 查内容级知识 | `query <rid> --commit <sha> --type content --path <p>` |
 | 内容概览 | `inspect <rid> --content-summary` |
+| 内容知识卡片 | `card --repository-id <rid> --commit <sha> --path <p>` |
 | 历史版本 | `history <repository_id>` |
 
 ## 何时不要使用
@@ -110,6 +111,49 @@ python3 <技能目录>/scripts/sourcelore.py <子命令> [参数]
 `ContentEvidenceRef` 同时给**字节偏移**（权威）与**行号**（派生可读）。
 缺任一维度即 `ref_complete=false`，不得视为完整引用。
 `label` 只放结构化描述（如 `heading:L2`），**不回显不可信原文**。
+
+## 内容知识查询与卡片（F2-P5F）
+
+```
+query <rid> --commit <sha> --type content [--path P]
+inspect <rid> --content-summary
+card --repository-id <rid> --commit <sha> --path P
+card --repository-id <rid> --content-fact-id F
+```
+
+**只读契约**：查询与卡片生成 **零网络请求**、不写库、不重新抽取、不推进指针。
+
+九种状态严格区分，不得合并：
+
+`REPOSITORY_NOT_REGISTERED` / `COMMIT_NOT_REGISTERED` /
+`CONTENT_NOT_CAPTURED` / `CONTENT_INTEGRITY_FAILED` /
+`FACT_NOT_REGISTERED` / `INSUFFICIENT_EVIDENCE` /
+`SUPPORTED` / `REFUTED` / `RETRIEVAL_ERROR`
+
+尤其：
+
+- 没有 Blob 内容 ≠ 文件不存在
+- 有 Blob 但没抽取 Fact ≠ 命题被否定
+- 有 Fact 但没 Verification ≠ 已 supported
+- 解析失败 ≠ 文件没有对应内容
+
+### 内容卡片
+
+- `README_CONTENT_CARD` / `MANIFEST_CONTENT_CARD` / `CONTENT_FACT_DETAIL` / `CONTENT_EVIDENCE_ERROR`
+- 证据链不完整 → **只出诊断卡**，绝不出满分卡
+- 默认不回显大段原文；证据 label 只放结构化描述（D-6 规则）
+- `distribution_allowed=false` 与 `copy_permitted=false` 恒显示
+
+### 计数口径（`inspect --content-summary`）
+
+四种计数**不可混为一谈**：
+
+| 指标 | 含义 |
+|---|---|
+| `file_entries` | 文件条目数（同 Blob 多路径会重复计） |
+| `unique_blobs` | 唯一 Git Blob OID 数 |
+| `content_assets` | 内容资产数 |
+| `facts` | 已登记事实数 |
 
 ## 尚未支持
 

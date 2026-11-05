@@ -127,6 +127,14 @@ def link_or_text(value, *, label=None) -> str:
 # ── 可信模板骨架 ──────────────────────────────────────────
 # 静态 CSS：不含任何外部资源，不依赖 JavaScript
 BASE_CSS = """
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;word-break:break-all;overflow-wrap:anywhere;font-size:.92em}
+table.kv th{text-align:left;width:34%;color:#555;font-weight:600}
+.badge{display:inline-block;padding:1px 8px;border-radius:9px;font-size:.85em}
+.badge.ok{background:#e6f5ea;color:#1c6b32}
+.badge.bad{background:#fdeaea;color:#8a1c1c}
+.badge.warn{background:#fff4e0;color:#7a5200}
+.blocked{border-left:4px solid #c0392b;padding:8px 14px;background:#fdf3f2}
+
 :root {
   --fg: #1a1a1a; --bg: #ffffff; --muted: #5a5a5a; --line: #d8d8d8;
   --ok: #0b6b3a; --bad: #a11b1b; --unk: #6a4b00; --panel: #f7f7f7;
