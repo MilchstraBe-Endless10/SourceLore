@@ -54,7 +54,13 @@ INSUFFICIENT_REASONS = frozenset({
     R_FACT_UNKNOWN, R_STORAGE_ERROR})
 
 CLAIM_PATH_EXISTS = "repository_path_exists"
-SUPPORTED_CLAIM_TYPES = frozenset({CLAIM_PATH_EXISTS})
+# F2-P5E：内容级命题（仅覆盖可机械验证的三类）
+CLAIM_README_HEADING = "readme_heading_exists"
+CLAIM_MANIFEST_DEP = "manifest_dependency_declared"
+CLAIM_MANIFEST_FIELD = "manifest_field_present"
+CONTENT_CLAIM_TYPES = frozenset({CLAIM_README_HEADING, CLAIM_MANIFEST_DEP,
+                                 CLAIM_MANIFEST_FIELD})
+SUPPORTED_CLAIM_TYPES = frozenset({CLAIM_PATH_EXISTS}) | CONTENT_CLAIM_TYPES
 CLAIM_SCHEMA_VERSION = "claim-schema/1"
 
 SAFE_CLAIM_ID = re.compile(r"^SL-CLAIM-[0-9a-f]{40}$")

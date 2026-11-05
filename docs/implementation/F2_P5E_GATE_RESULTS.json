@@ -1,0 +1,222 @@
+{
+  "artifact": "F2_P5E_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-05T21:06:40+08:00",
+  "baseline_commit": "a06b9e1",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "crosswalk_matches_frozen": true,
+  "evidence_levels": {
+    "AUTHORIZED_LOCAL_FIXTURE": {
+      "status": "DONE",
+      "evidence": "原创 Git 夹具（真实 Git OID + 真实字节）走通全链：快照→字节持久化→离线读回→解析→Fact→Claim→裁决。63 项测试"
+    },
+    "REAL_GITHUB_FETCH_VERIFIED": {
+      "status": "DONE_FROM_P5D",
+      "evidence": "P5D 已证：真实 GET /git/blobs/980a0d5f… FETCH_OK、OID 校验通过（本轮未重复抓取）"
+    },
+    "REAL_GITHUB_BYTES_PERSISTED": {
+      "status": "BLOCKED",
+      "evidence": "octocat/Hello-World 无明确授权依据；五维授权判 PERSIST 不通过，故不写入。未伪造授权"
+    },
+    "CONTENT_FACTS_PERSISTED": {
+      "status": "DONE_FIXTURE_ONLY",
+      "evidence": "原创夹具的 README 标题/清单依赖/清单字段事实已真实写入 A 层（extracted_fact）"
+    },
+    "CONTENT_CLAIMS_VERIFIED": {
+      "status": "DONE_FIXTURE_ONLY",
+      "evidence": "支持/abstain 裁决按契约产出；25 例 Gold 错误肯定 0、错误否定 0"
+    },
+    "REAL_GITHUB_KNOWLEDGE_E2E": {
+      "status": "NOT_VERIFIED",
+      "evidence": "真实字节未持久化，故无法产出真实知识卡片"
+    }
+  },
+  "gates": {
+    "A_CONTENT_OPERATION_AUTHORIZATION": {
+      "status": "DONE",
+      "evidence": "五维独立决策（FETCH/PERSIST/DERIVE_FACTS/PREVIEW/DISTRIBUTION），各带 9 字段；结构化授权引用四类×VERIFIED/UNVERIFIED；裸布尔不再可当授权"
+    },
+    "B_IMMUTABLE_BLOB_STORAGE": {
+      "status": "DONE",
+      "evidence": "os.link exclusive create；已存在则核对复用，不一致返回 CONTENT_INTEGRITY_CONFLICT 且不删不覆盖；含并发/孤儿/目录 fsync"
+    },
+    "C_AUTHORIZED_CONTENT_PERSISTENCE": {
+      "status": "DONE_FIXTURE_ONLY",
+      "evidence": "原创夹具字节进 blobs/、元数据进 A 层"
+    },
+    "D_OFFLINE_CONTENT_RELOAD": {
+      "status": "DONE_FIXTURE_ONLY",
+      "evidence": "独立进程写入→新进程读回 bytes_equal=True，零网络"
+    },
+    "E_CONTENT_OBSERVATION_PERSISTENCE": {
+      "status": "DONE_FIXTURE_ONLY",
+      "evidence": "Observation 绑定 repo/commit/path/blob/content_asset/parser/evidence_ranges 后随事实落库"
+    },
+    "F_CONTENT_FACT_PERSISTENCE": {
+      "status": "DONE_FIXTURE_ONLY",
+      "evidence": "README_HEADING_EXISTS / MANIFEST_DEPENDENCY_DECLARED / MANIFEST_FIELD_PRESENT 三类已入库"
+    },
+    "G_CONTENT_CLAIM_VERIFICATION": {
+      "status": "DONE_FIXTURE_ONLY",
+      "evidence": "复用 EC 三态；PARTIAL/不可用/解析失败一律 insufficient，绝不 refuted"
+    },
+    "H_CONTENT_RESEARCH_QUERY": {
+      "status": "DONE_FIXTURE_ONLY",
+      "evidence": "content_query 只读查回事实与证据；三态 CONTENT_NOT_CAPTURED/FACT_NOT_REGISTERED/INSUFFICIENT_EVIDENCE 区分"
+    },
+    "I_SKILL_CONTENT_CARD": {
+      "status": "PARTIAL",
+      "evidence": "CLI --content-status 与内容查询已接；卡片渲染沿用既有 Renderer，本轮未新增专用内容卡模板"
+    },
+    "J_REAL_GITHUB_CONTENT_E2E": {
+      "status": "NOT_VERIFIED",
+      "evidence": "无已核验真实仓库授权"
+    },
+    "K_NATURAL_LANGUAGE_AUTO_TRIGGER": {
+      "status": "NOT_VERIFIED"
+    },
+    "L_DISTRIBUTION_READY": {
+      "status": "NOT_READY",
+      "evidence": "B-1/B-2/B-3 OPEN"
+    }
+  },
+  "found_defects": [
+    {
+      "id": "D-12",
+      "title": "put_bytes 在既有文件校验失败时删除并覆盖",
+      "impact": "违反不可变语义，错误内容可覆盖正确内容",
+      "fix": "os.link 独占创建；冲突返回 CONTENT_INTEGRITY_CONFLICT",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-13",
+      "title": "内容命题只按 rule_id 匹配，未比对主体",
+      "impact": "查询不存在标题会命中别的标题，凭空确认不存在的命题",
+      "fix": "改为 subject 子集精确匹配 + commit/repo/file_path 比对",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-14",
+      "title": "fact_id 前缀不符 SAFE_FACT_ID 正则 / 观察态自造",
+      "impact": "FactObservation 构造抛 ValueError",
+      "fix": "用 SL-FACT-<40hex> + 复用 OBSERVED_PRESENT",
+      "status": "FIXED"
+    }
+  ],
+  "test_metrics": {
+    "content_observation_success": "100%（夹具）",
+    "fact_persist_success": "100%（63 项）",
+    "claim_false_positive": 0,
+    "claim_false_negative": 0,
+    "correct_abstention": "C05/C06/C14/C15/C17/C19/C20/C22 共 8 例",
+    "evidence_binding_accuracy": "100%（fact 均带 blob/commit/byte+line range）",
+    "blob_identity_match": "100%（git_blob_oid 均实测计算）",
+    "commit_binding_accuracy": "100%（跨 Commit 证据不得确认命题，已测）",
+    "idempotency": "重复采集同资产、重复抽取不新增事实",
+    "restart_readable": "独立进程读回 bytes_equal=True",
+    "research_query_accuracy": "按 repo/commit/path/rule 四维过滤已测",
+    "card_restriction_preserved": "distribution_allowed=false 恒保留"
+  },
+  "blocking_metrics_zero": {
+    "wrong_blob_accepted": 0,
+    "wrong_commit_fact_accepted": 0,
+    "unauthorized_bytes_persisted": 0,
+    "unsupported_claim_marked_supported": 0,
+    "incomplete_content_refuted": 0,
+    "unlicensed_text_in_distributable_output": 0,
+    "historical_authority_modified": 0
+  },
+  "tests": {
+    "runtime": {
+      "tests": 45,
+      "ok": true,
+      "exit": 0
+    },
+    "storage": {
+      "tests": 53,
+      "ok": true,
+      "exit": 0
+    },
+    "collector": {
+      "tests": 48,
+      "ok": true,
+      "exit": 0
+    },
+    "facts": {
+      "tests": 44,
+      "ok": true,
+      "exit": 0
+    },
+    "evidence_claims": {
+      "tests": 36,
+      "ok": true,
+      "exit": 0
+    },
+    "lifecycle": {
+      "tests": 142,
+      "ok": true,
+      "exit": 0
+    },
+    "views": {
+      "tests": 50,
+      "ok": true,
+      "exit": 0
+    },
+    "renderer": {
+      "tests": 59,
+      "ok": true,
+      "exit": 0
+    },
+    "research": {
+      "tests": 122,
+      "ok": true,
+      "exit": 0
+    },
+    "skill_interface": {
+      "tests": 69,
+      "ok": true,
+      "exit": 0
+    },
+    "content": {
+      "tests": 77,
+      "ok": true,
+      "exit": 0
+    },
+    "blob_capture": {
+      "tests": 59,
+      "ok": true,
+      "exit": 0
+    },
+    "content_persistence": {
+      "tests": 63,
+      "ok": true,
+      "exit": 0
+    }
+  },
+  "total_tests": 867,
+  "all_tests_ok": true,
+  "still_open": [
+    {
+      "gate": "REAL_GITHUB_CONTENT_E2E",
+      "status": "NOT_VERIFIED",
+      "reason": "缺少已核验的真实仓库授权"
+    },
+    {
+      "gate": "CONTENT_CARD_TEMPLATE",
+      "status": "PARTIAL",
+      "reason": "沿用既有渲染器"
+    },
+    {
+      "gate": "DISTRIBUTION_READY",
+      "status": "NOT_READY"
+    }
+  ],
+  "explicitly_not_claimed": [
+    "原创夹具 != 真实 GitHub 采集",
+    "夹具事实入库 != 真实仓库知识",
+    "声明依赖 != 依赖已安装",
+    "有 test 脚本 != 测试通过",
+    "内部采集 != 公开分发授权",
+    "内容存在 != 功能实现"
+  ]
+}

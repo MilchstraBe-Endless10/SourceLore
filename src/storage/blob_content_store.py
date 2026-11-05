@@ -28,6 +28,7 @@ INTEGRITY_FAILED = "CONTENT_INTEGRITY_FAILED"
 ACQUISITION_BLOCKED = "CONTENT_ACQUISITION_BLOCKED"
 PARTIAL = "CONTENT_PARTIAL"
 COMMIT_MISMATCH = "CONTENT_COMMIT_MISMATCH"
+INTEGRITY_CONFLICT = "CONTENT_INTEGRITY_CONFLICT"
 
 
 class IntegrityError_(RuntimeError):
@@ -63,16 +64,9 @@ def put_bytes(*, data_root, raw: bytes, expected_sha256=None) -> dict:
     root.mkdir(parents=True, exist_ok=True)
     target = _path_for(root, hexd)
 
+    # ★ 目标已存在：只能核对并复用，**绝不允许覆盖**
     if target.exists():
-        try:
-            if _sha_of(target.read_bytes()) == hexd:
-                return {"ok": True, "digest": "sha256:" + hexd,
-                        "path": str(target), "reused": True,
-                        "byte_length": len(raw)}
-        except Exception:
-            pass
-        # 已存在但校验失败 → 覆盖（内容寻址下同 digest 内容应相同）
-        target.unlink(missing_ok=True)
+        return _verify_existing(target, hexd, raw)
 
     fd, tmp = tempfile.mkstemp(dir=str(root), suffix=".tmp")
     try:
@@ -80,14 +74,60 @@ def put_bytes(*, data_root, raw: bytes, expected_sha256=None) -> dict:
             f.write(raw)
             f.flush()
             os.fsync(f.fileno())
-        os.replace(tmp, target)
+
+        # ★ 无覆盖发布：用硬链接做 exclusive create
+        #   os.link 在目标已存在时会抛 FileExistsError —— 正是我们要的语义。
+        try:
+            os.link(tmp, target)
+        except FileExistsError:
+            # 竞态：别的进程先发布了。核对后复用，不覆盖。
+            return _verify_existing(target, hexd, raw)
+        finally:
+            try: os.unlink(tmp)
+            except Exception: pass
+
+        _fsync_dir(root)
         return {"ok": True, "digest": "sha256:" + hexd, "path": str(target),
-                "reused": False, "byte_length": len(raw)}
+                "reused": False, "byte_length": len(raw),
+                "created_exclusive": True}
     except Exception as e:
         try: os.unlink(tmp)
         except Exception: pass
         return {"ok": False, "error": "STORE_WRITE_FAILED",
                 "detail": f"{type(e).__name__}: {e}"}
+
+
+def _fsync_dir(root: Path):
+    """★ 目录项也要落盘 —— 否则崩溃后可能"文件存在但目录项丢失"。"""
+    try:
+        dfd = os.open(str(root), os.O_RDONLY)
+        try: os.fsync(dfd)
+        finally: os.close(dfd)
+    except Exception:
+        pass
+
+
+def _verify_existing(target: Path, hexd: str, raw: bytes) -> dict:
+    """★ 已存在目标的唯一处理：核对 → 复用 or 冲突。绝不覆盖、绝不删除。"""
+    try:
+        if not target.is_file():
+            return {"ok": False, "error": INTEGRITY_CONFLICT,
+                    "detail": "目标路径存在但不是普通文件",
+                    "path": str(target)}
+        existing = target.read_bytes()
+    except Exception as e:
+        return {"ok": False, "error": INTEGRITY_CONFLICT,
+                "detail": f"无法读取既有文件: {type(e).__name__}", "path": str(target)}
+
+    got = _sha_of(existing)
+    if got != hexd:
+        return {"ok": False, "error": INTEGRITY_CONFLICT,
+                "path": str(target),
+                "existing_digest": "sha256:" + got,
+                "expected_digest": "sha256:" + hexd,
+                "detail": "既有 Blob 内容与待写入内容不一致；拒绝覆盖"}
+    return {"ok": True, "digest": "sha256:" + hexd, "path": str(target),
+            "reused": True, "byte_length": len(raw)}
 
 
 def get_bytes(*, data_root, content_sha256, verify=True) -> dict:

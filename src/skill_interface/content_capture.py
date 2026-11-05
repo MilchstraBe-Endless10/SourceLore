@@ -19,7 +19,8 @@ MAX_PATHS = 32
 def capture(*, repository_id, commit_sha, data_root=None, paths=None,
             owner=None, repo=None, license_known=False,
             repo_looks_third_party=True, max_requests=20,
-            use_token=True, offline=False, dry_run=False):
+            use_token=True, offline=False, dry_run=False,
+            authorization_kind=None, extract_facts=False):
     """采集并入库。返回逐路径独立结果。"""
     import content_acquisition_policy as POL
     import blob_fetcher as BF
@@ -89,17 +90,36 @@ def capture(*, repository_id, commit_sha, data_root=None, paths=None,
             budget["paths"] += 1
 
             otype = entry.get("type") or "blob"
-            st, code, note = POL.preflight(
-                repository_id=repository_id, commit_sha=commit_sha,
-                file_path=fp, object_type=otype,
-                repo_looks_third_party=repo_looks_third_party,
-                license_known=license_known)
-            if st != POL.ACQ_ALLOWED:
+            # ★ F2-P5E：五维分别判，不再用含糊的单一状态
+            authz = None
+            if authorization_kind:
+                authz = POL.build_authorization_ref(
+                    authorization_kind=authorization_kind,
+                    repository_id=repository_id, scope=[fp],
+                    source="cli-declared",
+                    verification_status=POL.VERIFIED)
+            dec = POL.evaluate_all(repository_id=repository_id,
+                                   commit_sha=commit_sha, file_path=fp,
+                                   authorization=authz, object_type=otype)
+            if dec["FETCH_DECISION"]["decision"] != POL.ALLOW:
                 report["results"].append({
-                    "file_path": fp, "status": st, "reason": code,
-                    "note": note, "bytes_written": 0})
+                    "file_path": fp, "status": "FETCH_BLOCKED",
+                    "reason": dec["FETCH_DECISION"]["reason_code"],
+                    "note": dec["FETCH_DECISION"]["limitations"],
+                    "bytes_written": 0, "decisions": dec})
                 report["skipped_blobs"] += 1
                 continue
+            persist_ok = dec["PERSIST_DECISION"]["decision"] == POL.ALLOW
+            if not persist_ok and not dry_run:
+                # 允许临时读取但不允许持久化 → 不发请求，避免采集无用数据
+                report["results"].append({
+                    "file_path": fp, "status": "PERSIST_BLOCKED",
+                    "reason": dec["PERSIST_DECISION"]["reason_code"],
+                    "note": "读取可允许但持久化被阻断；不发起请求",
+                    "bytes_written": 0, "decisions": dec})
+                report["skipped_blobs"] += 1
+                continue
+            st, code = dec["PERSIST_DECISION"]["decision"], "AUTHORIZED"
 
             size = entry.get("size")
             allow, why = BF.declared_size_gate(size, MAX_BLOB_BYTES)

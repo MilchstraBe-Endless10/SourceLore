@@ -129,3 +129,185 @@ def candidate_paths(tree_entries, explicit=None):
             continue
         eligible.append({"file_path": p, "entry": e})
     return eligible, blocked
+
+
+# ═══════════════════════════════════════════════════════════════
+# F2-P5E：五维权限分离 + 结构化授权引用
+# ═══════════════════════════════════════════════════════════════
+
+POLICY_VERSION = "content-authz/2"
+
+# 五种动作，分别判
+OP_FETCH = "fetch"
+OP_PERSIST = "persist_bytes"
+OP_DERIVE = "derive_facts"
+OP_PREVIEW = "internal_preview"
+OP_DISTRIBUTE = "external_distribution"
+
+ALLOW = "ALLOW"
+DENY = "DENY"
+UNKNOWN = "UNKNOWN"
+
+# 依据类型（结构化，不接受裸布尔）
+AUTH_PROJECT_OWNED = "PROJECT_OWNED_WORK"
+AUTH_ORIGINAL_FIXTURE = "ORIGINAL_TEST_FIXTURE"
+AUTH_LICENSE_OBSERVED = "LICENSE_OBSERVED_AND_APPLICABLE"
+AUTH_USER_GRANT = "USER_EXPLICIT_GRANT"
+
+VERIFIED = "VERIFIED"
+UNVERIFIED = "UNVERIFIED"
+
+# 每类依据允许哪些动作
+_EVIDENCE_CAPS = {
+    # 自有作品：全链内部动作都允许；分发永远不允许
+    AUTH_PROJECT_OWNED: {OP_FETCH, OP_PERSIST, OP_DERIVE, OP_PREVIEW},
+    AUTH_ORIGINAL_FIXTURE: {OP_FETCH, OP_PERSIST, OP_DERIVE, OP_PREVIEW},
+    # 观测到的许可证：允许内部链路，但分发仍需独立门禁
+    AUTH_LICENSE_OBSERVED: {OP_FETCH, OP_PERSIST, OP_DERIVE, OP_PREVIEW},
+    AUTH_USER_GRANT: {OP_FETCH, OP_PERSIST, OP_DERIVE, OP_PREVIEW},
+}
+
+
+def build_authorization_ref(*, authorization_kind, repository_id, scope,
+                            source, verification_status, policy_version=POLICY_VERSION,
+                            authorization_ref=None):
+    """构造可审计授权引用。★ 裸布尔不得直接当授权。"""
+    if authorization_kind not in _EVIDENCE_CAPS:
+        raise ValueError(f"未知授权类型：{authorization_kind}")
+    if verification_status not in (VERIFIED, UNVERIFIED):
+        raise ValueError(f"未知核验状态：{verification_status}")
+    if not repository_id or not scope or not source:
+        raise ValueError("授权引用必须含 repository_id / scope / source")
+    return {
+        "authorization_ref": authorization_ref or (
+            f"SL-AUTHZ-{authorization_kind}-{repository_id}"),
+        "authorization_kind": authorization_kind,
+        "repository_id": str(repository_id),
+        "scope": scope,
+        "source": source,
+        "verification_status": verification_status,
+        "policy_version": policy_version,
+    }
+
+
+def _decision(decision, reason, *, evidence_ref=None, op=None,
+              repository_id=None, commit_sha=None, file_path=None,
+              limitations=None):
+    return {
+        "decision": decision,
+        "reason_code": reason,
+        "evidence_reference": evidence_ref,
+        "policy_version": POLICY_VERSION,
+        "repository_identity": repository_id,
+        "commit_sha": commit_sha,
+        "file_path": file_path,
+        "permitted_operation": op,
+        "limitations": limitations or [],
+    }
+
+
+def evaluate_operation(*, operation, repository_id, commit_sha, file_path,
+                       authorization=None, object_type="blob",
+                       distribution_gate_open=False):
+    """★ 每维独立判定。返回一维 result dict。
+
+    正确顺序：确定来源 → 确定对象 → 确定拟执行操作 → 权限预检。
+    """
+    limitations = []
+
+    if not repository_id or not commit_sha:
+        return _decision(DENY, "IDENTITY_INCOMPLETE", op=operation,
+                         repository_id=repository_id,
+                         commit_sha=commit_sha, file_path=file_path)
+    if not path_is_safe(file_path):
+        return _decision(DENY, "PATH_UNSAFE", op=operation,
+                         repository_id=repository_id,
+                         commit_sha=commit_sha, file_path=file_path)
+    if object_type != "blob":
+        return _decision(DENY, "OBJECT_TYPE_NOT_ALLOWED", op=operation,
+                         repository_id=repository_id,
+                         commit_sha=commit_sha, file_path=file_path,
+                         limitations=[f"object_type={object_type}"])
+
+    # 分发：恒被现有门禁阻断（B-1/B-2/B-3），除非未来独立关闭
+    if operation == OP_DISTRIBUTE:
+        if not distribution_gate_open:
+            return _decision(DENY, "DISTRIBUTION_GATE_OPEN_BLOCKED",
+                             op=operation,
+                             repository_id=repository_id,
+                             commit_sha=commit_sha, file_path=file_path,
+                             limitations=["B-1/B-2/B-3 OPEN",
+                                          "copy_permitted=false"])
+        return _decision(ALLOW, "DISTRIBUTION_GATE_OPEN", op=operation,
+                         repository_id=repository_id,
+                         commit_sha=commit_sha, file_path=file_path)
+
+    if authorization is None:
+        return _decision(UNKNOWN, "NO_AUTHORIZATION_REF", op=operation,
+                         repository_id=repository_id,
+                         commit_sha=commit_sha, file_path=file_path,
+                         limitations=["缺少结构化授权引用"])
+
+    # 绑定校验：错仓库 / 错范围 → 拒绝
+    if str(authorization.get("repository_id")) != str(repository_id):
+        return _decision(DENY, "AUTHORIZATION_REPO_MISMATCH", op=operation,
+                         evidence_ref=authorization.get("authorization_ref"),
+                         repository_id=repository_id,
+                         commit_sha=commit_sha, file_path=file_path)
+    kind = authorization.get("authorization_kind")
+    if kind not in _EVIDENCE_CAPS:
+        return _decision(DENY, "AUTHORIZATION_KIND_UNKNOWN", op=operation,
+                         evidence_ref=authorization.get("authorization_ref"),
+                         repository_id=repository_id,
+                         commit_sha=commit_sha, file_path=file_path)
+    if authorization.get("verification_status") != VERIFIED:
+        return _decision(UNKNOWN, "AUTHORIZATION_UNVERIFIED", op=operation,
+                         evidence_ref=authorization.get("authorization_ref"),
+                         repository_id=repository_id,
+                         commit_sha=commit_sha, file_path=file_path,
+                         limitations=["授权引用未核验"])
+
+    allowed_ops = _EVIDENCE_CAPS[kind]
+    if operation not in allowed_ops:
+        return _decision(DENY, "OPERATION_NOT_COVERED", op=operation,
+                         evidence_ref=authorization.get("authorization_ref"),
+                         repository_id=repository_id,
+                         commit_sha=commit_sha, file_path=file_path,
+                         limitations=[f"{kind} 不覆盖 {operation}"])
+
+    limitations = ["copy_permitted=false", "distribution_allowed=false"]
+    if kind == AUTH_LICENSE_OBSERVED:
+        limitations.append("许可证依据仅覆盖内部链路")
+    return _decision(ALLOW, "AUTHORIZED_INTERNAL_ONLY", op=operation,
+                     evidence_ref=authorization.get("authorization_ref"),
+                     repository_id=repository_id,
+                     commit_sha=commit_sha, file_path=file_path,
+                     limitations=limitations)
+
+
+def evaluate_all(*, repository_id, commit_sha, file_path, authorization=None,
+                 object_type="blob", distribution_gate_open=False):
+    """一次出五维结果。调用方必须逐维看待，不能合并。"""
+    return {
+        "FETCH_DECISION": evaluate_operation(
+            operation=OP_FETCH, repository_id=repository_id,
+            commit_sha=commit_sha, file_path=file_path,
+            authorization=authorization, object_type=object_type),
+        "PERSIST_DECISION": evaluate_operation(
+            operation=OP_PERSIST, repository_id=repository_id,
+            commit_sha=commit_sha, file_path=file_path,
+            authorization=authorization, object_type=object_type),
+        "DERIVE_FACTS_DECISION": evaluate_operation(
+            operation=OP_DERIVE, repository_id=repository_id,
+            commit_sha=commit_sha, file_path=file_path,
+            authorization=authorization, object_type=object_type),
+        "PREVIEW_DECISION": evaluate_operation(
+            operation=OP_PREVIEW, repository_id=repository_id,
+            commit_sha=commit_sha, file_path=file_path,
+            authorization=authorization, object_type=object_type),
+        "DISTRIBUTION_DECISION": evaluate_operation(
+            operation=OP_DISTRIBUTE, repository_id=repository_id,
+            commit_sha=commit_sha, file_path=file_path,
+            authorization=authorization, object_type=object_type,
+            distribution_gate_open=distribution_gate_open),
+    }
