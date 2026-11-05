@@ -36,6 +36,9 @@ SourceLore 是一个**本地知识库工具**，不是模型服务。它做的�
 | 有哪些已登记命题 | `query <repo_id> --commit <sha> --type claims` |
 | 对比两个 Commit | `query <repo_id> --commit A --compare-commit B --type version` |
 | 生成知识卡片 | `card --repository-id <id> --claim-id <id>` |
+| 抽取文件内容知识 | `analyze <url> --commit <sha> --include-content` |
+| 查内容级知识 | `query <rid> --commit <sha> --type content --path <p>` |
+| 内容概览 | `inspect <rid> --content-summary` |
 | 历史版本 | `history <repository_id>` |
 
 ## 何时不要使用
@@ -71,6 +74,42 @@ python3 <技能目录>/scripts/sourcelore.py <子命令> [参数]
 - 按仓库 / Commit / 路径 / Claim 查询
 - 知识卡片 HTML（本地可打开）
 - 历史版本列举
+
+## 内容级知识（F2-P5C 新增）
+
+`analyze <url> --commit <sha> --include-content` 可对**已保存快照**做内容级抽取。
+
+**关键前提：Blob 内容字节是否已采集，必须看 `snapshot_inventory.content_captured`。**
+实测 P1C/P5A 只保存 `blob_refs`（blob_sha / path / size），**没有内容字节**。
+此时必须如实报告 `CONTENT_NOT_CAPTURED`，**不得凭路径猜测文件内容**。
+
+支持的解析器（第一版，有限）：
+
+| 文件 | 抽取内容 |
+|---|---|
+| `README.md/.markdown/.txt` | 标题层级+行号、链接目标、代码块语言标记 |
+| `package.json` | name/version、依赖声明、scripts 名称 |
+| `pyproject.toml` | project 字段、dependencies、tool 表（需本机 tomllib） |
+| 其它 | 仅文件元数据（长度/行数/换行风格） |
+
+**明确不做**：函数调用关系、项目架构、运行行为、测试是否通过、
+依赖是否已安装、文档是否完善。
+
+### 预算（第一版安全上限）
+
+单 Blob 256 KiB、单批 2 MiB、候选路径 32、单文件 Facts 100。
+超限返回 `BLOB_TOO_LARGE` / `BATCH_BYTE_LIMIT` / `BATCH_PATH_LIMIT`。
+
+### 内容状态码
+
+`CONTENT_NOT_CAPTURED`（无字节）/ `BLOB_TOO_LARGE` / `BINARY_CONTENT` /
+`UNSUPPORTED_ENCODING` / `CONTENT_PARSE_FAILED` / `CONTENT_PARTIAL`。
+
+### 证据定位
+
+`ContentEvidenceRef` 同时给**字节偏移**（权威）与**行号**（派生可读）。
+缺任一维度即 `ref_complete=false`，不得视为完整引用。
+`label` 只放结构化描述（如 `heading:L2`），**不回显不可信原文**。
 
 ## 尚未支持
 
@@ -139,3 +178,8 @@ python3 <技能目录>/scripts/sourcelore.py <子命令> [参数]
 7. `tree_summary.object_types` 区分 blob / directory / submodule / symlink，
    **不要把 submodule 或目录说成普通文件**。
 8. **库里没有某路径的 Claim ≠ 该路径在 GitHub 不存在**，只能说覆盖不足。
+9. **`content_captured=0` 时必须说"内容未采集"，绝不能说"文件内容如何"。**
+10. **README 有 `Installation` 标题 ≠ 安装流程完整可运行**；只是存在该标题。
+11. **清单声明依赖 ≠ 依赖已安装；缺少声明 ≠ 项目未使用。**
+12. **存在 test 脚本 ≠ 测试已通过。**
+13. 内容事实只覆盖已抽取范围；**未抽取路径不得推断为不存在**。

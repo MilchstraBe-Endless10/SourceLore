@@ -42,17 +42,25 @@ def build_parser():
     a.add_argument("--refresh", action="store_true", help="显式要求重新获取远程版本")
     a.add_argument("--no-token", action="store_true",
                    help="本次不使用 GITHUB_TOKEN（即便环境里有）")
+    a.add_argument("--include-content", action="store_true",
+                   help="对已保存快照做内容级抽取（读 Blob；无字节则明确报告）")
+    a.add_argument("--content-path", action="append", default=None,
+                   help="限定内容抽取的路径（可重复）")
 
     i = sub.add_parser("inspect", help="查看单仓库知识摘要")
     i.add_argument("repository_id")
+    i.add_argument("--content-summary", action="store_true",
+                   help="附带内容级知识概览（Blob 数/可解析数/事实数）")
 
     h = sub.add_parser("history", help="查看已登记历史版本")
     h.add_argument("repository_id")
 
     q = sub.add_parser("query", help="查询已有知识（不重采集）")
     q.add_argument("repository_id")
-    q.add_argument("--commit", required=True)
-    q.add_argument("--type", default="path", choices=["path", "claims", "version"])
+    q.add_argument("--commit", default=None,
+                   help="固定 Commit（content 类型必需）")
+    q.add_argument("--type", default="path",
+                   choices=["path", "claims", "version", "content"])
     q.add_argument("--path", default=None)
     q.add_argument("--compare-commit", default=None)
     q.add_argument("--max-results", type=int, default=50)
@@ -112,7 +120,14 @@ def _dispatch(cmd, args):
         import knowledge as K
         store = K.open_store(root)
         try:
-            return emit_ok(K.inspect_repository(store, args.repository_id))
+            res = K.inspect_repository(store, args.repository_id)
+            if getattr(args, "content_summary", False):
+                import content_analyze as CA
+                res["content_summary"] = CA.content_analyze(
+                    repository_id=args.repository_id,
+                    commit_sha=(res.get("commits") or [None])[0],
+                    data_root=root)
+            return emit_ok(res)
         finally:
             store.close()
 
@@ -135,9 +150,23 @@ def _dispatch(cmd, args):
                         refresh=getattr(args, "refresh", False),
                         use_token=not getattr(args, "no_token", False))
         S.record_operation("analyze", out)
+        if getattr(args, "include_content", False):
+            import content_analyze as CA
+            out["content"] = CA.content_analyze(
+                repository_id=out["repository_id"],
+                commit_sha=out["commit_sha"], data_root=root,
+                paths=args.content_path)
         return emit_ok(out)
 
     if cmd == "query":
+        if getattr(args, "type", None) == "content":
+            import content_query as CQ
+            if not args.commit:
+                raise SkillError("content 查询需要 --commit",
+                                 code="MISSING_COMMIT", exit_code=EXIT_USAGE)
+            return emit_ok(CQ.content_query(
+                repository_id=args.repository_id, commit_sha=args.commit,
+                file_path=args.path, data_root=root))
         import query as Q
         import status as S
         out = Q.run_query(repository_id=args.repository_id,

@@ -375,7 +375,11 @@ def main() -> int:
                             "src/research/", "tests/research/",
                             # F2-P5A 获批：GitHub 知识库 Skill 接口与安装测试
                             "src/skill_interface/", "tests/skill_interface/",
-                            "skill/", "tools/f2p5a_")
+                            "skill/", "tools/f2p5a_",
+                            # F2-P5C 获批：文件内容级抽取与证据定位
+                            "src/content/", "tests/content/",
+                            "tools/sourcelore_rebuild_index.py",
+                            "tools/f2p5c_")
         outside = [str(p.relative_to(ROOT)) for p in code
                    if "__pycache__" not in str(p)
                    and not str(p.relative_to(ROOT)).startswith(allowed_prefixes)]

@@ -1,0 +1,186 @@
+{
+  "artifact": "F2_P5C_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-05T19:48:19+08:00",
+  "baseline_commit": "f3bf6f6",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "crosswalk_matches_frozen": true,
+  "verdicts": {
+    "INDEX_REBUILD_SAFE": {
+      "status": "DONE",
+      "evidence": "tools/sourcelore_rebuild_index.py --check/--dry-run/--verify/--apply；默认只读；隔离副本实测：回填 3 行、claim_verification 保留 NEEDS_JOIN（不硬猜）；A/B/Runtime 指纹重建前后完全一致；二次重建幂等。正式库未动。"
+    },
+    "BLOB_CONTENT_AVAILABILITY": {
+      "status": "NOT_AVAILABLE",
+      "evidence": "实测 blob_refs 仅 blob_sha/path/size，**无内容字节**；DB 无 blob 内容表。真实仓库 README 返回 CONTENT_NOT_CAPTURED，content_available=false，network_requests=0。未编造任何 README 内容。"
+    },
+    "CONTENT_EXTRACTION_ENGINE": {
+      "status": "DONE_SYNTHETIC_ONLY",
+      "evidence": "README / package.json / pyproject.toml 三类解析器；预算、编码、二进制、非普通对象、截断完整性全部实现。77 项 content 测试全绿。**真实数据零解析成功**（因无字节），故只能证合成通路。"
+    },
+    "CONTENT_EVIDENCE": {
+      "status": "DONE",
+      "evidence": "ContentEvidenceRef 字节+行号双定位；verify_range 检测行号/字节/blob/路径不匹配；ref_complete 要求 12 字段齐备。"
+    },
+    "CONTENT_FACTS_EC": {
+      "status": "PARTIAL",
+      "evidence": "内容事实结构与裁决条件已定义（CLAIM_SEMANTICS 显式写出 supported/refuted/insufficient 条件），但**未写入 Storage 成为正式 Claim** —— 普通查询保持只读。"
+    },
+    "SKILL_CONTENT_CLI": {
+      "status": "DONE",
+      "evidence": "analyze --include-content / --content-path；inspect --content-summary；query --type content。均已在安装版实测。"
+    },
+    "GOLD_CONTENT": {
+      "status": "DONE",
+      "evidence": "25 个原创合成用例，逐用例独立快照（Git 语义）；错误肯定 0、错误否定 0、正确 abstention 覆盖 5 类。"
+    },
+    "NATURAL_LANGUAGE_AUTO_TRIGGER": {
+      "status": "NOT_VERIFIED",
+      "evidence": "需独立用户会话，本轮无法自证。"
+    },
+    "DISTRIBUTION_READY": {
+      "status": "NOT_READY",
+      "evidence": "B-1/B-2/B-3 OPEN"
+    }
+  },
+  "found_defects": [
+    {
+      "id": "D-6",
+      "title": "证据 label 回显不可信原文",
+      "impact": "提示注入文本进入证据描述字段",
+      "fix": "label 改为结构化（heading:L1），默认不回显",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-7",
+      "title": "src/content/extractor.py 与 src/facts/extractor.py 同名冲突",
+      "impact": "paths 把 content 放前面后 import extractor 解析到错误模块，6 个既有 skill_interface 测试报 ERROR",
+      "fix": "改名 content_extractor.py；paths 顺序回退",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-8",
+      "title": "Gold 测试把同路径多用例塞进一个快照",
+      "impact": "按 path 查找 blob 必然互相覆盖（违反 Git 同路径唯一 blob 语义）",
+      "fix": "改为逐用例独立快照",
+      "status": "FIXED"
+    }
+  ],
+  "content_status_codes": [
+    "CONTENT_NOT_CAPTURED",
+    "BLOB_TOO_LARGE",
+    "BINARY_CONTENT",
+    "UNSUPPORTED_ENCODING",
+    "CONTENT_PARSE_FAILED",
+    "CONTENT_PARTIAL",
+    "CONTENT_HASH_MISMATCH"
+  ],
+  "budget": {
+    "max_blob_bytes": 262144,
+    "max_batch_bytes": 2097152,
+    "max_paths": 32,
+    "max_facts_per_file": 100
+  },
+  "index_rebuild": {
+    "updated": 3,
+    "needs_join": 1,
+    "ambiguous": 0,
+    "fingerprint_unchanged": true,
+    "idempotent": true,
+    "production_db_touched": false
+  },
+  "tests": {
+    "runtime": {
+      "tests": 45,
+      "ok": true,
+      "exit": 0
+    },
+    "storage": {
+      "tests": 53,
+      "ok": true,
+      "exit": 0
+    },
+    "collector": {
+      "tests": 48,
+      "ok": true,
+      "exit": 0
+    },
+    "facts": {
+      "tests": 44,
+      "ok": true,
+      "exit": 0
+    },
+    "evidence_claims": {
+      "tests": 36,
+      "ok": true,
+      "exit": 0
+    },
+    "lifecycle": {
+      "tests": 142,
+      "ok": true,
+      "exit": 0
+    },
+    "views": {
+      "tests": 50,
+      "ok": true,
+      "exit": 0
+    },
+    "renderer": {
+      "tests": 59,
+      "ok": true,
+      "exit": 0
+    },
+    "research": {
+      "tests": 122,
+      "ok": true,
+      "exit": 0
+    },
+    "skill_interface": {
+      "tests": 69,
+      "ok": true,
+      "exit": 0
+    },
+    "content": {
+      "tests": 77,
+      "ok": true,
+      "exit": 0
+    }
+  },
+  "total_tests": 745,
+  "all_tests_ok": true,
+  "still_open": [
+    {
+      "gate": "REAL_CONTENT_EXTRACTION",
+      "status": "NOT_VERIFIED",
+      "reason": "Blob 字节未采集"
+    },
+    {
+      "gate": "BLOB_CAPTURE_IMPLEMENTATION",
+      "status": "NOT_STARTED"
+    },
+    {
+      "gate": "CONTENT_FACTS_TO_STORAGE",
+      "status": "NOT_STARTED"
+    },
+    {
+      "gate": "NATURAL_LANGUAGE_AUTO_TRIGGER",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "gate": "INDEX_BACKFILL_PRODUCTION",
+      "status": "NOT_AUTHORIZED"
+    },
+    {
+      "gate": "DISTRIBUTION_READY",
+      "status": "NOT_READY"
+    }
+  ],
+  "explicitly_not_claimed": [
+    "内容抽取引擎可用 != 真实 README 已解析",
+    "合成夹具 != GitHub 真实数据",
+    "README 有标题 != 安装流程可运行",
+    "依赖已声明 != 依赖已安装",
+    "有 test 脚本 != 测试通过",
+    "重建工具验收 != 生产库已回填"
+  ]
+}
