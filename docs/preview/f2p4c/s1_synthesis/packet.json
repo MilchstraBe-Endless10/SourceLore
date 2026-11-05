@@ -1,0 +1,185 @@
+{
+  "canonical_refs": [
+    "SL-CAP-0037",
+    "SL-CAP-0039"
+  ],
+  "claim_refs": [
+    "SL-CLAIM-21cf0b8bc589b67e4ed83b669f472e0ed34961f3"
+  ],
+  "conflicts": [],
+  "content_digest": "98067331d3d8e6f437e9cc0c09cf5ee870a8db6b2097183726779500c24f6c6d",
+  "coverage_assessment": {
+    "coverage_meaning": "现有知识资产足以回答该研究问题。",
+    "coverage_state": "ANSWERABLE_FROM_EXISTING_EVIDENCE",
+    "evaluated_on": "existing_knowledge_only",
+    "gaps": [
+      {
+        "detail": "结论仅适用于所记录的版本与证据范围",
+        "gap": "SCOPE_BOUND"
+      }
+    ],
+    "llm_used": false,
+    "not_a_verification_status": true,
+    "question_type": "KNOWN_CLAIMS",
+    "snapshot_completeness": {
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+        "completeness": "COMPLETE"
+      }
+    },
+    "unresolved_questions": []
+  },
+  "distribution_restrictions": {
+    "blockers": [
+      {
+        "id": "B-1",
+        "status": "OPEN",
+        "title": "第三方声明措辞（THIRD_PARTY_NOTICES 越界）"
+      },
+      {
+        "id": "B-2",
+        "status": "OPEN",
+        "title": "UPSTREAM-06 法律审查（28 项 copy_permitted=false）"
+      },
+      {
+        "id": "B-3",
+        "status": "OPEN",
+        "title": "CC BY 4.0 署名（SL-CAP-0023 含 6 词原句）"
+      }
+    ],
+    "distribution_allowed": false,
+    "freeze_state": "FROZEN_INTERNAL_RESTRICTED",
+    "note": "知识验证结果与来源许可证是两个独立结论；supported 不推导出 distribution_allowed=true",
+    "scope": "LOCAL_INTERNAL_TEST_ONLY"
+  },
+  "evidence_integrity_summary": {
+    "known_fact_count": 2,
+    "levels": {
+      "FULLY_LOCATABLE": 1
+    },
+    "note": "证据可信度按**可核对性**判定，不以是否非空为准",
+    "unresolvable_count": 0
+  },
+  "evidence_refs": [
+    "fact:SL-FACT-c281a797d1d1d258750fed7f090c2305a30933f9",
+    "{\"blob_sha\":\"9999999999999999999999999999999999999999\",\"kind\":\"tree_entry\",\"mode\":\"100644\",\"object_type\":\"blob\",\"path\":\"README\"}",
+    "{\"commit_sha\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"completeness_status\":\"COMPLETE\",\"kind\":\"source_snapshot\",\"manifest_version\":2,\"repository_id\":\"1296269\",\"root_tree_sha\":\"tttttttttttttttttttttttttttttttttttttttt\",\"rule_id\":\"file_path_observation\",\"rule_version\":\"v1\",\"snapshot_asset_id\":\"SL-A-cd80b38225b0b9f50689a173e5318c92\",\"snapshot_logical_identity\":\"SL-SNAP-1616354141f4301b48f89b4ff94b516777c267bf\",\"tree_query_ref\":\"tttttttttttttttttttttttttttttttttttttttt\"}"
+  ],
+  "excluded_candidates": [
+    {
+      "asset_id": "SL-A-fb7f91757a5797e11c9ead4cffe0f84d",
+      "detail": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "reason": "COMMIT_NOT_MATCH"
+    }
+  ],
+  "external_network_used": false,
+  "fact_refs": [
+    "SL-FACT-c281a797d1d1d258750fed7f090c2305a30933f9"
+  ],
+  "findings": [
+    {
+      "claim_commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "claim_content_hash": "40b7baee8408212971e4525706f127b12e13151350d69d218023a9255fb642dc",
+      "claim_id": "SL-CLAIM-21cf0b8bc589b67e4ed83b669f472e0ed34961f3",
+      "claim_payload": {
+        "claim_scope": "full_tree_enumeration",
+        "claim_type": "repository_path_exists",
+        "expected_exists": true,
+        "normalized_path": "README"
+      },
+      "claim_type": "repository_path_exists",
+      "evidence_integrity": "FULLY_LOCATABLE",
+      "evidence_integrity_detail": {
+        "reasons": [],
+        "resolved": 3,
+        "total": 3
+      },
+      "evidence_refs": [
+        "fact:SL-FACT-c281a797d1d1d258750fed7f090c2305a30933f9",
+        "{\"blob_sha\":\"9999999999999999999999999999999999999999\",\"kind\":\"tree_entry\",\"mode\":\"100644\",\"object_type\":\"blob\",\"path\":\"README\"}",
+        "{\"commit_sha\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"completeness_status\":\"COMPLETE\",\"kind\":\"source_snapshot\",\"manifest_version\":2,\"repository_id\":\"1296269\",\"root_tree_sha\":\"tttttttttttttttttttttttttttttttttttttttt\",\"rule_id\":\"file_path_observation\",\"rule_version\":\"v1\",\"snapshot_asset_id\":\"SL-A-cd80b38225b0b9f50689a173e5318c92\",\"snapshot_logical_identity\":\"SL-SNAP-1616354141f4301b48f89b4ff94b516777c267bf\",\"tree_query_ref\":\"tttttttttttttttttttttttttttttttttttttttt\"}"
+      ],
+      "fact_refs": [
+        "SL-FACT-c281a797d1d1d258750fed7f090c2305a30933f9"
+      ],
+      "finding_id": "SL-F-cf01f0e71eedbdf7296b19e6",
+      "finding_type": "SUPPORTED",
+      "label": "支持",
+      "limitations": [],
+      "meaning": "在指定范围内，现有经过验证的证据支持该命题。",
+      "repository_id": "1296269",
+      "review_status": "pending_review",
+      "source_view_refs": [
+        "claim:SL-A-5919e76dbf5b6d52256504671900f93a",
+        "verification:SL-A-0e8739d22294491f2b267ef3d7444346"
+      ],
+      "verdict_status": "supported",
+      "verification_content_hash": "40b84f94c2ed61a45df2998a583a9cc635426ac035d3f5bca1e357b825cc75ee",
+      "verification_id": "SL-VERIF-a43846689dd06803b8b2342aa49e2cf400f251bd",
+      "verification_rule_version": "path-exists-verifier/v1"
+    }
+  ],
+  "freshness_summary": {
+    "note": "Research 不重评估新鲜度；新鲜度以 View/Assessment 原值为准"
+  },
+  "is_claim_authority": false,
+  "limitations": [
+    "Research 产物不是知识权威，不得作为 Claim 裁决或发布依据",
+    "分发门禁仍为 FROZEN_INTERNAL_RESTRICTED，仅限本地内部消费",
+    "结论仅适用于所记录的版本与证据范围"
+  ],
+  "llm_used": false,
+  "packet_status": "PACKET_OK",
+  "provenance_summary": {
+    "finding_levels": [
+      "unknown"
+    ],
+    "mixed_provenance": false,
+    "note": "来源等级以 KnowledgeView 原值为准；Research 不做升级或混合取强"
+  },
+  "publishable_as_knowledge": false,
+  "query": {
+    "claim_type": null,
+    "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "compare_commit_sha": null,
+    "evidence_policy": "REQUIRE_REFS",
+    "max_results": 50,
+    "path": null,
+    "provenance_policy": "PRESERVE_ALL",
+    "query_rule_version": "query-rule/1",
+    "query_schema_version": "research-query/1",
+    "question_type": "KNOWN_CLAIMS",
+    "repository_id": "1296269",
+    "retrieval_scope": "REPOSITORY_COMMIT",
+    "subject_id": null
+  },
+  "query_id": "SL-Q-1db5c5e03f6946afa070162e49ed2db8",
+  "research_id": "SL-R-6486dee77b1a5400456458b9f51abbb2",
+  "research_schema_version": "research-packet/1",
+  "retrieval": {
+    "candidate_count": 2,
+    "limit": 50,
+    "note": "",
+    "status": "OK",
+    "truncated": false
+  },
+  "retrieval_rule_version": "retrieval-rule/1",
+  "review_summary": {
+    "any_approved": false,
+    "note": "Research 不修改 review_status",
+    "review_statuses": [
+      "pending_review"
+    ]
+  },
+  "selected_view_ids": [
+    "SL-CLAIM-21cf0b8bc589b67e4ed83b669f472e0ed34961f3"
+  ],
+  "source_snapshot_refs": [
+    "claim:SL-A-5919e76dbf5b6d52256504671900f93a",
+    "verification:SL-A-0e8739d22294491f2b267ef3d7444346"
+  ],
+  "unresolved_questions": [],
+  "untrusted_findings": [],
+  "verification_refs": [
+    "SL-VERIF-a43846689dd06803b8b2342aa49e2cf400f251bd"
+  ]
+}

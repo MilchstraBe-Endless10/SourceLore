@@ -1,0 +1,179 @@
+{
+  "adapter_state": "OFFLINE_STUB",
+  "bank": {
+    "bank_digest": "c350cf2ec07d4c35394d017aef2bc6ae6475b612568782439024de9be8b60245",
+    "bank_schema_version": "statement-bank/1",
+    "citation_map": {
+      "SL-ST-8fac49285765c2ba405a69ad": [
+        "limitations"
+      ],
+      "SL-ST-98da9d2ebaaa62659c3cb28f": [
+        "SCOPE_BOUND"
+      ],
+      "SL-ST-e28408e41ee738f9d4e156b5": [
+        "limitations"
+      ],
+      "SL-ST-f1f00daaccbfeeb42e266d94": [
+        "limitations"
+      ],
+      "SL-ST-f234659aa37422d0401beae8": [
+        "SL-F-cf01f0e71eedbdf7296b19e6"
+      ],
+      "SL-ST-f556350858a0ac956e63eb82": [
+        "distribution_restrictions"
+      ]
+    },
+    "note": "陈述由模板转录生成，非 LLM 生成；每条都绑定证据引用，脱离引用的陈述不在此池内",
+    "statement_count": 6,
+    "statement_ids": [
+      "SL-ST-8fac49285765c2ba405a69ad",
+      "SL-ST-98da9d2ebaaa62659c3cb28f",
+      "SL-ST-e28408e41ee738f9d4e156b5",
+      "SL-ST-f1f00daaccbfeeb42e266d94",
+      "SL-ST-f234659aa37422d0401beae8",
+      "SL-ST-f556350858a0ac956e63eb82"
+    ],
+    "statements": [
+      {
+        "citation_required": true,
+        "claim_id": "SL-CLAIM-21cf0b8bc589b67e4ed83b669f472e0ed34961f3",
+        "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "evidence_integrity": "FULLY_LOCATABLE",
+        "finding_refs": [
+          "SL-F-cf01f0e71eedbdf7296b19e6"
+        ],
+        "kind": "FACT_SUPPORTED",
+        "rendered_as": "可引用",
+        "statement_id": "SL-ST-f234659aa37422d0401beae8",
+        "text": "在固定 Commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 上，该路径存在命题的裁决为 supported（支持）。",
+        "tier": "CITED",
+        "verification_id": "SL-VERIF-a43846689dd06803b8b2342aa49e2cf400f251bd"
+      },
+      {
+        "citation_required": true,
+        "coverage_state": "ANSWERABLE_FROM_EXISTING_EVIDENCE",
+        "finding_refs": [
+          "SCOPE_BOUND"
+        ],
+        "kind": "COVERAGE_STATE",
+        "rendered_as": "可引用",
+        "statement_id": "SL-ST-98da9d2ebaaa62659c3cb28f",
+        "text": "该研究问题的可回答性状态为 ANSWERABLE_FROM_EXISTING_EVIDENCE；这不是证据裁决（verification_status）。",
+        "tier": "CITED"
+      },
+      {
+        "citation_required": true,
+        "finding_refs": [
+          "limitations"
+        ],
+        "kind": "LIMITATION",
+        "limitation": "Research 产物不是知识权威，不得作为 Claim 裁决或发布依据",
+        "rendered_as": "可引用",
+        "statement_id": "SL-ST-f1f00daaccbfeeb42e266d94",
+        "text": "Research 产物不是知识权威，不得作为 Claim 裁决或发布依据",
+        "tier": "CITED"
+      },
+      {
+        "citation_required": true,
+        "finding_refs": [
+          "limitations"
+        ],
+        "kind": "LIMITATION",
+        "limitation": "分发门禁仍为 FROZEN_INTERNAL_RESTRICTED，仅限本地内部消费",
+        "rendered_as": "可引用",
+        "statement_id": "SL-ST-e28408e41ee738f9d4e156b5",
+        "text": "分发门禁仍为 FROZEN_INTERNAL_RESTRICTED，仅限本地内部消费",
+        "tier": "CITED"
+      },
+      {
+        "citation_required": true,
+        "finding_refs": [
+          "limitations"
+        ],
+        "kind": "LIMITATION",
+        "limitation": "结论仅适用于所记录的版本与证据范围",
+        "rendered_as": "可引用",
+        "statement_id": "SL-ST-8fac49285765c2ba405a69ad",
+        "text": "结论仅适用于所记录的版本与证据范围",
+        "tier": "CITED"
+      },
+      {
+        "citation_required": true,
+        "finding_refs": [
+          "distribution_restrictions"
+        ],
+        "kind": "SCOPE_BOUND",
+        "rendered_as": "可引用",
+        "statement_id": "SL-ST-f556350858a0ac956e63eb82",
+        "text": "本产物是内部研究材料，不是知识权威，不得作为 Claim 裁决或发布依据；分发门禁为 FROZEN_INTERNAL_RESTRICTED，distribution_allowed=False。",
+        "tier": "CITED"
+      }
+    ]
+  },
+  "distribution_restrictions": {
+    "blockers": [
+      {
+        "id": "B-1",
+        "status": "OPEN",
+        "title": "第三方声明措辞（THIRD_PARTY_NOTICES 越界）"
+      },
+      {
+        "id": "B-2",
+        "status": "OPEN",
+        "title": "UPSTREAM-06 法律审查（28 项 copy_permitted=false）"
+      },
+      {
+        "id": "B-3",
+        "status": "OPEN",
+        "title": "CC BY 4.0 署名（SL-CAP-0023 含 6 词原句）"
+      }
+    ],
+    "distribution_allowed": false,
+    "freeze_state": "FROZEN_INTERNAL_RESTRICTED",
+    "note": "知识验证结果与来源许可证是两个独立结论；supported 不推导出 distribution_allowed=true",
+    "scope": "LOCAL_INTERNAL_TEST_ONLY"
+  },
+  "is_knowledge_authority": false,
+  "limitations": [
+    "Research 产物不是知识权威，不得作为 Claim 裁决或发布依据",
+    "分发门禁仍为 FROZEN_INTERNAL_RESTRICTED，仅限本地内部消费",
+    "结论仅适用于所记录的版本与证据范围"
+  ],
+  "llm_used": false,
+  "model": "offline-stub",
+  "note": "本产物由离线 stub 生成，**只验证引用校验通路**，不代表任何真实模型能力。全部句子通过引用校验，可用于内部严格引用场景。 真实 DeepSeek-V4.1 Flash 调用仍待验证。",
+  "provider": "offline-stub",
+  "publishable": false,
+  "real_call_verified": false,
+  "review_required": false,
+  "statement_refs": [
+    "SL-ST-f234659aa37422d0401beae8"
+  ],
+  "synthesis_id": "SL-SYN-048247ffee2b7d86264b299fc42f72bd",
+  "synthesis_schema_version": "research-synthesis/1",
+  "synthesis_state": "STRICT_CITED",
+  "text": "在固定 Commit 上，该路径存在命题的裁决为 supported（支持）。",
+  "validation": {
+    "blocking_failures": [],
+    "is_strict_citable": true,
+    "overall": "CITED_OK",
+    "sentence_count": 1,
+    "unbound_references": [],
+    "uncited_count": 0,
+    "ungrounded_count": 0,
+    "validator_schema_version": "citation-validator/1",
+    "verdicts": [
+      {
+        "code": "CITED_OK",
+        "grounding": 1.0,
+        "reasons": [],
+        "sentence": "在固定 Commit 上，该路径存在命题的裁决为 supported（支持）。",
+        "statement_refs": [
+          "SL-ST-f234659aa37422d0401beae8"
+        ],
+        "tier": "CITED"
+      }
+    ]
+  },
+  "verdict": "STRICT_CITED"
+}

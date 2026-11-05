@@ -1,0 +1,155 @@
+{
+  "artifact": "F2_P4C_GOLD_SYNTHESIS_EVALUATION",
+  "gold_count": 10,
+  "gold_source": "人工定义（tests/research/gold/gold_synthesis.py）",
+  "not_derived_from_research": true,
+  "query_success_rate": 1.0,
+  "false_positive_count": 0,
+  "false_negative_count": 0,
+  "false_positive_blocker": false,
+  "false_negative_blocker": false,
+  "real_llm_called": false,
+  "real_call_verified": false,
+  "rows": [
+    {
+      "id": "S01_strict",
+      "case": "cited_fact",
+      "verdict": "STRICT_CITED",
+      "blocking": [],
+      "checks": {
+        "verdict": true,
+        "never_publish": true
+      },
+      "passed": true,
+      "false_negative": false
+    },
+    {
+      "id": "S02_draft",
+      "case": "uncited",
+      "verdict": "DRAFT_FOR_REVIEW",
+      "blocking": [],
+      "checks": {
+        "verdict": true,
+        "review": true,
+        "never_publish": true
+      },
+      "passed": true,
+      "false_negative": false
+    },
+    {
+      "id": "S03_amplify_quality",
+      "case": "cited_fact",
+      "verdict": "REJECTED_NOT_CITABLE",
+      "blocking": [
+        "AMPLIFIED_BEYOND_EVIDENCE"
+      ],
+      "checks": {
+        "verdict": true,
+        "blocking": true,
+        "never_publish": true
+      },
+      "passed": true,
+      "false_negative": false
+    },
+    {
+      "id": "S04_amplify_capability",
+      "case": "cited_fact",
+      "verdict": "REJECTED_NOT_CITABLE",
+      "blocking": [
+        "AMPLIFIED_BEYOND_EVIDENCE"
+      ],
+      "checks": {
+        "verdict": true,
+        "blocking": true,
+        "never_publish": true
+      },
+      "passed": true,
+      "false_negative": false
+    },
+    {
+      "id": "S05_insufficient_as_negation",
+      "case": "insufficient",
+      "verdict": "REJECTED_NOT_CITABLE",
+      "blocking": [
+        "INSUFFICIENT_AS_NEGATION"
+      ],
+      "checks": {
+        "verdict": true,
+        "blocking": true,
+        "never_publish": true
+      },
+      "passed": true,
+      "false_negative": false
+    },
+    {
+      "id": "S06_fake_ref",
+      "case": "fake_ref",
+      "verdict": "REJECTED_NOT_CITABLE",
+      "blocking": [
+        "INVALID_STATEMENT_REF"
+      ],
+      "checks": {
+        "verdict": true,
+        "blocking": true,
+        "never_publish": true
+      },
+      "passed": true,
+      "false_negative": false
+    },
+    {
+      "id": "S07_current_claim",
+      "case": "cited_fact",
+      "verdict": "REJECTED_NOT_CITABLE",
+      "blocking": [
+        "AMPLIFIED_BEYOND_EVIDENCE"
+      ],
+      "checks": {
+        "verdict": true,
+        "blocking": true,
+        "never_publish": true
+      },
+      "passed": true,
+      "false_negative": false
+    },
+    {
+      "id": "S08_prompt_injection",
+      "case": "cited_fact",
+      "verdict": "DRAFT_FOR_REVIEW",
+      "blocking": [],
+      "checks": {
+        "verdict": true,
+        "never_publish": true
+      },
+      "passed": true,
+      "false_negative": false
+    },
+    {
+      "id": "S09_limitation",
+      "case": "limitation",
+      "verdict": "DRAFT_FOR_REVIEW",
+      "blocking": [],
+      "checks": {
+        "verdict": true,
+        "never_publish": true
+      },
+      "passed": true,
+      "false_negative": false
+    },
+    {
+      "id": "S10_testonly_upgrade",
+      "case": "cited_fact",
+      "verdict": "REJECTED_NOT_CITABLE",
+      "blocking": [
+        "AMPLIFIED_BEYOND_EVIDENCE"
+      ],
+      "checks": {
+        "verdict": true,
+        "blocking": true,
+        "never_publish": true
+      },
+      "passed": true,
+      "false_negative": false
+    }
+  ],
+  "blocked": false
+}

@@ -1,0 +1,137 @@
+{
+  "task": "M2 / F2-P4B（确定性研究检索与研究包）",
+  "generated_by": "tools/f2p4c_verify.py",
+  "independent": true,
+  "git_head": "40038d6ea406a1ff1f000dd61e68fe8241306349",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "llm_called": false,
+  "live_github_refetch": false,
+  "real_human_authorization": false,
+  "summary": {
+    "passed": 20,
+    "total": 20,
+    "result": "PASS"
+  },
+  "checks": [
+    {
+      "id": "c1",
+      "name": "research 全套测试",
+      "passed": true,
+      "detail": "research 套件 122 项 exit=0"
+    },
+    {
+      "id": "c2",
+      "name": "P4C Gold 全通过",
+      "passed": true,
+      "detail": "P4C Gold 10 项，成功率 1.0"
+    },
+    {
+      "id": "c3",
+      "name": "错误肯定为 0",
+      "passed": true,
+      "detail": "错误肯定=0"
+    },
+    {
+      "id": "c4",
+      "name": "错误否定为 0",
+      "passed": true,
+      "detail": "错误否定=0"
+    },
+    {
+      "id": "c5",
+      "name": "无客户端不产出叙述",
+      "passed": true,
+      "detail": "无客户端状态=NO_SYNTHESIS text_len=0"
+    },
+    {
+      "id": "c6",
+      "name": "严格引用路径",
+      "passed": true,
+      "detail": "严格引用=STRICT_CITED"
+    },
+    {
+      "id": "c7",
+      "name": "待审草稿路径",
+      "passed": true,
+      "detail": "无引用=DRAFT_FOR_REVIEW review_required=True"
+    },
+    {
+      "id": "c8",
+      "name": "越界措辞拦截",
+      "passed": true,
+      "detail": "越界拦截=REJECTED_NOT_CITABLE ['AMPLIFIED_BEYOND_EVIDENCE']"
+    },
+    {
+      "id": "c9",
+      "name": "证据不足禁写否定",
+      "passed": true,
+      "detail": "否定化拦截=REJECTED_NOT_CITABLE ['INSUFFICIENT_AS_NEGATION']"
+    },
+    {
+      "id": "c10",
+      "name": "任何产物不可发布",
+      "passed": true,
+      "detail": "全部不可发布=True"
+    },
+    {
+      "id": "c11",
+      "name": "未调用 LLM",
+      "passed": true,
+      "detail": "llm_called=False"
+    },
+    {
+      "id": "c12",
+      "name": "真实调用未验证（如实标注）",
+      "passed": true,
+      "detail": "真实 DeepSeek-V4.1 Flash 调用仍待验证"
+    },
+    {
+      "id": "c13",
+      "name": "前置1：证据完整性可核对",
+      "passed": true,
+      "detail": "证据完整性按可核对性判定（四等级）"
+    },
+    {
+      "id": "c14",
+      "name": "前置2：digest 覆盖可信度字段",
+      "passed": true,
+      "detail": "digest 覆盖 evidence_integrity_summary 等可信度字段"
+    },
+    {
+      "id": "c15",
+      "name": "前置3：不依赖 rowid",
+      "passed": true,
+      "detail": "仍用 rowid 排序的文件: 无"
+    },
+    {
+      "id": "c16",
+      "name": "预览/分发门禁分离",
+      "passed": true,
+      "detail": "预览/分发门禁分离=True"
+    },
+    {
+      "id": "c17",
+      "name": "既有模块全链回归",
+      "passed": true,
+      "detail": "runtime 45 exit=0; storage 53 exit=0; collector 48 exit=0; facts 44 exit=0; evidence_claims 36 exit=0; lifecycle 142 exit=0; views 50 exit=0; renderer 59 exit=0"
+    },
+    {
+      "id": "c18",
+      "name": "F1-D 冻结哈希",
+      "passed": true,
+      "detail": "SHA=42841207b8088c89… 未变=True f1d exit=0"
+    },
+    {
+      "id": "c19",
+      "name": "回放产物齐备",
+      "passed": true,
+      "detail": "回放产物齐备=True（缺失 []）"
+    },
+    {
+      "id": "c20",
+      "name": "P3C 八阶段可回查",
+      "passed": true,
+      "detail": "8 阶段非 PENDING=True 状态=['COMMITTED']"
+    }
+  ]
+}

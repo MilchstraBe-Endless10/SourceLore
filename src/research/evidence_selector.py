@@ -38,12 +38,14 @@ MEANING = {
 _w = __import__("importlib").import_module("view_models")
 
 
-def select_findings(pairs: list, query: dict) -> dict:
+def select_findings(store, pairs: list, query: dict) -> dict:
     """从 (claim, verification) 对生成 findings。
 
     ★ 只读投影：不改裁决、不补造证据、不把缺失当否证。
+    ★ 证据必须**可核对**，不能只凭非空 evidence_refs 就采信。
     """
     findings, untrusted = [], []
+    known = _known_fact_ids(store, query.get("repository_id"))
     for pr in pairs:
         c, v = pr["claim"], pr["verification"]
         status = v.get("status")
@@ -51,12 +53,17 @@ def select_findings(pairs: list, query: dict) -> dict:
         refs = _evidence_refs(v, c)
         limited = []
 
-        if not refs:
-            # ★ 没有可定位证据 → 不可采信
+        integrity = assess_evidence_integrity(store, refs, known)
+        if integrity["level"] in (EV_NONE, EV_UNRESOLVED):
+            # ★ 没有可核对证据 → 不可采信
             untrusted.append({
                 "claim_id": c["claim_id"],
                 "verification_id": v.get("verification_id"),
-                "reason": "NO_LOCATABLE_EVIDENCE",
+                "reason": ("NO_LOCATABLE_EVIDENCE"
+                           if integrity["level"] == EV_NONE
+                           else "EVIDENCE_NOT_RESOLVABLE"),
+                "evidence_integrity": integrity["level"],
+                "integrity_reasons": integrity["reasons"],
                 "note": MEANING[F_EVIDENCE_MISSING]})
             continue
 
@@ -65,6 +72,9 @@ def select_findings(pairs: list, query: dict) -> dict:
         #   2) 证据链里 snapshot manifest 的真实 completeness_status
         #   （只信 EC 标记会漏判 —— EC 在某些 insufficient 路径下不设该标记）
         coverage = _snapshot_completeness(refs)
+        if integrity["level"] == EV_PARTIAL:
+            limited.append("证据只能部分核对：部分引用无法解析，"
+                           "该结论的证据链不完整")
         if v.get("local_coverage_only") or coverage == "PARTIAL":
             limited.append("仅局部覆盖（局部覆盖标记或快照 completeness=PARTIAL）："
                            "未覆盖部分不得判为不存在")
@@ -96,6 +106,11 @@ def select_findings(pairs: list, query: dict) -> dict:
             "fact_refs": (v.get("fact_ids") or [])[:EVIDENCE_CAP],
             "source_view_refs": [
                 f"claim:{c['asset_id']}", f"verification:{v['asset_id']}"],
+            "evidence_integrity": integrity["level"],
+            "evidence_integrity_detail": {
+                "total": integrity["total"],
+                "resolved": integrity["resolved"],
+                "reasons": integrity["reasons"]},
             "limitations": limited,
             "verification_content_hash": v.get("content_hash"),
             "claim_content_hash": c.get("content_hash"),
@@ -103,10 +118,17 @@ def select_findings(pairs: list, query: dict) -> dict:
 
     findings = sorted(findings, key=lambda f: (f["claim_commit_sha"] or "",
                                                f["claim_id"], f["finding_id"]))
+    levels = {}
+    for f in findings:
+        levels[f["evidence_integrity"]] = levels.get(f["evidence_integrity"], 0) + 1
     return {"ok": True, "findings": findings, "untrusted": untrusted,
             "evidence_cap": EVIDENCE_CAP,
-            "note": ("无来源引用的条目已移出可采信集合，单独列入 untrusted"
-                     )}
+            "evidence_integrity_summary": {
+                "levels": levels,
+                "unresolvable_count": len(untrusted),
+                "known_fact_count": len(known),
+                "note": ("证据可信度按**可核对性**判定，"
+                         "不以是否非空为准")}}
 
 
 def _map_status(status: str):
@@ -142,6 +164,98 @@ def _snapshot_completeness(refs: list) -> str:
     if "PARTIAL" in seen:
         return "PARTIAL"
     return seen.pop() if len(seen) == 1 else ("UNKNOWN" if seen else "")
+
+
+FACT_TYPE = "extracted_fact"
+
+# 证据完整性等级
+EV_FULL = "FULLY_LOCATABLE"
+EV_PARTIAL = "PARTIALLY_LOCATABLE"
+EV_UNRESOLVED = "UNRESOLVED_NO_INTEGRITY"
+EV_NONE = "NO_EVIDENCE"
+
+# ★ 必须能解析出身份的引用种类；解析不出即不可采信
+_JSON_REQUIRED = {
+    "tree_entry": ("kind", "path", "object_type"),
+    "source_snapshot": ("kind", "commit_sha", "snapshot_asset_id",
+                        "completeness_status"),
+}
+
+
+def _known_fact_ids(store, repository_id, cap: int = 500) -> set:
+    """★ 从 Storage 收集真实存在的 fact_id。
+
+    A 层不可篡改，但引用**可以**指向不存在的 fact ——
+    非空 evidence_refs 并不等于证据可信。
+    """
+    ids = set()
+    try:
+        rows = store.conn.execute(
+            "SELECT payload_json FROM assets WHERE asset_type=? "
+            "AND repository_id=? LIMIT ?",
+            (FACT_TYPE, repository_id, cap)).fetchall()
+    except Exception:
+        return ids
+    for r in rows:
+        try:
+            pj = json.loads(r["payload_json"])
+        except Exception:
+            continue
+        for k in ("fact_id",):
+            if pj.get(k):
+                ids.add(str(pj[k]))
+    return ids
+
+
+def assess_evidence_integrity(store, refs: list, known_facts: set) -> dict:
+    """★ 逐条解析引用，给出完整性等级。
+
+    只"非空"不算可信：必须能解析出可核对的身份，且 fact 引用真实存在。
+    """
+    if not refs:
+        return {"level": EV_NONE, "total": 0, "resolved": 0,
+                "reasons": ["无证据引用"]}
+
+    resolved, reasons = 0, []
+    for r in refs:
+        if not isinstance(r, str):
+            reasons.append("引用不是字符串")
+            continue
+        if r.startswith("fact:"):
+            fid = r.split(":", 1)[1]
+            if fid in known_facts:
+                resolved += 1
+            else:
+                reasons.append(f"fact 引用不存在：{fid}")
+            continue
+        if r.startswith("{"):
+            try:
+                o = json.loads(r)
+            except Exception:
+                reasons.append("证据引用不是合法 JSON")
+                continue
+            kind = o.get("kind")
+            need = _JSON_REQUIRED.get(kind)
+            if not need:
+                reasons.append(f"未知引用种类：{kind}")
+                continue
+            missing = [k for k in need if not o.get(k)]
+            if missing:
+                reasons.append(f"{kind} 缺少必需字段：{missing}")
+                continue
+            resolved += 1
+            continue
+        reasons.append(f"无法识别的引用形态：{r[:40]}")
+
+    total = len(refs)
+    if resolved == total:
+        level = EV_FULL
+    elif resolved > 0:
+        level = EV_PARTIAL
+    else:
+        level = EV_UNRESOLVED
+    return {"level": level, "total": total, "resolved": resolved,
+            "reasons": sorted(set(reasons))[:10]}
 
 
 def _evidence_refs(v: dict, c: dict) -> list:

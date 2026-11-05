@@ -1,0 +1,82 @@
+{
+  "artifact": "F2_P4C_E2E_REPLAY",
+  "generated_at": "2026-11-05T13:42:18+08:00",
+  "llm_called": false,
+  "real_llm_called": false,
+  "real_call_verified": false,
+  "live_github_refetch": false,
+  "real_human_authorization": false,
+  "adapter_used": "OFFLINE_STUB (校验通路验证)",
+  "note": "stub 输出只验证引用校验通路，不代表任何真实模型能力；真实 DeepSeek-V4.1 Flash 调用仍待验证",
+  "output_dir": "docs/preview/f2p4c",
+  "scenarios": {
+    "c1_strict": {
+      "verdict": "STRICT_CITED",
+      "adapter_state": "OFFLINE_STUB",
+      "blocking": [],
+      "uncited": 0,
+      "ungrounded": 0,
+      "review_required": false,
+      "never_publish": true,
+      "synthesis_id": "SL-SYN-048247ffee2b7d86264b299fc42f72bd"
+    },
+    "c2_draft": {
+      "verdict": "DRAFT_FOR_REVIEW",
+      "adapter_state": "OFFLINE_STUB",
+      "blocking": [],
+      "uncited": 1,
+      "ungrounded": 0,
+      "review_required": true,
+      "never_publish": true,
+      "synthesis_id": "SL-SYN-c7be22331b67c1369a29d3d811efbefd"
+    },
+    "c3_rejected_amplify": {
+      "verdict": "REJECTED_NOT_CITABLE",
+      "adapter_state": "OFFLINE_STUB",
+      "blocking": [
+        "AMPLIFIED_BEYOND_EVIDENCE"
+      ],
+      "uncited": 0,
+      "ungrounded": 0,
+      "review_required": true,
+      "never_publish": true,
+      "synthesis_id": "SL-SYN-3de03dbe38582bfa6a0e12ac391c6b8c"
+    },
+    "c4_rejected_negation": {
+      "verdict": "REJECTED_NOT_CITABLE",
+      "adapter_state": "OFFLINE_STUB",
+      "blocking": [
+        "INSUFFICIENT_AS_NEGATION"
+      ],
+      "uncited": 0,
+      "ungrounded": 0,
+      "review_required": true,
+      "never_publish": true,
+      "synthesis_id": "SL-SYN-17aafdbd48543553331013e9bccc33e7"
+    },
+    "c0_no_client": {
+      "verdict": "NO_SYNTHESIS",
+      "llm_used": false,
+      "text_len": 0
+    },
+    "preview": {
+      "preview_allowed": true,
+      "distribution_allowed": false,
+      "html_has_script": false,
+      "html_csp": true
+    }
+  },
+  "gold": {
+    "gold_count": 10,
+    "query_success_rate": 1.0,
+    "false_positive_count": 0,
+    "false_negative_count": 0,
+    "blocked": false
+  },
+  "files": {
+    "synthesis.json": "docs/preview/f2p4c/s1_synthesis/synthesis.json",
+    "bank.json": "docs/preview/f2p4c/s1_synthesis/bank.json",
+    "preview.html": "docs/preview/f2p4c/s1_synthesis/preview.html",
+    "packet.json": "docs/preview/f2p4c/s1_synthesis/packet.json"
+  }
+}

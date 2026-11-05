@@ -40,7 +40,7 @@ def make_research_id(*, query_id, finding_ids, packet_schema=PACKET_SCHEMA_VERSI
 def build_packet(*, query, retrieval, coverage, findings, untrusted,
                  limitations, distribution, freshness_summary=None,
                  review_summary=None, provenance_summary=None,
-                 conflicts=None) -> dict:
+                 conflicts=None, evidence_integrity=None) -> dict:
     finding_ids = [f["finding_id"] for f in findings]
     rid = make_research_id(query_id=query["query_id"],
                            finding_ids=finding_ids)
@@ -70,6 +70,8 @@ def build_packet(*, query, retrieval, coverage, findings, untrusted,
         "excluded_candidates": list(retrieval.get("excluded") or []) +
                               list(untrusted or []),
         "untrusted_findings": list(untrusted or []),
+        # ★ 证据完整性是可信度组成部分，必须进摘要
+        "evidence_integrity_summary": dict(evidence_integrity or {}),
         "coverage_assessment": coverage,
         "unresolved_questions": list(coverage.get("unresolved_questions") or []),
         "limitations": sorted(set(limitations or [])),

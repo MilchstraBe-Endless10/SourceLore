@@ -66,7 +66,7 @@ def run_research(store, query: dict, *,
                                     list(vr.get("excluded") or [])
 
     # ── 2. 证据筛选 ─────────────────────────────────────
-    sel = ES.select_findings(pairs, query)
+    sel = ES.select_findings(store, pairs, query)
 
     # ── 3. 覆盖评估 ─────────────────────────────────────
     cov = CE.evaluate(query, retrieval, sel["findings"], sel["untrusted"])
@@ -85,6 +85,7 @@ def run_research(store, query: dict, *,
     pkt = RP.build_packet(
         query=query, retrieval=retrieval, coverage=cov,
         findings=sel["findings"], untrusted=sel["untrusted"],
+        evidence_integrity=sel.get("evidence_integrity_summary"),
         limitations=limits, distribution=dist,
         provenance_summary=prov, review_summary=review,
         freshness_summary={"note": ("Research 不重评估新鲜度；"

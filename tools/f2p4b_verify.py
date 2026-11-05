@@ -177,10 +177,13 @@ def main() -> int:
         try:
             with rfx.fresh(tmp) as ks:
                 rfx.vfx.run_full(ks)
+                # ★ 用业务键（logical_identity + asset_version），不用 rowid：
+                #   rowid 是物理插入顺序，跨 candidate 时不代表业务先后。
                 row = ks.conn.execute(
-                    "SELECT payload_json FROM assets "
+                    "SELECT payload_json, asset_id FROM assets "
                     "WHERE asset_type='revalidation_run' "
-                    "ORDER BY rowid DESC LIMIT 1").fetchone()
+                    "ORDER BY logical_identity ASC, asset_version DESC, "
+                    "asset_id ASC LIMIT 1").fetchone()
                 p = json.loads(row["payload_json"])
                 states = {s["stage"]: s["state"] for s in p["stages"]}
                 non_pending = [k for k, v in states.items() if v != "PENDING"]

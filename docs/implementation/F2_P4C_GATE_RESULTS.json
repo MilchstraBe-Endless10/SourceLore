@@ -1,0 +1,142 @@
+{
+  "artifact": "F2_P4C_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-05T13:44:21+08:00",
+  "principle": "叠加观测，不覆盖 F1-D 冻结快照",
+  "deterministic_synthesis_gate": {
+    "verdict": "DONE",
+    "components": [
+      "src/research/statement_bank.py",
+      "src/research/citation_validator.py",
+      "src/research/llm_adapter.py",
+      "src/research/synthesis_engine.py"
+    ],
+    "evidence": "docs/implementation/F2_P4C_VERIFICATION.json",
+    "tests": {
+      "runtime": 45,
+      "storage": 53,
+      "collector": 48,
+      "facts": 44,
+      "evidence_claims": 36,
+      "lifecycle": 142,
+      "views": 50,
+      "renderer": 59,
+      "research": 122
+    },
+    "total_tests": 599
+  },
+  "prerequisites_fixed": {
+    "1_evidence_integrity": {
+      "status": "FIXED",
+      "detail": "不再只判 evidence_refs 非空；逐条解析为四等级，引用不可核对即剔出可采信集合"
+    },
+    "2_content_digest": {
+      "status": "FIXED",
+      "detail": "evidence_integrity_summary 并入摘要；实测十项关键字段变动全部改变 digest"
+    },
+    "3_run_ordering": {
+      "status": "FIXED",
+      "detail": "生产代码 revalidation_run_store._latest 本就带 logical_identity 过滤（是对的）；把自有测试与工具的全局 rowid/asset_version 排序改为业务键"
+    }
+  },
+  "llm_research_synthesis": {
+    "verdict": "GATE_DONE_MODEL_UNVERIFIED",
+    "detail": "陈述池/逐句校验/分级已完成；真实模型调用未验证"
+  },
+  "real_llm_call_verified": {
+    "verdict": "OPEN",
+    "reason": "本机无 cordis.patch.yml，无证据证明 DeepSeek-V4.1 Flash 真实调用成功；adapter 只有离线 stub"
+  },
+  "autonomous_research_agent": {
+    "verdict": "NOT_STARTED"
+  },
+  "real_harness_authorized_e2e": {
+    "verdict": "OPEN",
+    "reason": "Y6-P3 UNVERIFIED、Y6-P6 OPEN"
+  },
+  "distribution_ready": {
+    "verdict": "NOT_READY",
+    "blockers": [
+      {
+        "id": "B-1",
+        "status": "OPEN",
+        "title": "第三方声明措辞"
+      },
+      {
+        "id": "B-2",
+        "status": "OPEN",
+        "title": "UPSTREAM-06 法律审查"
+      },
+      {
+        "id": "B-3",
+        "status": "OPEN",
+        "title": "CC BY 4.0 署名"
+      }
+    ],
+    "preview_allowed": true,
+    "distribution_allowed": false,
+    "publish_blocked": true
+  },
+  "gold_synthesis": {
+    "gold_count": 10,
+    "query_success_rate": 1.0,
+    "false_positive_count": 0,
+    "false_negative_count": 0,
+    "blocked": false,
+    "not_derived_from_research": true,
+    "has_negative_examples": true
+  },
+  "data_provenance": {
+    "baseline": "HISTORICAL_REAL_DATA（P1C 记录）",
+    "target_commit_and_tree": "SYNTHETIC_FIXTURE",
+    "live_github_refetch": false,
+    "real_human_authorization": false,
+    "llm_called": false
+  },
+  "still_open": [
+    {
+      "gate": "REAL_LLM_CALL_VERIFIED",
+      "status": "OPEN"
+    },
+    {
+      "gate": "AUTONOMOUS_RESEARCH_AGENT",
+      "status": "NOT_STARTED"
+    },
+    {
+      "gate": "REAL_HARNESS_AUTHORIZED_E2E",
+      "status": "OPEN"
+    },
+    {
+      "gate": "DISTRIBUTION_READY",
+      "status": "NOT_READY"
+    },
+    {
+      "gate": "FULL_RENDERER",
+      "status": "NOT_STARTED"
+    },
+    {
+      "gate": "正式 Skill 集成",
+      "status": "NOT_STARTED"
+    },
+    {
+      "gate": "B-1/B-2/B-3",
+      "status": "OPEN"
+    },
+    {
+      "gate": "Y6-P3",
+      "status": "UNVERIFIED"
+    },
+    {
+      "gate": "Y6-P6",
+      "status": "OPEN"
+    }
+  ],
+  "explicitly_not_claimed": [
+    "DETERMINISTIC_SYNTHESIS_GATE DONE 不等于 LLM_RESEARCH_SYNTHESIS DONE",
+    "真实 DeepSeek-V4.1 Flash 调用未验证",
+    "stub 输出不代表模型能力",
+    "合成产物 publishable=false、is_knowledge_authority=false",
+    "未实现 Agent 自主研究循环",
+    "未联网 GitHub、无真实人类授权"
+  ]
+}

@@ -11,6 +11,7 @@ for p in ("tests/research", "src/research", "src/views", "src/lifecycle",
         sys.path.insert(0, str(ROOT/p))
 import rfx
 import evidence_selector as ES, coverage_evaluator as CE
+import research_packet as RP
 import query_models as QM
 
 
@@ -43,7 +44,7 @@ class TestEvidence(Base):
                              "status": "supported", "fact_ids": [],
                              "evidence_refs": [], "content_hash": "h2",
                              "payload": {}}}]
-        sel = ES.select_findings(fake, rfx.q_path())
+        sel = ES.select_findings(self.ks, fake, rfx.q_path())
         self.assertEqual(len(sel["findings"]), 0,
                          "无证据不得生成 finding")
         self.assertEqual(len(sel["untrusted"]), 1)
@@ -78,7 +79,7 @@ class TestEvidence(Base):
                "verification": {"asset_id": "Y", "verification_id": "V",
                                 "status": None, "fact_ids": [], "evidence_refs": [],
                                 "content_hash": None, "payload": {}}}]
-        sel = ES.select_findings(bad, rfx.q_path())
+        sel = ES.select_findings(self.ks, bad, rfx.q_path())
         self.assertEqual(len(sel["untrusted"]), 1)
 
     def test_t14_partial_limit_preserved(self):
@@ -137,6 +138,84 @@ class TestEvidence(Base):
     def test_t19_freshness_not_modified(self):
         self.assertIn("不重评估新鲜度",
                       json.dumps(self.pkt["freshness_summary"], ensure_ascii=False))
+
+
+class TestEvidenceIntegrity(Base):
+    """★ 非空 evidence_refs 不等于证据可信 —— 必须可核对。"""
+
+    def _pair(self, refs, facts):
+        return [{
+            "claim": {"asset_id": "SL-A-c", "claim_id": "SL-CLAIM-x",
+                      "commit_sha": rfx.A,
+                      "claim_type": "repository_path_exists",
+                      "normalized_path": "README", "expected_exists": True,
+                      "review_status": "pending_review",
+                      "content_hash": "h", "payload": {}},
+            "verification": {"asset_id": "SL-A-v",
+                             "verification_id": "SL-VERIF-x",
+                             "status": "supported",
+                             "fact_ids": list(facts),
+                             "evidence_refs": list(refs),
+                             "content_hash": "h2", "payload": {}}}]
+
+    def test_nonempty_but_unresolvable_rejected(self):
+        """引用非空但全都解析不出 → 必须剔除。"""
+        refs = ["fact:SL-FACT-DOES-NOT-EXIST",
+                "not-a-json-not-fact"]
+        sel = ES.select_findings(self.ks,
+                                 self._pair(refs, []), rfx.q_path())
+        self.assertEqual(len(sel["findings"]), 0)
+        self.assertEqual(len(sel["untrusted"]), 1)
+        self.assertEqual(sel["untrusted"][0]["reason"],
+                         "EVIDENCE_NOT_RESOLVABLE")
+        self.assertEqual(sel["untrusted"][0]["evidence_integrity"],
+                         ES.EV_UNRESOLVED)
+
+    def test_tree_entry_missing_fields_unresolvable(self):
+        import json as J
+        bad_ref = J.dumps({"kind": "tree_entry", "path": "README"},
+                          sort_keys=True)
+        sel = ES.select_findings(self.ks,
+                                 self._pair([bad_ref], []), rfx.q_path())
+        self.assertEqual(len(sel["findings"]), 0)
+        reasons = sel["untrusted"][0]["integrity_reasons"]
+        self.assertTrue(any("缺少必需字段" in r for r in reasons))
+
+    def test_snapshot_missing_completeness_unresolvable(self):
+        import json as J
+        bad = J.dumps({"kind": "source_snapshot", "commit_sha": rfx.A,
+                       "snapshot_asset_id": "SL-A-x"}, sort_keys=True)
+        sel = ES.select_findings(self.ks, self._pair([bad], []), rfx.q_path())
+        self.assertEqual(len(sel["findings"]), 0)
+
+    def test_partial_integrity_kept_with_limit(self):
+        """部分可核对 → 保留但必须标注证据链不完整。"""
+        import json as J
+        good = J.dumps({"kind": "tree_entry", "path": "README",
+                        "object_type": "blob"}, sort_keys=True)
+        sel = ES.select_findings(
+            self.ks, self._pair([good, "fact:SL-FACT-NOT-EXIST"], []),
+            rfx.q_path())
+        self.assertEqual(len(sel["findings"]), 1)
+        f = sel["findings"][0]
+        self.assertEqual(f["evidence_integrity"], ES.EV_PARTIAL)
+        self.assertTrue(any("部分核对" in x for x in f["limitations"]))
+
+    def test_real_packet_integrity_full(self):
+        p = rfx.run(self.ks, rfx.q_path())
+        self.assertEqual(p["evidence_integrity_summary"]["levels"],
+                         {"FULLY_LOCATABLE": 1})
+        self.assertEqual(
+            p["findings"][0]["evidence_integrity"], ES.EV_FULL)
+
+    def test_integrity_in_digest(self):
+        """★ 证据完整性必须进 content_digest。"""
+        import copy
+        p = rfx.run(self.ks, rfx.q_path())
+        base = p["content_digest"]
+        p2 = copy.deepcopy(p)
+        p2["evidence_integrity_summary"]["levels"] = {"FAKE": 1}
+        self.assertNotEqual(RP.content_digest(p2), base)
 
 
 class TestWording(Base):

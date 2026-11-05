@@ -95,9 +95,15 @@ class TestStageTracking(Base):
     """§13.C / T-40：P3C 八阶段必须真实写入，不能只检查名字存在。"""
 
     def _run_record(self):
+        """★ 业务键定位：logical_identity + asset_version。
+
+        `revalidation_run` 的 asset_version 在**同一 logical_identity 内**
+        单调递增；跨身份时 rowid / 全局 asset_version 都不代表业务先后。
+        """
         row = self.ks.conn.execute(
             "SELECT payload_json FROM assets WHERE asset_type='revalidation_run' "
-            "ORDER BY rowid DESC LIMIT 1").fetchone()
+            "ORDER BY logical_identity ASC, asset_version DESC, asset_id ASC "
+            "LIMIT 1").fetchone()
         return json.loads(row["payload_json"])
 
     def test_eight_stages_written(self):
@@ -116,7 +122,8 @@ class TestStageTracking(Base):
 
         ★ 注意：revalidation_run 的 asset_version 是**每个 run 自己的**
         从 1 开始的版本号，所以 `ORDER BY asset_version DESC` 取到的
-        不一定是"最新一次运行" —— 必须按写入顺序（rowid）定位。
+        不一定是"最新一次运行"；必须按业务键
+        （logical_identity + asset_version）定位，**不能用 rowid**。
         """
         from collector_adapter import FakeGhAdapter
         import revalidation_executor as EX
@@ -125,10 +132,11 @@ class TestStageTracking(Base):
             repository_id=rfx.REPO, authorization={}, plan={},
             adapter=FakeGhAdapter({}, {}), now="2026-11-05T00:00:00+08:00")
         self.assertFalse(res.ok, "无授权必须失败")
-        # 取**最后写入**的那条（rowid 最大）
+        # ★ 取该 run 身份下的**最高业务版本**（不用 rowid）
         row = self.ks.conn.execute(
             "SELECT payload_json FROM assets WHERE asset_type='revalidation_run' "
-            "ORDER BY rowid DESC LIMIT 1").fetchone()
+            "ORDER BY logical_identity ASC, asset_version DESC, asset_id ASC "
+            "LIMIT 1").fetchone()
         p = json.loads(row["payload_json"])
         self.assertNotEqual(p.get("execution_status"), "SUCCESS",
                             "失败运行不得标为 SUCCESS")
