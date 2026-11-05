@@ -1,0 +1,260 @@
+{
+  "artifact": "F2_P5I_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-06T00:54:33+08:00",
+  "baseline_commit": "11cbb26",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "crosswalk_matches_frozen": true,
+  "gates": {
+    "A_CONFIG_BLOB_INTEGRITY": {
+      "status": "DONE",
+      "evidence": "配置观察身份含 config_path+blob_oid+content_digest+parser_version；换 Commit 或 Blob 即换身份"
+    },
+    "B_TSCONFIG_JSONC": {
+      "status": "DONE",
+      "evidence": "字符状态机解析（非正则）；字符串内 // 与 /* */ 正确保留；尾随逗号/转义/CRLF/BOM/超限全测"
+    },
+    "C_TSCONFIG_PATHS": {
+      "status": "DONE",
+      "evidence": "优先级=精确 > 通配(前缀越长越优先) > *；多目标顺序回退；baseUrl 缺失用配置目录"
+    },
+    "D_TSCONFIG_INHERITANCE": {
+      "status": "DONE",
+      "evidence": "本地 extends 链式读取；循环/深度/npm包/绝对路径全部显式降级"
+    },
+    "E_PACKAGE_IMPORTS": {
+      "status": "DONE",
+      "evidence": "# 前缀同包作用域解析；未匹配条目→CONFIG_MAPPING_CANDIDATE"
+    },
+    "F_PACKAGE_EXPORTS": {
+      "status": "DONE",
+      "evidence": "self-reference 根与子路径；未列出子路径→SUBPATH_NOT_IN_EXPORTS；null→阻断；通配展开"
+    },
+    "G_RESOLUTION_POLICY": {
+      "status": "DONE",
+      "evidence": "import/require 语境决定条件集合；default 为兜底；多条件→MULTIPLE_CONDITIONS_AVAILABLE"
+    },
+    "H_CONFIG_EVIDENCE": {
+      "status": "DONE",
+      "evidence": "三组证据齐备检查（Import Fact + Config 身份/Blob + 目标路径），任一缺失→诊断卡"
+    },
+    "I_MODULE_RELATION_FACTS": {
+      "status": "DONE",
+      "evidence": "E2E 实测双 Commit 各 3 条关系事实真实入 A 层；仅 LOCAL_MODULE_RESOLVED 入库"
+    },
+    "J_MODULE_RELATION_CLAIMS": {
+      "status": "DONE",
+      "evidence": "16 个 EC reason_code 全部合法；非确定状态一律 insufficient，绝不 refuted"
+    },
+    "K_MODULE_RELATION_QUERY": {
+      "status": "DONE",
+      "evidence": "只读查询：按 repo/commit/path/specifier 过滤；network_requests 恒 0"
+    },
+    "L_MODULE_RELATION_CARDS": {
+      "status": "DONE",
+      "evidence": "SOURCE_MODULE_RELATION_CARD 5003 字节；CSP/无 script/转义全过；声明明确"
+    },
+    "M_INSTALLED_SKILL_E2E": {
+      "status": "DONE",
+      "evidence": "~/.agents/skills/sourcelore 实测：rels=3 resolved=3 net=0；按 specifier 过滤生效"
+    },
+    "N_MULTI_COMMIT_CONFIG_ISOLATION": {
+      "status": "DONE",
+      "evidence": "Commit A @/*→src/*；Commit B @/*→lib/*；查询与卡片各自正确"
+    },
+    "O_EXISTING_SOURCE_REGRESSION": {
+      "status": "DONE",
+      "evidence": "source_analysis 88 + js_ts_analysis 72 全绿，未退化"
+    },
+    "P_REAL_GITHUB_MODULE_E2E": {
+      "status": "NOT_VERIFIED",
+      "evidence": "无已核验真实仓库授权"
+    },
+    "Q_NATURAL_LANGUAGE_AUTO_TRIGGER": {
+      "status": "NOT_VERIFIED",
+      "evidence": "无独立会话证据"
+    },
+    "R_DISTRIBUTION_READY": {
+      "status": "NOT_READY",
+      "evidence": "B-1/B-2/B-3 OPEN"
+    }
+  },
+  "found_defects": [
+    {
+      "id": "D-29",
+      "title": "default 条件被当普通条件拦截",
+      "impact": "`k in available_conditions` 直接跳过 default，导致无 import/require 时永不解析",
+      "fix": "循环外先记 default_entry 作兜底，仅在无其它可用条件时生效",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-30",
+      "title": "package exports/imports 通配目标未展开",
+      "impact": "`./src/feat/*.js` 的 * 未替换 → TARGET_NOT_IN_TREE 误判",
+      "fix": "新增 _subpath_capture 传入 capture",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-31",
+      "title": "关系事实缺 subject 键",
+      "impact": "np 用 dict(subject,**{...}) 铺平，未挂 subject；查询与裁决读 np['subject'] → 恒空",
+      "fix": "显式加 subject 键",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-32",
+      "title": "查询结果缺 rule_id / repository_id",
+      "impact": "裁决端第一道检查即失败 → 永远 NO_MATCHING_FACT",
+      "fix": "_relation_row 补两字段",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-33",
+      "title": "查询模块依赖 paths 但未加该路径",
+      "impact": "独立调用 query_relations → ModuleNotFoundError",
+      "fix": "sys.path 补 skill_interface",
+      "status": "FIXED"
+    }
+  ],
+  "test_metrics": {
+    "gold": "45/45（要求 ≥45）",
+    "jsonc": "17 项含字符串内注释/URL/转义/超限",
+    "paths": "优先级与多目标回退逐条断言",
+    "inheritance": "继承/循环/缺失/深度/npm 包全覆盖",
+    "false_positive": 0,
+    "false_negative": 0,
+    "correct_abstention": "配置缺失/继承未解/歧义/不完整/动态/别名 → 全部 abstain"
+  },
+  "blocking_metrics_zero": {
+    "wrong_mapping_as_supported": 0,
+    "wrong_commit_config_accepted": 0,
+    "missing_config_faked": 0,
+    "external_pkg_as_local": 0,
+    "type_only_as_runtime_dep": 0,
+    "unknown_condition_forced": 0,
+    "code_executed": 0,
+    "unevidenced_persisted_verified": 0,
+    "query_network": 0,
+    "query_wrote_assets": 0
+  },
+  "tests": {
+    "runtime": {
+      "tests": 45,
+      "ok": true,
+      "exit": 0
+    },
+    "storage": {
+      "tests": 53,
+      "ok": true,
+      "exit": 0
+    },
+    "collector": {
+      "tests": 48,
+      "ok": true,
+      "exit": 0
+    },
+    "facts": {
+      "tests": 44,
+      "ok": true,
+      "exit": 0
+    },
+    "evidence_claims": {
+      "tests": 36,
+      "ok": true,
+      "exit": 0
+    },
+    "lifecycle": {
+      "tests": 142,
+      "ok": true,
+      "exit": 0
+    },
+    "views": {
+      "tests": 50,
+      "ok": true,
+      "exit": 0
+    },
+    "renderer": {
+      "tests": 59,
+      "ok": true,
+      "exit": 0
+    },
+    "research": {
+      "tests": 122,
+      "ok": true,
+      "exit": 0
+    },
+    "skill_interface": {
+      "tests": 69,
+      "ok": true,
+      "exit": 0
+    },
+    "content": {
+      "tests": 77,
+      "ok": true,
+      "exit": 0
+    },
+    "blob_capture": {
+      "tests": 59,
+      "ok": true,
+      "exit": 0
+    },
+    "content_persistence": {
+      "tests": 63,
+      "ok": true,
+      "exit": 0
+    },
+    "content_skill": {
+      "tests": 49,
+      "ok": true,
+      "exit": 0
+    },
+    "source_analysis": {
+      "tests": 88,
+      "ok": true,
+      "exit": 0
+    },
+    "js_ts_analysis": {
+      "tests": 72,
+      "ok": true,
+      "exit": 0
+    },
+    "module_resolution": {
+      "tests": 147,
+      "ok": true,
+      "exit": 0
+    }
+  },
+  "total_tests": 1223,
+  "all_tests_ok": true,
+  "evidence_levels": {
+    "CONFIG_PARSED": "DONE",
+    "CONFIG_MAPPING_FOUND": "DONE",
+    "LOCAL_FILE_CANDIDATE_VERIFIED": "DONE",
+    "MODULE_RELATION_FACT_PERSISTED": "DONE",
+    "CLAIM_VERIFIED": "DONE",
+    "INSTALLED_SKILL_E2E": "DONE",
+    "REAL_GITHUB_E2E": "NOT_VERIFIED"
+  },
+  "still_open": [
+    {
+      "gate": "REAL_GITHUB_MODULE_E2E",
+      "status": "NOT_VERIFIED",
+      "reason": "缺授权"
+    },
+    {
+      "gate": "NATURAL_LANGUAGE_AUTO_TRIGGER",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "gate": "DISTRIBUTION_READY",
+      "status": "NOT_READY"
+    }
+  ],
+  "explicitly_not_claimed": [
+    "配置映射 != 运行时加载",
+    "paths 不改写输出代码导入路径",
+    "未验证构建",
+    "未建调用图/数据流图",
+    "不支持 npm 包内 extends"
+  ]
+}

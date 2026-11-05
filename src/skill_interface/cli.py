@@ -64,7 +64,8 @@ def build_parser():
     q.add_argument("--commit", default=None,
                    help="固定 Commit（content 类型必需）")
     q.add_argument("--type", default="path",
-                   choices=["path", "claims", "version", "content", "code"])
+                   choices=["path", "claims", "version", "content", "code",
+                            "relation"])
     q.add_argument("--path", default=None)
     q.add_argument("--compare-commit", default=None)
     q.add_argument("--max-results", type=int, default=50)
@@ -73,6 +74,10 @@ def build_parser():
     q.add_argument("--module", default=None, help="按静态导入模块名过滤")
     q.add_argument("--language", default=None,
                    help="按源码语言过滤（python/javascript/typescript/jsx/tsx）")
+    q.add_argument("--relation", default=None,
+                   help="关系查询：imports（配合 --type relation）")
+    q.add_argument("--show-resolution", action="store_true",
+                   help="显示解析状态与配置细节")
 
     c = sub.add_parser("card", help="生成知识卡片（本地 HTML）")
     c.add_argument("--repository-id", required=True)
@@ -186,6 +191,12 @@ def _dispatch(cmd, args):
         return emit_ok(out)
 
     if cmd == "query":
+        if getattr(args, "type", None) == "relation":
+            import source_knowledge as SK
+            return emit_ok(SK.query_module_relations(
+                repository_id=args.repository_id, commit_sha=args.commit,
+                importing_file_path=args.path,
+                module_specifier=getattr(args, "module", None), data_root=root))
         if getattr(args, "type", None) == "code":
             import source_knowledge as SK
             return emit_ok(SK.query_code(

@@ -3,7 +3,7 @@
   "generated_by": "tools/fusion/f1d_verify.py",
   "independent": true,
   "imports_batch_verifiers": false,
-  "git_head": "467603d056a735511b4d8c8e381c7a68a3dce47c",
+  "git_head": "11cbb2620cebb7b40861fe505343457787543e77",
   "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
   "summary": {
     "passed": 26,
@@ -153,7 +153,7 @@
       "id": "c24",
       "name": "本轮未启动 F2",
       "passed": true,
-      "detail": "代码 424 个全部落在已授权批次目录=True；无产品 SKILL.md=True；无被追踪 DB=True"
+      "detail": "代码 466 个全部落在已授权批次目录=True；无产品 SKILL.md=True；无被追踪 DB=True"
     },
     {
       "id": "c25",

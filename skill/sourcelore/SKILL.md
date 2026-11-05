@@ -42,6 +42,8 @@ SourceLore 是一个**本地知识库工具**，不是模型服务。它做的�
 | 内容知识卡片 | `card --repository-id <rid> --commit <sha> --path <p>` |
 | 查源码结构知识 | `query <rid> --commit <sha> --type code` |
 | 源码结构卡片 | `card --repository-id <rid> --commit <sha> --path <p> --code` |
+| 查静态模块关系 | `query <rid> --commit <sha> --type relation` |
+| 关系卡片 | 由 `source_knowledge.render_relation_card` 生成 |
 | 历史版本 | `history <repository_id>` |
 
 ## 何时不要使用
@@ -193,6 +195,48 @@ card  --repository-id <rid> --commit <sha> --path P --code
 ★ `require("x")` 是**调用观察**（`LITERAL_REQUIRE_CALL_OBSERVED`），不是 ESM 声明。
 ★ `require(var)` / `import(var)` → `DYNAMIC_MODULE_SPECIFIER`，不猜目标。
 ★ `import type` → `is_type_only=true`，**不是运行时依赖**。
+
+### 配置感知模块解析（F2-P5I）
+
+```
+query <rid> --commit <sha> --type relation [--path P] [--module SPEC]
+```
+
+结合 **tsconfig / jsconfig** 与 **package.json** 解释 JS/TS 模块引用。**只读、零网络。**
+
+#### 三层状态（绝不混淆）
+
+| 层 | 状态 | 含义 |
+|---|---|---|
+| 1 | `MODULE_REFERENCE_OBSERVED` | 源码里确实有该 Import |
+| 2 | `CONFIG_MAPPING_CANDIDATE` | 按配置找到候选路径 |
+| 3 | `LOCAL_MODULE_RESOLVED` | 当前 Commit Tree 中唯一命中 |
+
+★ **不存在 `RUNTIME_IMPORT_VERIFIED`**——本工具不验证运行时加载。
+
+#### tsconfig paths
+
+- 优先级：**精确 > 通配（前缀越长越优先）> `*` 兜底**（按 TypeScript 规则，不是文件顺序）
+- `baseUrl` 缺失 → 基准是**配置目录**，不默认项目根
+- 多目标按数组顺序回退，第一个命中即止
+- 越界目标 → `PATH_ESCAPES_REPOSITORY`
+
+#### extends / references
+
+- 只支持**同仓库同 Commit 的本地配置**
+- 检测循环与深度；npm 包/绝对路径 → `CONFIG_INHERITANCE_UNRESOLVED`
+- `references` 只识别，不构建 Project References 图
+
+#### package.json
+
+- `imports`（`#xxx`）同包作用域内解析
+- `exports` 支持包自身引用；**未列出子路径 → `SUBPATH_NOT_IN_EXPORTS`**（不据文件存在放行）；`null` → 阻断
+- 条件导出：`default` 是**兜底**；多条件同时可用 → `MULTIPLE_CONDITIONS_AVAILABLE`（**不任选**）
+
+#### 配置来源
+
+只能从未登记的配置一律 `CONFIG_CONTENT_NOT_CAPTURED`——**不猜仓库没有 tsconfig**，
+**不读工作目录**，**不借用其他 Commit**。
 
 ### JS/TS 模块解析七态
 

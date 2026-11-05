@@ -27,6 +27,45 @@ def query_code(*, repository_id, commit_sha=None, file_path=None,
         data_root=data_root or DEFAULT_DATA_ROOT)
 
 
+def query_module_relations(*, repository_id, commit_sha=None,
+                           importing_file_path=None, module_specifier=None,
+                           data_root=None):
+    """查询静态模块关系。★ 只读。"""
+    import module_relation_query as MQ
+    from paths import DEFAULT_DATA_ROOT
+    return MQ.query_relations(
+        repository_id=repository_id, commit_sha=commit_sha,
+        importing_file_path=importing_file_path,
+        module_specifier=module_specifier,
+        data_root=data_root or DEFAULT_DATA_ROOT)
+
+
+def render_relation_card(*, repository_id, commit_sha=None,
+                         importing_file_path=None, module_specifier=None,
+                         data_root=None, out_dir=None):
+    import module_relation_query as MQ
+    import module_relation_card_models as MCM
+    import module_relation_card_renderer as MCR
+    from paths import DEFAULT_DATA_ROOT
+
+    q = MQ.query_relations(
+        repository_id=repository_id, commit_sha=commit_sha,
+        importing_file_path=importing_file_path,
+        module_specifier=module_specifier,
+        data_root=data_root or DEFAULT_DATA_ROOT)
+    card = MCM.build_relation_card(q)
+    htm = MCR.render_relation_card_html(card)
+    root = Path(data_root or DEFAULT_DATA_ROOT)
+    out = Path(out_dir) if out_dir else (root / "cards")
+    out.mkdir(parents=True, exist_ok=True)
+    path = out / (card["card_id"] + ".html")
+    path.write_text(htm, encoding="utf-8")
+    return {"ok": True, "card_id": card["card_id"],
+            "card_type": card["card_type"], "html_path": str(path),
+            "html_bytes": len(htm.encode("utf-8")),
+            "state": q.get("state"), "network_requests": 0}
+
+
 def render_source_card(*, repository_id, commit_sha=None, file_path=None,
                        data_root=None, out_dir=None, card_type=None):
     import source_knowledge_query as Q
