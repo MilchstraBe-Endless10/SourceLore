@@ -391,14 +391,41 @@ class KnowledgeStore:
             code = "CHECKPOINT_CORRUPT" if isinstance(e, sqlite3.DatabaseError) else "PERMISSION_DENIED"
             return {"ok": False, "error": code, "detail": f"{type(e).__name__}: {str(e)[:200]}"}
 
+    @staticmethod
+    def _resolve_index_commit_sha(draft: AssetDraft) -> Optional[str]:
+        """从 draft 的可用信息里解析 commit_sha。
+
+        ★ 只读 payload、不改资产、不改哈希 —— 索引是 C 层，可从权威数据重建。
+        """
+        if draft.source_snapshot is not None:
+            cs = getattr(draft.source_snapshot, "commit_sha", None)
+            if cs:
+                return cs
+        pl = draft.payload or {}
+        cs = pl.get("commit_sha")
+        if isinstance(cs, str) and cs:
+            return cs
+        snap = pl.get("source_snapshot")
+        if isinstance(snap, dict):
+            for k in ("commit_sha", "baseline_commit_sha", "observed_commit_sha"):
+                v = snap.get(k)
+                if isinstance(v, str) and v:
+                    return v
+        return None
+
     def _index_asset(self, aid: str, draft: AssetDraft):
         text = canonical_json(draft.payload)
+        # ★ 索引的 commit_sha 不能只依赖 draft.source_snapshot。
+        #   ingest 各路径常年不传 source_snapshot（实测该列因此全为 NULL），
+        #   而 payload 里本来就有 commit_sha / snapshot 身份。三级回退：
+        #   1) draft.source_snapshot  2) payload["commit_sha"]
+        #   3) payload["source_snapshot"]["commit_sha"] / baseline_commit_sha
+        commit_sha = self._resolve_index_commit_sha(draft)
         self.conn.execute(
             """INSERT INTO index_rows(asset_id, asset_type, logical_identity, repository_id,
                  subject_id, commit_sha, asset_version) VALUES(?,?,?,?,?,?,?)""",
             (aid, draft.asset_type, draft.logical_identity, draft.repository_id,
-             draft.subject_id, (draft.source_snapshot.commit_sha if draft.source_snapshot else None),
-             draft.asset_version))
+             draft.subject_id, commit_sha, draft.asset_version))
         if self.fts5_available:
             self.conn.execute(
                 "INSERT INTO asset_fts(asset_id, logical_identity, asset_type, payload_text) "

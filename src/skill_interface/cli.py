@@ -37,6 +37,11 @@ def build_parser():
     a.add_argument("--ref", default=None, help="分支/标签/Commit（默认 HEAD）")
     a.add_argument("--path", default="README", help="要观察的路径")
     a.add_argument("--max-requests", type=int, default=40, help="GitHub 请求上限")
+    a.add_argument("--commit", default=None, help="固定 Commit SHA（优先复用本地缓存）")
+    a.add_argument("--offline", action="store_true", help="禁用一切 GitHub 请求")
+    a.add_argument("--refresh", action="store_true", help="显式要求重新获取远程版本")
+    a.add_argument("--no-token", action="store_true",
+                   help="本次不使用 GITHUB_TOKEN（即便环境里有）")
 
     i = sub.add_parser("inspect", help="查看单仓库知识摘要")
     i.add_argument("repository_id")
@@ -124,7 +129,11 @@ def _dispatch(cmd, args):
         import status as S
         out = A.analyze(url=args.url, ref=args.ref, data_root=root,
                         target_path=args.path,
-                        max_requests=args.max_requests)
+                        max_requests=args.max_requests,
+                        commit=getattr(args, "commit", None),
+                        offline=getattr(args, "offline", False),
+                        refresh=getattr(args, "refresh", False),
+                        use_token=not getattr(args, "no_token", False))
         S.record_operation("analyze", out)
         return emit_ok(out)
 

@@ -27,6 +27,9 @@ SourceLore 是一个**本地知识库工具**，不是模型服务。它做的�
 | 用户说的话 | 应当执行的命令 |
 |---|---|
 | 用 SourceLore 分析 / 建库 | `analyze <url>` |
+| 查已保存的固定 Commit（不问 GitHub） | `analyze <url> --commit <sha>` |
+| 只用本地知识，禁止联网 | `analyze <url> --offline` |
+| 强制重新获取远程版本 | `analyze <url> --refresh` |
 | 有哪些已建的仓库 | `repositories` |
 | 看看这个仓库的知识 | `inspect <repository_id>` |
 | 这个 Commit 里 X 存在吗 | `query <repo_id> --commit <sha> --type path --path X` |
@@ -74,6 +77,7 @@ python3 <技能目录>/scripts/sourcelore.py <子命令> [参数]
 - 功能实现、测试覆盖、代码质量等任何非路径类结论
 - 私有仓库与需要认证的采集
 - 全量 Blob 内容分析（仅路径观察）
+- 未登录态的稳定高频采集（无 `GITHUB_TOKEN` 时受 GitHub 60/h 限制）
 - 对外发布（输出恒为内部预览）
 
 ## 错误处理
@@ -95,6 +99,32 @@ python3 <技能目录>/scripts/sourcelore.py <子命令> [参数]
 - 知识卡片保留来源等级、审核状态、Commit 与限制；来源为 `TEST_ONLY` 时必须显式说明
 - 卡片与报告标 `distribution_allowed: false` —— 内部预览，不是正式发布
 
+## 离线优先与缓存（重要）
+
+`analyze` 先做本地查找，再决定是否联网：
+
+| 情况 | 行为 |
+|---|---|
+| `--commit <sha>` 且本地有完整快照 | **直接复用，0 次网络请求** |
+| `--offline` 且本地有 | 复用，明确标"未访问 GitHub" |
+| `--offline` 且本地无 | 报 `OFFLINE_CACHE_MISS`（退出码 3），不伪造 |
+| `--refresh` | 允许联网重新采集 |
+| 无 `--commit`（可变 Branch） | 返回 `branch_current_unknown: true` |
+
+**本地快照只能证明"过去观测过的版本"，不能证明该 Branch 当前仍指向它。**
+已保存的历史版本 ≠ 远程当前最新版本。
+
+## GitHub Token（可选）
+
+设置环境变量 `GITHUB_TOKEN` 可提高配额（未认证 60/h）。
+只从进程环境读取；不写日志、不写资产、不进 Git。
+`--no-token` 可对单次调用强制禁用。
+
+## 限流
+
+被限流时**2 秒内返回**，错误码 `RATE_LIMITED`，附带 `retry_after` 真实秒数与提示。
+**不自动重试、不空等、不绕过。** 建议先用 `--offline` 查本地，或稍后 `--refresh`。
+
 ## 关键判读纪律（务必遵守）
 
 1. **`completeness_status: PARTIAL`** → 未覆盖部分不得判为"不存在"。
@@ -102,3 +132,10 @@ python3 <技能目录>/scripts/sourcelore.py <子命令> [参数]
 3. **`refuted`** → 只对该 Commit 成立，不得外推到别的版本或"该项目不存在"。
 4. **`coverage_state: INSUFFICIENT_EVIDENCE`** → 必须如实告知用户知识库回答不了。
 5. 不要用 Agent 自己的推理去补足 CLI 返回的数据。
+6. **`tree_summary` 才是完整性的权威说明**：
+   `COMPLETE + 1 条` = 已完整枚举、真的只有 1 个条目，不是"采集不全"；
+   `COMPLETE + 0 条` = 已完整枚举、该范围为空；
+   `PARTIAL` = 只有部分条目，不能推断未出现的路径不存在。
+7. `tree_summary.object_types` 区分 blob / directory / submodule / symlink，
+   **不要把 submodule 或目录说成普通文件**。
+8. **库里没有某路径的 Claim ≠ 该路径在 GitHub 不存在**，只能说覆盖不足。

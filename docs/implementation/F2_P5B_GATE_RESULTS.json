@@ -1,0 +1,168 @@
+{
+  "artifact": "F2_P5B_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-05T18:10:53+08:00",
+  "baseline_commit": "eb781f3",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "crosswalk_matches_frozen": true,
+  "verdicts": {
+    "A_OFFLINE_KNOWLEDGE_REUSE": {
+      "status": "DONE",
+      "evidence": "固定 commit + --offline 命中 CACHE_HIT_COMPLETE，network_requests=0，reused=true；两次重复复用后 assets 4→4、snapshots 1→1（不重复写入、不推进）。"
+    },
+    "B_GITHUB_COLLECTION_USABILITY": {
+      "status": "PARTIAL",
+      "evidence": "限流 2 秒内返回 RATE_LIMITED + retry_after 真实秒数 + hint，不绕过不空等。GITHUB_TOKEN 支持已实现（只读进程环境、单处 GitHubClient）。真实 Token 调用未验证 —— 用户未提供 Token。"
+    },
+    "C_MULTI_COMMIT_KNOWLEDGE": {
+      "status": "PARTIAL",
+      "evidence": "确定性双 Commit 集成测试通过：同 repository_id、两 commit_sha、两 snapshot 身份、history 列两版本、version 查询可跑、Claim 身份隔离。真实双 Commit 联网验收 NOT_VERIFIED —— GitHub 限流未取到第二个真实 Commit。"
+    },
+    "D_SKILL_INSTALLATION_SYNC": {
+      "status": "DONE",
+      "evidence": "安装目录与仓库源逐文件字节比对一致；SKILL.md 有效；入口在 /tmp 下可运行；marker 记录 project_root 不含 /tmp。"
+    },
+    "E_NATURAL_LANGUAGE_SKILL_TRIGGER": {
+      "status": "NOT_VERIFIED",
+      "evidence": "本会话无法自发产生「独立用户新会话」来观察自动触发。已产出验收清单 docs/implementation/F2_P5B_NATURAL_TRIGGER_CHECKLIST.md。不把主动调用冒充自动触发。"
+    },
+    "F_DISTRIBUTION_READY": {
+      "status": "NOT_READY",
+      "evidence": "B-1/B-2/B-3 OPEN"
+    }
+  },
+  "index_commit_sha": {
+    "root_cause": "ingest_coordinator build AssetDraft never passes source_snapshot; _index_asset only reads draft.source_snapshot -> column always None",
+    "fix": "_resolve_index_commit_sha: source_snapshot -> payload.commit_sha -> payload.source_snapshot.* (three levels); read-only, no hash change, C-layer rebuildable",
+    "verified": "new asset index commit_sha correct (test_new_asset_has_commit)",
+    "caveat": "historical DB needs rebuild to backfill; not done in this batch (avoid unreviewed bulk write)"
+  },
+  "rate_limit": {
+    "elapsed_s": 2,
+    "error_code": "RATE_LIMITED",
+    "retry_after_real": 2572,
+    "bypass": false,
+    "retry": false
+  },
+  "offline_reuse": {
+    "decision": "CACHE_HIT_COMPLETE",
+    "network_requests": 0,
+    "commit_sha": "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",
+    "idempotent": {
+      "assets_before": 4,
+      "assets_after": 4,
+      "snapshots_before": 1,
+      "snapshots_after": 1
+    },
+    "branch_query": {
+      "branch_current_unknown": true,
+      "assumed_current": false
+    }
+  },
+  "found_defects": [
+    {
+      "id": "D-4",
+      "title": "snapshot payload does not store repo name; offline cannot resolve by owner/repo",
+      "impact": "asset exists but URL lookup returns CACHE_MISS",
+      "fix": "local slug->repository_id map (repo_slugs.json) written on successful collect",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-5",
+      "title": "_index_asset only trusted draft.source_snapshot",
+      "impact": "index_rows.commit_sha always NULL",
+      "fix": "three-level fallback",
+      "status": "FIXED"
+    }
+  ],
+  "tests": {
+    "runtime": {
+      "tests": 45,
+      "ok": true,
+      "exit": 0
+    },
+    "storage": {
+      "tests": 53,
+      "ok": true,
+      "exit": 0
+    },
+    "collector": {
+      "tests": 48,
+      "ok": true,
+      "exit": 0
+    },
+    "facts": {
+      "tests": 44,
+      "ok": true,
+      "exit": 0
+    },
+    "evidence_claims": {
+      "tests": 36,
+      "ok": true,
+      "exit": 0
+    },
+    "lifecycle": {
+      "tests": 142,
+      "ok": true,
+      "exit": 0
+    },
+    "views": {
+      "tests": 50,
+      "ok": true,
+      "exit": 0
+    },
+    "renderer": {
+      "tests": 59,
+      "ok": true,
+      "exit": 0
+    },
+    "research": {
+      "tests": 122,
+      "ok": true,
+      "exit": 0
+    },
+    "skill_interface": {
+      "tests": 69,
+      "ok": true,
+      "exit": 0
+    }
+  },
+  "total_tests": 668,
+  "all_tests_ok": true,
+  "still_open": [
+    {
+      "gate": "REAL_GITHUB_TOKEN_CALL",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "gate": "REAL_SECOND_COMMIT",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "gate": "NATURAL_LANGUAGE_AUTO_TRIGGER",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "gate": "INDEX_BACKFILL_HISTORICAL",
+      "status": "NOT_STARTED"
+    },
+    {
+      "gate": "DISTRIBUTION_READY",
+      "status": "NOT_READY"
+    },
+    {
+      "gate": "Y6-P3",
+      "status": "UNVERIFIED"
+    },
+    {
+      "gate": "Y6-P6",
+      "status": "OPEN"
+    }
+  ],
+  "explicitly_not_claimed": [
+    "offline reuse != branch current version",
+    "synthetic two-commit != real two-commit verification",
+    "token support implemented != real token verified",
+    "skill actively invoked != natural language auto trigger"
+  ]
+}
