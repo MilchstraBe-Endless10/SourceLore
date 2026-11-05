@@ -1,0 +1,117 @@
+{
+  "authorization": {
+    "class": "TEST_ONLY_ISOLATED",
+    "kind": null,
+    "label": "隔离测试授权（TEST_ONLY）",
+    "test_only": true
+  },
+  "card_id": "SL-CARD-43dfffa4f23d0d8137a152abcfaf0791",
+  "card_schema_version": "knowledge-card/1",
+  "claim_id": "SL-CLAIM-21cf0b8bc589b67e4ed83b669f472e0ed34961f3",
+  "claim_scope": {
+    "claim_schema_version": null,
+    "claim_scope": "full_tree_enumeration",
+    "expected_exists": true,
+    "normalized_path": "README"
+  },
+  "claim_type": "repository_path_exists",
+  "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "conflict_indicators": {},
+  "distribution": {
+    "blockers": [
+      {
+        "id": "B-1",
+        "status": "OPEN",
+        "title": "第三方声明措辞（THIRD_PARTY_NOTICES 越界）"
+      },
+      {
+        "id": "B-2",
+        "status": "OPEN",
+        "title": "UPSTREAM-06 法律审查（28 项 copy_permitted=false）"
+      },
+      {
+        "id": "B-3",
+        "status": "OPEN",
+        "title": "CC BY 4.0 署名（SL-CAP-0023 含 6 词原句）"
+      }
+    ],
+    "distribution_allowed": false,
+    "freeze_state": "FROZEN_INTERNAL_RESTRICTED",
+    "note": "知识验证结果与来源许可证是两个独立结论；supported 不推导出 distribution_allowed=true",
+    "scope": "LOCAL_INTERNAL_TEST_ONLY"
+  },
+  "evidence": {
+    "coverage_scope": null,
+    "fact_refs": [
+      "SL-FACT-c281a797d1d1d258750fed7f090c2305a30933f9"
+    ],
+    "local_coverage_only": false,
+    "no_usable_evidence": false,
+    "refs": [
+      "fact:SL-FACT-c281a797d1d1d258750fed7f090c2305a30933f9"
+    ],
+    "snapshot_refs": [
+      "claim:SL-A-5919e76dbf5b6d52256504671900f93a",
+      "verification:SL-A-47b3b0493958fe93f5b80094f97bbbbb"
+    ]
+  },
+  "execution": {
+    "run_ref": null,
+    "stages": null,
+    "status": null
+  },
+  "freshness": {
+    "applicability_scope": null,
+    "baseline_commit_sha": null,
+    "current_applicability": "CURRENT_APPLICABILITY_UNKNOWN",
+    "current_applicability_label": "当前适用性未知",
+    "label": "新鲜度未知",
+    "last_observed_at": null,
+    "meaning": "没有足够证据判断该结论的当前适用性。",
+    "observed_commit_sha": null,
+    "reason_code": null,
+    "requested_ref": null,
+    "source_evidence_conflict": null,
+    "state": "UNKNOWN",
+    "watch_id": null
+  },
+  "history": {
+    "refs": {}
+  },
+  "limitations": [
+    "Research 产物不是知识权威，不得作为 Claim 裁决或发布依据",
+    "仅局部覆盖（快照 completeness=PARTIAL）：未覆盖部分不得判为不存在",
+    "分发门禁仍为 FROZEN_INTERNAL_RESTRICTED，仅限本地内部消费",
+    "找到的 Claim 裁决为 insufficient_evidence；这**不**等于检索失败",
+    "证据不足，不得据此得出肯定或否定结论",
+    "证据不足，不得转写为否定结论"
+  ],
+  "provenance": {
+    "basis": [],
+    "evidence_source_level": null,
+    "execution_source_level": null,
+    "label": "合成夹具",
+    "level": "SYNTHETIC_FIXTURE",
+    "mixed_provenance": false,
+    "snapshot_source_level": null,
+    "snapshot_source_provider": null
+  },
+  "query_scope": "RESEARCH_PACKET",
+  "renderer_version": "renderer/1",
+  "repository_id": "1296269",
+  "review": {
+    "human_authored": null,
+    "label": "待人工审核",
+    "status": "pending_review"
+  },
+  "title": "仓库路径「README」存在",
+  "verification": {
+    "evidence_level": null,
+    "label": "证据不足",
+    "meaning": "证据不足，无法作出支持或反驳裁决。",
+    "rule_version": "path-exists-verifier/v1",
+    "status": "insufficient_evidence",
+    "verification_id": "SL-VERIF-f64352c6e1d0593491dd28fba8f962d78a3622b6"
+  },
+  "view_id": "SL-Q-7d60d02dcf24f3332f18fccec889e04c"
+}

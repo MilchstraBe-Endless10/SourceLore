@@ -1,0 +1,298 @@
+{
+  "artifact": "F2_P4B_GOLD_EVALUATION",
+  "gold_count": 20,
+  "gold_source": "人工定义（tests/research/gold/gold_queries.py）",
+  "not_derived_from_research": true,
+  "has_negative_examples": true,
+  "query_success_rate": 1.0,
+  "citation_accuracy": 1.0,
+  "repo_commit_match_errors": 0,
+  "false_positive_count": 0,
+  "false_negative_count": 0,
+  "false_positive_blocker": false,
+  "false_negative_blocker": false,
+  "correct_abstention": 6,
+  "wrong_abstention": 0,
+  "limitation_retention_rate": 1.0,
+  "determinism_verified": true,
+  "rows": [
+    {
+      "id": "G01_supported",
+      "scenario": "complete_ab",
+      "coverage": "ANSWERABLE_FROM_EXISTING_EVIDENCE",
+      "verdicts": [
+        "supported"
+      ],
+      "checks": {
+        "coverage": true,
+        "verdicts": true,
+        "has_evidence": true
+      },
+      "passed": true,
+      "research_id": "SL-R-6486dee77b1a5400456458b9f51abbb2"
+    },
+    {
+      "id": "G02_refuted",
+      "scenario": "complete_ab",
+      "coverage": "ANSWERABLE_FROM_EXISTING_EVIDENCE",
+      "verdicts": [
+        "refuted"
+      ],
+      "checks": {
+        "coverage": true,
+        "verdicts": true
+      },
+      "passed": true,
+      "research_id": "SL-R-ab7de0fd87f0d42b6d5479359c97974c"
+    },
+    {
+      "id": "G03_insufficient",
+      "scenario": "partial",
+      "coverage": "INSUFFICIENT_EVIDENCE",
+      "verdicts": [
+        "insufficient_evidence"
+      ],
+      "checks": {
+        "coverage": true,
+        "verdicts": true,
+        "partial_limit": true
+      },
+      "passed": true,
+      "research_id": "SL-R-d188493c985f9cfd1306904f47c50eca"
+    },
+    {
+      "id": "G04_no_claim",
+      "scenario": "complete_ab",
+      "coverage": "INSUFFICIENT_EVIDENCE",
+      "verdicts": [],
+      "checks": {
+        "coverage": true,
+        "verdicts": true,
+        "must_not_be": true
+      },
+      "passed": true,
+      "research_id": "SL-R-2115ee9e4e1feeb583efc25d6a0c62d3"
+    },
+    {
+      "id": "G05_partial",
+      "scenario": "partial",
+      "coverage": "INSUFFICIENT_EVIDENCE",
+      "verdicts": [
+        "insufficient_evidence"
+      ],
+      "checks": {
+        "coverage": true,
+        "partial_limit": true
+      },
+      "passed": true,
+      "research_id": "SL-R-d188493c985f9cfd1306904f47c50eca"
+    },
+    {
+      "id": "G06_wrong_commit",
+      "scenario": "complete_ab",
+      "coverage": "INSUFFICIENT_EVIDENCE",
+      "verdicts": [],
+      "checks": {
+        "coverage": true,
+        "verdicts": true,
+        "must_not_be": true
+      },
+      "passed": true,
+      "research_id": "SL-R-bcb4ddb5a055eeb5609fe70b44be6bcb"
+    },
+    {
+      "id": "G07_wrong_repo",
+      "scenario": "complete_ab",
+      "coverage": "INSUFFICIENT_EVIDENCE",
+      "verdicts": [],
+      "checks": {
+        "coverage": true,
+        "verdicts": true
+      },
+      "passed": true,
+      "research_id": "SL-R-a1f46db02ff5e80e94c1ab087881791d"
+    },
+    {
+      "id": "G08_version_compare",
+      "scenario": "complete_ab",
+      "coverage": "PARTIALLY_ANSWERABLE",
+      "verdicts": [
+        "refuted",
+        "supported"
+      ],
+      "checks": {
+        "coverage": true,
+        "two_commits": true,
+        "no_fake_conflict": true
+      },
+      "passed": true,
+      "research_id": "SL-R-c8d4e1572e94222e749c58109d1d44e9"
+    },
+    {
+      "id": "G09_conflict",
+      "scenario": "complete_ab",
+      "coverage": "PARTIALLY_ANSWERABLE",
+      "verdicts": [
+        "refuted",
+        "supported"
+      ],
+      "checks": {
+        "no_fake_conflict": true
+      },
+      "passed": true,
+      "research_id": "SL-R-c8d4e1572e94222e749c58109d1d44e9"
+    },
+    {
+      "id": "G10_test_only",
+      "scenario": "complete_ab",
+      "coverage": "ANSWERABLE_FROM_EXISTING_EVIDENCE",
+      "verdicts": [
+        "supported"
+      ],
+      "checks": {
+        "coverage": true,
+        "verdicts": true,
+        "not_publishable": true
+      },
+      "passed": true,
+      "research_id": "SL-R-6486dee77b1a5400456458b9f51abbb2"
+    },
+    {
+      "id": "G11_mixed_prov",
+      "scenario": "complete_ab",
+      "coverage": "ANSWERABLE_FROM_EXISTING_EVIDENCE",
+      "verdicts": [
+        "supported"
+      ],
+      "checks": {
+        "not_publishable": true,
+        "no_upgrade": true
+      },
+      "passed": true,
+      "research_id": "SL-R-6486dee77b1a5400456458b9f51abbb2"
+    },
+    {
+      "id": "G12_applicability",
+      "scenario": "complete_ab",
+      "coverage": "ANSWERABLE_FROM_EXISTING_EVIDENCE",
+      "verdicts": [
+        "supported"
+      ],
+      "checks": {
+        "no_current_claim": true
+      },
+      "passed": true,
+      "research_id": "SL-R-6486dee77b1a5400456458b9f51abbb2"
+    },
+    {
+      "id": "G13_missing_snapshot",
+      "scenario": "no_snapshot",
+      "coverage": "PARTIALLY_ANSWERABLE",
+      "verdicts": [
+        "supported"
+      ],
+      "checks": {
+        "coverage": true,
+        "chain_flag": true
+      },
+      "passed": true,
+      "research_id": "SL-R-6486dee77b1a5400456458b9f51abbb2"
+    },
+    {
+      "id": "G14_corrupt_evidence",
+      "scenario": "corrupt",
+      "coverage": "RETRIEVAL_ERROR",
+      "verdicts": [],
+      "checks": {
+        "coverage": true,
+        "no_trusted": true,
+        "must_not_be": true
+      },
+      "passed": true,
+      "research_id": "SL-R-547f8d0cbf198223adc871e8847fed1e"
+    },
+    {
+      "id": "G15_index_missing",
+      "scenario": "empty",
+      "coverage": "INSUFFICIENT_EVIDENCE",
+      "verdicts": [],
+      "checks": {
+        "coverage": true,
+        "verdicts": true
+      },
+      "passed": true,
+      "research_id": "SL-R-547f8d0cbf198223adc871e8847fed1e"
+    },
+    {
+      "id": "G16_truncated",
+      "scenario": "complete_ab",
+      "coverage": "ANSWERABLE_FROM_EXISTING_EVIDENCE",
+      "verdicts": [
+        "supported"
+      ],
+      "checks": {
+        "limit": true,
+        "trunc": true
+      },
+      "passed": true,
+      "research_id": "SL-R-e4c17830bd2fd0e0d76e04c89a1a300a"
+    },
+    {
+      "id": "G17_injection",
+      "scenario": "complete_ab",
+      "coverage": "ANSWERABLE_FROM_EXISTING_EVIDENCE",
+      "verdicts": [
+        "supported"
+      ],
+      "checks": {
+        "coverage": true,
+        "verdicts": true,
+        "injection_ignored": true
+      },
+      "passed": true,
+      "research_id": "SL-R-6486dee77b1a5400456458b9f51abbb2"
+    },
+    {
+      "id": "G18_order",
+      "scenario": "complete_ab",
+      "coverage": "ANSWERABLE_FROM_EXISTING_EVIDENCE",
+      "verdicts": [
+        "supported"
+      ],
+      "checks": {
+        "stable": true
+      },
+      "passed": true,
+      "research_id": "SL-R-6486dee77b1a5400456458b9f51abbb2"
+    },
+    {
+      "id": "G19_duplicate",
+      "scenario": "duplicate",
+      "coverage": "ANSWERABLE_FROM_EXISTING_EVIDENCE",
+      "verdicts": [
+        "supported"
+      ],
+      "checks": {
+        "coverage": true,
+        "dedup": true
+      },
+      "passed": true,
+      "research_id": "SL-R-6486dee77b1a5400456458b9f51abbb2"
+    },
+    {
+      "id": "G20_pending_review",
+      "scenario": "complete_ab",
+      "coverage": "ANSWERABLE_FROM_EXISTING_EVIDENCE",
+      "verdicts": [
+        "supported"
+      ],
+      "checks": {
+        "verdicts": true,
+        "review": true
+      },
+      "passed": true,
+      "research_id": "SL-R-6486dee77b1a5400456458b9f51abbb2"
+    }
+  ],
+  "blocked": false
+}

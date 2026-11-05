@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "SourceLore",
-  "updated_at": "2026-11-05T11:52:45+08:00",
+  "updated_at": "2026-11-05T13:05:44+08:00",
   "tasks": [
     {
       "id": "M0-01",
@@ -1322,6 +1322,47 @@
       "blocked_reason": "DISTRIBUTION_READY / FULL_RENDERER / RESEARCH 均未达：B-1/B-2/B-3 全 OPEN；Y6-P3 UNVERIFIED、Y6-P6 OPEN",
       "depends_on": [
         "M2-F2-P3D"
+      ]
+    },
+    {
+      "id": "M2-F2-P4B",
+      "milestone": "M2",
+      "goal": "F2-P4B：确定性研究检索、证据组织与结构化研究包",
+      "inputs": [
+        "docs/implementation/F2_P4B_RESEARCH_CANONICAL_AUDIT.json",
+        "docs/implementation/F2_P4B_RETRIEVAL_CAPABILITY_AUDIT.json"
+      ],
+      "expected_outputs": [
+        "src/research/query_models.py",
+        "src/research/retriever.py",
+        "src/research/evidence_selector.py",
+        "src/research/coverage_evaluator.py",
+        "src/research/research_packet.py",
+        "src/research/research_engine.py",
+        "tests/research/gold/gold_queries.py",
+        "tests/research/gold/evaluate.py",
+        "tools/f2p4b_verify.py",
+        "tools/f2p4b_e2e_replay.py",
+        "docs/implementation/F2_P4B_RESEARCH_CONTRACT.md",
+        "docs/implementation/F2_P4B_EXECUTION_REPORT.md",
+        "docs/implementation/F2_P4B_GATE_RESULTS.json"
+      ],
+      "status": "DONE_RESEARCH_CORE_ONLY",
+      "verification_commands": [
+        "python3 -m unittest discover -s tests/research -t .",
+        "python3 tests/research/gold/evaluate.py",
+        "python3 tools/f2p4b_verify.py"
+      ],
+      "evidence_paths": [
+        "docs/implementation/F2_P4B_VERIFICATION.json",
+        "docs/implementation/F2_P4B_GOLD_EVALUATION.json",
+        "docs/implementation/F2_P4B_E2E_REPLAY.json",
+        "docs/preview/f2p4b/s1_complete/q_path_packet.json"
+      ],
+      "git_commit": null,
+      "blocked_reason": "LLM_RESEARCH_SYNTHESIS / AUTONOMOUS_RESEARCH_AGENT / REAL_HARNESS_AUTHORIZED_E2E / DISTRIBUTION_READY 均未达",
+      "depends_on": [
+        "M2-F2-P4A"
       ]
     }
   ]

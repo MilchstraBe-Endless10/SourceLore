@@ -370,7 +370,9 @@ def main() -> int:
                             # F2-P3D 获批：只读知识视图装配
                             "src/views/", "tests/views/",
                             # F2-P4A 获批：安全渲染引擎（本地内部预览）
-                            "src/renderer/", "tests/renderer/")
+                            "src/renderer/", "tests/renderer/",
+                            # F2-P4B 获批：确定性研究检索与研究包
+                            "src/research/", "tests/research/")
         outside = [str(p.relative_to(ROOT)) for p in code
                    if "__pycache__" not in str(p)
                    and not str(p.relative_to(ROOT)).startswith(allowed_prefixes)]

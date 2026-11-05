@@ -1,0 +1,92 @@
+{
+  "artifact": "F2_P4B_RESEARCH_CANONICAL_AUDIT",
+  "generated_at": "2026-11-05T12:46:54+08:00",
+  "source": "docs/fusion/CAPABILITY_CROSSWALK.json (FROZEN)",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "method": "按 owner_module='Research' 从 canonical_capabilities 提取，不猜 ID",
+  "research_canonicals": [
+    {
+      "id": "SL-CAP-0035",
+      "name": "有界研究阶段流水线（R0–R4 状态机 · 预算 · 可恢复）",
+      "origin_type": "UPSTREAM_DERIVED",
+      "copy_permitted": true,
+      "upstream": [
+        "UPSTREAM-02",
+        "UPSTREAM-05"
+      ],
+      "amendments_count": 3,
+      "description_head": "研究必须走五个有界阶段，每个阶段有各自的输入、最小输出与退出条件，不得把「读完了」当完成：\nR0 定题——明确研究问题、要回答的具体问句、以及本次不研究什么；输出 research_scope。\nR1 内读——只消费 Facts 与 Product 已有的确定性产物，不发起任何采集；输出 internal_gap_list。\nR2 外研——仅针对 R1 列出的缺口，经 Collector 取外部证"
+    },
+    {
+      "id": "SL-CAP-0036",
+      "name": "由广到窄的查询策略与来源去重",
+      "origin_type": "UPSTREAM_DERIVED",
+      "copy_permitted": true,
+      "upstream": [
+        "UPSTREAM-02"
+      ],
+      "amendments_count": 0,
+      "description_head": "外部研究采用由广到窄的查询序列：先取仓库元数据与顶层结构，再取README/文档与发行说明，再取社区信号（Issue/PR/Discussion），最后才做针对性深挖。每一步都必须记录查询式、结果条数与是否命中预期，未命中的查询同样要留痕（negative_result）。\n去重是硬要求：URL 必须规范化（去 utm_* 与追踪参数、统一大小写主机名、去掉尾部斜杠、解析重定向到最终地址），内容必"
+    },
+    {
+      "id": "SL-CAP-0037",
+      "name": "来源类型标记与覆盖记录（优先级不替代验证）",
+      "origin_type": "UPSTREAM_DERIVED",
+      "copy_permitted": true,
+      "upstream": [
+        "UPSTREAM-02",
+        "UPSTREAM-03"
+      ],
+      "amendments_count": 1,
+      "description_head": "每条外部材料必须携带结构化来源标记：source_type 四值（github_api / readme_claim / external_web / inference）、retrieved_at（采集时刻）、verified_against_commit（本次结论所针对的源码快照 SHA，可为空）、coverage（full / partial / truncated），以及 unavaila"
+    },
+    {
+      "id": "SL-CAP-0038",
+      "name": "研究质量状态与结论边界（三态 + 不产报告的许可）",
+      "origin_type": "UPSTREAM_DERIVED",
+      "copy_permitted": false,
+      "upstream": [
+        "UPSTREAM-02",
+        "UPSTREAM-03",
+        "UPSTREAM-04",
+        "UPSTREAM-06"
+      ],
+      "amendments_count": 1,
+      "description_head": "研究产出必须带质量状态，三值且语义互斥：complete（所声明的研究范围已满足本批验收要求）、partial（部分完成，缺口已在 coverage_record 中逐条登记）、facts_only（只完成事实收集，不足以支撑解释性结论）。质量状态描述「研究的完备程度」，不描述「任务是否成功」，两者必须分开记录，不得用质量状态替代执行状态。\n硬规则一：不要求每次研究都产出报告。无新发现、或只完成 "
+    },
+    {
+      "id": "SL-CAP-0039",
+      "name": "内联引用约束与可追溯性（校验器执行而非提示词）",
+      "origin_type": "UPSTREAM_DERIVED",
+      "copy_permitted": true,
+      "upstream": [
+        "UPSTREAM-02"
+      ],
+      "amendments_count": 0,
+      "description_head": "研究产物中每一条实质性陈述必须内联引用到具体来源，引用形式统一为可解析的引用标识，指向 Evidence-Claims 的证据记录 ID。约束分三层：\n其一，陈述级：无引用的陈述只能是 inference 或 unknown，不得以肯定事实语气出现。\n其二，覆盖级：引用必须覆盖结论的关键要素（数字、版本、行为断言），不得只在段落末尾挂一个泛泛的来源链接。\n其三，可校验：引用标识必须能被独立校验器解"
+    }
+  ],
+  "gaps_and_conflicts": [
+    {
+      "gap": "SL-CAP-0036 假定外部采集（GitHub 元数据/README/Issue）",
+      "impact": "本批明令禁止 GitHub 抓取，无法实现该条的查询序列",
+      "handling": "只实现**本地已登记资产**的结构化检索；如实记录该缺口，不冒充已实现外部研究"
+    },
+    {
+      "gap": "SL-CAP-0035 R0-R4 五阶段流水线面向完整研究",
+      "impact": "本批只做最小确定性检索，不实现多轮探索与预算状态机",
+      "handling": "实现 R1 内读那一层的等价物（只消费已有确定性产物，不发起采集）"
+    },
+    {
+      "gap": "SL-CAP-0038 的 copy_permitted=false（含 UPSTREAM-06）",
+      "impact": "该条实现必须完全独立，不得复制其表达",
+      "handling": "独立实现；在输出中不复述该条原文"
+    }
+  ],
+  "must_obey": [
+    "SL-CAP-0037 补充反例：来源优先级只用于取数次序，**不得**用于判定 claim 真伪",
+    "SL-CAP-0038 补充：报告间冲突只做分辨与分流，**不得另建第二套状态机**；结论状态只有 SL-CAP-0028",
+    "SL-CAP-0039：每条实质性陈述必须内联引用 Evidence-Claims 的 ID；无引用的陈述只能是 inference/unknown",
+    "SL-CAP-0035 R1：只消费已有确定性产物，不发起任何采集"
+  ]
+}

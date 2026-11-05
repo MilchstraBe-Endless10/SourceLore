@@ -1,0 +1,62 @@
+{
+  "artifact": "F2_P4B_RETRIEVAL_CAPABILITY_AUDIT",
+  "generated_at": "2026-11-05T12:47:38+08:00",
+  "purpose": "题面 §2：先核验真实检索能力，不假定已有全文检索=语义检索",
+  "storage_read_api": [
+    "get_asset(asset_id, verify=True)",
+    "history(logical_identity, repository_id)",
+    "current_pointer(logical_identity, repository_id)",
+    "same_subject_across_repos(subject_id)"
+  ],
+  "index_rows_schema": [
+    "asset_id",
+    "asset_type",
+    "logical_identity",
+    "repository_id",
+    "subject_id",
+    "commit_sha",
+    "asset_version"
+  ],
+  "measured": {
+    "1_by_repository_id": 31,
+    "2_by_subject_id": 0,
+    "3_by_commit_sha": 0,
+    "4_by_asset_type": 2,
+    "7_history_versions": 0,
+    "index_rows_total": 31,
+    "index_rows_columns": [
+      "asset_id",
+      "asset_type",
+      "logical_identity",
+      "repository_id",
+      "subject_id",
+      "commit_sha",
+      "asset_version"
+    ],
+    "fts_text_searchable": false
+  },
+  "verdict": {
+    "supported": [
+      "按 repository_id",
+      "按 subject_id（部分资产有）",
+      "按 commit_sha（部分资产有）",
+      "按 asset_type",
+      "历史版本（history）"
+    ],
+    "not_available": [
+      "**FTS5 全文检索**：index_rows 只有元数据列，**没有 text/body 列**，所以现有索引**不能**做内容全文检索，更不能做语义检索",
+      "按 claim_type 的索引列（需读资产 payload 后过滤，不是索引级过滤）",
+      "按 verification_status 的索引列（同上）",
+      "Evidence 引用查询（需读 payload 后自行关联）"
+    ],
+    "note": "因此 Research 的检索必须在 index_rows 上做**元数据过滤得到候选集**，再读资产 payload 做结构化过滤；绝不能宣称'有全文检索'或'有语义检索'。"
+  },
+  "limits": {
+    "candidate_cap": 200,
+    "evidence_cap": 50,
+    "max_text": 4000,
+    "policy": "候选集上限必须显式，超出即标记 truncated，不得无界遍历"
+  },
+  "no_new_db": "不新建 Research 权威数据库；只用现有 Storage 只读接口 + index_rows 只读查询",
+  "no_sql_from_model": "SQL 固定为常量模板 + 参数化绑定，**不接受**模型生成的 SQL 字符串"
+}

@@ -1,0 +1,159 @@
+{
+  "artifact": "F2_P4B_E2E_REPLAY",
+  "generated_at": "2026-11-05T13:01:59+08:00",
+  "data_provenance": "HISTORICAL_REAL_DATA + SYNTHETIC_FIXTURE",
+  "live_github_refetch": false,
+  "real_human_authorization": false,
+  "llm_called": false,
+  "authorization_kind_used": "TEST_ONLY",
+  "output_dir": "docs/preview/f2p4b",
+  "note": "研究包与内部预览产物；不是知识权威；未联网、未调用 LLM、未使用真实人类授权",
+  "canonical": "SL-CAP-0035..0039",
+  "scenarios": {
+    "s1_complete": {
+      "name": "s1_complete",
+      "read_only": true,
+      "packets": {
+        "q_path": {
+          "research_id": "SL-R-35b5e08552a07a0bcd55ac16d7013cf5",
+          "packet_status": "PACKET_OK",
+          "coverage": "ANSWERABLE_FROM_EXISTING_EVIDENCE",
+          "content_digest": "64e9587036da6859693b91a1973d2f43dc47b9bcd2203279c938f37cb7c906da",
+          "finding_count": 1,
+          "untrusted_count": 0,
+          "limitation_count": 3
+        },
+        "q_claims": {
+          "research_id": "SL-R-6486dee77b1a5400456458b9f51abbb2",
+          "packet_status": "PACKET_OK",
+          "coverage": "ANSWERABLE_FROM_EXISTING_EVIDENCE",
+          "content_digest": "bda60bd37d2c9777263e59311b3be782e597031a9ef2cca4c3551595f63ff166",
+          "finding_count": 1,
+          "untrusted_count": 0,
+          "limitation_count": 3
+        },
+        "q_version": {
+          "research_id": "SL-R-c8d4e1572e94222e749c58109d1d44e9",
+          "packet_status": "PACKET_PARTIAL",
+          "coverage": "PARTIALLY_ANSWERABLE",
+          "content_digest": "a2695b14f0f26c6779db9002f790d9f35bdb79fd0ed5491f08b5d89342e492a7",
+          "finding_count": 2,
+          "untrusted_count": 0,
+          "limitation_count": 3
+        }
+      },
+      "pre_publish": {
+        "preview_allowed": true,
+        "distribution_allowed": false,
+        "publish_blocked": true
+      },
+      "files": {
+        "q_path_json": "docs/preview/f2p4b/s1_complete/q_path_packet.json",
+        "q_claims_json": "docs/preview/f2p4b/s1_complete/q_claims_packet.json",
+        "q_version_json": "docs/preview/f2p4b/s1_complete/q_version_packet.json",
+        "card_html": "docs/preview/f2p4b/s1_complete/research_card.html",
+        "card_json": "docs/preview/f2p4b/s1_complete/research_card.json"
+      }
+    },
+    "s2_partial": {
+      "name": "s2_partial",
+      "read_only": true,
+      "packets": {
+        "q_path": {
+          "research_id": "SL-R-fb16d4092d463e7533ab216f59b1bbca",
+          "packet_status": "PACKET_INSUFFICIENT",
+          "coverage": "INSUFFICIENT_EVIDENCE",
+          "content_digest": "400742f8610b5ddbc8d5c2792291f8bb0d34f67a55ed804b1326c5c3b95e3da5",
+          "finding_count": 1,
+          "untrusted_count": 0,
+          "limitation_count": 6
+        },
+        "q_claims": {
+          "research_id": "SL-R-d188493c985f9cfd1306904f47c50eca",
+          "packet_status": "PACKET_INSUFFICIENT",
+          "coverage": "INSUFFICIENT_EVIDENCE",
+          "content_digest": "748386a83791fe17414be80af8665a1810bc47473927b016f49a791b51e7eb97",
+          "finding_count": 1,
+          "untrusted_count": 0,
+          "limitation_count": 6
+        },
+        "q_version": {
+          "research_id": "SL-R-403b568f15ad16958502c450ecd666b9",
+          "packet_status": "PACKET_PARTIAL",
+          "coverage": "PARTIALLY_ANSWERABLE",
+          "content_digest": "3fed44cecaacadff7d28d1a46bc9f39a99412501fdde824b488cd6c64ed60b27",
+          "finding_count": 2,
+          "untrusted_count": 0,
+          "limitation_count": 5
+        }
+      },
+      "pre_publish": {
+        "preview_allowed": true,
+        "distribution_allowed": false,
+        "publish_blocked": true
+      },
+      "files": {
+        "q_path_json": "docs/preview/f2p4b/s2_partial/q_path_packet.json",
+        "q_claims_json": "docs/preview/f2p4b/s2_partial/q_claims_packet.json",
+        "q_version_json": "docs/preview/f2p4b/s2_partial/q_version_packet.json",
+        "card_html": "docs/preview/f2p4b/s2_partial/research_card.html",
+        "card_json": "docs/preview/f2p4b/s2_partial/research_card.json"
+      }
+    },
+    "s3_no_snapshot_index": {
+      "name": "s3_no_snapshot_index",
+      "read_only": true,
+      "packets": {
+        "q_path": {
+          "research_id": "SL-R-35b5e08552a07a0bcd55ac16d7013cf5",
+          "packet_status": "PACKET_PARTIAL",
+          "coverage": "PARTIALLY_ANSWERABLE",
+          "content_digest": "d8d0cf1a7c5d53bc12a801d23e7c9daf9a0e9465c336a3d54986e0f4eda635a2",
+          "finding_count": 1,
+          "untrusted_count": 0,
+          "limitation_count": 5
+        },
+        "q_claims": {
+          "research_id": "SL-R-6486dee77b1a5400456458b9f51abbb2",
+          "packet_status": "PACKET_PARTIAL",
+          "coverage": "PARTIALLY_ANSWERABLE",
+          "content_digest": "cf2d1c225056865baa81c99a6a5049b5ca93747e9c42d95dc75671f468d78a81",
+          "finding_count": 1,
+          "untrusted_count": 0,
+          "limitation_count": 5
+        },
+        "q_version": {
+          "research_id": "SL-R-c8d4e1572e94222e749c58109d1d44e9",
+          "packet_status": "PACKET_PARTIAL",
+          "coverage": "PARTIALLY_ANSWERABLE",
+          "content_digest": "8ab54ac2407cbebee04ec77000480e008fdf14b1ce1d6216a62f345be22e62a8",
+          "finding_count": 2,
+          "untrusted_count": 0,
+          "limitation_count": 5
+        }
+      },
+      "pre_publish": {
+        "preview_allowed": true,
+        "distribution_allowed": false,
+        "publish_blocked": true
+      },
+      "files": {
+        "q_path_json": "docs/preview/f2p4b/s3_no_snapshot_index/q_path_packet.json",
+        "q_claims_json": "docs/preview/f2p4b/s3_no_snapshot_index/q_claims_packet.json",
+        "q_version_json": "docs/preview/f2p4b/s3_no_snapshot_index/q_version_packet.json",
+        "card_html": "docs/preview/f2p4b/s3_no_snapshot_index/research_card.html",
+        "card_json": "docs/preview/f2p4b/s3_no_snapshot_index/research_card.json"
+      }
+    }
+  },
+  "gold": {
+    "gold_count": 20,
+    "query_success_rate": 1.0,
+    "false_positive_count": 0,
+    "false_negative_count": 0,
+    "correct_abstention": 6,
+    "wrong_abstention": 0,
+    "blocked": false
+  },
+  "deterministic": true
+}

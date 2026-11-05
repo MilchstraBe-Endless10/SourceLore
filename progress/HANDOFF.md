@@ -2966,3 +2966,67 @@ f2p2b 17/17  f2p2a 15/15  f2p1c 22/22  f2p1b 16/16  f2p1a 22/22  f1d 26/26
 4. 不得推断 Commit 祖先关系；不得把 B 的结论当 C 的有效结论
 5. 证据不足/来源损坏时必须输出"无法给出结论"
 6. 必测：输入顺序无关、确定性、注入防护、分发恒 False
+
+## M2 / F2-P4B 完成（2026-11-05 13:05 +08:00）
+
+### 结论
+
+**`DETERMINISTIC_RESEARCH_CORE = DONE`。**
+`LLM_RESEARCH_SYNTHESIS` / `AUTONOMOUS_RESEARCH_AGENT` / `REAL_HARNESS_AUTHORIZED_E2E`
+未实现、未标记 DONE；`DISTRIBUTION_READY` 保持 `NOT_READY`。
+
+本轮**未调 LLM、未联网 GitHub、无真实人类授权**（TEST_ONLY 为唯一可用类别）。
+
+### Research canonical（从冻结 Crosswalk 实数提取）
+
+`owner_module == "Research"` 共 5 条：`SL-CAP-0035` 有界研究流水线、
+`SL-CAP-0036` 由广到窄查询、`SL-CAP-0037` 来源标记、
+`SL-CAP-0038` 质量状态（**copy_permitted=false**）、`SL-CAP-0039` 内联引用。
+
+三条硬约束直接落码：优先级不判真伪、冲突只分辨不另建状态机、无引用不进可采信集合。
+
+### 检索能力（实测）
+
+`index_rows` 只有元数据列，**无 text/body 列** → FTS5 全文检索**不可用**，
+语义检索**未声称**。检索路径固定为「元数据过滤 → 读 payload → 确定性排序」。
+SQL 只常量模板 + 参数绑定。
+
+### 本批抓出的三个真缺陷
+
+1. 只信 EC 的 `local_coverage_only`，**漏读快照真实 `completeness_status`** → PARTIAL 被漏判
+2. 快照索引消失时仍声称"完全可答" → 降级 `PARTIALLY_ANSWERABLE` + `EVIDENCE_CHAIN_UNVERIFIABLE`
+3. 悬空引用被误报成"没有已登记 Claim" → 区分成 `RETRIEVAL_ERROR` + `EVIDENCE_CORRUPT`
+
+### 两个值得记住的事实
+
+- **A 层真的不可改**：测试里 `UPDATE`/`DELETE assets` 直接抛 `A_LAYER_IMMUTABLE`。
+  损坏场景只能通过 C 层索引制造 —— 这本身是好消息。
+- **`revalidation_run` 的 `asset_version` 是每个 run 自 1 起**，
+  `ORDER BY asset_version DESC` 取不到最新一次运行，必须按 `rowid`。
+  这是 P4A 回归时踩到的真陷阱。
+
+### 离线 Gold
+
+20 项，人工定义（不由实现反推），含真实负例。
+`query_success_rate=1.0`、错误肯定=0、错误否定=0、
+正确 abstention=6、限例保留率=1.0。
+
+### 验证
+
+```
+runtime 45 / storage 53 / collector 48 / facts 44 / EC 36 /
+lifecycle 142 / views 50 / renderer 59 / research 94   全 OK
+f2p4b 25/25  f2p4a 24/24  f2p3d 24/24 … f1d 26/26
+```
+
+571 项 unittest，失败 0。冻结哈希 `42841207…` 未变。
+
+### 下一步：LLM 研究综合（受限），需独立批准
+
+1. 输入仍只来自 Research Packet，不直连数据库、不重跑 EC
+2. LLM 输出只能是候选叙述，**逐句绑定 `finding_id`**；无绑定句子降级 `INFERENCE`
+3. 禁止把 insufficient 写成否定、禁止把 refuted 写成"该软件不存在"
+4. 原样带出 limitations 与 distribution_restrictions
+5. 复用 P4A `safe_html`，不新造拼接
+6. 必测：句级引用覆盖率、越界断言检出率、注入不执行、分发恒 False
+7. Gold 扩展：加"LLM 越界叙述"负例，错误肯定仍是阻断级

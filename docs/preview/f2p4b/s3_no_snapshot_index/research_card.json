@@ -1,0 +1,118 @@
+{
+  "authorization": {
+    "class": "TEST_ONLY_ISOLATED",
+    "kind": null,
+    "label": "隔离测试授权（TEST_ONLY）",
+    "test_only": true
+  },
+  "card_id": "SL-CARD-cb65772ad3a3984361f952958134ca84",
+  "card_schema_version": "knowledge-card/1",
+  "claim_id": "SL-CLAIM-21cf0b8bc589b67e4ed83b669f472e0ed34961f3",
+  "claim_scope": {
+    "claim_schema_version": null,
+    "claim_scope": "full_tree_enumeration",
+    "expected_exists": true,
+    "normalized_path": "README"
+  },
+  "claim_type": "repository_path_exists",
+  "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "conflict_indicators": {},
+  "distribution": {
+    "blockers": [
+      {
+        "id": "B-1",
+        "status": "OPEN",
+        "title": "第三方声明措辞（THIRD_PARTY_NOTICES 越界）"
+      },
+      {
+        "id": "B-2",
+        "status": "OPEN",
+        "title": "UPSTREAM-06 法律审查（28 项 copy_permitted=false）"
+      },
+      {
+        "id": "B-3",
+        "status": "OPEN",
+        "title": "CC BY 4.0 署名（SL-CAP-0023 含 6 词原句）"
+      }
+    ],
+    "distribution_allowed": false,
+    "freeze_state": "FROZEN_INTERNAL_RESTRICTED",
+    "note": "知识验证结果与来源许可证是两个独立结论；supported 不推导出 distribution_allowed=true",
+    "scope": "LOCAL_INTERNAL_TEST_ONLY"
+  },
+  "evidence": {
+    "coverage_scope": null,
+    "fact_refs": [
+      "SL-FACT-c281a797d1d1d258750fed7f090c2305a30933f9"
+    ],
+    "local_coverage_only": false,
+    "no_usable_evidence": false,
+    "refs": [
+      "fact:SL-FACT-c281a797d1d1d258750fed7f090c2305a30933f9",
+      "{\"blob_sha\":\"9999999999999999999999999999999999999999\",\"kind\":\"tree_entry\",\"mode\":\"100644\",\"object_type\":\"blob\",\"path\":\"README\"}",
+      "{\"commit_sha\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"completeness_status\":\"COMPLETE\",\"kind\":\"source_snapshot\",\"manifest_version\":2,\"repository_id\":\"1296269\",\"root_tree_sha\":\"tttttttttttttttttttttttttttttttttttttttt\",\"rule_id\":\"file_path_observation\",\"rule_version\":\"v1\",\"snapshot_asset_id\":\"SL-A-cd80b38225b0b9f50689a173e5318c92\",\"snapshot_logical_identity\":\"SL-SNAP-1616354141f4301b48f89b4ff94b516777c267bf\",\"tree_query_ref\":\"tttttttttttttttttttttttttttttttttttttttt\"}"
+    ],
+    "snapshot_refs": [
+      "claim:SL-A-5919e76dbf5b6d52256504671900f93a",
+      "verification:SL-A-0e8739d22294491f2b267ef3d7444346"
+    ]
+  },
+  "execution": {
+    "run_ref": null,
+    "stages": null,
+    "status": null
+  },
+  "freshness": {
+    "applicability_scope": null,
+    "baseline_commit_sha": null,
+    "current_applicability": "CURRENT_APPLICABILITY_UNKNOWN",
+    "current_applicability_label": "当前适用性未知",
+    "label": "新鲜度未知",
+    "last_observed_at": null,
+    "meaning": "没有足够证据判断该结论的当前适用性。",
+    "observed_commit_sha": null,
+    "reason_code": null,
+    "requested_ref": null,
+    "source_evidence_conflict": null,
+    "state": "UNKNOWN",
+    "watch_id": null
+  },
+  "history": {
+    "refs": {}
+  },
+  "limitations": [
+    "Research 产物不是知识权威，不得作为 Claim 裁决或发布依据",
+    "以下 Commit 的快照完整性无法确认：['aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa']；这不改变 EC 已记录的裁决，但限制研究结论的适用范围",
+    "分发门禁仍为 FROZEN_INTERNAL_RESTRICTED，仅限本地内部消费",
+    "结论仅适用于所记录的版本与证据范围",
+    "证据链完整性无法确认（快照索引缺失或状态未知）：结论仅覆盖已声明的证据范围，不得据此扩展适用范围"
+  ],
+  "provenance": {
+    "basis": [],
+    "evidence_source_level": null,
+    "execution_source_level": null,
+    "label": "合成夹具",
+    "level": "SYNTHETIC_FIXTURE",
+    "mixed_provenance": false,
+    "snapshot_source_level": null,
+    "snapshot_source_provider": null
+  },
+  "query_scope": "RESEARCH_PACKET",
+  "renderer_version": "renderer/1",
+  "repository_id": "1296269",
+  "review": {
+    "human_authored": null,
+    "label": "待人工审核",
+    "status": "pending_review"
+  },
+  "title": "仓库路径「README」存在",
+  "verification": {
+    "evidence_level": null,
+    "label": "支持",
+    "meaning": "在指定范围内，现有经过验证的证据支持该命题。",
+    "rule_version": "path-exists-verifier/v1",
+    "status": "supported",
+    "verification_id": "SL-VERIF-a43846689dd06803b8b2342aa49e2cf400f251bd"
+  },
+  "view_id": "SL-Q-7d60d02dcf24f3332f18fccec889e04c"
+}

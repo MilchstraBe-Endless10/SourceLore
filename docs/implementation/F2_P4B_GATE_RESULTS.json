@@ -1,0 +1,156 @@
+{
+  "artifact": "F2_P4B_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-05T13:04:35+08:00",
+  "principle": "叠加观测，不覆盖 F1-D 冻结快照",
+  "deterministic_research_core": {
+    "verdict": "DONE",
+    "canonical": [
+      "SL-CAP-0035",
+      "SL-CAP-0036",
+      "SL-CAP-0037",
+      "SL-CAP-0038",
+      "SL-CAP-0039"
+    ],
+    "components": [
+      "src/research/query_models.py",
+      "src/research/retriever.py",
+      "src/research/evidence_selector.py",
+      "src/research/coverage_evaluator.py",
+      "src/research/research_packet.py",
+      "src/research/research_engine.py"
+    ],
+    "evidence": "docs/implementation/F2_P4B_VERIFICATION.json",
+    "tests": {
+      "runtime": 45,
+      "storage": 53,
+      "collector": 48,
+      "facts": 44,
+      "evidence_claims": 36,
+      "lifecycle": 142,
+      "views": 50,
+      "renderer": 59,
+      "research": 94
+    },
+    "total_tests": 571
+  },
+  "llm_research_synthesis": {
+    "verdict": "NOT_STARTED",
+    "note": "本轮不实现，未标记 DONE"
+  },
+  "autonomous_research_agent": {
+    "verdict": "NOT_STARTED",
+    "note": "本轮不实现，未标记 DONE"
+  },
+  "real_harness_authorized_e2e": {
+    "verdict": "OPEN",
+    "reason": "Y6-P3 UNVERIFIED、Y6-P6 OPEN；无真实可核验授权通道，TEST_ONLY 为唯一可用类别"
+  },
+  "distribution_ready": {
+    "verdict": "NOT_READY",
+    "blockers": [
+      {
+        "id": "B-1",
+        "status": "OPEN",
+        "title": "第三方声明措辞"
+      },
+      {
+        "id": "B-2",
+        "status": "OPEN",
+        "title": "UPSTREAM-06 法律审查（copy_permitted=false）"
+      },
+      {
+        "id": "B-3",
+        "status": "OPEN",
+        "title": "CC BY 4.0 署名"
+      }
+    ],
+    "preview_allowed": true,
+    "distribution_allowed": false,
+    "publish_blocked": true
+  },
+  "full_renderer": {
+    "verdict": "NOT_STARTED"
+  },
+  "gold_evaluation": {
+    "gold_count": 20,
+    "query_success_rate": 1.0,
+    "false_positive_count": 0,
+    "false_negative_count": 0,
+    "correct_abstention": 6,
+    "wrong_abstention": 0,
+    "limitation_retention_rate": 1.0,
+    "blocked": false,
+    "not_derived_from_research": true,
+    "has_negative_examples": true
+  },
+  "data_provenance": {
+    "baseline": "HISTORICAL_REAL_DATA（P1C 记录）",
+    "target_commit_and_tree": "SYNTHETIC_FIXTURE",
+    "live_github_refetch": false,
+    "real_human_authorization": false,
+    "llm_called": false
+  },
+  "retrieval_capability": {
+    "fts5_fulltext": "NOT_AVAILABLE（index_rows 无 text 列）",
+    "semantic_search": "NOT_AVAILABLE 且未声称",
+    "available": [
+      "repository_id",
+      "asset_type",
+      "subject_id(部分)",
+      "commit_sha(部分)",
+      "历史版本"
+    ],
+    "payload_only": [
+      "claim_type",
+      "verification_status",
+      "evidence 引用"
+    ]
+  },
+  "still_open": [
+    {
+      "gate": "DISTRIBUTION_READY",
+      "status": "NOT_READY"
+    },
+    {
+      "gate": "LLM_RESEARCH_SYNTHESIS",
+      "status": "NOT_STARTED"
+    },
+    {
+      "gate": "AUTONOMOUS_RESEARCH_AGENT",
+      "status": "NOT_STARTED"
+    },
+    {
+      "gate": "REAL_HARNESS_AUTHORIZED_E2E",
+      "status": "OPEN"
+    },
+    {
+      "gate": "FULL_RENDERER",
+      "status": "NOT_STARTED"
+    },
+    {
+      "gate": "正式 Skill 集成",
+      "status": "NOT_STARTED"
+    },
+    {
+      "gate": "B-1/B-2/B-3",
+      "status": "OPEN"
+    },
+    {
+      "gate": "Y6-P3",
+      "status": "UNVERIFIED"
+    },
+    {
+      "gate": "Y6-P6",
+      "status": "OPEN"
+    }
+  ],
+  "explicitly_not_claimed": [
+    "DETERMINISTIC_RESEARCH_CORE DONE 不等于 LLM_RESEARCH_SYNTHESIS DONE",
+    "未实现 Agent 自主研究循环",
+    "preview_allowed=true 不等于 distribution_allowed=true",
+    "研究包不是知识权威，不得作为 Claim 裁决或发布依据",
+    "未联网 GitHub、未调用 LLM、未使用真实人类授权",
+    "FTS5 全文检索不可用，未宣称具备语义检索"
+  ]
+}

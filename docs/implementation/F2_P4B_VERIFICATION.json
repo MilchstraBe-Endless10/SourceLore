@@ -1,0 +1,167 @@
+{
+  "task": "M2 / F2-P4B（确定性研究检索与研究包）",
+  "generated_by": "tools/f2p4b_verify.py",
+  "independent": true,
+  "git_head": "8c8aabf3484be3cd2e7e217122586ffebf20b33a",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "llm_called": false,
+  "live_github_refetch": false,
+  "real_human_authorization": false,
+  "summary": {
+    "passed": 25,
+    "total": 25,
+    "result": "PASS"
+  },
+  "checks": [
+    {
+      "id": "c1",
+      "name": "research 全套测试",
+      "passed": true,
+      "detail": "research 套件 94 项 exit=0"
+    },
+    {
+      "id": "c2",
+      "name": "离线 Gold 全通过",
+      "passed": true,
+      "detail": "Gold 20 项，成功率 1.0"
+    },
+    {
+      "id": "c3",
+      "name": "错误肯定为 0",
+      "passed": true,
+      "detail": "错误肯定=0"
+    },
+    {
+      "id": "c4",
+      "name": "错误否定为 0",
+      "passed": true,
+      "detail": "错误否定=0"
+    },
+    {
+      "id": "c5",
+      "name": "abstention 正确",
+      "passed": true,
+      "detail": "正确abstention=6 错误=0"
+    },
+    {
+      "id": "c6",
+      "name": "Gold 非反推",
+      "passed": true,
+      "detail": "Gold 由人工定义，不由 Research 输出反推"
+    },
+    {
+      "id": "c7",
+      "name": "Gold 含负例",
+      "passed": true,
+      "detail": "Gold 含实际负例"
+    },
+    {
+      "id": "c8",
+      "name": "限制保留率 100%",
+      "passed": true,
+      "detail": "限制保留率=1.0"
+    },
+    {
+      "id": "c9",
+      "name": "只读性（A/B/C/oplog）",
+      "passed": true,
+      "detail": "3 个场景全部只读=True"
+    },
+    {
+      "id": "c10",
+      "name": "无网络客户端",
+      "passed": true,
+      "detail": "网络客户端: 无"
+    },
+    {
+      "id": "c11",
+      "name": "无 LLM 依赖",
+      "passed": true,
+      "detail": "LLM 依赖: 无"
+    },
+    {
+      "id": "c12",
+      "name": "未建第二套数据库",
+      "passed": true,
+      "detail": "新建表: 无"
+    },
+    {
+      "id": "c13",
+      "name": "不重新裁决",
+      "passed": true,
+      "detail": "重新裁决: 无"
+    },
+    {
+      "id": "c14",
+      "name": "无写操作",
+      "passed": true,
+      "detail": "写操作: 无"
+    },
+    {
+      "id": "c15",
+      "name": "Research canonical 对应",
+      "passed": true,
+      "detail": "Research canonical = ['SL-CAP-0035', 'SL-CAP-0036', 'SL-CAP-0037', 'SL-CAP-0038', 'SL-CAP-0039']"
+    },
+    {
+      "id": "c16",
+      "name": "检索能力缺口如实记录",
+      "passed": true,
+      "detail": "明确记录 FTS5 全文检索不可用（index_rows 无 text 列）"
+    },
+    {
+      "id": "c17",
+      "name": "如实报告未联网/无授权/未用 LLM",
+      "passed": true,
+      "detail": "live=False real_auth=False llm=False"
+    },
+    {
+      "id": "c18",
+      "name": "研究包状态齐备",
+      "passed": true,
+      "detail": "研究包状态齐备=True"
+    },
+    {
+      "id": "c19",
+      "name": "预览与分发门禁独立",
+      "passed": true,
+      "detail": "预览允许/分发拒绝=True"
+    },
+    {
+      "id": "c20",
+      "name": "P4A 两项回归核验",
+      "passed": true,
+      "detail": "P4A 回归 12 项 exit=0"
+    },
+    {
+      "id": "c21",
+      "name": "P3C 八阶段真实写入",
+      "passed": true,
+      "detail": "8 阶段均非 PENDING=True；状态=['COMMITTED']"
+    },
+    {
+      "id": "c22",
+      "name": "既有模块全链回归",
+      "passed": true,
+      "detail": "runtime 45 exit=0; storage 53 exit=0; collector 48 exit=0; facts 44 exit=0; evidence_claims 36 exit=0; lifecycle 142 exit=0; views 50 exit=0; renderer 59 exit=0"
+    },
+    {
+      "id": "c23",
+      "name": "F1-D 冻结哈希",
+      "passed": true,
+      "detail": "SHA=42841207b8088c89… 未变=True f1d exit=0"
+    },
+    {
+      "id": "c24",
+      "name": "回放产物齐备",
+      "passed": true,
+      "detail": "回放产物齐备=True（缺失 []）"
+    },
+    {
+      "id": "c25",
+      "name": "输出目录受控",
+      "passed": true,
+      "detail": "输出目录受控=docs/preview/f2p4b"
+    }
+  ]
+}
