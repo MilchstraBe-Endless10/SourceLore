@@ -61,3 +61,19 @@ VALID_EMPTY
 
 ## 测试
 1469 项全绿（保留 1449 + 新增 p6f_capture 20）
+
+## D-60 --resume 是声明式空参数（2026-11-06 18:15）
+`--resume` 只有 argparse 定义，**函数体零引用** —— 和 D-46 `license_known` 同一类缺陷。
+新增 `src/skill_interface/capture_resume_report.py`：只读、零网络，
+按真实 Storage 盘点「已完成 / 缺失 / 需几次请求」，**不信日志**。
+
+实测 is-number：
+```
+net: 0 | repo: 24313173
+已持久化: README.md / package.json / index.js
+缺失: LICENSE  → 需 1 请求
+```
+
+顺手修了一个查询错误：`index_rows` 只有索引列（asset_id/asset_type/logical_identity/
+repository_id/subject_id/commit_sha/asset_version），**payload 在 assets 表**。
+自己拼 SQL 会撞 `no such column: payload_json`；改用已有的 `capture_request_plan._load_snapshot`。

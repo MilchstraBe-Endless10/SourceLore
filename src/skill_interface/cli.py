@@ -172,6 +172,17 @@ def _dispatch(cmd, args):
             store.close()
 
     if cmd == "analyze":
+        # ★ D-60：--resume 原本只在 argparse 里定义了，函数体零引用
+        #   （和 D-46 同一类"声明式空参数"）。现在接到真实恢复盘点。
+        if getattr(args, "resume", False):
+            import capture_resume_report as CRR
+            return emit_ok(CRR.inventory(
+                data_root=root,
+                repository_id=getattr(args, "repository_id", None),
+                commit=getattr(args, "commit", None),
+                url=args.url,
+                content_paths=getattr(args, "content_path", None)))
+
         # --plan 只读：不采集、不写资产、不改 A/B 层
         if getattr(args, "plan", False):
             return emit_ok(_run_capture_plan(
