@@ -1,7 +1,7 @@
 {
   "artifact": "F2_P6E_GATE_RESULTS",
   "schema_version": 1,
-  "generated_at": "2026-11-06T17:20:28+08:00",
+  "generated_at": "2026-11-06T17:30:56+08:00",
   "baseline_commit": "59b3c1d",
   "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
   "crosswalk_matches_frozen": true,
@@ -18,65 +18,112 @@
         "resolve_ref": 1,
         "root_tree": 1,
         "blob": 4
-      },
-      "note": "4 个 blob 各自一次，任务书禁止写「约 5 次」"
+      }
     },
     "dedup_key": "(method, endpoint, identity, repository_id, commit_sha)",
     "stages": 10,
-    "pause_states": 8,
-    "preflight_conditions": [
-      "local_max",
-      "authoritative_remaining >= need+reserve",
-      "not rate-limited"
-    ]
+    "pause_states": 8
+  },
+  "bootstrap": {
+    "status": 200,
+    "observed_remaining": 23,
+    "reset_at": 1793960572,
+    "resource": "core",
+    "note": "D-57 修复后首次可发请求；此前执行器无 bootstrap 动作"
+  },
+  "real_repository": {
+    "owner_repo": "sindresorhus/is-plain-obj",
+    "repository_id": 38923193,
+    "commit_sha": "666df7c10035f7e26f27ec214fe5ae3173435f34",
+    "root_tree_sha": "5d176b98189da7878396a2cffe7590ff35461332",
+    "default_branch": "main",
+    "license": "MIT",
+    "truncated": false,
+    "tree_entries": 13,
+    "target_files": {
+      "license": {
+        "oid": "fa7ceba3eb4a9657a9db7f3ffca4e4e97a9019de",
+        "bytes": 1117
+      },
+      "readme.md": {
+        "oid": "25212c562cd8f1a6101fc1b85c4627b972d59d00",
+        "bytes": 794
+      },
+      "package.json": {
+        "oid": "340b4909a6aaa34afe976df2dddaf2017ea5d672",
+        "bytes": 758
+      },
+      "index.js": {
+        "oid": "92555c3d3916f4868375fa19d7da7ecafe6ee9b3",
+        "bytes": 344
+      }
+    },
+    "case_note": "真实 Tree 为 license/readme.md 小写，预筛的 README.md 不准确，以固定 Commit 为准"
+  },
+  "blob_capture_result": {
+    "captured": [
+      "license",
+      "readme.md",
+      "package.json"
+    ],
+    "oid_match_all": true,
+    "not_captured": [
+      "index.js"
+    ],
+    "stop_reason": "REQUEST_BUDGET_INSUFFICIENT",
+    "bytes_persisted": false,
+    "evidence_level": "REAL_ESM_IDENTITY_VERIFIED_ONLY"
   },
   "rate_limit_observations": [
     {
       "at": "17:08",
-      "remaining": 0,
-      "reset_in_s": 118
+      "remaining": 0
     },
     {
       "at": "17:11",
-      "remaining": 0,
-      "reset_in_s": 860
-    },
-    {
-      "at": "17:14",
-      "remaining": 0,
-      "reset_in_s": 721
-    },
-    {
-      "at": "17:15",
-      "remaining": 0,
-      "reset_in_s": 662
+      "remaining": 0
     },
     {
       "at": "17:19",
-      "remaining": 0,
-      "reset_in_s": 372
+      "remaining": 0
+    },
+    {
+      "at": "17:27",
+      "remaining": 23
+    },
+    {
+      "at": "17:29",
+      "remaining": 0
     }
   ],
-  "rate_limit_interpretation": "reset 每次后移且 remaining 恒 0 → 同 IP 其他客户端持续消耗，非 SourceLore 自身问题",
-  "real_repository": {
-    "status": "NOT_COLLECTED",
-    "reason": "GitHub 匿名配额持续为 0"
-  },
   "defects": [
     {
       "id": "D-55",
       "title": "LICENSE 重复计数",
-      "impact": "target_paths 含 LICENSE 时 license_path 又追加 → blob 节点 5 个而非 4",
       "fix": "dict.fromkeys 去重",
       "status": "FIXED"
     },
     {
       "id": "D-56",
       "title": "计数口径不一致",
-      "impact": "counts() 把 LOCAL_REUSE 计入 certain，by_operation 排除 → 同一计划两个矛盾数",
       "fix": "counts 跳过复用节点",
       "status": "FIXED",
-      "evidence": "全复用 need 5→0；冷启动 2~7"
+      "evidence": "全复用 need 5→0"
+    },
+    {
+      "id": "D-57",
+      "title": "执行器缺 bootstrap 动作",
+      "impact": "计划器允许一次 /rate_limit，执行器没有该动作→首次 can_spend 恒 False，永远发不出请求",
+      "fix": "bootstrap_rate_limit() 只发一次",
+      "status": "FIXED",
+      "evidence": "17:27 bootstrap 拿到 remaining=23"
+    },
+    {
+      "id": "D-58",
+      "title": "字节未即时落盘",
+      "impact": "全采完才写文件，进程中途退出字节全丢——本轮因此损失 3 个已验签 blob",
+      "fix": "每采一个立刻落盘(含 meta json)",
+      "status": "FIXED"
     }
   ],
   "gates": {
@@ -99,16 +146,20 @@
       "status": "DONE"
     },
     "G_REAL_ESM_REPOSITORY_IDENTITY": {
-      "status": "BLOCKED"
+      "status": "PARTIAL",
+      "reason": "身份/Tree/四目标文件 OID 已真实取得；未落库"
     },
     "H_REAL_ESM_AUTHORIZATION": {
-      "status": "BLOCKED"
+      "status": "PARTIAL",
+      "reason": "license blob 已验签(MIT,1117B)但未持久化"
     },
     "I_REAL_ESM_BLOB_CAPTURE": {
-      "status": "BLOCKED"
+      "status": "BLOCKED",
+      "reason": "3/4 采到但字节未落盘"
     },
     "J_REAL_ESM_BLOB_INTEGRITY": {
-      "status": "BLOCKED"
+      "status": "PARTIAL",
+      "reason": "3 个 blob OID 自校验通过；index.js 未采"
     },
     "K_REAL_ESM_SOURCE_FACTS": {
       "status": "BLOCKED"
@@ -124,7 +175,7 @@
     },
     "O_TWO_REAL_REPOSITORY_ISOLATION": {
       "status": "PARTIAL",
-      "reason": "is-number 隔离机制已验证；第二仓库未入库"
+      "reason": "is-number 隔离机制验证；第二仓库未入库"
     },
     "P_OFFLINE_REUSE": {
       "status": "DONE"
@@ -146,11 +197,10 @@
     "preflight_bypass": 0,
     "duplicate_requests": 0,
     "stale_plan_requests": 0,
-    "requests_during_rate_limit": 0,
+    "requests_during_budget_exhaustion": 0,
     "unauthorized_persisted": 0,
     "wrong_oid_accepted": 0,
     "facts_missing_claimed": 0,
-    "verification_missing_claimed": 0,
     "cross_repo_facts": 0,
     "offline_github_access": 0
   },
@@ -240,17 +290,17 @@
       "ok": true
     },
     "acceptance_orchestration": {
-      "tests": 25,
+      "tests": 27,
       "ok": true
     }
   },
-  "total_tests": 1447,
+  "total_tests": 1449,
   "all_tests_ok": true,
   "explicitly_not_claimed": [
     "编排器通过 != 采集成功",
+    "身份取得 != Blob 持久化",
+    "Blob OID 匹配 != Source Facts 成功",
     "PARSE_COMPLETE != 源码事实成功",
-    "0 Fact 不一律为 VALID_EMPTY_RESULT",
-    "单仓库隔离 != 两仓库已验证",
-    "预算预检通过 != 配额已预留"
+    "单仓库隔离 != 两仓库已验证"
   ]
 }

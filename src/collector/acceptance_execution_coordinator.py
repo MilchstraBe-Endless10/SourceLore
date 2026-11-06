@@ -37,6 +37,7 @@ class Coordinator:
         self.dry_run = dry_run
         self.calls = []
         self.reused = []
+        self.bootstrap_used = False
 
     # ── 单次请求 ────────────────────────────────
     def call(self, *, path, purpose, object_identity=None, optional=False):
@@ -85,6 +86,33 @@ class Coordinator:
                 raise BudgetExhausted("RATE_LIMITED:" + kind)
             raise RuntimeError("HTTP %s on %s" % (status, path))
         return json.loads(body.decode()) if body else {}
+
+    def bootstrap_rate_limit(self):
+        """★ D-57：计划器允许至多一次 /rate_limit 诊断，
+        但执行器原本没有这个动作 → 首次 can_spend 恒 False，永远不发第一个请求。
+
+        只发一次，不循环。仍为 0 就交回调用方整批停止。
+        """
+        if self.bootstrap_used:
+            raise BudgetExhausted("BOOTSTRAP_ALREADY_USED")
+        # ★ 这一发不受 can_spend 约束（正是为了取得权威响应头）
+        self.bootstrap_used = True
+        url = API + "/rate_limit"
+        req = urllib.request.Request(url, headers=UA)
+        try:
+            with urllib.request.urlopen(req, timeout=20) as r:
+                status, headers = r.status, dict(r.headers)
+        except urllib.error.HTTPError as e:
+            status, headers = e.code, dict(e.headers)
+        self.budget.consume(headers=headers, status=status, result="BOOTSTRAP",
+                            at=time.time())
+        self.calls.append({"endpoint": "/rate_limit", "purpose": "bootstrap",
+                           "object_identity": None, "status": status,
+                           "success": status == 200, "is_bootstrap": True})
+        return {"status": status,
+                "observed_remaining": self.budget.observed_remaining,
+                "reset_at": self.budget.reset_at,
+                "resource": self.budget.observed_resource}
 
     def summary(self):
         d = self.budget.to_dict()

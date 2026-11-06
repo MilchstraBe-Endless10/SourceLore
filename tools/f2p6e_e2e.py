@@ -23,10 +23,23 @@ def main():
 
     budget = RB.GitHubRequestBudget(
         repository_id="(pending)", commit_sha="(pending)", execution_id="p6e",
-        request_limit=8, reserve_requests=6)
+        # ★ 本批剩余 6，但只需 4 个 blob：显式降低预留到 1（短批次，非永久策略）
+        request_limit=8, reserve_requests=1)
     coord = EC.Coordinator(budget=budget)
 
     out = {"phases": []}
+    # ⓪ bootstrap：至多一次 /rate_limit，取得权威响应头（D-57）
+    boot = coord.bootstrap_rate_limit()
+    out["bootstrap"] = boot
+    print(json.dumps({"bootstrap": boot}, ensure_ascii=False))
+    can, reason = budget.can_spend(1)
+    if not can:
+        out["blocked"] = {"reason": reason, "bootstrap": boot}
+        Path("/tmp/p6e_fetch.json").write_text(
+            json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
+        print(json.dumps({"stopped": reason, **boot}, ensure_ascii=False))
+        return
+
     # ① 身份（4 次：metadata/ref/commit/tree）
     ident = EC.run_repo_identity(coord=coord, owner=OWNER, repo=REPO)
     out["identity"] = ident
@@ -53,6 +66,15 @@ def main():
     # ③ 采 Blob（每个 1 次）
     blobs = {}
     for e in picked:
+        # ★ 预算不足就停，不整批失败——已采的照常落盘
+        _ok, _why = budget.can_spend(1)
+        if not _ok:
+            out["partial_stop"] = {"at": e["path"], "reason": _why,
+                                   "remaining": budget.observed_remaining,
+                                   "reserve": budget.reserve_requests}
+            print(json.dumps({"partial_stop": out["partial_stop"]},
+                             ensure_ascii=False))
+            break
         d = coord.call(path="/repos/%s/%s/git/blobs/%s" % (OWNER, REPO, e["sha"]),
                        purpose="blob:" + e["path"], object_identity=e["sha"])
         raw = base64.b64decode(d["content"].replace("\n", ""))
@@ -66,6 +88,16 @@ def main():
                           "oid_match": ok}, ensure_ascii=False))
         if not ok:
             out["integrity_failed"] = e["path"]
+        # ★ D-58：每采一个立刻落盘。原本全采完才写，进程一中途退出字节全丢。
+        safe = e["path"].replace("/", "__")
+        Path("/tmp/p6e_blob_" + safe).write_bytes(raw)
+        meta_path = Path("/tmp/p6e_blobmeta_%s.json" % safe)
+        meta_path.write_text(json.dumps({
+            "path": e["path"], "oid": oid, "expected": e["sha"],
+            "oid_match": ok, "sha256": hashlib.sha256(raw).hexdigest(),
+            "bytes": len(raw),
+            "repository_id": ident["repository_id"],
+            "commit_sha": ident["commit_sha"]}, ensure_ascii=False), encoding="utf-8")
     out["blobs"] = {k: {kk: vv for kk, vv in v.items() if kk != "raw"}
                     for k, v in blobs.items()}
     out["phases"].append({"phase": "BLOBS_CAPTURED",

@@ -77,3 +77,52 @@ reset 时间每次都在往后推移，remaining 始终 0 ——
 ## 结论
 本轮真实采集（is-plain-obj）按任务书 §6.3 停止。
 G~O 门禁将标 BLOCKED，不用 is-number 冒充第二仓库。
+
+## ★★ 真实采集实况（2026-11-06 17:27-17:29）
+
+### 配额恢复了一小段
+```
+17:27 bootstrap /rate_limit → remaining 23, reset 1793960572
+```
+bootstrap 成功拿到了权威响应头——**这证明 D-57 修对了**：
+之前执行器没有 bootstrap 动作，首次 can_spend 恒 False，永远发不出第一个请求。
+
+### 真实身份已取得（is-plain-obj）
+```
+repository_id  38923193
+commit_sha     666df7c10035f7e26f27ec214fe5ae3173435f34
+root_tree_sha  5d176b98189da7878396a2cffe7590ff35461332
+default_branch main
+license        MIT
+truncated      false
+tree 条目      13
+```
+
+### 真实 Tree 里的目标文件（大小写以下为真实值）
+```
+license       fa7ceba3eb4a9657a9db7f3ffca4e4e97a9019de  1117B
+readme.md     25212c562cd8f1a6101fc1b85c4627b972d59d00   794B
+package.json  340b4909a6aaa34afe976df2dddaf2017ea5d672   758B
+index.js      92555c3d3916f4868375fa19d7da7ecafe6ee9b3   344B
+```
+★ 是 `license`（小写）和 `readme.md`（小写），不是 `LICENSE` / `README.md`。
+**任务书预筛说的是 README.md，真实 Tree 是小写 readme.md —— 以固定 Commit 为准。**
+
+### 采到 3/4，第 4 个被预算挡住
+```
+license       oid_match=True  1117B
+readme.md     oid_match=True   794B
+package.json  oid_match=True   758B
+index.js      → BudgetExhausted（REQUEST_BUDGET_INSUFFICIENT）
+```
+然后 remaining 归零，reset 3216s。
+
+### ★ D-57 / D-58
+- **D-57 bootstrap 缺失**：计划器允许「至多一次 /rate_limit」，执行器没这个动作
+  → 首次 can_spend 恒 False → 永远发不出请求。已加 `bootstrap_rate_limit()`，只发一次。
+- **D-58 字节未即时落盘**：原本全采完才写，进程中途退出字节全丢。
+  本轮因此损失了 3 个已验签的 blob。已改为**每采一个立刻落盘**（含 meta json）。
+
+### 结论
+G~N 仍 BLOCKED。真实身份与 Tree 布局已确认（可写入报告），
+但字节未持久化 → 不构成 BLOB_CAPTURE / SOURCE_FACTS。

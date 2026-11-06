@@ -42,6 +42,23 @@ class TestBudgetModule(unittest.TestCase):
         self.assertEqual(c._duplicates(), 1)
 
 
+class TestBootstrap(unittest.TestCase):
+    """D-57：允许一次 bootstrap，否则首次 can_spend 恒 False。"""
+
+    def test_bootstrap_consumes_and_records(self):
+        b = RB.GitHubRequestBudget(repository_id="r", commit_sha="c",
+                                   execution_id="e", reserve_requests=1)
+        c = EC.Coordinator(budget=b)
+        c.bootstrap_used = True          # 避免真实联网
+        with self.assertRaises(EC.BudgetExhausted):
+            c.bootstrap_rate_limit()     # 第二次必须拒绝
+
+    def test_bootstrap_flag_starts_false(self):
+        b = RB.GitHubRequestBudget(repository_id="r", commit_sha="c",
+                                   execution_id="e")
+        self.assertFalse(EC.Coordinator(budget=b).bootstrap_used)
+
+
 class TestConsistencyIntegration(unittest.TestCase):
     def test_stale_plan_revalidated_then_reuse(self):
         objs_old = [{"file_path": "a.js", "state": "CONTENT_NOT_CAPTURED",
