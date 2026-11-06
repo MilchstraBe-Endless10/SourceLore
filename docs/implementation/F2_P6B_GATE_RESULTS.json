@@ -1,0 +1,303 @@
+{
+  "artifact": "F2_P6B_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-06T13:32:41+08:00",
+  "baseline_commit": "1b1426c",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "crosswalk_matches_frozen": true,
+  "installed_skill": {
+    "launcher_sha256": "cfd254245b1dc043a725cc1fcb99f45586fb2c773776bb351fcaf8a374ebe66a",
+    "skill_md_sha256": "e710729b4a7665005d49fd4fa4765d7082c17a1e46799d01f5f2c0b9408be7fe",
+    "project_root": "/mnt/Server_Data_Center/Team_Flie(团队文件)/GitHub_Knowledge_Base(Gihub知识库)/SourceLore",
+    "install_form": "LOCAL_DEV_LINKED_INSTALL"
+  },
+  "rate_limit_diagnosis": {
+    "kind": "PRIMARY",
+    "endpoint": "https://api.github.com/rate_limit",
+    "status": 200,
+    "authenticated": false,
+    "limit": 60,
+    "remaining": 0,
+    "used": 60,
+    "resource": "core",
+    "reset_utc": "2026-11-06T05:23:11+00:00",
+    "retry_after": null,
+    "request_id": "5DCE:BFD61:281B1E8:83E8ABB:6AED63B6",
+    "secondary_indicators_present": false,
+    "recovery_basis": "响应头 X-RateLimit-Reset，非猜测"
+  },
+  "real_repository": {
+    "full_name": "jonschlinkert/is-number",
+    "repository_id": "24313173",
+    "commit_sha": "98e8ff1da1a89f93d1397a24d7413ed15421c139",
+    "commit_date": "2018-07-04T15:08:51Z",
+    "root_tree_sha": "37450e1347ebbad642393376ee3ef67f576d1109",
+    "tree_entries": 13,
+    "truncated": false,
+    "license": {
+      "spdx": "MIT",
+      "blob_oid": "9af4a67d206f24ecdbb5fdff2839041ca0bbd346",
+      "bytes": 1091,
+      "copyright": "2014-present, Jon Schlinkert",
+      "authorization_kind": "LICENSE_OBSERVED_AND_APPLICABLE",
+      "attribution_required": true
+    },
+    "five_dimensions": {
+      "FETCH": "ALLOW",
+      "PERSIST": "ALLOW",
+      "DERIVE_FACTS": "ALLOW",
+      "PREVIEW": "ALLOW",
+      "DISTRIBUTE": "DENY"
+    },
+    "copy_permitted": false,
+    "distribution_allowed": false
+  },
+  "real_blob_verification": [
+    {
+      "path": "LICENSE",
+      "github_oid": "9af4a67d206f24ecdbb5fdff2839041ca0bbd346",
+      "bytes": 1091,
+      "oid_selfcheck": true,
+      "local_git_match": true
+    },
+    {
+      "path": "README.md",
+      "github_oid": "eb8149e8cf5f148f16ba21b2d5b452e19f984696",
+      "bytes": 6514,
+      "oid_selfcheck": true,
+      "local_git_match": true
+    },
+    {
+      "path": "package.json",
+      "github_oid": "3715072609d61a010bff7116331b71f04206af96",
+      "bytes": 1599,
+      "oid_selfcheck": true,
+      "local_git_match": true
+    },
+    {
+      "path": "index.js",
+      "github_oid": "27f19b757f7c1186b92c405a213bf0dd9b6cbe95",
+      "bytes": 411,
+      "oid_selfcheck": true,
+      "local_git_match": false,
+      "note": "限流前抓到，未入对象库"
+    }
+  ],
+  "local_object_store_commit": "41dee5ac90993da43b1b253cb393ef97d8dddd5a",
+  "knowledge_assets": {
+    "repository_snapshot": 1,
+    "captured_blob_content": 2,
+    "extracted_fact": 51,
+    "claim_candidate": 5,
+    "claim_verification": 5
+  },
+  "query": {
+    "type": "content",
+    "path": "README.md",
+    "state": "SUPPORTED",
+    "network_requests": 0,
+    "claims": 3,
+    "verifications": 3,
+    "all_supported": true
+  },
+  "card": {
+    "bytes": 16613,
+    "type": "README_CONTENT_CARD",
+    "distribution_allowed": false,
+    "copy_permitted": false
+  },
+  "offline_reuse": {
+    "second_run_network": 0,
+    "asset_fingerprint_unchanged": true,
+    "no_duplicate_snapshot": true,
+    "no_duplicate_fact": true
+  },
+  "gates": {
+    "A_INSTALLED_SKILL_INTEGRITY": {
+      "status": "DONE"
+    },
+    "B_LOCAL_DEV_INSTALL_PROVENANCE": {
+      "status": "DONE"
+    },
+    "C_LOCAL_PRODUCT_E2E_REGRESSION": {
+      "status": "DONE"
+    },
+    "D_GITHUB_RATE_LIMIT_DIAGNOSIS": {
+      "status": "DONE"
+    },
+    "E_REAL_GITHUB_REPOSITORY_AUTHORIZATION": {
+      "status": "DONE"
+    },
+    "F_REAL_GITHUB_COLLECTION": {
+      "status": "PARTIAL",
+      "note": "commit/tree 已采；index.js blob 抓取被限流挡，服务端 blob 路径未全程跑完"
+    },
+    "G_REAL_GITHUB_CONTENT_PERSISTENCE": {
+      "status": "DONE"
+    },
+    "H_REAL_GITHUB_FACTS_AND_CLAIMS": {
+      "status": "DONE"
+    },
+    "I_REAL_GITHUB_INSTALLED_SKILL_QUERY": {
+      "status": "DONE"
+    },
+    "J_REAL_GITHUB_KNOWLEDGE_CARDS": {
+      "status": "DONE"
+    },
+    "K_REAL_GITHUB_OFFLINE_REUSE": {
+      "status": "DONE"
+    },
+    "L_NATURAL_LANGUAGE_SKILL_DISCOVERY": {
+      "status": "NOT_VERIFIED"
+    },
+    "M_NATURAL_LANGUAGE_AUTO_TRIGGER": {
+      "status": "NOT_VERIFIED"
+    },
+    "N_D42_SUCCESS_CONTRACT_REGRESSION": {
+      "status": "DONE"
+    },
+    "O_CROSS_MODULE_SCHEMA_CONTRACT": {
+      "status": "DONE"
+    },
+    "P_PATH_AND_STORAGE_SECURITY": {
+      "status": "DONE"
+    },
+    "Q_MULTI_COMMIT_ISOLATION": {
+      "status": "DONE"
+    },
+    "R_F1D_FREEZE_INTEGRITY": {
+      "status": "DONE"
+    },
+    "S_DISTRIBUTION_READY": {
+      "status": "NOT_READY"
+    }
+  },
+  "defects": [
+    {
+      "id": "D-46",
+      "title": "license_known 是声明式空参数",
+      "impact": "CLI 有开关、签名有参数、函数体零引用 → 带不带都一样，FETCH/PERSIST 全 UNKNOWN",
+      "fix": "接线到 LICENSE_OBSERVED_AND_APPLICABLE",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-47",
+      "title": "内容链路只入库不建命题",
+      "impact": "内容事实入 A 层但无 Claim/Verification → 查询恒 INSUFFICIENT",
+      "fix": "为每条内容事实建命题并用 verify_content_claim 裁决",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-48",
+      "title": "查询侧缺 normalized_parameters/repository_id",
+      "impact": "裁决 _matches 读嵌套结构，查询给扁平 → 恒 False",
+      "fix": "查询输出同时给两种形态",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-49",
+      "title": "ingest_content_facts 的 written 不含 subject",
+      "impact": "建命题拿不到主体，bind={'level': None}",
+      "fix": "改用已入库事实自身的 subject 建组",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-50",
+      "title": "循环内变量被覆盖",
+      "impact": "rid 被覆盖成空串 → 全部落进 else: continue，静默零命题",
+      "fix": "删除覆盖语句",
+      "status": "FIXED"
+    }
+  ],
+  "success_contract": {
+    "levels": 8,
+    "command_ok_is_success": false,
+    "highest_reached": "KNOWLEDGE_QUERYABLE"
+  },
+  "tests": {
+    "runtime": {
+      "tests": 45,
+      "ok": true
+    },
+    "storage": {
+      "tests": 53,
+      "ok": true
+    },
+    "collector": {
+      "tests": 48,
+      "ok": true
+    },
+    "facts": {
+      "tests": 44,
+      "ok": true
+    },
+    "evidence_claims": {
+      "tests": 36,
+      "ok": true
+    },
+    "lifecycle": {
+      "tests": 142,
+      "ok": true
+    },
+    "views": {
+      "tests": 50,
+      "ok": true
+    },
+    "renderer": {
+      "tests": 59,
+      "ok": true
+    },
+    "research": {
+      "tests": 122,
+      "ok": true
+    },
+    "skill_interface": {
+      "tests": 69,
+      "ok": true
+    },
+    "content": {
+      "tests": 77,
+      "ok": true
+    },
+    "blob_capture": {
+      "tests": 59,
+      "ok": true
+    },
+    "content_persistence": {
+      "tests": 63,
+      "ok": true
+    },
+    "content_skill": {
+      "tests": 49,
+      "ok": true
+    },
+    "source_analysis": {
+      "tests": 88,
+      "ok": true
+    },
+    "js_ts_analysis": {
+      "tests": 72,
+      "ok": true
+    },
+    "module_resolution": {
+      "tests": 148,
+      "ok": true
+    },
+    "ts_projects": {
+      "tests": 136,
+      "ok": true
+    },
+    "product_acceptance": {
+      "tests": 21,
+      "ok": true
+    }
+  },
+  "total_tests": 1381,
+  "all_tests_ok": true,
+  "explicitly_not_claimed": [
+    "本地开发安装 != 发行包",
+    "真实字节入库 != 服务端 blob 抓取路径跑通",
+    "公开可访问 != 允许分发",
+    "content supported != 项目测试通过"
+  ]
+}

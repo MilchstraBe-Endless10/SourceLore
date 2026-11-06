@@ -45,6 +45,9 @@ def capture(*, repository_id, commit_sha, data_root=None, paths=None,
         eligible, blocked = POL.candidate_paths(entries, explicit=paths)
 
         report = {
+        "authorization_basis": (POL.AUTH_LICENSE_OBSERVED if license_known
+                                and not authorization_kind
+                                else authorization_kind),
             "ok": True, "repository_id": repository_id,
             "commit_sha": commit_sha, "offline": offline,
             "selected_paths": len(paths or []), "eligible_paths": len(eligible),
@@ -91,12 +94,17 @@ def capture(*, repository_id, commit_sha, data_root=None, paths=None,
 
             otype = entry.get("type") or "blob"
             # ★ F2-P5E：五维分别判，不再用含糊的单一状态
+            # ★ D-46：license_known 原本是"声明式空参数"，接收但从不使用。
+            #   现在把它落到真实授权依据 LICENSE_OBSERVED_AND_APPLICABLE。
             authz = None
-            if authorization_kind:
+            _kind = authorization_kind
+            if not _kind and license_known:
+                _kind = POL.AUTH_LICENSE_OBSERVED
+            if _kind:
                 authz = POL.build_authorization_ref(
-                    authorization_kind=authorization_kind,
+                    authorization_kind=_kind,
                     repository_id=repository_id, scope=[fp],
-                    source="cli-declared",
+                    source="cli-declared" if authorization_kind else "cli-license-known",
                     verification_status=POL.VERIFIED)
             dec = POL.evaluate_all(repository_id=repository_id,
                                    commit_sha=commit_sha, file_path=fp,

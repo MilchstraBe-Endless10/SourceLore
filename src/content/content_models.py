@@ -13,7 +13,12 @@ OBSERVATION_SCHEMA = "file-content-observation/1"
 SUPPORTED_SCHEMA = "content-support/1"
 
 # 内容可用性（不是裁决状态）
+# ★ 注意：这一层是**解析层**，与存储层 blob_content_store.AVAILABLE_VERIFIED
+#   ("CONTENT_AVAILABLE_VERIFIED") 是**两套不同的状态词**，不可互相代入。
 C_AVAILABLE = "CONTENT_AVAILABLE"
+
+# ★ 全部合法解析可用状态（供调用方交叉校验）
+CONTENT_USABLE_STATES = frozenset({"CONTENT_AVAILABLE"})
 C_NOT_CAPTURED = "CONTENT_NOT_CAPTURED"
 C_TOO_LARGE = "BLOB_TOO_LARGE"
 C_BINARY = "BINARY_CONTENT"

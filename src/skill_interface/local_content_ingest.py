@@ -129,9 +129,17 @@ def ingest_local_content(store, *, data_root, repository_id, commit_sha,
         except Exception as e:
             struct_status = f"STRUCT_FAILED:{type(e).__name__}"
 
+        # ★ 内容命题 + 验证：内容事实必须有自己的 Claim/Verification，
+        #   否则查询会（正确地）判 INSUFFICIENT_EVIDENCE —— P6A 只建了路径命题。
+        content_claims = _build_content_claims(
+            store, repository_id=repository_id, commit_sha=commit_sha,
+            file_path=path, extraction=fr, facts=ex.get("facts") or [],
+            snapshot_asset_id=snapshot_asset_id, evidence_refs=[])
+
         results.append({
             "file_path": path,
             "status": "EXTRACTED",
+            "content_claims": content_claims,
             "content_asset_id": ing["content_asset_id"],
             "content_sha256": ing["content_sha256"],
             "facts": len(fr.get("written") or []),
@@ -258,4 +266,114 @@ def _ingest_config_and_relations(store, *, data_root, repository_id, commit_sha,
                     target_files=[f]))
     pr_res = TPI.ingest_project_bundle(store, bundle=bundle, memberships=ms)
     out["project_facts"] = len(pr_res.get("written") or [])
+    return out
+
+
+def _build_content_claims(store, *, repository_id, commit_sha, file_path,
+                          extraction, facts, snapshot_asset_id, evidence_refs):
+    """为内容事实建立命题与验证。
+
+    ★ build_content_claim 返回 (claim, subject_binding)，裁决必须用
+      verify_content_claim 并显式传 subject_binding —— Claim 模型不存它。
+    """
+    import ec_models as M
+    import content_claim_adapter as CCA
+    import content_claim_ingest as CCI
+
+    written = extraction.get("written") or []
+    out = {"claims": 0, "verifications": 0, "ids": [], "errors": []}
+    if not written:
+        return out
+
+    # 一个文件只建一条主命题（同类同主体去重）
+    # ★ 直接用**已入库事实自身**的 subject 建组 —— 不依赖 written/原始 facts 的 subject，
+    #   它们是两种不同对象，id 与字段都不保证对齐（D-49）。
+    import content_knowledge_query as _CKQ
+    stored = _CKQ.query_content_facts(
+        store=store, repository_id=repository_id,
+        commit_sha=commit_sha, file_path=file_path, limit=500)
+    groups = {}
+    for f in stored:
+        rid = f.get("rule_id") or ""
+        subj = f.get("subject") or {}
+        w = {"fact_id": f.get("fact_id")}
+        if rid not in ("README_HEADING_EXISTS", "MANIFEST_DEPENDENCY_DECLARED",
+                       "MANIFEST_FIELD_PRESENT"):
+            continue
+        # ★ 不要在这里重新取 rid：w 只有 fact_id，会把 rid 覆盖成空串，
+        #   导致下面所有分支都落进 else: continue（D-50，静默零命题）。
+
+        if rid == "README_HEADING_EXISTS":
+            ctype = M.CLAIM_README_HEADING
+            # ★ 用事实自身的 level，不硬编码 1 —— 否则只有一级标题能命中
+            csubj = {"level": subj.get("level")}
+        elif rid == "MANIFEST_DEPENDENCY_DECLARED":
+            ctype = M.CLAIM_MANIFEST_DEP
+            csubj = {"dependency_name": subj.get("dependency_name"),
+                     "dependency_scope": subj.get("dependency_scope")}
+        elif rid == "MANIFEST_FIELD_PRESENT":
+            ctype = M.CLAIM_MANIFEST_FIELD
+            csubj = {"field_name": subj.get("field_name")}
+        else:
+            continue
+        # ★ 每个 (类型, 主体) 组合独立成组；标题按 level+title 归组，
+        #   避免不同标题挤进同一组后只拿第一条事实去裁决。
+        if ctype == M.CLAIM_README_HEADING:
+            key = (ctype, repr(sorted((k, str(v)) for k, v in csubj.items())),
+                   str(subj.get("title")))
+        else:
+            key = (ctype, repr(sorted((k, str(v)) for k, v in csubj.items())))
+        groups.setdefault(key, {"ctype": ctype, "csubject": csubj,
+                                "fids": [], "hashes": []})
+        groups[key]["fids"].append(w.get("fact_id"))
+        groups[key]["hashes"].append(w.get("content_hash"))
+
+    for key, g in groups.items():
+        try:
+            claim, binding = CCA.build_content_claim(
+                claim_type=g["ctype"], repository_id=repository_id,
+                commit_sha=commit_sha, file_path=file_path,
+                subject=g["csubject"], expected_present=True,
+                claim_origin="skill_analyze_content")
+            # ★ 必须传**真实事实对象**（rule_id/normalized_parameters/
+            #   commit_sha/repository_id），否则 _matches 一律 False ——
+            #   这正是"逻辑存在但事实没传对"的静默失败。
+            real_facts = stored
+            pick = [f for f in real_facts
+                    if f.get("rule_id") == CCA._rule_of(g["ctype"])] or real_facts
+            verdict = CCA.verify_content_claim(
+                claim=claim, facts=pick,
+                content_available=True, completeness_status="COMPLETE",
+                parser_ok=True, subject_binding=binding)
+            if verdict.get("status") != "supported":
+                # ★ 带上第一条候选事实的关键字段，便于定位契约差异
+                probe = {}
+                if pick:
+                    f0 = pick[0]
+                    np0 = f0.get("normalized_parameters") or {}
+                    probe = {"rule": f0.get("rule_id"),
+                             "np_file": np0.get("file_path"),
+                             "np_subj": np0.get("subject"),
+                             "commit": str(f0.get("commit_sha"))[:12],
+                             "repo": f0.get("repository_id")}
+                out["errors"].append(
+                    f"NOT_SUPPORTED {g['ctype']}: {verdict.get('reason_code')} "
+                    f"(候选 {len(pick)}/{len(real_facts)}) bind={binding} "
+                    f"claim_commit={str(commit_sha)[:12]} "
+                    f"claim_repo={repository_id} probe={probe}")
+                continue
+            r = CCI.ingest_content_claim(
+                store, claim=claim, verdict=verdict,
+                facts_payload=[{"content_hash": h} for h in g["hashes"]],
+                repository_id=repository_id, evidence_refs=evidence_refs)
+            if r.get("ok"):
+                out["claims"] += 1
+                out["verifications"] += 1
+                out["ids"].append({"claim_id": r["claim_id"],
+                                   "verification_id": r["verification_id"],
+                                   "status": r["status"]})
+            else:
+                out["errors"].append(f"{r.get('stage')}: {r.get('error')}")
+        except Exception as e:
+            out["errors"].append(f"{type(e).__name__}: {e}")
     return out

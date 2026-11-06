@@ -45,6 +45,11 @@ def query_content_facts(*, store, repository_id, commit_sha=None,
             "rule_id": pl.get("rule_id"),
             "rule_version": pl.get("rule_version"),
             "commit_sha": pl.get("commit_sha"),
+            # ★ D-47：裁决侧 _matches 读 normalized_parameters 与 repository_id，
+            #   查询侧原只给扁平字段 → 永远 False。这里同时给两种形态。
+            "repository_id": repository_id,
+            "normalized_parameters": {"file_path": np.get("file_path"),
+                                     "subject": np.get("subject")},
             "file_path": np.get("file_path"),
             "subject": np.get("subject"),
             "git_blob_oid": np.get("git_blob_oid"),

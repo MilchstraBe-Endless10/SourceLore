@@ -409,6 +409,7 @@ def analyze_local(*, repo_path, ref="HEAD", data_root=None,
 
         # ★ 内容级链路：捕获字节 → 内容资产 → 内容事实
         import local_content_ingest as LCI
+        import success_contract as SC
         content_results = LCI.ingest_local_content(
             store, data_root=root, repository_id=repo_id,
             commit_sha=commit_sha, snapshot_asset_id=sid,
@@ -446,6 +447,23 @@ def analyze_local(*, repo_path, ref="HEAD", data_root=None,
             "facts": facts, "claims": claims, "verifications": verifs,
             "content": content_results,
             "content_facts_total": content_facts_total,
+            "struct_facts_total": sum(r.get("struct_facts") or 0
+                                      for r in content_results),
+            # ★ D-42 防护：ok=True 只代表 COMMAND_EXECUTED，知识是否真的建立看契约
+            "success_contract": SC.build_contract(
+                executed=True, snapshot=True,
+                content_captured=bool(content_facts_total),
+                parsing=bool(content_facts_total),
+                facts=content_facts_total,
+                claims=len(claims), verifications=len(verifs),
+                queryable=bool(content_facts_total or facts),
+                coverage={
+                    "files_total": len(content_results),
+                    "files_extracted": sum(1 for r in content_results
+                                           if r.get("status") == "EXTRACTED"),
+                    "files_skipped": [r["file_path"] for r in content_results
+                                      if r.get("status") != "EXTRACTED"],
+                }),
             "limitations": [
                 "本地 Git 采集：零网络，只读对象库",
                 "不执行仓库代码、不跑安装脚本或测试",
