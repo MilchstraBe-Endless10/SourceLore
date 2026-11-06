@@ -123,7 +123,7 @@ def ingest_claim(store, claim, *, expected_version=None) -> dict:
 
 
 def ingest_verification(store, verif, *, repository_id: str,
-                        expected_version=None) -> dict:
+                        commit_sha=None, expected_version=None) -> dict:
     """写入一次评估。
 
     verification_id 是 logical_identity —— 同证据同规则同 id → 幂等。
@@ -143,11 +143,19 @@ def ingest_verification(store, verif, *, repository_id: str,
                 "detail": "同评估已存在，未重复写入"}
 
     try:
+        # ★ D-67：Verification.to_dict() 不含 commit_sha，_index_asset 的三级回退
+        #   因此全落空 → index_rows.commit_sha 恒为 NULL → 查询按 commit 过滤读不回来。
+        #   这里显式构造 SourceSnapshot 走回退①。
+        #   ★ 只影响 C 层索引，不改 payload、不改资产哈希、不动权威正文。
+        _snap = None
+        if commit_sha:
+            import asset_models as _AM
+            _snap = _AM.SourceSnapshot(commit_sha=str(commit_sha))
         draft = AssetDraft(asset_type=VERIF_ASSET_TYPE,
                            logical_identity=verif.verification_id,
                            repository_id=repository_id,
                            payload=payload, asset_version=1,
-                           operation_id=op)
+                           operation_id=op, source_snapshot=_snap)
     except ModelError as e:
         return {"ok": False, "state": REJECTED, "detail": str(e)}
     res = store.append_asset_and_advance(draft, expected_version=expected_version,

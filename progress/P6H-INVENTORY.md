@@ -108,3 +108,23 @@ B. 调用方 `content_claim_ingest.ingest_content_claim` 已有 claim，从 clai
 C. 历史 13 条：写一次性索引补全（只 UPDATE index_rows，C 层可重建，不改 assets）。
 D. D-68：`rebuild_index` 从 assets 读 commit_sha 仍是 NULL → **仍禁止调用**，
    除非同时改成也用 payload 回退。
+
+## D-67 修复完成（2026-11-06 22:38）
+代码：`ingest_verification(..., commit_sha=None)` 构造 SourceSnapshot 走回退①；
+      `content_claim_ingest` 从 claim.commit_sha 传入。
+历史：`tools/f2p6h_backfill_commit.py` 只 UPDATE index_rows（C 层），12/13 补全。
+
+补全后索引填充率：
+```
+captured_blob_content  4/4   claim_candidate 19/19
+claim_verification    12/13  extracted_fact 22/22   repository_snapshot 1/1
+```
+那 1 条阻断是 **P6G 负例 F（跨仓库）** —— 它的 claim 属于 repo 24313173，
+本库无该 repo 的 claim 索引。**阻断是正确行为**：它本就该 insufficient，
+强行补全等于伪造证据。
+
+查询验证：4 条事实 OBSERVED_SOURCE_FACT → **SUPPORTED_SOURCE_CLAIM**，
+带回真实 Claim/Verification ID，net=0。
+
+负例回归：D/E/F/G 全部仍 insufficient_evidence（NO_MATCHING_FACT）。
+幂等：再跑补全 → 可补 0 条。

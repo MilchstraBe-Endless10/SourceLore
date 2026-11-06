@@ -84,8 +84,10 @@ def ingest_content_claim(store, *, claim, verdict, facts_payload,
         counter_fact_ids=fid if status == "refuted" else [],
         local_coverage_only=True,
     )
+    # ★ D-67：把 claim 的 commit_sha 传下去，使 Verification 索引行能填 commit
     vres = VS.ingest_verification(store, verif,
-                                  repository_id=str(repository_id))
+                                  repository_id=str(repository_id),
+                                  commit_sha=str(claim.commit_sha))
     if not vres.get("ok"):
         return {"ok": False, "stage": "verification",
                 "error": vres.get("error") or vres.get("error_code"),
