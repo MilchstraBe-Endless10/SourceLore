@@ -190,6 +190,7 @@ def _dispatch(cmd, args):
                 repository_id=getattr(args, "repository_id", None),
                 commit=getattr(args, "commit", None),
                 content_paths=getattr(args, "content_path", None),
+                url=args.url,
                 request_limit=getattr(args, "request_limit", None),
                 reserve=getattr(args, "reserve_requests", None)))
 
@@ -417,6 +418,7 @@ def _preflight_budget(*, root, repository_id, commit_sha, content_paths,
 
 
 def _run_capture_plan(*, data_root, repository_id, commit, content_paths,
+                      url=None,
                       request_limit=None, reserve=None):
     """只读缺口盘点。绝不联网、绝不写库。"""
     import capture_request_plan as PLAN
@@ -432,15 +434,40 @@ def _run_capture_plan(*, data_root, repository_id, commit, content_paths,
     store = KnowledgeStore(str(p), create=False)
     try:
         if repository_id is None:
-            rows = store.conn.execute(
-                "SELECT DISTINCT repository_id FROM index_rows "
-                "WHERE asset_type='repository_snapshot'").fetchall()
-            if len(rows) != 1:
-                raise SkillError(
-                    "存在多个仓库，请显式指定 --repository-id",
-                    code="AMBIGUOUS_REPOSITORY", exit_code=3,
-                    detail={"candidates": [r["repository_id"] for r in rows]})
-            repository_id = rows[0]["repository_id"]
+            # ★ --plan 是给「这个 URL」出计划，不是给本地库里的仓库出计划。
+            #   先按 URL 的 owner/name 精确解析；解析不到就明说尚未采集，
+            #   不再回退到「库里唯一仓库」或报 AMBIGUOUS（那会答非所问）。
+            if url:
+                try:
+                    import analyze as _A
+                    owner, name = _parse_github_url_owner_name(url)
+                    ids = _A._repo_ids_for(store, owner, name, data_root)
+                    if not ids:
+                        raise SkillError(
+                            "该仓库尚未建立知识库，请先运行 analyze 采集",
+                            code="REPOSITORY_NOT_REGISTERED", exit_code=3,
+                            detail={"requested": "%s/%s" % (owner, name)})
+                    c = sorted(ids)
+                    if len(c) > 1:
+                        raise SkillError(
+                            "该 URL 对应多个 repository_id，请显式指定 --repository-id",
+                            code="AMBIGUOUS_REPOSITORY", exit_code=3,
+                            detail={"candidates": c})
+                    repository_id = c[0]
+                except SkillError:
+                    raise
+                except Exception:
+                    pass
+            if repository_id is None:
+                rows = store.conn.execute(
+                    "SELECT DISTINCT repository_id FROM index_rows "
+                    "WHERE asset_type='repository_snapshot'").fetchall()
+                if len(rows) != 1:
+                    raise SkillError(
+                        "存在多个仓库，请显式指定 --repository-id",
+                        code="AMBIGUOUS_REPOSITORY", exit_code=3,
+                        detail={"candidates": [r["repository_id"] for r in rows]})
+                repository_id = rows[0]["repository_id"]
 
         commit_sha = commit or _latest_commit(store, repository_id)
         inv = PLAN.build_gap_inventory(
@@ -481,3 +508,13 @@ def _latest_commit(store, repository_id):
     if best is None:
         raise SkillError("该仓库没有快照", code="SNAPSHOT_NOT_FOUND", exit_code=3)
     return best
+
+
+def _parse_github_url_owner_name(url):
+    """从 https://github.com/<owner>/<repo> 取 owner/name。★ 只解析，不联网。"""
+    import re as _re
+    m = _re.match(r"https://github\.com/([^/]+)/([^/\s]+?)(?:\.git)?/?$", str(url).strip())
+    if not m:
+        raise SkillError("URL 不是 https://github.com/<owner>/<repo>",
+                         code="INVALID_URL", exit_code=2)
+    return m.group(1), m.group(2)
