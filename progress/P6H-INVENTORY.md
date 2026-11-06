@@ -31,3 +31,17 @@
 - Blob 按 content_sha256 去重
 - 不同仓库资产不得合并
 - 二次迁移验证幂等
+
+## 既有机制盘点（关键：决定迁移方式）
+- **无 import_/merge_/migrate/export 子命令**（CLI 只有 status/repositories/help/analyze/inspect/history/query/card）
+- 有 `src/storage/index_store.py: rebuild_index(store)` —— 索引重建能力存在
+- `tsconfig_effective_config.merge_chain` 与本任务无关（配置链合并，不是知识库合并）
+
+→ **结论：没有可复用的知识库合并机制。**
+→ 迁移必须自己设计，最小化 + 可审计。
+→ 但 rebuild_index 可复用：迁移后可用它重建索引行（这也是 D-67 历史补全的潜在正路）。
+
+## D-67 修复正路（基于上面发现）
+`rebuild_index` 若能从 assets payload 重建 index_rows（含 commit_sha），
+则历史 13 条 verification 的索引可用它补全 —— **不新增机制，复用既有**。
+恢复后第一件事：读 `index_store.rebuild_index` 实现，确认它是否填 commit_sha。
