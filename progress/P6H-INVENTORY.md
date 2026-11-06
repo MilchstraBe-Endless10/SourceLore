@@ -251,3 +251,17 @@ git ls-remote origin → fatal: 'origin' does not appear to be a git repository
 - 第一层修复：复用 `_resolve_commit_from_payload`
 - 第二层：`claim_verification` payload 完全无 commit 字段
   （其 commit 原本经 SourceSnapshot 传给 draft、不入 payload）→ 需从 claim 反查
+
+## D-69 修复验证（2026-11-07 00:26）
+副本上执行 rebuild_index：
+```
+✓ captured_blob_content   前 7/7   后 7/7
+✓ claim_candidate        前 25/25  后 25/25
+✗→✓ claim_verification   前 19/12  后 19/18   ← 比修复前更好
+✓ extracted_fact         前 75/75  后 75/75
+✓ repository_snapshot     前 2/2    后 2/2
+```
+★ rebuild 现在不仅能保住索引，还能把原本因 D-67 漏填的 6 条 verification
+通过 claim 反查补回来 —— 这本身就是 D-67 历史补全的合法兜底路径。
+
+★ 结论：`rebuild_index` 从「禁止调用的定时炸弹」变成「可用的索引重建工具」。
