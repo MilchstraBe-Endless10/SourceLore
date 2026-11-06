@@ -80,10 +80,10 @@ def build_parser():
     q.add_argument("--symbol", default=None, help="按符号 qualified_name 或 name 查")
     q.add_argument("--symbol-kind", default=None, help="按符号类型过滤")
     q.add_argument("--module", default=None, help="按静态导入模块名过滤")
-    q.add_argument("--language", default=None,
-                   help="按源码语言过滤（python/javascript/typescript/jsx/tsx）")
-    q.add_argument("--relation", default=None,
-                   help="关系查询：imports（配合 --type relation）")
+    # ★ D-61：--language / --relation 是「声明式空参数」——
+    #   只有 argparse 定义，函数体零引用，底层 query_code 也不支持 language 过滤。
+    #   与其让它看起来能用、实际什么都不做，不如删掉。
+    #   需要时再连底层能力一起加，而不是只加一个参数。
     q.add_argument("--show-resolution", action="store_true",
                    help="显示解析状态与配置细节")
     q.add_argument("--config", default=None, help="按 tsconfig 路径过滤")

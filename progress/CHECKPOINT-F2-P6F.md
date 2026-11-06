@@ -77,3 +77,17 @@ net: 0 | repo: 24313173
 顺手修了一个查询错误：`index_rows` 只有索引列（asset_id/asset_type/logical_identity/
 repository_id/subject_id/commit_sha/asset_version），**payload 在 assets 表**。
 自己拼 SQL 会撞 `no such column: payload_json`；改用已有的 `capture_request_plan._load_snapshot`。
+
+## D-61 两个死开关当场被抓（2026-11-06 18:17）
+新写的 `test_declared_switches.py` 扫描所有 `add_argument` 定义的开关，
+断言每个都必须在函数体里被 `getattr(args, ...)` 或 `args.X` 读过。
+**第一次运行就抓出 `--language` 和 `--relation`** —— 全是死开关。
+
+- `--language`：底层 `source_knowledge.query_code` **根本不支持 language 过滤**
+- `--relation`：无任何实现
+
+处理：**删掉，不是硬接**。保留会让用户以为能用，实际什么都没做——
+这正是 D-46/D-60 那类缺陷的温床。
+注释里写明「需要时再连底层能力一起加，而不是只加一个参数」。
+
+1482 项全绿。
