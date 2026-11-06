@@ -91,3 +91,34 @@ repository_id/subject_id/commit_sha/asset_version），**payload 在 assets 表*
 注释里写明「需要时再连底层能力一起加，而不是只加一个参数」。
 
 1482 项全绿。
+
+## ★★ 真实 ESM 闭环完成（2026-11-06 18:27-18:32）
+```
+bootstrap remaining 50 → 43 → 37
+repository_id 38923193 / commit 666df7c1… / tree 5d176b98… / MIT / 13 项
+license      1117B  oid_match True  PERSISTED_VERIFIED
+readme.md     794B  oid_match True  PERSISTED_VERIFIED
+package.json  758B  oid_match True  PERSISTED_VERIFIED
+index.js      344B  oid_match True  PERSISTED_VERIFIED
+```
+首轮 8 次请求（含 bootstrap）停在 index.js；**续跑 6 次**只补它，
+前三个直接 ALREADY_CAPTURED —— 这正是 D-58 修复要证明的行为。
+
+## 源码知识
+真实内容 `export default function isPlainObject(value)`。
+2 symbols / 2 exports → **4 条事实入库**：
+```
+isPlainObject           js_function  line 1-8  byte 15-343
+isPlainObject.prototype js_variable  line 6    byte 120-167
+export_declaration      isPlainObject
+default_export          isPlainObject
+```
+覆盖度 SUPPORTED_FACTS_EXTRACTED；query FOUND net=0；card 5701B net=0。
+
+## 新缺陷
+**D-62**（阻断级）：事实只计 written 不计 reused + 0 事实谎报 VALID_EMPTY
+→ 把「解析出 2 符号 2 导出」的文件说成「合法空」。修后 sf 0→4。
+**D-63**：data_root=None 让知识抽取整体失败（TypeError 被吞成 ok:False）。
+
+## 终态
+1489 项全绿；f2p6f_verify 17/17；跨进程离线复跑 FOUND net=0。
