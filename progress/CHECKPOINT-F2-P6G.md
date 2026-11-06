@@ -79,3 +79,14 @@ payload 里是 null → 查询端无法按 subject 定位 claim → 全部显示
 
 ## 剩余任务
 源码卡片、CLI --language/--relation 行为、测试 ≥25、文档、提交
+
+## D-66 已修（2026-06-18 19:00）
+`Claim` 加 `normalized_parameters` 字段，**只进 to_dict 不进 identity_payload**（claim_id 语义不变）。
+source_claim_adapter 两处构造 + source_judgement 一处，全部传 params。
+
+重跑后看到 **asset_version 2** 的 payload 已带 subject：
+```
+source_symbol_declared v2: {file_path, qualified_name, symbol_kind, expected_present}
+source_export_declared v2: {file_path, exported_name, export_kind, expected_present}
+```
+★ 但 `_load_verdicts` 取的是全部行且 dict key 覆盖 → 需按 asset_version 取最大。

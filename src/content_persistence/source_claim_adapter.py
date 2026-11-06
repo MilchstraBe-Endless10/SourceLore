@@ -86,7 +86,8 @@ def build_symbol_claim(*, repository_id, commit_sha, file_path,
         claim_id=cid, claim_type=CLAIM_SYMBOL,
         repository_id=str(repository_id), commit_sha=str(commit_sha),
         normalized_path=file_path, expected_exists=bool(expected_present),
-        claim_scope="single_file_source", claim_origin="source_extraction")
+        claim_scope="single_file_source", claim_origin="source_extraction",
+        normalized_parameters=params)
     return claim, {"qualified_name": qualified_name,
                    "symbol_kind": symbol_kind}
 
@@ -105,7 +106,8 @@ def build_import_claim(*, repository_id, commit_sha, file_path,
         claim_id=cid, claim_type=CLAIM_IMPORT,
         repository_id=str(repository_id), commit_sha=str(commit_sha),
         normalized_path=file_path, expected_exists=bool(expected_present),
-        claim_scope="single_file_source", claim_origin="source_extraction")
+        claim_scope="single_file_source", claim_origin="source_extraction",
+        normalized_parameters=params)
     return claim, {"module_name": module_name,
                    "imported_name": imported_name}
 

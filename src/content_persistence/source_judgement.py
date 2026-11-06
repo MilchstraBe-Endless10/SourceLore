@@ -45,7 +45,8 @@ def build_export_claim(*, repository_id, commit_sha, file_path,
         claim_id=cid, claim_type=SCA.CLAIM_EXPORT,
         repository_id=str(repository_id), commit_sha=str(commit_sha),
         normalized_path=file_path, expected_exists=bool(expected_present),
-        claim_scope="single_file_source", claim_origin="source_extraction")
+        claim_scope="single_file_source", claim_origin="source_extraction",
+        normalized_parameters=params)
     return claim, {"exported_name": exported_name, "export_kind": export_kind}
 
 

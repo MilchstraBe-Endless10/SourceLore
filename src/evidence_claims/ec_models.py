@@ -130,6 +130,9 @@ class Claim:
     review_status: str = PENDING_REVIEW
     human_authored: bool = False
     knowledge_freshness: Optional[str] = None
+    # ★ D-66：命题的规范化 subject。原先只在 make_claim_id 里用，从未进 payload
+    #   → 查询端无 subject 可匹配。★ 不进 identity_payload，claim_id 语义不变。
+    normalized_parameters: Optional[dict] = None
     created_at: str = ""
 
     def __post_init__(self):
@@ -161,6 +164,7 @@ class Claim:
             "review_status": self.review_status,
             "human_authored": self.human_authored,
             "knowledge_freshness": self.knowledge_freshness,
+            "normalized_parameters": self.normalized_parameters,
             "created_at": self.created_at,
         })
         return d
