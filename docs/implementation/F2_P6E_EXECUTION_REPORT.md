@@ -4,7 +4,7 @@
 
 ## 结论
 
-交付 A：**验收级全局预算编排器建成并验证**。1447 项测试全绿，验收器 12/12。
+交付 A：**验收级全局预算编排器建成并验证**。1449 项测试全绿，验收器 12/12。
 
 交付 B：**is-plain-obj 真实采集被配额阻断**，未完成。G~O 门禁 BLOCKED。
 
@@ -65,8 +65,19 @@ Tree 在本地省 tree、Blob 在本地省 blob。
 
 修后：全复用 → need=0；冷启动 → 2~7。两个函数口径一致。
 
-这个缺陷很典型——**两个函数各自看都对，放一起就自相矛盾**。
-它不会报错，只会让预算算错，进而让预检做出错误决定。
+**D-57 执行器缺 bootstrap 动作。** 计划器写着「允许至多一次 `/rate_limit` 诊断」，
+执行器却根本没这个动作 —— 首次 `can_spend` 因「无权威响应头」恒 False，
+**永远发不出第一个请求**。那个后台任务一上来就 `BudgetExhausted` 就是这个原因。
+
+补上 `bootstrap_rate_limit()`，只发一次。17:27 实测拿到 `remaining=23`，流程立刻走通。
+
+**D-58 字节未即时落盘。** 原本把所有 blob 采完才写文件。第四个 blob 被预算挡住后
+进程停止，前三个已验签的 blob 全部丢失。
+
+这条教训很硬：**采集和落盘不能在同一个收尾动作里。** 已改成每采一个立刻落盘（含 meta json）。
+
+D-56 和 D-57 是同一类：**各自看都对，接起来就断。**
+一个让预算算错，一个让请求发不出去 —— 都不报错，只是静默地什么也不做。
 
 ## 四、配额
 
@@ -87,8 +98,8 @@ reset 时间每次后移、remaining 恒为 0。
 ## 五、测试
 
 ```
-1447 项，失败 0，退出码全 0
-（保留 1422 + 新增 acceptance_orchestration 25）
+1449 项，失败 0，退出码全 0
+（保留 1422 + 新增 acceptance_orchestration 27）
 tools/f2p6e_verify.py：12/12
 ```
 
@@ -102,10 +113,10 @@ tools/f2p6e_verify.py：12/12
 | D REQUEST_HEADER_REVALIDATION | **DONE** |
 | E RATE_LIMIT_SAFE_STOP | **DONE** |
 | F WORKFLOW_PARTIAL_RESUME | **DONE** |
-| G REAL_ESM_REPOSITORY_IDENTITY | **BLOCKED** |
-| H REAL_ESM_AUTHORIZATION | **BLOCKED** |
+| G REAL_ESM_REPOSITORY_IDENTITY | **PARTIAL** |
+| H REAL_ESM_AUTHORIZATION | **PARTIAL** |
 | I REAL_ESM_BLOB_CAPTURE | **BLOCKED** |
-| J REAL_ESM_BLOB_INTEGRITY | **BLOCKED** |
+| J REAL_ESM_BLOB_INTEGRITY | **PARTIAL** |
 | K REAL_ESM_SOURCE_FACTS | **BLOCKED** |
 | L REAL_ESM_CLAIMS_VERIFIED | **BLOCKED** |
 | M INSTALLED_SKILL_ESM_QUERY | **BLOCKED** |
