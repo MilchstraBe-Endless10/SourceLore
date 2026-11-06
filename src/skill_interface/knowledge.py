@@ -55,7 +55,7 @@ def list_repositories(store) -> dict:
         csha = r["commit_sha"]
         # ★ 实测 index_rows.commit_sha 为 NULL —— 必须回读 payload，不能信列名
         # ★ U-2：仓库显示名从独立观测资产读（不改 snapshot 内容身份）
-        if r["asset_type"] == "observation_record":
+        if r["asset_type"] == "subject_record":
             got = store.get_asset(r["asset_id"], verify=True)
             if got.get("ok"):
                 pl = ((got["asset"] or {}).get("payload") or {})

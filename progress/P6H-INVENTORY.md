@@ -265,3 +265,22 @@ git ls-remote origin → fatal: 'origin' does not appear to be a git repository
 通过 claim 反查补回来 —— 这本身就是 D-67 历史补全的合法兜底路径。
 
 ★ 结论：`rebuild_index` 从「禁止调用的定时炸弹」变成「可用的索引重建工具」。
+
+## U-2 仓库名：两次踩坑后修好（2026-11-07 00:50）
+1. 第一次用 `observation_record` —— **不是合法 asset_type**（ASSET_TYPES 里没有），
+   被我的 `except: return` 静默吞掉，写 0 条。
+2. 改用 `subject_record`（合法，语义=知识主体）；又发现
+   `append_asset_and_advance` 必须显式传 `expected_version=None`，否则 TypeError。
+3. 名字来源 = `repo_slugs.json`（采集时记录的 owner/name→id），**不是硬编码**。
+
+结果：
+```
+jonschlinkert/is-number     id=24313173  claims=8
+sindresorhus/is-plain-obj   id=38923193  claims=17
+preactjs/preact             id=42283287  claims=1
+```
+
+## preact 采集（热门仓库）
+repo_id **42283287** / commit `dbeba0d59bb59260ea4a90c5adf9f5a29d43cdab`
+★ 配额在采集过程中耗尽（observed_remaining 15 → INSUFFICIENT_REMAINING），
+只拿到 1 fact + 1 claim，内容未采到。

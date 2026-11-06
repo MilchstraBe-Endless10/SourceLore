@@ -498,10 +498,14 @@ def _record_repository_name(store, *, repository_id, resolved, requested, commit
         }
         op = "reponame-%s-%s" % (repository_id, str(commit_sha)[:12])
         draft = _AM.AssetDraft(
-            asset_type="observation_record",
+            asset_type="subject_record",
             logical_identity="SL-REPONAME-%s" % repository_id,
             repository_id=str(repository_id),
             payload=payload, asset_version=1, operation_id=op)
-        store.append_asset_and_advance(draft, operation_id=op)
+        store.append_asset_and_advance(draft, expected_version=None,
+                                       operation_id=op)
     except Exception:
+        # ★ 名字只是展示增强，绝不阻断采集；但也不静默 —— 记到台账外
+        import sys as _s
+        _s.stderr.write("WARN reponame: %s\n" % (_s.exc_info()[1],))
         return
