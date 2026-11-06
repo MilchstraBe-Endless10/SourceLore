@@ -92,6 +92,21 @@ def capture(*, repository_id, commit_sha, data_root=None, paths=None,
                 continue
             budget["paths"] += 1
 
+            # ★ D-52：已有完整本地资产 → 直接复用，绝不重新下载。
+            #   （此前会无条件发请求，撞限流后把已存好的内容标记为失败。）
+            _have = CIC.find_content_asset(store,
+                                           repository_id=str(repository_id),
+                                           commit_sha=str(commit_sha),
+                                           file_path=fp)
+            if _have is not None and \
+                    (_have.get("completeness_status") or "").upper() == "COMPLETE":
+                report["results"].append({
+                    "file_path": fp, "status": "ALREADY_CAPTURED",
+                    "content_asset_id": _have.get("content_asset_id"),
+                    "reused": True, "network_requests": 0})
+                report["reused_paths"] = report.get("reused_paths", 0) + 1
+                continue
+
             otype = entry.get("type") or "blob"
             # ★ F2-P5E：五维分别判，不再用含糊的单一状态
             # ★ D-46：license_known 原本是"声明式空参数"，接收但从不使用。

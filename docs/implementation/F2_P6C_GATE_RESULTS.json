@@ -1,0 +1,256 @@
+{
+  "artifact": "F2_P6C_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-06T14:40:48+08:00",
+  "baseline_commit": "8ef5ebb",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "crosswalk_matches_frozen": true,
+  "request_budget": {
+    "default_request_limit": 8,
+    "default_reserve": 5,
+    "actual_requests_used": 3,
+    "authoritative_source": "GitHub response headers only",
+    "never_infers_from_self_count": true
+  },
+  "plan_mode": {
+    "read_only": true,
+    "network_requests": 0,
+    "wrote_assets": 0,
+    "estimated_requests": 3
+  },
+  "rate_limit": {
+    "primary_rule": "remaining=0 and used=limit",
+    "secondary_rule": "Retry-After present and remaining non-zero",
+    "unknown": "neither indicator present"
+  },
+  "real_repository": {
+    "repository_id": "24313173",
+    "commit_sha": "98e8ff1da1a89f93d1397a24d7413ed15421c139",
+    "tree_entries": 13
+  },
+  "real_assets": {
+    "README.md": {
+      "asset": "SL-CBLOB-fddd51fb8e55896b3b02da7cde78fef2a2027f18",
+      "status": "COMPLETE"
+    },
+    "package.json": {
+      "asset": "SL-CBLOB-cc30a72a89cb0fdf2a8dfe959fd0d45fb86630c2",
+      "status": "COMPLETE"
+    },
+    "index.js": {
+      "asset": "SL-CBLOB-22f5c42a71bedbe53c231aaeae5cc65feeee2050",
+      "status": "COMPLETE",
+      "bytes": 411,
+      "github_oid": "27f19b757f7c1186b92c405a213bf0dd9b6cbe95",
+      "local_oid_recomputed": "27f19b757f7c1186b92c405a213bf0dd9b6cbe95",
+      "oid_match": true,
+      "sha256": "04255e482e181687823a95b207802ddd32e746c65dce4c95a5176fc192735960",
+      "parse_status": "PARSE_COMPLETE",
+      "symbols": 0,
+      "exports": 0,
+      "imports": 0,
+      "empty_result_kind": "VALID_EMPTY_RESULT",
+      "reason": "CommonJS module.exports 不在当前 export 契约内"
+    }
+  },
+  "facts_and_claims": {
+    "extracted_fact": 51,
+    "claim_candidate": 18,
+    "claim_verification": 18
+  },
+  "query": {
+    "content_README": "SUPPORTED",
+    "code_index_js": "SOURCE_NOT_ANALYZED",
+    "network_requests": 0
+  },
+  "card": {
+    "bytes": 16603,
+    "type": "README_CONTENT_CARD"
+  },
+  "defects": [
+    {
+      "id": "D-51",
+      "title": "GitHub 路径只捕获不抽取",
+      "impact": "本地路径有内容+源码链路，GitHub 路径只存字节 → 两条路径能力不对等",
+      "fix": "接上同一抽取链路（不新增解析器）",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-52",
+      "title": "已保存内容被无意义重新下载",
+      "impact": "库内有完整资产仍无条件发请求，撞限流后把已存内容标成失败",
+      "fix": "采集前查 find_content_asset，COMPLETE 直接复用",
+      "evidence": "net 1→0，reused=3",
+      "status": "FIXED"
+    }
+  ],
+  "gates": {
+    "A_REQUEST_BUDGET_PLANNING": {
+      "status": "DONE"
+    },
+    "B_REQUEST_PLAN_READ_ONLY": {
+      "status": "DONE"
+    },
+    "C_RATE_LIMIT_HEADER_HANDLING": {
+      "status": "DONE"
+    },
+    "D_PRIMARY_SECONDARY_LIMIT_CLASSIFICATION": {
+      "status": "DONE"
+    },
+    "E_PARTIAL_CAPTURE_RESUME": {
+      "status": "DONE"
+    },
+    "F_EXISTING_ASSET_REUSE": {
+      "status": "DONE"
+    },
+    "G_CAPTURE_IDEMPOTENCY": {
+      "status": "DONE"
+    },
+    "H_REAL_GITHUB_SOURCE_BLOB_PERSISTENCE": {
+      "status": "DONE"
+    },
+    "I_REAL_GITHUB_SOURCE_FACTS": {
+      "status": "PARTIAL",
+      "reason": "解析契约内 0 事实（CommonJS 不支持）"
+    },
+    "J_REAL_GITHUB_SOURCE_CLAIMS": {
+      "status": "PARTIAL",
+      "reason": "无源码事实可建命题"
+    },
+    "K_REAL_GITHUB_SOURCE_CLI_QUERY": {
+      "status": "DONE"
+    },
+    "L_REAL_GITHUB_SOURCE_KNOWLEDGE_CARD": {
+      "status": "PARTIAL",
+      "reason": "内容卡可出；源码卡无谓词可渲"
+    },
+    "M_OFFLINE_RESTART_REUSE": {
+      "status": "DONE"
+    },
+    "N_SUCCESS_CONTRACT_INTEGRITY": {
+      "status": "DONE"
+    },
+    "O_CROSS_MODULE_SCHEMA_CONTRACT": {
+      "status": "DONE"
+    },
+    "P_MULTI_COMMIT_ISOLATION": {
+      "status": "DONE"
+    },
+    "Q_INSTALLED_SKILL_PRODUCT_E2E": {
+      "status": "DONE"
+    },
+    "R_NATURAL_LANGUAGE_SKILL_DISCOVERY": {
+      "status": "NOT_VERIFIED"
+    },
+    "S_NATURAL_LANGUAGE_AUTO_TRIGGER": {
+      "status": "NOT_VERIFIED"
+    },
+    "T_DISTRIBUTION_READY": {
+      "status": "NOT_READY"
+    }
+  },
+  "blocking_metrics": {
+    "plan_mode_network": 0,
+    "needless_redownload": 0,
+    "budget_exceeded_requests": 0,
+    "bad_oid_persisted": 0,
+    "partial_marked_complete": 0,
+    "missing_fact_reported_done": 0,
+    "invalid_verification_as_success": 0,
+    "wrong_module_loaded": 0,
+    "cross_commit_mix": 0,
+    "unauthorized_persisted": 0,
+    "readonly_query_wrote": 0
+  },
+  "tests": {
+    "runtime": {
+      "tests": 45,
+      "ok": true
+    },
+    "storage": {
+      "tests": 53,
+      "ok": true
+    },
+    "collector": {
+      "tests": 48,
+      "ok": true
+    },
+    "facts": {
+      "tests": 44,
+      "ok": true
+    },
+    "evidence_claims": {
+      "tests": 36,
+      "ok": true
+    },
+    "lifecycle": {
+      "tests": 142,
+      "ok": true
+    },
+    "views": {
+      "tests": 50,
+      "ok": true
+    },
+    "renderer": {
+      "tests": 59,
+      "ok": true
+    },
+    "research": {
+      "tests": 122,
+      "ok": true
+    },
+    "skill_interface": {
+      "tests": 69,
+      "ok": true
+    },
+    "content": {
+      "tests": 77,
+      "ok": true
+    },
+    "blob_capture": {
+      "tests": 59,
+      "ok": true
+    },
+    "content_persistence": {
+      "tests": 63,
+      "ok": true
+    },
+    "content_skill": {
+      "tests": 49,
+      "ok": true
+    },
+    "source_analysis": {
+      "tests": 88,
+      "ok": true
+    },
+    "js_ts_analysis": {
+      "tests": 72,
+      "ok": true
+    },
+    "module_resolution": {
+      "tests": 148,
+      "ok": true
+    },
+    "ts_projects": {
+      "tests": 136,
+      "ok": true
+    },
+    "product_acceptance": {
+      "tests": 21,
+      "ok": true
+    },
+    "capture_maintenance": {
+      "tests": 21,
+      "ok": true
+    }
+  },
+  "total_tests": 1402,
+  "all_tests_ok": true,
+  "explicitly_not_claimed": [
+    "字节入库 != 源码知识完整",
+    "VALID_EMPTY_RESULT != 分析失败",
+    "tree COMPLETE != 内容 COMPLETE",
+    "本地开发安装 != 发行包",
+    "静态分析 != 运行时行为验证"
+  ]
+}

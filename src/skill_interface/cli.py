@@ -48,6 +48,14 @@ def build_parser():
                    help="对已保存快照做内容级抽取（读 Blob；无字节则明确报告）")
     a.add_argument("--content-status", action="store_true",
                    help="只报内容可用性，不采集、不联网")
+    a.add_argument("--plan", action="store_true",
+                   help="只读计划：盘点缺口并估算请求，不联网、不写资产")
+    a.add_argument("--resume", action="store_true",
+                   help="续跑：只补齐缺失内容，已完成的直接复用")
+    a.add_argument("--request-limit", type=int, default=None,
+                   help="本次采集最多发出的 GitHub 请求数（默认 8）")
+    a.add_argument("--reserve-requests", type=int, default=None,
+                   help="优先保留的主配额（默认 5）")
     a.add_argument("--content-path", action="append", default=None,
                    help="限定内容抽取的路径（可重复）")
 
@@ -164,6 +172,16 @@ def _dispatch(cmd, args):
             store.close()
 
     if cmd == "analyze":
+        # --plan 只读：不采集、不写资产、不改 A/B 层
+        if getattr(args, "plan", False):
+            return emit_ok(_run_capture_plan(
+                data_root=root,
+                repository_id=getattr(args, "repository_id", None),
+                commit=getattr(args, "commit", None),
+                content_paths=getattr(args, "content_path", None),
+                request_limit=getattr(args, "request_limit", None),
+                reserve=getattr(args, "reserve_requests", None)))
+
         import analyze as A
         import status as S
         out = A.analyze(url=args.url, ref=args.ref, data_root=root,
@@ -190,6 +208,29 @@ def _dispatch(cmd, args):
                 license_known=getattr(args, "license_known", False),
                 offline=bool(getattr(args, "offline", False)) or status_only,
                 dry_run=status_only)
+        # ★ D-51：GitHub 路径原本只捕获字节、不抽取知识。
+        #   把已捕获字节交给同一条抽取链路（不新增解析器、不联网）。
+        # status_only 只在 include-content 分支内定义；此处用安全取值
+        _status_only = bool(getattr(args, "content_status", False)
+                            and not getattr(args, "include_content", False))
+        if not _status_only:
+            try:
+                import github_knowledge_extract as GKE
+                from knowledge_store import KnowledgeStore as _KS
+                from paths import db_path as _db_path
+                _ks = _KS(str(_db_path(root)), create=False)
+                try:
+                    out["knowledge_extraction"] = GKE.extract_captured(
+                        store=_ks, data_root=root,
+                        repository_id=out["repository_id"],
+                        commit_sha=out["commit_sha"],
+                        content_report=out.get("content") or {},
+                        paths=args.content_path)
+                finally:
+                    _ks.close()
+            except Exception as e:
+                out["knowledge_extraction"] = {
+                    "ok": False, "error": "%s: %s" % (type(e).__name__, e)}
         return emit_ok(out)
 
     if cmd == "query":
@@ -269,3 +310,71 @@ def _dispatch(cmd, args):
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+
+def _run_capture_plan(*, data_root, repository_id, commit, content_paths,
+                      request_limit=None, reserve=None):
+    """只读缺口盘点。绝不联网、绝不写库。"""
+    import capture_request_plan as PLAN
+    import request_budget as RB
+    from knowledge_store import KnowledgeStore
+    from paths import db_path, guard_inside_project_db
+
+    p = db_path(data_root)
+    guard_inside_project_db(p)
+    if not p.exists():
+        raise SkillError("知识库未建立", code="KNOWLEDGE_DB_MISSING", exit_code=3)
+
+    store = KnowledgeStore(str(p), create=False)
+    try:
+        if repository_id is None:
+            rows = store.conn.execute(
+                "SELECT DISTINCT repository_id FROM index_rows "
+                "WHERE asset_type='repository_snapshot'").fetchall()
+            if len(rows) != 1:
+                raise SkillError(
+                    "存在多个仓库，请显式指定 --repository-id",
+                    code="AMBIGUOUS_REPOSITORY", exit_code=3,
+                    detail={"candidates": [r["repository_id"] for r in rows]})
+            repository_id = rows[0]["repository_id"]
+
+        commit_sha = commit or _latest_commit(store, repository_id)
+        inv = PLAN.build_gap_inventory(
+            store=store, repository_id=repository_id, commit_sha=commit_sha,
+            content_scope=content_paths or PLAN.DEFAULT_CONTENT_SCOPE)
+        if not inv.get("ok"):
+            raise SkillError("快照不存在：%s" % inv.get("error"),
+                             code=inv.get("error"), exit_code=3)
+
+        budget = RB.GitHubRequestBudget(
+            repository_id=repository_id, commit_sha=inv["commit_sha"],
+            execution_id="plan",
+            request_limit=(request_limit if request_limit is not None
+                           else RB.DEFAULT_REQUEST_LIMIT),
+            reserve_requests=(reserve if reserve is not None
+                              else RB.DEFAULT_RESERVE))
+        plan = PLAN.build_request_plan(inventory=inv, budget=budget)
+        plan["network_requests"] = 0
+        plan["wrote_assets"] = 0
+        plan["inventory"] = inv
+        return plan
+    finally:
+        store.close()
+
+
+def _latest_commit(store, repository_id):
+    rows = store.conn.execute(
+        "SELECT asset_id FROM index_rows WHERE asset_type='repository_snapshot' "
+        "AND repository_id=?", (str(repository_id),)).fetchall()
+    best = None
+    for r in rows:
+        got = store.get_asset(r["asset_id"], verify=True)
+        if not got.get("ok"):
+            continue
+        c = ((got["asset"] or {}).get("payload") or {}).get("commit_sha")
+        if c and (best is None or str(c) > str(best)):
+            best = c
+    if best is None:
+        raise SkillError("该仓库没有快照", code="SNAPSHOT_NOT_FOUND", exit_code=3)
+    return best
