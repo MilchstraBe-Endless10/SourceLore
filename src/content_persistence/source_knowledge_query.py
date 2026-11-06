@@ -202,11 +202,14 @@ def _captured(store, repository_id, commit_sha, file_path=None):
 def _load_verdicts(store, repository_id, commit_sha, file_path):
     """读回源码 Claim / Verification（只读，不写）。"""
     import json as _J
+    # ★ D-66：按 asset_version 升序遍历，后写的覆盖前面的
+    #   → 取到最新版本（v2 才带 normalized_parameters）。
     rows = store.conn.execute(
-        "SELECT a.payload_json, i.asset_type FROM index_rows i "
+        "SELECT a.payload_json, i.asset_type, i.asset_version FROM index_rows i "
         "JOIN assets a USING(asset_id) "
         "WHERE i.repository_id=? AND i.commit_sha=? "
-        "AND i.asset_type IN ('claim_candidate','claim_verification')",
+        "AND i.asset_type IN ('claim_candidate','claim_verification') "
+        "ORDER BY i.asset_version ASC",
         (str(repository_id), str(commit_sha))).fetchall()
     claims, verifs = {}, {}
     for r in rows:

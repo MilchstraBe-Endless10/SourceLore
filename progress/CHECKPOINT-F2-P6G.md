@@ -90,3 +90,15 @@ source_symbol_declared v2: {file_path, qualified_name, symbol_kind, expected_pre
 source_export_declared v2: {file_path, exported_name, export_kind, expected_present}
 ```
 ★ 但 `_load_verdicts` 取的是全部行且 dict key 覆盖 → 需按 asset_version 取最大。
+
+## 19:01 状态：verdict 仍未匹配
+`_load_verdicts` 已改成 ORDER BY asset_version ASC（后写覆盖）。
+但 claims 输出仍全 OBSERVED。
+
+**下一个怀疑点**：`_verdict_for` 的匹配条件是
+`if any(k in np_ and np_.get(k) != v ...)` —— 当 np_ 里**没有**该 key 时不算失败，
+但 v2 claim 的 np_ 确实有 file_path/qualified_name/symbol_kind，want 也传了这三项。
+→ 应先打印 claims dict 的 key 与 np 内容做实证，而不是继续猜。
+
+## 已提交
+dfc88b3（WIP）
