@@ -176,3 +176,21 @@ repositories: 24313173 → 98e8ff1d…  38923193 → 666df7c1…
 **当前库中没有仓库名的权威存储** → 不能显示 `jonschlinkert/is-number` 等名称。
 不得按 repository_id 硬编码映射（任务书 §六 禁止）。
 可行方向：下次采集时把 owner/name 写入 snapshot payload，历史库无法追溯。
+
+## ★★ 重要数据真实性核对（2026-11-06 22:45）
+抽查 captured_blob_content 的 provenance_level：
+```
+24313173 (is-number)     全部 3 个 blob = SYNTHETIC_FIXTURE      ← 合成夹具
+38923193 (is-plain-obj)  全部 4 个 blob = AUTHORIZED_REMOTE_SOURCE ← 真实远程
+```
+→ **只有一个仓库是真实 GitHub 数据。** 另一个是合成夹具。
+这符合既有铁律：合成夹具永不改标成真实。
+但卡片渲染层显示 "AUTHORIZED_LOCAL_FIXTURE"，与 query 层的
+"AUTHORIZED_REMOTE_SOURCE" 措辞不一致 —— 需核对渲染映射（待办 U-5）。
+
+## 浏览器验收（真实渲染）
+Playwright 打开 http://127.0.0.1:18991/SL-SCARD-...html：
+- 标题「源码结构卡片 · index.js」✓
+- 六节结构完整（身份/概览/符号/导入/导出/限制）✓
+- 裁决层级列真实渲染：「已验证 · 命题成立」+ claim=SL-CLAIM-4428bc79… ✓
+- Commit / Blob OID / 字节 / 校验 全部在场 ✓
