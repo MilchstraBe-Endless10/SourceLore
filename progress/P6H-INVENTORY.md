@@ -45,3 +45,30 @@
 `rebuild_index` 若能从 assets payload 重建 index_rows（含 commit_sha），
 则历史 13 条 verification 的索引可用它补全 —— **不新增机制，复用既有**。
 恢复后第一件事：读 `index_store.rebuild_index` 实现，确认它是否填 commit_sha。
+
+## ★★ 重大发现：rebuild_index 是定时炸弹（D-68）
+
+`assets` 表 commit_sha **全部为 NULL**（所有类型 0/100%）：
+```
+captured_blob_content  4     有commit=0
+claim_candidate       19     有commit=0
+claim_verification    13     有commit=0
+extracted_fact        22     有commit=0
+repository_snapshot    1     有commit=0
+```
+但 `index_rows` 里 captured_blob_content/claim_candidate/extracted_fact 的 commit **是满的**。
+→ 说明 index_rows 的 commit 是写入时**直接塞进索引行**的，不是从 assets 复制的。
+
+而 `index_store.rebuild_index()` 的实现是：
+```sql
+SELECT ... commit_sha ... FROM assets   ← 读 assets 的 NULL
+INSERT INTO index_rows(... commit_sha ...) VALUES(..., r["commit_sha"])  ← 写 NULL
+```
+
+**后果：执行 rebuild_index 会把当前正确的索引全部清成 NULL。**
+这不是修复 D-67 的正路，反而是新缺陷 D-68 —— 一个「看起来该用、实际会毁数据」的机制。
+
+## 因此 D-67 的正确修复路径必须改
+原计划「用 rebuild_index 补全历史索引」**作废**。
+必须先修 rebuild_index（或在修复前绝不调用它），
+再单独解决 ingest_verification 不写 index commit 的问题。
