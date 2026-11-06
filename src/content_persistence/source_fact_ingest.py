@@ -175,11 +175,19 @@ def ingest_source_facts(store, *, observation, source_snapshot_id=None):
 
     # ★ JS/TS 导出事实（Python 无此结构，列表为空则跳过）
     for exp in observation.get("observed_exports") or []:
+        # ★ D-64：原来漏传字节范围与声明节点类型 →
+        #   两条导出事实无法关联到同一 AST 节点，会被误读成两个独立导出事件。
+        #   追加式补齐，不改已冻结的 A 层资产（旧资产按自身 payload 独立存在）。
         _put(RULE_EXPORT,
              {"export_kind": exp["export_kind"],
               "exported_name": exp.get("exported_name"),
               "source_reference": exp.get("source_reference"),
               "is_type_only": bool(exp.get("is_type_only")),
+              "declaration_node_type": exp.get("declaration_node_type"),
+              "start_byte": exp.get("start_byte"),
+              "end_byte": exp.get("end_byte"),
+              "start_line": exp.get("start_line"),
+              "end_line": exp.get("end_line"),
               "language": observation["language"]},
              exp["evidence_ref"])
 

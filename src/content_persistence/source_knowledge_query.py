@@ -134,6 +134,7 @@ def source_query(*, repository_id, commit_sha=None, file_path=None,
         symbols = [f for f in facts if f["rule_id"] == "SOURCE_SYMBOL_DECLARED"]
         imports = [f for f in facts if f["rule_id"] == "SOURCE_IMPORT_DECLARED"]
         exports = [f for f in facts if f["rule_id"] == "SOURCE_EXPORT_DECLARED"]
+        exports = _dedupe_exports(exports)
 
         return {
             "state": FOUND,
@@ -145,6 +146,8 @@ def source_query(*, repository_id, commit_sha=None, file_path=None,
             "symbols": symbols,
             "imports": imports,
             "exports": exports,
+            "claims": _verdicts_block(store, repository_id, commit_sha,
+                                      file_path, symbols, exports),
             "counts": {"facts": len(facts), "symbols": len(symbols),
                        "imports": len(imports), "exports": len(exports)},
             "captured": captured,
@@ -194,3 +197,101 @@ def _captured(store, repository_id, commit_sha, file_path=None):
             continue
         out.append(pl)
     return out
+
+
+def _load_verdicts(store, repository_id, commit_sha, file_path):
+    """读回源码 Claim / Verification（只读，不写）。"""
+    import json as _J
+    rows = store.conn.execute(
+        "SELECT a.payload_json, i.asset_type FROM index_rows i "
+        "JOIN assets a USING(asset_id) "
+        "WHERE i.repository_id=? AND i.commit_sha=? "
+        "AND i.asset_type IN ('claim_candidate','claim_verification')",
+        (str(repository_id), str(commit_sha))).fetchall()
+    claims, verifs = {}, {}
+    for r in rows:
+        try:
+            d = _J.loads(r["payload_json"])
+        except Exception:
+            continue
+        if r["asset_type"] == "claim_candidate":
+            ct = d.get("claim_type") or ""
+            if not ct.startswith("source_"):
+                continue
+            np_ = d.get("normalized_parameters") or {}
+            if np_.get("file_path") != file_path:
+                continue
+            claims[(ct, _J.dumps(np_, sort_keys=True))] = d
+        else:
+            verifs[d.get("claim_id")] = d
+    return claims, verifs
+
+
+def _verdict_for(claims, verifs, claim_type, want):
+    """按规范 subject 精确定位 claim / verification。"""
+    for (ct, _), c in claims.items():
+        if ct != claim_type:
+            continue
+        np_ = c.get("normalized_parameters") or {}
+        if any(k in np_ and np_.get(k) != v for k, v in (want or {}).items()):
+            continue
+        v = verifs.get(c.get("claim_id")) or {}
+        st = v.get("status")
+        return {
+            "claim_id": c.get("claim_id"),
+            "verification_id": v.get("verification_id"),
+            "verdict": st,
+            "reason_code": v.get("reason_code"),
+            "display_level": ("SUPPORTED_SOURCE_CLAIM" if st == "supported"
+                              else "OBSERVED_SOURCE_FACT"),
+        }
+    return {"claim_id": None, "verification_id": None, "verdict": None,
+            "reason_code": None,
+            "display_level": "OBSERVED_SOURCE_FACT",
+            "note": "尚未进行命题验证"}
+
+
+def _verdicts_block(store, repository_id, commit_sha, file_path,
+                    symbols, exports):
+    """给每条事实挂裁决层级。
+
+    ★ 没验证的必须标 OBSERVED_SOURCE_FACT，不得冒充 SUPPORTED_SOURCE_CLAIM。
+    """
+    claims, verifs = _load_verdicts(store, repository_id, commit_sha, file_path)
+    out = []
+    for f in symbols:
+        sub = f.get("subject") or {}
+        out.append({"fact_id": f.get("fact_id"), "kind": "symbol",
+                    "subject": sub,
+                    **_verdict_for(claims, verifs, "source_symbol_declared", {
+                        "file_path": file_path,
+                        "qualified_name": sub.get("qualified_name"),
+                        "symbol_kind": sub.get("symbol_kind")})})
+    for f in exports:
+        sub = f.get("subject") or {}
+        out.append({"fact_id": f.get("fact_id"), "kind": "export",
+                    "subject": sub,
+                    **_verdict_for(claims, verifs, "source_export_declared", {
+                        "file_path": file_path,
+                        "exported_name": sub.get("exported_name"),
+                        "export_kind": sub.get("export_kind")})})
+    return out
+
+
+
+def _dedupe_exports(exports):
+    """D-65：同一导出事件只保留信息最全的一条（只改视图，不改资产）。"""
+    best = {}
+    for e in exports:
+        sub = e.get("subject") or (e.get("normalized_parameters") or {}).get("subject") or {}
+        key = (sub.get("export_kind"), sub.get("exported_name"),
+               e.get("start_byte"), e.get("end_byte"))
+        prev = best.get(key)
+        if prev is None:
+            best[key] = e
+            continue
+        prev_has = bool((prev.get("subject") or {}).get("declaration_node_type"))
+        cur_has = bool(sub.get("declaration_node_type"))
+        if cur_has and not prev_has:
+            best[key] = e
+    return list(best.values())
