@@ -86,3 +86,25 @@ INSERT INTO index_rows(... commit_sha ...) VALUES(..., r["commit_sha"])  ← 写
 1. `ingest_verification` 接受 `source_snapshot` 并传入 AssetDraft
 2. 历史 13 条：用可审计的追加式索引补写（不改 assets）
 3. D-68 rebuild_index 在修复 source_snapshot 传导前**禁止调用**
+
+## D-67 真根因（最终定稿，2026-11-06 22:36）
+`knowledge_store._index_asset` 有三级回退 `_resolve_index_commit_sha`：
+  1. draft.source_snapshot.commit_sha
+  2. payload["commit_sha"]
+  3. payload["source_snapshot"]["commit_sha"]
+
+- **Claim.to_dict() 有 commit_sha** → 回退②命中 → claim_candidate 索引完好
+- **Verification.to_dict() 没有 commit_sha，也没有 source_snapshot**
+  → 三级全落空 → claim_verification 索引 commit_sha = None
+
+代码注释里已经写着「实测该列因此全为 NULL」—— 说明这个坑以前就踩过一次，
+只是当时只补了 Claim 那条路，Verification 这条漏了。
+
+## 修复方案（最小、不改资产正文）
+A. `ingest_verification(store, verif, repository_id, *, commit_sha=None)`
+   收到 commit_sha 时构造 `SourceSnapshot(commit_sha=...)` 传给 draft
+   → 走回退①。**不动 payload、不动哈希、不动 assets**。
+B. 调用方 `content_claim_ingest.ingest_content_claim` 已有 claim，从 claim.commit_sha 传下去。
+C. 历史 13 条：写一次性索引补全（只 UPDATE index_rows，C 层可重建，不改 assets）。
+D. D-68：`rebuild_index` 从 assets 读 commit_sha 仍是 NULL → **仍禁止调用**，
+   除非同时改成也用 payload 回退。
