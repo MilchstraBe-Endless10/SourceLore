@@ -72,3 +72,17 @@ INSERT INTO index_rows(... commit_sha ...) VALUES(..., r["commit_sha"])  ← 写
 原计划「用 rebuild_index 补全历史索引」**作废**。
 必须先修 rebuild_index（或在修复前绝不调用它），
 再单独解决 ingest_verification 不写 index commit 的问题。
+
+## D-67 真根因（19:xx 定稿）
+`AssetDraft` 没有 commit_sha 字段，只有 `source_snapshot: Optional[SourceSnapshot]`。
+→ index_rows 的 commit_sha 只能从 `asset.source_snapshot` 推导。
+
+- `ingest_verification(store, verif, repository_id=...)` **不传 source_snapshot**
+  → 该资产 index 行 commit_sha = NULL
+- 其他资产（fact/blob/claim）的入库函数传了 source_snapshot
+  → index 行 commit_sha 有值
+
+**修复方向已明确且最小**：
+1. `ingest_verification` 接受 `source_snapshot` 并传入 AssetDraft
+2. 历史 13 条：用可审计的追加式索引补写（不改 assets）
+3. D-68 rebuild_index 在修复 source_snapshot 传导前**禁止调用**
