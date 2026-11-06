@@ -175,6 +175,10 @@ def analyze(*, url, ref=None, data_root=None, max_requests=40,
                 f"github:repos/{owner}/{name}@{commit_sha}"])
         ing = ingest_snapshot(store, snap)
         snap_asset = ing.get("asset_id")
+        _record_repository_name(
+            store, repository_id=repo_id,
+            resolved=str(repo_payload.get("full_name") or ""),
+            requested=parsed["canonical"], commit_sha=commit_sha)
 
         facts, claims, verifs = [], [], []
         existing = _existing_claims(store, repo_id)
@@ -472,3 +476,32 @@ def analyze_local(*, repo_path, ref="HEAD", data_root=None,
         }
     finally:
         store.close()
+
+
+def _record_repository_name(store, *, repository_id, resolved, requested, commit_sha):
+    """U-2：把仓库显示名记为独立观测资产。
+
+    ★ 不改 repository_snapshot 的内容身份 —— to_asset_payload() 只含
+    content_payload，把 full_name 塞进去会改哈希、破坏幂等与重采判定。
+    ★ 名字只是展示增强：任何失败都不得影响采集主流程。
+    """
+    if not resolved:
+        return
+    try:
+        import asset_models as _AM
+        payload = {
+            "record_kind": "repository_display_name",
+            "repository_id": str(repository_id),
+            "resolved_repository": str(resolved),
+            "requested_repository": str(requested),
+            "commit_sha": str(commit_sha),
+        }
+        op = "reponame-%s-%s" % (repository_id, str(commit_sha)[:12])
+        draft = _AM.AssetDraft(
+            asset_type="observation_record",
+            logical_identity="SL-REPONAME-%s" % repository_id,
+            repository_id=str(repository_id),
+            payload=payload, asset_version=1, operation_id=op)
+        store.append_asset_and_advance(draft, operation_id=op)
+    except Exception:
+        return

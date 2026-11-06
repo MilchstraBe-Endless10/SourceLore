@@ -54,6 +54,16 @@ def list_repositories(store) -> dict:
         slot["counts"][r["asset_type"]] = slot["counts"].get(r["asset_type"], 0) + 1
         csha = r["commit_sha"]
         # ★ 实测 index_rows.commit_sha 为 NULL —— 必须回读 payload，不能信列名
+        # ★ U-2：仓库显示名从独立观测资产读（不改 snapshot 内容身份）
+        if r["asset_type"] == "observation_record":
+            got = store.get_asset(r["asset_id"], verify=True)
+            if got.get("ok"):
+                pl = ((got["asset"] or {}).get("payload") or {})
+                if pl.get("record_kind") == "repository_display_name":
+                    nm = pl.get("resolved_repository")
+                    if nm and not slot.get("_name"):
+                        slot["_name"] = nm
+
         if not csha and r["asset_type"] == SNAPSHOT_TYPE:
             got = store.get_asset(r["asset_id"], verify=True)
             if got.get("ok"):
