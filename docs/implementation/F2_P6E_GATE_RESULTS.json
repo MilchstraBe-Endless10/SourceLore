@@ -1,0 +1,256 @@
+{
+  "artifact": "F2_P6E_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-06T17:20:28+08:00",
+  "baseline_commit": "59b3c1d",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "crosswalk_matches_frozen": true,
+  "orchestration": {
+    "modules": [
+      "src/collector/acceptance_request_planner.py",
+      "src/collector/acceptance_execution_coordinator.py"
+    ],
+    "estimate": {
+      "cold_start_min": 2,
+      "cold_start_max": 7,
+      "breakdown": {
+        "repo_metadata": 1,
+        "resolve_ref": 1,
+        "root_tree": 1,
+        "blob": 4
+      },
+      "note": "4 个 blob 各自一次，任务书禁止写「约 5 次」"
+    },
+    "dedup_key": "(method, endpoint, identity, repository_id, commit_sha)",
+    "stages": 10,
+    "pause_states": 8,
+    "preflight_conditions": [
+      "local_max",
+      "authoritative_remaining >= need+reserve",
+      "not rate-limited"
+    ]
+  },
+  "rate_limit_observations": [
+    {
+      "at": "17:08",
+      "remaining": 0,
+      "reset_in_s": 118
+    },
+    {
+      "at": "17:11",
+      "remaining": 0,
+      "reset_in_s": 860
+    },
+    {
+      "at": "17:14",
+      "remaining": 0,
+      "reset_in_s": 721
+    },
+    {
+      "at": "17:15",
+      "remaining": 0,
+      "reset_in_s": 662
+    },
+    {
+      "at": "17:19",
+      "remaining": 0,
+      "reset_in_s": 372
+    }
+  ],
+  "rate_limit_interpretation": "reset 每次后移且 remaining 恒 0 → 同 IP 其他客户端持续消耗，非 SourceLore 自身问题",
+  "real_repository": {
+    "status": "NOT_COLLECTED",
+    "reason": "GitHub 匿名配额持续为 0"
+  },
+  "defects": [
+    {
+      "id": "D-55",
+      "title": "LICENSE 重复计数",
+      "impact": "target_paths 含 LICENSE 时 license_path 又追加 → blob 节点 5 个而非 4",
+      "fix": "dict.fromkeys 去重",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-56",
+      "title": "计数口径不一致",
+      "impact": "counts() 把 LOCAL_REUSE 计入 certain，by_operation 排除 → 同一计划两个矛盾数",
+      "fix": "counts 跳过复用节点",
+      "status": "FIXED",
+      "evidence": "全复用 need 5→0；冷启动 2~7"
+    }
+  ],
+  "gates": {
+    "A_ACCEPTANCE_REQUEST_DAG": {
+      "status": "DONE"
+    },
+    "B_WORKFLOW_BUDGET_PREFLIGHT": {
+      "status": "DONE"
+    },
+    "C_REQUEST_DEDUPLICATION": {
+      "status": "DONE"
+    },
+    "D_REQUEST_HEADER_REVALIDATION": {
+      "status": "DONE"
+    },
+    "E_RATE_LIMIT_SAFE_STOP": {
+      "status": "DONE"
+    },
+    "F_WORKFLOW_PARTIAL_RESUME": {
+      "status": "DONE"
+    },
+    "G_REAL_ESM_REPOSITORY_IDENTITY": {
+      "status": "BLOCKED"
+    },
+    "H_REAL_ESM_AUTHORIZATION": {
+      "status": "BLOCKED"
+    },
+    "I_REAL_ESM_BLOB_CAPTURE": {
+      "status": "BLOCKED"
+    },
+    "J_REAL_ESM_BLOB_INTEGRITY": {
+      "status": "BLOCKED"
+    },
+    "K_REAL_ESM_SOURCE_FACTS": {
+      "status": "BLOCKED"
+    },
+    "L_REAL_ESM_CLAIMS_VERIFIED": {
+      "status": "BLOCKED"
+    },
+    "M_INSTALLED_SKILL_ESM_QUERY": {
+      "status": "BLOCKED"
+    },
+    "N_REAL_ESM_KNOWLEDGE_CARD": {
+      "status": "BLOCKED"
+    },
+    "O_TWO_REAL_REPOSITORY_ISOLATION": {
+      "status": "PARTIAL",
+      "reason": "is-number 隔离机制已验证；第二仓库未入库"
+    },
+    "P_OFFLINE_REUSE": {
+      "status": "DONE"
+    },
+    "Q_SUCCESS_CONTRACT_INTEGRITY": {
+      "status": "DONE"
+    },
+    "R_EXISTING_PRODUCT_REGRESSION": {
+      "status": "DONE"
+    },
+    "S_NATURAL_LANGUAGE_AUTO_TRIGGER": {
+      "status": "NOT_VERIFIED"
+    },
+    "T_DISTRIBUTION_READY": {
+      "status": "NOT_READY"
+    }
+  },
+  "blocking_metrics": {
+    "preflight_bypass": 0,
+    "duplicate_requests": 0,
+    "stale_plan_requests": 0,
+    "requests_during_rate_limit": 0,
+    "unauthorized_persisted": 0,
+    "wrong_oid_accepted": 0,
+    "facts_missing_claimed": 0,
+    "verification_missing_claimed": 0,
+    "cross_repo_facts": 0,
+    "offline_github_access": 0
+  },
+  "tests": {
+    "runtime": {
+      "tests": 45,
+      "ok": true
+    },
+    "storage": {
+      "tests": 53,
+      "ok": true
+    },
+    "collector": {
+      "tests": 48,
+      "ok": true
+    },
+    "facts": {
+      "tests": 44,
+      "ok": true
+    },
+    "evidence_claims": {
+      "tests": 36,
+      "ok": true
+    },
+    "lifecycle": {
+      "tests": 142,
+      "ok": true
+    },
+    "views": {
+      "tests": 50,
+      "ok": true
+    },
+    "renderer": {
+      "tests": 59,
+      "ok": true
+    },
+    "research": {
+      "tests": 122,
+      "ok": true
+    },
+    "skill_interface": {
+      "tests": 69,
+      "ok": true
+    },
+    "content": {
+      "tests": 77,
+      "ok": true
+    },
+    "blob_capture": {
+      "tests": 59,
+      "ok": true
+    },
+    "content_persistence": {
+      "tests": 63,
+      "ok": true
+    },
+    "content_skill": {
+      "tests": 49,
+      "ok": true
+    },
+    "source_analysis": {
+      "tests": 88,
+      "ok": true
+    },
+    "js_ts_analysis": {
+      "tests": 72,
+      "ok": true
+    },
+    "module_resolution": {
+      "tests": 148,
+      "ok": true
+    },
+    "ts_projects": {
+      "tests": 136,
+      "ok": true
+    },
+    "product_acceptance": {
+      "tests": 21,
+      "ok": true
+    },
+    "capture_maintenance": {
+      "tests": 21,
+      "ok": true
+    },
+    "product_multirepo": {
+      "tests": 20,
+      "ok": true
+    },
+    "acceptance_orchestration": {
+      "tests": 25,
+      "ok": true
+    }
+  },
+  "total_tests": 1447,
+  "all_tests_ok": true,
+  "explicitly_not_claimed": [
+    "编排器通过 != 采集成功",
+    "PARSE_COMPLETE != 源码事实成功",
+    "0 Fact 不一律为 VALID_EMPTY_RESULT",
+    "单仓库隔离 != 两仓库已验证",
+    "预算预检通过 != 配额已预留"
+  ]
+}

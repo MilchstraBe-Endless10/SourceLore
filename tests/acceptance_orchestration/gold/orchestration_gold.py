@@ -1,0 +1,26 @@
+"""验收编排 Gold：22 项人工预定义预期。"""
+
+GOLD = [
+ ("A01","DAG","请求图覆盖全工作流","DAG_COMPLETE"),
+ ("A02","DAG","已知 commit 不重复请求 ref","NO_REF"),
+ ("A03","DAG","已知 tree 不重复请求","NO_TREE_REQ"),
+ ("A04","DEDUP","同 Blob 只请求一次","DEDUP_ONCE"),
+ ("A05","DEDUP","不同 Commit 不合并","NO_CROSS_COMMIT"),
+ ("A06","DEDUP","不同仓库不合并","NO_CROSS_REPO"),
+ ("A07","BUDGET","最小/最大请求分开报","MIN_MAX_SPLIT"),
+ ("A08","BUDGET","依赖未解析不算确定值","CONDITIONAL"),
+ ("A09","BUDGET","预算不足整批停止","BLOCKED"),
+ ("A10","BUDGET","预留余量生效","RESERVE"),
+ ("A11","BUDGET","无权威头不采集","NO_HEADER_BLOCK"),
+ ("A12","BUDGET","bootstrap 至多一次","BOOTSTRAP_ONCE"),
+ ("A13","RATELIMIT","主限流停止","PRIMARY_STOP"),
+ ("A14","RATELIMIT","次级限流停止","SECONDARY_STOP"),
+ ("A15","RESUME","已存 Blob 零请求","REUSE_0"),
+ ("A16","RESUME","中断后只补缺失","MINIMAL_RESUME"),
+ ("A17","STAGE","阶段顺序不可跳","STAGE_ORDER"),
+ ("A18","STAGE","预算通过不等于采集成功","PREFLIGHT_NOT_CAPTURE"),
+ ("A19","STAGE","0 Fact 不一律判空","NOT_ALL_EMPTY"),
+ ("A20","STAGE","CommonJS 保留能力缺口","UNSUPPORTED_KEPT"),
+ ("A21","INTEGRITY","OID 错误拒绝","OID_REJECT"),
+ ("A22","AUTH","许可证未知阻断","AUTH_BLOCK"),
+]
