@@ -14,6 +14,7 @@
 结构化查询能力保留。
 """
 
+import json as _j
 import sys
 from pathlib import Path
 
@@ -21,6 +22,32 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from knowledge_store import KnowledgeStore
 
 INDEX_MISSING = "INDEX_MISSING"
+
+
+def _resolve_commit_from_payload(payload_json):
+    """与 KnowledgeStore._resolve_index_commit_sha 同口径的 payload 回退。
+
+    ★ 索引是 C 层派生数据，必须能从权威 payload 重建 —— 否则 rebuild 会丢信息。
+    """
+    import json as _j
+    if not payload_json:
+        return None
+    try:
+        pl = _j.loads(payload_json)
+    except Exception:
+        return None
+    if not isinstance(pl, dict):
+        return None
+    cs = pl.get("commit_sha")
+    if isinstance(cs, str) and cs:
+        return cs
+    snap = pl.get("source_snapshot")
+    if isinstance(snap, dict):
+        for k in ("commit_sha", "baseline_commit_sha", "observed_commit_sha"):
+            v = snap.get(k)
+            if isinstance(v, str) and v:
+                return v
+    return None
 
 
 def rebuild_index(store: KnowledgeStore) -> dict:
@@ -41,13 +68,42 @@ def rebuild_index(store: KnowledgeStore) -> dict:
             "SELECT asset_id, asset_type, logical_identity, repository_id, "
             "subject_id, commit_sha, asset_version, payload_json FROM assets"
         ).fetchall()
+        # ★ D-69 补充：claim_verification 的 payload **不含任何 commit 字段**，
+        #   它的 commit 原本是通过 SourceSnapshot 传给 AssetDraft 的（不进 payload）。
+        #   因此必须先从 claim 建 claim_id → commit 索引再回填，否则重建后恒为 NULL。
+        claim_commit = {}
         for r in rows:
+            if r["asset_type"] != "claim_candidate":
+                continue
+            try:
+                _d = _j.loads(r["payload_json"] or "{}")
+            except Exception:
+                continue
+            cid = _d.get("claim_id")
+            cs = _resolve_commit_from_payload(r["payload_json"])
+            if cid and cs:
+                claim_commit[(str(cid), str(r["repository_id"]))] = cs
+        for r in rows:
+            # ★ D-69：assets.commit_sha 实测**整列为 NULL**（各入库路径从不填它），
+            #   而 index_rows 的 commit 是写入时通过 _resolve_index_commit_sha
+            #   从 payload 回退解析出来的。直接照抄 assets.commit_sha 会把原本
+            #   正确的索引**全部清成 NULL** —— 这不是重建，是毁索引。
+            #   此处复用同一套回退：source_snapshot → payload.commit_sha →
+            #   payload.source_snapshot.*。payload 不可解析时保持 NULL 并计数。
+            _csha = _resolve_commit_from_payload(r["payload_json"])
+            if not _csha and r["asset_type"] == "claim_verification":
+                try:
+                    _vd = _j.loads(r["payload_json"] or "{}")
+                except Exception:
+                    _vd = {}
+                _cid = str(_vd.get("claim_id") or "")
+                _csha = claim_commit.get((_cid, str(r["repository_id"])))
             store.conn.execute(
                 """INSERT INTO index_rows(asset_id, asset_type, logical_identity,
                      repository_id, subject_id, commit_sha, asset_version)
                    VALUES(?,?,?,?,?,?,?)""",
                 (r["asset_id"], r["asset_type"], r["logical_identity"],
-                 r["repository_id"], r["subject_id"], r["commit_sha"],
+                 r["repository_id"], r["subject_id"], _csha,
                  r["asset_version"]))
             if store.fts5_available:
                 store.conn.execute(

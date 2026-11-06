@@ -232,3 +232,22 @@ git branch -vv       → main 752c3ba（无 upstream）
 git ls-remote origin → fatal: 'origin' does not appear to be a git repository
 ```
 → **无远端，未推送，不能声称已同步 GitHub。**
+
+## 本轮新增修复（2026-11-07 00:20）
+### U-2 仓库显示名（已修，未验证）
+`analyze` 把 `repo_payload.full_name` 写入 `observation_record` 独立资产
+（logical_identity = `SL-REPONAME-<repo_id>`），`repositories` 读回 `_name`。
+★ 不改 snapshot 内容身份（to_asset_payload 只含 content_payload，加进去会改哈希）。
+★ 现有两个仓库无此资产 → 仍显示 None，**不猜**。需重新采集才能有名字。
+
+### D-70 `--plan` 忽略 URL（已修）
+`--plan` 本应按给定 URL 出计划，实际却回退到「本地库唯一仓库」，多仓库时误报
+`AMBIGUOUS_REPOSITORY`。修复：传 url → `_repo_ids_for(owner,name)` 解析；
+解析不到明确报 `REPOSITORY_NOT_REGISTERED`。
+★ **附带发现**：迁移时漏搬 `repo_slugs.json`，导致已采集仓库也解析不到。已合并补写到统一根。
+
+### D-69 `rebuild_index` 毁索引（修复中）
+`assets.commit_sha` 整列 NULL，rebuild 直接照抄 → 清空所有正确索引。
+- 第一层修复：复用 `_resolve_commit_from_payload`
+- 第二层：`claim_verification` payload 完全无 commit 字段
+  （其 commit 原本经 SourceSnapshot 传给 draft、不入 payload）→ 需从 claim 反查
