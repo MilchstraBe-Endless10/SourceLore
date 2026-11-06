@@ -144,3 +144,20 @@ repository_snapshot        1/1     100%
 3. 或让 `_load_verdicts` 按 `claim_id → claim → commit` 反查（不依赖 verification 索引）。
 
 推荐第 1+2 条：索引是查询契约的一部分，不该靠反查绕。
+
+## 恢复前置（Codex 2026-11-06 22:05 裁定）
+本轮暂停确认。基线 `253077c`，工作区干净。
+
+D-67 定性：**Verification 写入契约 与 读取索引契约 不一致**。
+不是 payload / subject / asset_type 分支问题。
+
+恢复时的第一步不是改代码，而是**先读现有 Storage 契约**，确认三件事：
+1. `index_rows` 的写入入口有哪些（谁负责填 commit_sha/subject_id）。
+2. 是否存在既有的「索引补全」机制可复用 —— 若已有，就不新建第二套。
+3. 不可变资产约束下，追加式补全的合法形态是什么
+   （新增索引行 vs 新版本资产 vs 派生索引视图）。
+
+在这三点明确之前，不动 `ingest_verification`，也不写回填脚本。
+
+Codex 补充要求：**具体采用哪种追加式索引机制，需恢复时检查当前 Storage 契约。**
+本文件不预设方案，只记录待查项。
