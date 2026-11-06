@@ -62,6 +62,14 @@ def classify(*, parse_status, language, facts_persisted, observed_nodes,
                 "explain": "已提取并持久化受支持规则的事实"}
 
     if parse_status == PARSE_COMPLETE and facts_persisted == 0:
+        # ★ D-62：解析器观察到受支持节点、却 0 事实入库 → 阻断级缺陷，
+        #   绝不能用 VALID_EMPTY_RESULT 掩盖（is-plain-obj 的 index.js 就是这样被谎报的）。
+        if observed_nodes > 0:
+            return {"analysis_coverage": SOURCE_FACTS_NOT_PERSISTED,
+                    "explain": ("解析器观察到 %d 个受支持节点，但没有任何事实入库；"
+                                "这是语义提取/入库缺陷，不是合法空结果"
+                                % observed_nodes),
+                    "unsupported_forms": list(unsupported_forms or [])}
         if unsupported_forms:
             # ★ 关键区别：解析成功但存在已识别、未支持的形态
             #   → UNSUPPORTED_SEMANTIC_FORM，不是 VALID_EMPTY_RESULT

@@ -128,8 +128,13 @@ def extract_captured(*, store, data_root, repository_id, commit_sha,
                     sr = SFI.ingest_source_facts(
                         store, observation=obs,
                         source_snapshot_id=meta.get("source_snapshot_id") or "")
-                    n = len(sr.get("written") or [])
+                    # ★ D-62：reused 也是有效事实（重复执行不该报 0）。
+                    n_written = len(sr.get("written") or [])
+                    n_reused = len(sr.get("reused") or [])
+                    n = n_written + n_reused
                     rec["source_facts"] = n
+                    rec["source_facts_written"] = n_written
+                    rec["source_facts_reused"] = n_reused
                     out["source_facts"] += n
                     rec["symbols"] = len(obs.get("observed_symbols") or [])
                     rec["exports"] = len(obs.get("observed_exports") or [])
@@ -140,14 +145,15 @@ def extract_captured(*, store, data_root, repository_id, commit_sha,
                     import semantic_coverage as SC
                     text = raw.decode("utf-8", "replace")
                     forms = SC.detect_unsupported_forms(text)
+                    _nodes = (len(obs.get("observed_symbols") or [])
+                              + len(obs.get("observed_exports") or [])
+                              + len(obs.get("observed_imports") or []))
                     cov = SC.coverage_report(
                         file_path=path, language=obs.get("language") or "javascript",
                         parser_version="js-ts/1",
                         parse_status=obs.get("parse_status") or "PARSE_COMPLETE",
                         facts_persisted=n, claims_verified=0,
-                        observed_nodes=(len(obs.get("observed_symbols") or [])
-                                        + len(obs.get("observed_exports") or [])
-                                        + len(obs.get("observed_imports") or [])),
+                        observed_nodes=_nodes,
                         unsupported_forms=forms)
                     rec["coverage"] = cov
                     rec["analysis_coverage"] = cov["analysis_coverage"]

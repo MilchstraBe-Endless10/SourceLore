@@ -30,7 +30,7 @@ def main():
 
     budget = RB.GitHubRequestBudget(
         repository_id="38923193", commit_sha=KNOWN_COMMIT,
-        execution_id="p6f", request_limit=8, reserve_requests=1)
+        execution_id="p6f", request_limit=12, reserve_requests=1)
     coord = EC.Coordinator(budget=budget)
 
     out = {"data_root": DATA_ROOT, "steps": []}

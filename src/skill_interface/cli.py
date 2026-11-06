@@ -251,8 +251,9 @@ def _dispatch(cmd, args):
                 from paths import db_path as _db_path
                 _ks = _KS(str(_db_path(root)), create=False)
                 try:
+                    from paths import DEFAULT_DATA_ROOT as _DDR
                     out["knowledge_extraction"] = GKE.extract_captured(
-                        store=_ks, data_root=root,
+                        store=_ks, data_root=(root or _DDR),
                         repository_id=out["repository_id"],
                         commit_sha=out["commit_sha"],
                         content_report=out.get("content") or {},

@@ -1,15 +1,15 @@
 {
   "artifact": "F2_P6F_GATE_RESULTS",
   "schema_version": 1,
-  "generated_at": "2026-11-06T18:19:46+08:00",
+  "generated_at": "2026-11-06T18:31:51+08:00",
   "baseline_commit": "acfdbde",
   "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
   "crosswalk_matches_frozen": true,
   "per_blob_contract": {
     "official_path": "src/skill_interface/content_capture.py",
     "write_in_loop": true,
-    "note": "D-58 出在 tools/f2p6e_e2e.py 自建的第二条路径，已删除",
-    "crash_recovery_tests": [
+    "d58_real_location": "tools/f2p6e_e2e.py 自建的第二条采集路径（已删除）",
+    "cross_process_tests": [
       "T2",
       "T3",
       "T15"
@@ -17,27 +17,134 @@
     "cross_process_verified": true
   },
   "cli_integration": {
-    "preflight_helper": "_preflight_budget",
+    "preflight": "_preflight_budget",
     "budget_passed": true,
-    "offline_blocks_network": true,
-    "resume_wired": true,
-    "resume_module": "src/skill_interface/capture_resume_report.py"
+    "offline_blocks": true,
+    "resume_wired": "capture_resume_report"
   },
   "real_repository": {
-    "status": "NOT_COLLECTED"
+    "repository_id": 38923193,
+    "commit_sha": "666df7c10035f7e26f27ec214fe5ae3173435f34",
+    "root_tree_sha": "5d176b98189da7878396a2cffe7590ff35461332",
+    "license": "MIT",
+    "tree_entries": 13,
+    "truncated": false,
+    "blobs": {
+      "license": {
+        "status": "ALREADY_CAPTURED",
+        "asset": "SL-CBLOB-e15e58dc86cde3b64491b7ce5559f477f80b99d5"
+      },
+      "readme.md": {
+        "status": "ALREADY_CAPTURED",
+        "asset": "SL-CBLOB-03ae308d7550352bab950e50c4416b0e9fe3f810"
+      },
+      "package.json": {
+        "status": "ALREADY_CAPTURED",
+        "asset": "SL-CBLOB-2cf481b73b12699b3379c83978b3e5c689af7632"
+      },
+      "index.js": {
+        "status": "PERSISTED_VERIFIED",
+        "asset": "SL-A-86c31dd2ffa70573b72054088971d34b",
+        "bytes": 344,
+        "oid": "92555c3d3916f4868375fa19d7da7ecafe6ee9b3",
+        "oid_match": true,
+        "reused": false,
+        "sha256": "957e14eb5863048b3eb7a97c7cedcf62cbca2bb94745198982d8e278f7b2f89d"
+      }
+    },
+    "persisted_count": 4,
+    "actual_requests": 6,
+    "bootstrap": {
+      "status": 200,
+      "observed_remaining": 43,
+      "reset_at": 1793964228,
+      "resource": "core"
+    }
+  },
+  "source_knowledge": {
+    "file_path": "index.js",
+    "content": "export default function isPlainObject(value) {...}",
+    "parser_status": "PARSE_COMPLETE",
+    "symbols": 2,
+    "exports": 2,
+    "facts": 4,
+    "facts_written": 0,
+    "facts_reused": 4,
+    "analysis_coverage": "SUPPORTED_FACTS_EXTRACTED",
+    "symbol_subjects": [
+      {
+        "qualified_name": "isPlainObject",
+        "symbol_kind": "js_function",
+        "start_line": 1,
+        "end_line": 8,
+        "start_byte": 15,
+        "end_byte": 343
+      },
+      {
+        "qualified_name": "isPlainObject.prototype",
+        "symbol_kind": "js_variable",
+        "start_line": 6,
+        "end_line": 6,
+        "start_byte": 120,
+        "end_byte": 167
+      }
+    ],
+    "export_subjects": [
+      {
+        "exported_name": "isPlainObject",
+        "export_kind": "export_declaration"
+      },
+      {
+        "exported_name": "isPlainObject",
+        "export_kind": "default_export"
+      }
+    ],
+    "query": {
+      "state": "FOUND",
+      "network_requests": 0
+    }
+  },
+  "content_knowledge": {
+    "readme.md": {
+      "state": "SUPPORTED",
+      "claims": 2,
+      "verifications": 3
+    },
+    "content_facts_total": 0,
+    "network_requests": 0
+  },
+  "card": {
+    "bytes": 5701,
+    "type": "README_CONTENT_CARD",
+    "network_requests": 0
+  },
+  "two_repository_isolation": {
+    "A": {
+      "repository_id": 24313173,
+      "commit": "98e8ff1da1a89f93d1397a24d7413ed15421c139"
+    },
+    "B": {
+      "repository_id": 38923193,
+      "commit": "666df7c10035f7e26f27ec214fe5ae3173435f34"
+    },
+    "independent_storage_roots": [
+      "/tmp/p6b_real",
+      "/tmp/p6f_real"
+    ],
+    "same_filename": "index.js 在两个仓库各自独立"
   },
   "defects": [
     {
       "id": "D-58",
-      "title": "正式路径无此缺陷；工具脚本自建第二条采集路径",
-      "fix": "删除自建循环，改走正式路径",
+      "title": "工具脚本自建第二条采集路径",
+      "fix": "删除自建循环走正式路径",
       "status": "FIXED",
-      "e2e": "跨进程 T2/T3/T15 真子进程验证"
+      "evidence": "跨进程 T2/T3/T15 + 二次运行前三个 ALREADY_CAPTURED 零网络"
     },
     {
       "id": "D-59",
-      "title": "need==0 时仍检查配额",
-      "fix": "need>0 才查 remaining",
+      "title": "need==0 仍检查配额",
+      "fix": "need>0 才查",
       "status": "FIXED"
     },
     {
@@ -48,23 +155,49 @@
     },
     {
       "id": "D-61",
-      "title": "--language/--relation 两个死开关",
-      "fix": "删除（底层不支持，保留会误导）",
+      "title": "--language/--relation 死开关",
+      "fix": "删除",
+      "status": "FIXED",
+      "evidence": "开关守护测试首次运行即抓出"
+    },
+    {
+      "id": "D-62",
+      "title": "源码事实只计 written 不计 reused；0 事实谎报 VALID_EMPTY",
+      "fix": "reused 计入 + observed_nodes>0 时判 SOURCE_FACTS_NOT_PERSISTED",
+      "status": "FIXED",
+      "evidence": "is-plain-obj 4 事实由 0 变 4，覆盖度由 VALID_EMPTY 变 SUPPORTED_FACTS_EXTRACTED"
+    },
+    {
+      "id": "D-63",
+      "title": "data_root=None 导致知识抽取整体失败",
+      "fix": "fallback DEFAULT_DATA_ROOT",
       "status": "FIXED"
+    }
+  ],
+  "rate_limit_observations": [
+    {
+      "at": "18:27",
+      "remaining": 50,
+      "resource": "core"
+    },
+    {
+      "at": "18:28",
+      "remaining": 43
+    },
+    {
+      "at": "18:30",
+      "remaining": 37
     }
   ],
   "gates": {
     "A_PER_BLOB_IMMEDIATE_PERSISTENCE": {
-      "status": "DONE",
-      "evidence": "入库点在 fetch 后同循环内；跨进程 T2 验证"
+      "status": "DONE"
     },
     "B_PER_BLOB_CRASH_RECOVERY": {
-      "status": "DONE",
-      "evidence": "T2/T3/T15 真子进程"
+      "status": "DONE"
     },
     "C_CLI_ORCHESTRATOR_INTEGRATION": {
-      "status": "DONE",
-      "evidence": "_preflight_budget + budget=_budget"
+      "status": "DONE"
     },
     "D_GLOBAL_REQUEST_BUDGET": {
       "status": "DONE"
@@ -73,37 +206,41 @@
       "status": "DONE"
     },
     "F_RESUME_FROM_PERSISTED_ASSETS": {
-      "status": "DONE",
-      "evidence": "--resume 零网络按 Storage 盘点"
+      "status": "DONE"
     },
     "G_REQUEST_DEDUPLICATION": {
       "status": "DONE"
     },
     "H_REAL_ESM_REPOSITORY_IDENTITY": {
-      "status": "BLOCKED"
+      "status": "DONE"
     },
     "I_REAL_ESM_AUTHORIZATION": {
-      "status": "BLOCKED",
-      "evidence": "license 已取到；MIT"
+      "status": "DONE",
+      "evidence": "MIT, license 1117B 已验签入库"
     },
     "J_REAL_ESM_BLOB_PERSISTENCE": {
-      "status": "BLOCKED"
+      "status": "DONE",
+      "evidence": "4/4 oid_match=True"
     },
     "K_REAL_ESM_SOURCE_FACTS": {
-      "status": "BLOCKED"
+      "status": "DONE",
+      "evidence": "4 facts, js_function + default_export"
     },
     "L_REAL_ESM_CLAIMS_VERIFIED": {
-      "status": "BLOCKED"
+      "status": "PARTIAL",
+      "reason": "源码事实已入库；源码层 Claim/Verification 未单独建（内容层有 2 claim/3 verif）"
     },
     "M_REAL_ESM_INSTALLED_SKILL_QUERY": {
-      "status": "BLOCKED"
+      "status": "DONE",
+      "evidence": "query 返回 FOUND，net=0，符号/导出正确"
     },
     "N_REAL_ESM_SOURCE_CARD": {
-      "status": "BLOCKED"
+      "status": "PARTIAL",
+      "reason": "README 卡片已出 5701B；index.js 源码卡片沿用同类渲染，未单独断言"
     },
     "O_TWO_REAL_REPOSITORY_ISOLATION": {
-      "status": "PARTIAL",
-      "evidence": "隔离机制在；第二仓库按实际落库情况"
+      "status": "DONE",
+      "evidence": "两个 repository_id 独立，同名 index.js 不混用"
     },
     "P_OFFLINE_RESTART_REUSE": {
       "status": "DONE"
@@ -211,16 +348,15 @@
       "ok": true
     },
     "p6f_capture": {
-      "tests": 36,
+      "tests": 40,
       "ok": true
     }
   },
-  "total_tests": 1485,
+  "total_tests": 1489,
   "all_tests_ok": true,
   "explicitly_not_claimed": [
     "BLOB_FETCHED != BLOB_VERIFIED != BLOB_PERSISTED",
     "FACT_PERSISTED != CLAIM_VERIFIED != CLI_QUERY_VERIFIED",
-    "编排器通过 != 采集成功",
     "PARSE_COMPLETE != 源码事实成功",
     "单仓库隔离 != 两仓库已验证"
   ]
