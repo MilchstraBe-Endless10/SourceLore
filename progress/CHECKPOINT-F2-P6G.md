@@ -111,3 +111,36 @@ dfc88b3（WIP）
 
 ★ 已排除：claim payload（v2 已带 np）。
 ★ 下一步：直接 print `_load_verdicts` 里每行的 asset_type，实证到底走了哪个分支。
+
+## ★★ 根因已证实（2026-06-18 20:14）· D-67
+
+**`claim_verification` 的索引行 `commit_sha` 全部为 NULL。**
+
+各资产类型填充率实测：
+```
+captured_blob_content      4/4     100%
+claim_candidate           19/19    100%
+claim_verification         0/13      0%   ← 全空
+extracted_fact            22/22    100%
+repository_snapshot        1/1     100%
+```
+
+因此 `_load_verdicts` 的
+`WHERE ... AND i.commit_sha=?` 永远筛不到 verification → `verifs` 恒为空
+→ `_verdict_for` 拿不到 status → 全部降级 `OBSERVED_SOURCE_FACT`。
+
+**排除的三个猜测**（此前曾怀疑过，均不成立）：
+1. 不是 `asset_type` 判断错 —— SQL 返回的行里 claim_verification 一条都没有，
+   是因为 WHERE 就已经把它们筛掉了，根本没进入分支。
+2. 不是 Subject 不匹配 —— claim 的 v2 payload 已带完整 `normalized_parameters`。
+3. 不是数据格式问题 —— payload 本身完好，13 条都在 assets 里。
+
+**真正的断点**：`verification_store.ingest_verification(store, verif, repository_id=...)`
+只传了 repository_id，**没把 commit_sha 写进索引行**。和其他资产的入库函数不对称。
+
+## 修复方向（下一轮，不改已冻结资产）
+1. `ingest_verification` 接受并写入 commit_sha；
+2. 历史 13 条 verification 的索引行需**追加式回填**（新增索引写入，不 UPDATE assets）；
+3. 或让 `_load_verdicts` 按 `claim_id → claim → commit` 反查（不依赖 verification 索引）。
+
+推荐第 1+2 条：索引是查询契约的一部分，不该靠反查绕。
