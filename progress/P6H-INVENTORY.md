@@ -194,3 +194,21 @@ Playwright 打开 http://127.0.0.1:18991/SL-SCARD-...html：
 - 六节结构完整（身份/概览/符号/导入/导出/限制）✓
 - 裁决层级列真实渲染：「已验证 · 命题成立」+ claim=SL-CLAIM-4428bc79… ✓
 - Commit / Blob OID / 字节 / 校验 全部在场 ✓
+
+## D-68 来源等级硬编码（已修）
+`github_knowledge_extract.py` 三处 `provenance_level="AUTHORIZED_LOCAL_FIXTURE"` 硬编码，
+对真实远程仓库抽出的源码事实也标成「本地夹具」—— **证据层降级真实数据**。
+
+修复：来源等级继承自被抽取 blob 的 meta.provenance_level；
+未知则记 PROVENANCE_UNKNOWN 并跳过，不猜。
+
+验证：
+```
+38923193 (真实)  抽取 sf=4  → 继承 AUTHORIZED_REMOTE_SOURCE
+24313173 (合成)  抽取 sf=0  → 正确报 UNSUPPORTED_SEMANTIC_FORM (CommonJS)
+```
+历史资产不追溯改写（不可变 A 层）。
+
+## 全量回归
+1489 项全绿（与 P6F 基线一致）。注意：`pytest tests/` 并列收集会因
+`sfx.CLI` 导入顺序冲突失败，须按目录分组 discover（部分目录需 `-t .`）。
