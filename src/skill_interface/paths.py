@@ -15,9 +15,32 @@ _THIS = Path(__file__).resolve()
 SRC_ROOT = _THIS.parents[1]          # .../SourceLore/src
 PROJECT_ROOT = SRC_ROOT.parent       # .../SourceLore
 
-DEFAULT_DATA_ROOT = Path(
-    os.environ.get("SOURCELORE_DATA_ROOT")
-    or (Path.home() / ".sourcelore")
+# ★ 数据根解析优先级（单一权威来源，CLI / Skill / 定时任务共用）：
+#   1) --data-root 参数（调用方显式传入 db_path(data_root=...)）
+#   2) SOURCELORE_DATA_ROOT 环境变量
+#   3) ~/.config/sourcelore/config.json 的 data_root
+#   4) ~/.sourcelore（旧默认）
+# ★ 不把某台机器的绝对路径硬编码进核心模块 —— 配置从文件读。
+CONFIG_PATH = Path.home() / ".config" / "sourcelore" / "config.json"
+
+
+def _configured_data_root():
+    try:
+        if CONFIG_PATH.exists():
+            import json
+            d = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+            v = (d or {}).get("data_root")
+            if isinstance(v, str) and v.strip():
+                return Path(v).expanduser()
+    except Exception:
+        pass
+    return None
+
+
+DEFAULT_DATA_ROOT = (
+    Path(os.environ["SOURCELORE_DATA_ROOT"]).expanduser()
+    if os.environ.get("SOURCELORE_DATA_ROOT")
+    else (_configured_data_root() or (Path.home() / ".sourcelore"))
 )
 
 SKILL_VERSION = "f2p5a/1.0"

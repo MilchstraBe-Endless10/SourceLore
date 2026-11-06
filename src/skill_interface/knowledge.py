@@ -14,6 +14,7 @@ from result import SkillError, EXIT_UNAVAILABLE
 ensure_import_path()
 
 SNAPSHOT_TYPE = "repository_snapshot"
+CAPTURE_TYPE = "captured_blob_content"
 FACT_TYPE = "extracted_fact"
 CLAIM_TYPE = "claim_candidate"
 VERIF_TYPE = "claim_verification"
@@ -57,8 +58,12 @@ def list_repositories(store) -> dict:
             got = store.get_asset(r["asset_id"], verify=True)
             if got.get("ok"):
                 csha = ((got["asset"] or {}).get("payload") or {}).get("commit_sha")
-        if csha:
+        # ★ U-4：只有**快照/内容**支撑的 commit 才算该仓库的历史版本。
+        #   命题或验证上挂的 commit 可能来自负例（如 'a'*40 的错误 commit），
+        #   把它当历史版本列出来会误导用户。
+        if csha and r["asset_type"] in (SNAPSHOT_TYPE, CAPTURE_TYPE):
             slot["commits"].add(csha)
+            slot["_commits_supported"] = True
 
     out = []
     for repo, slot in sorted(agg.items()):
@@ -72,6 +77,7 @@ def list_repositories(store) -> dict:
             "knowledge_state": ("HAS_KNOWLEDGE"
                                 if slot["counts"].get(CLAIM_TYPE) else
                                 "STRUCTURE_ONLY"),
+            "repository": slot.get("_name"),
             "note": ("commits 为已登记快照的 Commit，不代表该仓库当前最新状态"),
         })
     return {"repositories": out, "count": len(out)}

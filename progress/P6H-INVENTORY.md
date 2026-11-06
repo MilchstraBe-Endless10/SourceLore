@@ -154,3 +154,25 @@ CLI 从统一根列出 2 个仓库：24313173 / 38923193。
 → 缺陷只在 `repositories` 的展示过滤，不在知识裁决。
 
 修复：repositories 只列有 repository_snapshot 或 captured_blob_content 支撑的 commit。
+
+## §四 默认数据根验收（2026-11-06 22:42）
+配置：`~/.config/sourcelore/config.json`（0600）→ data_root 指向 SourceLore_Data
+解析优先级（`paths.py`）：--data-root > SOURCELORE_DATA_ROOT > config.json > ~/.sourcelore
+★ 核心模块不含任何硬编码绝对路径，配置从文件读。
+
+不带 --data-root 实测：
+```
+status: data_root=<SourceLore_Data>, db_exists=True, storage_available=True, repository_count=2
+repositories: 24313173 → 98e8ff1d…  38923193 → 666df7c1…
+--data-root /tmp/p6f_real 仍可用（count=2）
+```
+
+## §六 U-4 修复
+`list_repositories` 只把有 snapshot/blob 支撑的 commit 算作历史版本。
+伪 commit `aaaa…` 已不再出现。test：两仓库各只显示 1 个真实 commit。
+
+## 仓库名缺口（U-2 未解决）
+`repo_bindings`/`operation_log` 均为空，snapshot payload 无 owner/name 字段。
+**当前库中没有仓库名的权威存储** → 不能显示 `jonschlinkert/is-number` 等名称。
+不得按 repository_id 硬编码映射（任务书 §六 禁止）。
+可行方向：下次采集时把 owner/name 写入 snapshot payload，历史库无法追溯。
