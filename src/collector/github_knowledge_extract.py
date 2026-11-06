@@ -69,6 +69,14 @@ def extract_captured(*, store, data_root, repository_id, commit_sha,
         sha = meta.get("git_blob_oid") or ""
         caid = meta.get("content_asset_id")
         cdigest = meta.get("content_sha256")
+        # ★ D-68：抽取产物的来源等级必须**继承自被抽取的 blob**，
+        #   不能硬编码。真实远程 blob 抽出的源码事实仍是 AUTHORIZED_REMOTE_SOURCE；
+        #   合成夹具抽出的仍是合成夹具。谎报任何一方都是证据造假。
+        _prov = meta.get("provenance_level")
+        if not _prov:
+            rec["notes"].append("PROVENANCE_UNKNOWN")
+            out["files"].append(rec)
+            continue
 
         # ① 内容抽取
         try:
@@ -77,7 +85,7 @@ def extract_captured(*, store, data_root, repository_id, commit_sha,
                 file_path=path, git_blob_oid=sha,
                 content_asset_id=caid, data=raw,
                 source_snapshot_id=meta.get("source_snapshot_id") or "",
-                provenance_level="AUTHORIZED_LOCAL_FIXTURE",
+                provenance_level=_prov,
                 declared_completeness="COMPLETE")
             if ex.get("status") == "CONTENT_AVAILABLE":
                 fr = CFI.ingest_content_facts(
@@ -90,7 +98,7 @@ def extract_captured(*, store, data_root, repository_id, commit_sha,
                     parser_id="content-extractor", parser_version="1",
                     file_path=path, git_blob_oid=sha,
                     completeness_status="COMPLETE",
-                    provenance_level="AUTHORIZED_LOCAL_FIXTURE")
+                    provenance_level=_prov)
                 n = len(fr.get("written") or [])
                 rec["content_facts"] = n
                 rec["content_extracted"] = True
@@ -122,7 +130,7 @@ def extract_captured(*, store, data_root, repository_id, commit_sha,
                     commit_sha=str(commit_sha), file_path=path,
                     git_blob_oid=sha, content_asset_id=caid,
                     content_sha256=cdigest,
-                    provenance_level="AUTHORIZED_LOCAL_FIXTURE")
+                    provenance_level=_prov)
                 rec["parser_status"] = obs.get("parse_status")
                 if obs.get("extraction_status") == "EXTRACTED":
                     sr = SFI.ingest_source_facts(
