@@ -102,3 +102,12 @@ source_export_declared v2: {file_path, exported_name, export_kind, expected_pres
 
 ## 已提交
 dfc88b3（WIP）
+
+## 19:01 实证结果（推翻前面怀疑）
+`_load_verdicts` 读回：claims=5（np 完整），**verifs=0**。
+但库里 query 直接查有 **13 条 claim_verification**。
+→ 问题在 `_load_verdicts` 的 `else: verifs[d.claim_id]=d` 分支没命中，
+  或 `r["asset_type"]` 行名读取失败（sqlite3.Row vs tuple）。
+
+★ 已排除：claim payload（v2 已带 np）。
+★ 下一步：直接 print `_load_verdicts` 里每行的 asset_type，实证到底走了哪个分支。
