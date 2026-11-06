@@ -128,3 +128,29 @@ claim_verification    12/13  extracted_fact 22/22   repository_snapshot 1/1
 
 负例回归：D/E/F/G 全部仍 insufficient_evidence（NO_MATCHING_FACT）。
 幂等：再跑补全 → 可补 0 条。
+
+## P0 迁移完成（2026-11-06 22:40）
+目标根：`/mnt/.../GitHub_Knowledge_Base(Gihub知识库)/SourceLore_Data`
+无覆盖复制，逐资产搬运 + 按 (type, logical_id, repo, version) 判重。
+
+| 资产类型 | 数量 |
+|---|---|
+| captured_blob_content | 7 |
+| claim_candidate | 25 |
+| claim_verification | 19 |
+| extracted_fact | 75 |
+| repository_snapshot | 2 |
+| **合计** | **128** |
+
+blobs 7 个（内容寻址去重：两库各有部分重叠）。
+CLI 从统一根列出 2 个仓库：24313173 / 38923193。
+
+## 新发现 U-4：伪 Commit 混入历史列表
+索引里有 `aaaaaaaa…`(40个a) 3 行 —— 是 P6G 负例 E 造的错误 commit。
+`repositories` 把它当成真实历史 Commit 列了出来。
+
+**但查询层是正确的**：用该伪 commit 查询返回
+`state=CONTENT_NOT_CAPTURED, facts=0` —— 不误报。
+→ 缺陷只在 `repositories` 的展示过滤，不在知识裁决。
+
+修复：repositories 只列有 repository_snapshot 或 captured_blob_content 支撑的 commit。
