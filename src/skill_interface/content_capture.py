@@ -20,8 +20,14 @@ def capture(*, repository_id, commit_sha, data_root=None, paths=None,
             owner=None, repo=None, license_known=False,
             repo_looks_third_party=True, max_requests=20,
             use_token=True, offline=False, dry_run=False,
-            authorization_kind=None, extract_facts=False):
-    """采集并入库。返回逐路径独立结果。"""
+            authorization_kind=None, extract_facts=False,
+            budget=None):
+    """采集并入库。返回逐路径独立结果。
+
+    ★ F2-P6F：`budget` 为外部（验收编排器）预检通过后的 GitHubRequestBudget。
+    传入时每个 blob 采集前都要过一次 can_spend，采完用真实响应头 consume。
+    不传则保留原行为（内部自建 client 自限流）。
+    """
     import content_acquisition_policy as POL
     import blob_fetcher as BF
     import content_ingest_coordinator as CIC
@@ -164,6 +170,19 @@ def capture(*, repository_id, commit_sha, data_root=None, paths=None,
                                           "note": "计划可采集，未发请求"})
                 continue
 
+            # ★ F2-P6F：编排器预检通过后，每个 blob 仍要单独过闸门。
+            #   预算不够就停，已落盘的照常保留（逐 blob 独立完成）。
+            if budget is not None and not dry_run:
+                _ok, _why = budget.can_spend(1)
+                if not _ok:
+                    report["results"].append({
+                        "file_path": fp, "status": "BUDGET_BLOCKED",
+                        "reason": _why,
+                        "note": "预算不足，未发请求；此前已落盘的不受影响"})
+                    report["skipped_blobs"] += 1
+                    report["budget_blocked"] = report.get("budget_blocked", 0) + 1
+                    continue
+
             got = BF.fetch_blob(client, owner=owner, name=repo,
                                 blob_sha=entry.get("sha"),
                                 expected_size=size,
@@ -171,6 +190,11 @@ def capture(*, repository_id, commit_sha, data_root=None, paths=None,
                                 repository_id=repository_id,
                                 commit_sha=commit_sha)
             report["network_requests"] += got.get("network_requests", 0)
+            if budget is not None and got.get("network_requests"):
+                budget.consume(headers=got.get("headers") or {},
+                               status=got.get("http_status") or 200,
+                               result="SUCCESS" if got["status"] == BF.OK else "ERROR",
+                               at=__import__("time").time())
 
             if got["status"] != BF.OK:
                 report["results"].append({

@@ -157,11 +157,15 @@ def fetch_blob(client, *, owner, name, blob_sha, expected_size,
                 "error_code": code,
                 "http_status": getattr(resp, "status", 0),
                 "reasons": [f"HTTP 失败: {code}"],
+                "headers": dict(getattr(resp, "headers", None) or {}),
                 "network_requests": 1}
 
     got = decode_and_verify(
         response_payload=getattr(resp, "data", None) or {},
         expected_oid=blob_sha, expected_size=expected_size,
         max_bytes=max_bytes, git_object_format=git_object_format)
+    # ★ F2-P6F：透传响应头，预算才能用真实 remaining 而不是本地推断
+    got["headers"] = dict(getattr(resp, "headers", None) or {})
+    got["http_status"] = getattr(resp, "status", 200)
     got["network_requests"] = 1
     return got

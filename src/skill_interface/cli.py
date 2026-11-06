@@ -201,13 +201,33 @@ def _dispatch(cmd, args):
             parts = src_url.rstrip("/").split("/")
             owner = parts[-2] if len(parts) >= 2 else None
             repo = parts[-1] if parts else None
-            out["content"] = CC.capture(
+            # ★ F2-P6F：正式 CLI 必须走全局预算预检 + 编排器，
+            #   不允许绕过预检直接采集（此前 cap 只在采集内部生效）。
+            _budget = _preflight_budget(
+                root=root,
                 repository_id=out["repository_id"],
-                commit_sha=out["commit_sha"], data_root=root,
-                paths=args.content_path, owner=owner, repo=repo,
-                license_known=getattr(args, "license_known", False),
+                commit_sha=out["commit_sha"],
+                content_paths=args.content_path,
+                request_limit=getattr(args, "request_limit", None),
+                reserve=getattr(args, "reserve_requests", None),
                 offline=bool(getattr(args, "offline", False)) or status_only,
                 dry_run=status_only)
+            out["budget_preflight"] = _budget["preflight"]
+            if not _budget["preflight"].get("can_begin") and not status_only:
+                # 预检不过 → 不采集，但已完成资产仍可查询
+                out["content"] = {
+                    "results": [], "network_requests": 0,
+                    "blocked_by_preflight": True,
+                    "reason": _budget["preflight"].get("block_reason")}
+            else:
+                out["content"] = CC.capture(
+                    repository_id=out["repository_id"],
+                    commit_sha=out["commit_sha"], data_root=root,
+                    paths=args.content_path, owner=owner, repo=repo,
+                    license_known=getattr(args, "license_known", False),
+                    offline=bool(getattr(args, "offline", False)) or status_only,
+                    dry_run=status_only,
+                    budget=_budget["budget"])
         # ★ D-51：GitHub 路径原本只捕获字节、不抽取知识。
         #   把已捕获字节交给同一条抽取链路（不新增解析器、不联网）。
         # status_only 只在 include-content 分支内定义；此处用安全取值
@@ -311,6 +331,77 @@ def _dispatch(cmd, args):
 if __name__ == "__main__":
     sys.exit(main())
 
+
+
+def _preflight_budget(*, root, repository_id, commit_sha, content_paths,
+                      request_limit, reserve, offline, dry_run):
+    """★ F2-P6F：统一预算预检。
+
+    正式 CLI 的远程采集必须经过这里：
+    先建请求 DAG → 盘点本地已有资产（标 LOCAL_REUSE）→ 取权威响应头 → 三条件判定。
+    """
+    import acceptance_request_planner as ARP
+    import request_budget as RB
+
+    limit = int(request_limit or ARP.DEFAULT_LOCAL_MAX)
+    reserve_val = int(reserve if reserve is not None else ARP.DEFAULT_RESERVE)
+
+    budget = RB.GitHubRequestBudget(
+        repository_id=str(repository_id), commit_sha=str(commit_sha),
+        execution_id="cli-%s" % str(commit_sha)[:8],
+        request_limit=limit, reserve_requests=reserve_val)
+
+    if offline or dry_run:
+        return {"budget": budget,
+                "preflight": {"can_begin": not dry_run and not offline,
+                              "block_reason": "OFFLINE_NO_REQUESTS" if offline
+                              else "DRY_RUN",
+                              "planned_primary_requests": 0,
+                              "note": "不发起网络请求"}}
+
+    # 盘点本地已完整资产 → 标 LOCAL_REUSE
+    have = []
+    try:
+        from knowledge_store import KnowledgeStore
+        import content_ingest_coordinator as CIC
+        from paths import db_path as _dbp
+        ks = KnowledgeStore(str(_dbp(root)), create=False)
+        try:
+            for fp in (content_paths or []):
+                m = CIC.find_content_asset(ks, repository_id=str(repository_id),
+                                           commit_sha=str(commit_sha),
+                                           file_path=fp)
+                if m and (m.get("completeness_status") or "").upper() == "COMPLETE":
+                    have.append(fp)
+        finally:
+            ks.close()
+    except Exception:
+        pass
+
+    plan = ARP.build_repo_acceptance_plan(
+        repository_id=repository_id, commit_sha=commit_sha,
+        target_paths=tuple(content_paths or ()), license_path=None,
+        local_max_requests=limit, reserve_requests=reserve_val,
+        have_metadata=True, have_tree=True, have_blobs=tuple(have))
+
+    # 取权威响应头：至多一次 bootstrap
+    observed = None
+    try:
+        import acceptance_execution_coordinator as EC
+        coord = EC.Coordinator(budget=budget)
+        boot = coord.bootstrap_rate_limit()
+        observed = boot.get("observed_remaining")
+        pre = ARP.preflight(plan=plan, observed_remaining=observed,
+                            observed_reset_at=boot.get("reset_at"),
+                            observed_resource=boot.get("resource"),
+                            rate_limit_status=budget.rate_limit_kind,
+                            bootstrap_used=True)
+        pre["reused_paths"] = list(have)
+        return {"budget": budget, "preflight": pre}
+    except Exception as e:
+        pre = ARP.preflight(plan=plan, observed_remaining=None, bootstrap_used=True)
+        pre["error"] = "%s: %s" % (type(e).__name__, e)
+        return {"budget": budget, "preflight": pre}
 
 
 def _run_capture_plan(*, data_root, repository_id, commit, content_paths,

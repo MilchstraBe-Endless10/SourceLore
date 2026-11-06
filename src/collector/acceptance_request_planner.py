@@ -237,10 +237,14 @@ def preflight(*, plan, observed_remaining, observed_reset_at=None,
     if rate_limit_status in ("PRIMARY", "SECONDARY"):
         reasons.append("RATE_LIMITED:" + str(rate_limit_status))
     # 条件 2：权威剩余
-    if observed_remaining is None:
-        reasons.append("NO_AUTHORITATIVE_REMAINING")
-    elif int(observed_remaining) < need + reserve:
-        reasons.append("INSUFFICIENT_REMAINING")
+    # ★ D-59：need==0（全部本地复用）时不需要任何配额，也不该要求响应头。
+    #   此前仍去看 remaining，导致"无需联网"的运行被误判为预算不足。
+    if need > 0:
+        if observed_remaining is None:
+            reasons.append("NO_AUTHORITATIVE_REMAINING")
+        elif int(observed_remaining) < need + reserve:
+            reasons.append("INSUFFICIENT_REMAINING")
+    # need==0 → 不检查剩余配额（本地即可完成）
 
     can_begin = not reasons
     out = {
