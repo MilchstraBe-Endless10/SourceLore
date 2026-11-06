@@ -212,3 +212,23 @@ Playwright 打开 http://127.0.0.1:18991/SL-SCARD-...html：
 ## 全量回归
 1489 项全绿（与 P6F 基线一致）。注意：`pytest tests/` 并列收集会因
 `sfx.CLI` 导入顺序冲突失败，须按目录分组 discover（部分目录需 `-t .`）。
+
+## §八 DSH 使用验收（CLI 层实测）
+```
+A 显式调用：repositories 用默认根 → 2 仓库、各自唯一真实 commit、claims 8/17
+B 源码查询：query 38923193 --type code --path index.js
+   → FOUND, net=0, supported 4/4
+C 卡片：浏览器真实打开，六节结构 + 裁决列 + Claim ID 全渲染
+E 不支持场景：query 24313173 --type code --path index.js (CommonJS)
+   → SOURCE_NOT_ANALYZED, facts=0，未编造 supported Fact ✓
+```
+★ 自然语言自动触发（B）**本会话无法独立验证** —— 我这一轮是显式加载 skill 的，
+不能声称「模型自动发现了 sourcelore」。该项保持 NOT_VERIFIED。
+
+## §九 Git 同步
+```
+git remote -v        → 空（无远端）
+git branch -vv       → main 752c3ba（无 upstream）
+git ls-remote origin → fatal: 'origin' does not appear to be a git repository
+```
+→ **无远端，未推送，不能声称已同步 GitHub。**
