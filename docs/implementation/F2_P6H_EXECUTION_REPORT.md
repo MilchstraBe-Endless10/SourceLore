@@ -196,3 +196,26 @@ git ls-remote origin → fatal: 'origin' does not appear to be a git repository
 卡片能打开并显示裁决状态；网络请求为 0。
 
 未做到：仓库只显示数字 ID 不显示名称；自然语言自动触发未独立验证。
+
+---
+
+# 追加（2026-11-07 00:20–00:40）
+
+## 模型
+用户指示使用 DeepSeek Bot 默认模型，不再追究身份矛盾。
+profile `agent-default-model` = provider `qodercn` / model `dfmodel` / reasoningEffort `max`。
+★ 不再声称「运行于 GLM 5.3 Flash」。
+
+## DeepSeekBot 实质
+`deepseekbot` v1.6.0（Tobs）。DSH 插件 + agent preset。
+`cordis.im.patch.yml` **不修改工作目录、环境或数据根** —— 与普通会话共享同一份
+`sourcelore` 技能目录与同一 `data_root`。因此本会话的 CLI 验证对 Bot 等效。
+
+## 本轮新增修复
+| 缺陷 | 内容 | 状态 |
+|---|---|---|
+| U-2 | 仓库显示名：analyze 写 `observation_record` 独立资产，repositories 读回 | 已修，需重采才有值；无资产不猜 |
+| D-70 | `--plan` 忽略 URL，多仓库时误报 AMBIGUOUS | 已修：按 URL 解析，找不到明确报 NOT_REGISTERED |
+| D-70b | 迁移漏搬 `repo_slugs.json` | 已合并补写到统一根 |
+| D-69 | `rebuild_index` 照抄 `assets.commit_sha`（整列 NULL）会清空索引 | 已修：payload 回退 + claim 反查；真实库验证 12/19→18/19，其余全保住 |
+
