@@ -1,0 +1,65 @@
+{
+ "generated_at": "2026-11-06T22:49+08:00",
+ "baseline": "ea052d9",
+ "commit": "1a7f69d",
+ "model_identity": {
+  "status": "UNVERIFIED",
+  "reason": "profile=dfmodel/qodercn/max 与会话上下文声明 deepseek-v4.1-flash 冲突；日志读取被凭据保护拦截",
+  "claimed_glm_5_3_flash": false
+ },
+ "gates": {
+  "DEFAULT_DATA_ROOT": {
+   "status": "DONE",
+   "evidence": "不带 --data-root 读到 2 仓库；--data-root 覆盖仍可用"
+  },
+  "DATA_ROOT_UNIFIED": {
+   "status": "DONE",
+   "evidence": "128 资产 + 7 blobs；二次迁移 copied={} 幂等"
+  },
+  "D67_VERIFICATION_INDEX": {
+   "status": "DONE",
+   "evidence": "12/13 补全；查询 4/4 SUPPORTED_SOURCE_CLAIM；负例仍 insufficient"
+  },
+  "REPO_NAME": {
+   "status": "BLOCKED",
+   "reason": "库中无 owner/name 权威存储（repo_bindings/operation_log 空，snapshot payload 无该字段）；按禁令不硬编码"
+  },
+  "CARD_VERDICT_DISPLAY": {
+   "status": "DONE",
+   "evidence": "Playwright 真实渲染：六大节 + 裁决列 4 条 + Claim/Verif ID；CSP 与 distribution_allowed 保留"
+  },
+  "D68_PROVENANCE": {
+   "status": "DONE",
+   "evidence": "真实源继承 AUTHORIZED_REMOTE_SOURCE；合成源报 UNSUPPORTED_SEMANTIC_FORM"
+  },
+  "SKILL_EXPLICIT_CALL": {
+   "status": "DONE",
+   "evidence": "repositories/query/card 三条均通过，net=0"
+  },
+  "NATURAL_LANGUAGE_AUTOTRIGGER": {
+   "status": "NOT_VERIFIED",
+   "reason": "本会话为显式加载 skill，无法证明模型自动发现"
+  },
+  "UNSUPPORTED_SCENARIO": {
+   "status": "DONE",
+   "evidence": "is-number CommonJS → SOURCE_NOT_ANALYZED, facts=0，无编造 supported"
+  },
+  "FULL_REGRESSION": {
+   "status": "DONE",
+   "evidence": "1489 项全绿"
+  },
+  "GITHUB_SYNC": {
+   "status": "NO_REMOTE",
+   "evidence": "git remote -v 空；ls-remote origin fatal"
+  },
+  "DISTRIBUTION_READY": {
+   "status": "NOT_READY",
+   "reason": "B-1/B-2/B-3 仍 OPEN"
+  }
+ },
+ "known_risks": {
+  "rebuild_index": "从 assets 读 commit（该列全 NULL），执行会清空正确索引 —— 禁止调用",
+  "migration_current_view": "列名猜测错误未搬；源库该表本就为空，无数据损失"
+ },
+ "completeness": "使用环境修复已完成；开箱即用接近但未完全达到（仓库名缺失 + 自然语言未独立验证）"
+}
