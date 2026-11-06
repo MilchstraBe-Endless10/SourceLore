@@ -26,6 +26,28 @@ def _kv(rows):
     return "".join(out)
 
 
+def _verdict_cell(row):
+    """★ 任务书 §七：五档层级必须显式呈现，未验证的不得显示成 supported。"""
+    lvl = row.get("display_level") or "OBSERVED_SOURCE_FACT"
+    vd = row.get("verdict")
+    cid = row.get("claim_id")
+    vid = row.get("verification_id")
+    label = {
+        "SUPPORTED_SOURCE_CLAIM": "已验证 · 命题成立",
+        "OBSERVED_SOURCE_FACT": "已观察，尚未获得命题验证",
+        "INSUFFICIENT_EVIDENCE": "证据不足",
+        "UNSUPPORTED_SEMANTIC_FORM": "该语义形式尚不支持解析",
+        "NOT_ANALYZED": "尚未分析",
+    }.get(lvl, lvl)
+    ids = ""
+    if cid or vid:
+        ids = (f'<div class="mono">claim={SH.esc(cid) or "—"}<br>'
+               f'verif={SH.esc(vid) or "—"}</div>')
+    if vd:
+        ids += f'<div>verdict={SH.esc(vd)}</div>'
+    return (f'<strong>{SH.esc(label)}</strong>{ids}')
+
+
 def render_source_card_html(card):
     if card.get("card_type") == "SOURCE_EVIDENCE_ERROR":
         return _render_error(card)
@@ -67,7 +89,8 @@ def render_source_card_html(card):
     syms = card.get("symbols") or []
     if syms:
         rows = ["<table><tr><th>Fact ID</th><th>类型</th>"
-                "<th>qualified_name</th><th>行号</th><th>证据</th></tr>"]
+                "<th>qualified_name</th><th>行号</th><th>证据</th>"
+                "<th>裁决层级</th><th>Claim / Verification</th></tr>"]
         for s in syms:
             subj = s.get("subject") or {}
             rows.append(
@@ -75,7 +98,8 @@ def render_source_card_html(card):
                 f'<td>{SH.esc(subj.get("symbol_kind"))}</td>'
                 f'<td>{SH.esc(subj.get("qualified_name"))}</td>'
                 f'<td>L{SH.esc(s.get("start_line"))}–{SH.esc(s.get("end_line"))}</td>'
-                f'<td>{SH.esc(s.get("evidence_label"))}</td></tr>')
+                f'<td>{SH.esc(s.get("evidence_label"))}</td>'
+                f'<td>{_verdict_cell(s)}</td></tr>')
         rows.append("</table>")
         parts.append("".join(rows))
     else:
@@ -104,7 +128,8 @@ def render_source_card_html(card):
     exps = card.get("exports") or []
     if exps:
         rows = ["<table><tr><th>Fact ID</th><th>导出类型</th><th>名称</th>"
-                "<th>来源</th><th>证据</th></tr>"]
+                "<th>来源</th><th>证据</th>"
+                "<th>裁决层级</th><th>Claim / Verification</th></tr>"]
         for e in exps:
             subj = e.get("subject") or {}
             nm = subj.get("exported_name")
@@ -113,7 +138,8 @@ def render_source_card_html(card):
                 f'<td>{SH.esc(subj.get("export_kind"))}</td>'
                 f'<td>{SH.esc(nm if nm is not None else "（匿名）")}</td>'
                 f'<td>{SH.esc(subj.get("source_reference"))}</td>'
-                f'<td>{SH.esc(e.get("evidence_label"))}</td></tr>')
+                f'<td>{SH.esc(e.get("evidence_label"))}</td>'
+                f'<td>{_verdict_cell(e)}</td></tr>')
         rows.append("</table>")
         parts.append("".join(rows))
     else:

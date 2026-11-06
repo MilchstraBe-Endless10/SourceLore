@@ -80,6 +80,9 @@ def build_source_card(q, *, card_type=None):
     imports = [f for f in facts if f["rule_id"] == "SOURCE_IMPORT_DECLARED"]
     exports = [f for f in facts if f["rule_id"] == "SOURCE_EXPORT_DECLARED"]
 
+    _vl = q.get("claims") or []
+    _v = {x.get("fact_id"): x for x in _vl if x.get("fact_id")}
+
     model = {
         "card_schema_version": CARD_SCHEMA,
         "card_type": card_type,
@@ -97,9 +100,10 @@ def build_source_card(q, *, card_type=None):
             "byte_length": c.get("raw_byte_length"),
             "verify_status": c.get("verify_status"),
         } for c in caps],
-        "symbols": [_row(f, "symbol") for f in symbols],
-        "imports": [_row(f, "import") for f in imports],
-        "exports": [_row(f, "export") for f in exports],
+        "symbols": [_row(f, "symbol", _v) for f in symbols],
+        "imports": [_row(f, "import", _v) for f in imports],
+        "exports": [_row(f, "export", _v) for f in exports],
+        "verdict_summary": _vsum(q),
         "counts": {"symbols": len(symbols), "imports": len(imports),
                    "exports": len(exports), "facts": len(facts)},
         "limitations": (q.get("limitations") or [])
@@ -112,10 +116,26 @@ def build_source_card(q, *, card_type=None):
     return model
 
 
-def _row(f, kind):
+def _vsum(q):
+    v = q.get("claims") or []
+    out = {"SUPPORTED_SOURCE_CLAIM": 0, "OBSERVED_SOURCE_FACT": 0,
+           "INSUFFICIENT_EVIDENCE": 0, "UNSUPPORTED_SEMANTIC_FORM": 0,
+           "NOT_ANALYZED": 0}
+    for x in v:
+        if x.get("display_level") in out:
+            out[x["display_level"]] += 1
+    return out
+
+
+def _row(f, kind, verdict_idx=None):
     subj = f.get("subject") or {}
+    _d = (verdict_idx or {}).get(f.get("fact_id")) or {}
     return {
         "fact_id": f.get("fact_id"),
+        "display_level": _d.get("display_level") or "OBSERVED_SOURCE_FACT",
+        "verdict": _d.get("verdict"),
+        "claim_id": _d.get("claim_id"),
+        "verification_id": _d.get("verification_id"),
         "rule_id": f.get("rule_id"),
         "rule_version": f.get("rule_version"),
         "subject": subj,
