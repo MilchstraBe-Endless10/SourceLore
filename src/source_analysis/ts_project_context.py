@@ -25,6 +25,13 @@ CONFIG_NAMES = ("tsconfig.json", "jsconfig.json")
 MAX_PROJECTS = 64
 
 
+def _safe_norm(p):
+    """★ 只剥前导 "./"，不碰前导 "/" 与 "../"（D-37 阻断）。"""
+    s = (p or "").replace("\\", "/")
+    while s.startswith("./"):
+        s = s[2:]
+    return s
+
 def config_dir_of(config_path):
     parent = str(Path(config_path).parent)
     return "" if parent == "." else parent.replace("\\", "/")
@@ -35,7 +42,7 @@ def discover_config_paths(*, tree_paths, named_configs=None):
 
     ★ 只认 Tree 里真实存在的路径，不扫描本机文件系统。
     """
-    tree = {p.lstrip("./") for p in tree_paths}
+    tree = {_safe_norm(p) for p in tree_paths}
     found = set()
     for p in tree:
         name = p.rsplit("/", 1)[-1]

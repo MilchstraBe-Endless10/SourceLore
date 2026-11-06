@@ -57,7 +57,11 @@ def query_source_facts(*, store, repository_id, commit_sha=None,
             "commit_sha": pl.get("commit_sha"),
             "file_path": np.get("file_path"),
             "language": np.get("language"),
-            "subject": subj,
+            "subject": dict(subj, **{
+                # ★ 统一展示字段：Python 用 module_name，JS/TS 用 module_specifier
+                "module_name": subj.get("module_name")
+                or subj.get("module_specifier"),
+            }),
             "git_blob_oid": np.get("git_blob_oid"),
             "content_asset_id": np.get("content_asset_id"),
             "content_sha256": np.get("content_sha256"),

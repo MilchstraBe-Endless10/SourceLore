@@ -1,0 +1,258 @@
+{
+  "artifact": "F2_P6A_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-06T12:34:52+08:00",
+  "baseline_commit": "0374c71",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "crosswalk_matches_frozen": true,
+  "gates": {
+    "A_SKILL_PACKAGE_INTEGRITY": {
+      "status": "DONE",
+      "evidence": "~/.agents/skills/sourcelore 含 launcher+SKILL.md+references；launcher 三级项目根解析可用"
+    },
+    "B_SKILL_DISCOVERY": {
+      "status": "PARTIAL",
+      "evidence": "目录结构与 SKILL.md frontmatter 完整；无独立 Harness 会话发现证据，不编"
+    },
+    "C_LOCAL_REPOSITORY_KNOWLEDGE_E2E": {
+      "status": "DONE",
+      "evidence": "原创授权仓库真实 Git 对象；建库→17 内容事实+15 结构事实→重启后查询→卡片→离线复用"
+    },
+    "D_REAL_GITHUB_COLLECTION": {
+      "status": "BLOCKED",
+      "evidence": "GitHub API 返回 HTTP 403 rate limit exceeded；按规则不重试不绕过"
+    },
+    "E_REAL_GITHUB_CONTENT_PERSISTENCE": {
+      "status": "BLOCKED",
+      "evidence": "D 未通过，无内容可持久化"
+    },
+    "F_REAL_GITHUB_KNOWLEDGE_E2E": {
+      "status": "BLOCKED",
+      "evidence": "D/E 未通过"
+    },
+    "G_PERSISTED_KNOWLEDGE_QUERY": {
+      "status": "DONE",
+      "evidence": "content/code/relation/project 四类查询全部命中真实持久化数据，net=0"
+    },
+    "H_KNOWLEDGE_CARD_RENDERING": {
+      "status": "DONE",
+      "evidence": "README 卡片 6352 字节；CSP、无 script、无 on*、转义全过"
+    },
+    "I_KNOWLEDGE_EVIDENCE_TRACEABILITY": {
+      "status": "DONE",
+      "evidence": "符号带 start_line/evidence_label；关系带 config_observation_id+tree 路径"
+    },
+    "J_OFFLINE_REUSE": {
+      "status": "DONE",
+      "evidence": "二次 analyze 与 --offline 均 net=0；资产指纹 9/1/1/38/1 完全不变"
+    },
+    "K_MULTI_COMMIT_ISOLATION": {
+      "status": "DONE",
+      "evidence": "A=run() / B=execute()，history 两版本各自成立"
+    },
+    "L_CROSS_MODULE_CONTRACT_INTEGRITY": {
+      "status": "DONE",
+      "evidence": "tools/f2p6a_contract_audit.py 缺口 0；三 adapter 平/嵌双形态兼容"
+    },
+    "M_PATH_SECURITY_REGRESSION": {
+      "status": "DONE",
+      "evidence": "tools/f2p6a_path_audit.py 0 残留；归一化 5/5、越界拒绝 5/5"
+    },
+    "N_INSTALLED_SKILL_PRODUCT_E2E": {
+      "status": "DONE",
+      "evidence": "product_acceptance 21 项全走安装版 CLI，rc=0"
+    },
+    "O_NATURAL_LANGUAGE_AUTO_TRIGGER": {
+      "status": "NOT_VERIFIED",
+      "evidence": "本轮无独立用户会话；已提供可直接执行的人工步骤，未伪造"
+    },
+    "P_DISTRIBUTION_READY": {
+      "status": "NOT_READY",
+      "evidence": "B-1/B-2/B-3 仍 OPEN"
+    }
+  },
+  "defects": [
+    {
+      "id": "D-42",
+      "title": "extract_one 可用状态名猜错",
+      "impact": "判断 CONTENT_AVAILABLE_VERIFIED，实际是 CONTENT_AVAILABLE → 全部 facts=0 且 ok=True",
+      "fix": "补入真实状态名",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-43",
+      "title": "导入展示字段名不一致",
+      "impact": "Python 用 module_name、JS/TS 用 module_specifier，查询只读前者 → TS 导入显示 None",
+      "fix": "查询侧统一回退",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-44",
+      "title": "module_relation_adapter 缺 ALIAS",
+      "impact": "expected_target_path 直接比对 subject（实为 resolved_target_path）→ 必然失配",
+      "fix": "补 ALIAS 映射",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-45",
+      "title": "五处 lstrip('./') 路径归一化",
+      "impact": "与 D-37 同源；输入虽来自 git Tree 但写法不安全",
+      "fix": "统一换 _safe_norm（只剥前导 ./）",
+      "status": "FIXED"
+    }
+  ],
+  "blocking_metrics": {
+    "wrong_certain": 0,
+    "wrong_negative": 0,
+    "wrong_repo_or_commit": 0,
+    "readonly_query_wrote": 0,
+    "unexpected_network": 0,
+    "card_security_violation": 0,
+    "unauthorized_persisted": 0
+  },
+  "evidence_levels": {
+    "LOCAL_FIXTURE_E2E": "DONE",
+    "INSTALLED_SKILL_E2E": "DONE",
+    "REAL_GITHUB_E2E": "BLOCKED",
+    "NATURAL_LANGUAGE_AUTO_TRIGGER": "NOT_VERIFIED"
+  },
+  "product_capabilities": {
+    "建立知识库": "DONE",
+    "仓库列表": "DONE",
+    "固定 Commit": "DONE",
+    "README 知识": "DONE",
+    "依赖声明": "DONE",
+    "Python 符号": "DONE",
+    "TS 符号": "DONE",
+    "Import": "DONE",
+    "Alias 映射": "DONE",
+    "TS 项目归属": "DONE",
+    "知识卡片": "DONE",
+    "离线复用": "DONE",
+    "多 Commit": "DONE",
+    "自然语言触发": "NOT_VERIFIED"
+  },
+  "tests": {
+    "runtime": {
+      "tests": 45,
+      "ok": true,
+      "exit": 0
+    },
+    "storage": {
+      "tests": 53,
+      "ok": true,
+      "exit": 0
+    },
+    "collector": {
+      "tests": 48,
+      "ok": true,
+      "exit": 0
+    },
+    "facts": {
+      "tests": 44,
+      "ok": true,
+      "exit": 0
+    },
+    "evidence_claims": {
+      "tests": 36,
+      "ok": true,
+      "exit": 0
+    },
+    "lifecycle": {
+      "tests": 142,
+      "ok": true,
+      "exit": 0
+    },
+    "views": {
+      "tests": 50,
+      "ok": true,
+      "exit": 0
+    },
+    "renderer": {
+      "tests": 59,
+      "ok": true,
+      "exit": 0
+    },
+    "research": {
+      "tests": 122,
+      "ok": true,
+      "exit": 0
+    },
+    "skill_interface": {
+      "tests": 69,
+      "ok": true,
+      "exit": 0
+    },
+    "content": {
+      "tests": 77,
+      "ok": true,
+      "exit": 0
+    },
+    "blob_capture": {
+      "tests": 59,
+      "ok": true,
+      "exit": 0
+    },
+    "content_persistence": {
+      "tests": 63,
+      "ok": true,
+      "exit": 0
+    },
+    "content_skill": {
+      "tests": 49,
+      "ok": true,
+      "exit": 0
+    },
+    "source_analysis": {
+      "tests": 88,
+      "ok": true,
+      "exit": 0
+    },
+    "js_ts_analysis": {
+      "tests": 72,
+      "ok": true,
+      "exit": 0
+    },
+    "module_resolution": {
+      "tests": 148,
+      "ok": true,
+      "exit": 0
+    },
+    "ts_projects": {
+      "tests": 136,
+      "ok": true,
+      "exit": 0
+    },
+    "product_acceptance": {
+      "tests": 21,
+      "ok": true,
+      "exit": 0
+    }
+  },
+  "total_tests": 1381,
+  "all_tests_ok": true,
+  "still_open": [
+    {
+      "gate": "REAL_GITHUB_COLLECTION",
+      "status": "BLOCKED",
+      "reason": "HTTP 403 限流，不重试不绕过"
+    },
+    {
+      "gate": "NATURAL_LANGUAGE_AUTO_TRIGGER",
+      "status": "NOT_VERIFIED",
+      "reason": "缺独立用户会话"
+    },
+    {
+      "gate": "DISTRIBUTION_READY",
+      "status": "NOT_READY",
+      "reason": "B-1/B-2/B-3 OPEN"
+    }
+  ],
+  "explicitly_not_claimed": [
+    "原创合成仓库 != 真实 GitHub 仓库",
+    "配置存在 != 构建成功",
+    "静态分析 != 运行测试通过",
+    "源码里有 test 脚本 != 项目测试通过",
+    "preview_allowed != distribution_allowed"
+  ]
+}

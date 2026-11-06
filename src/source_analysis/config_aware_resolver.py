@@ -26,6 +26,13 @@ RESOLVE_EXTS = (".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".mts", ".cts",
 INDEX_NAMES = ("index.ts", "index.tsx", "index.js", "index.jsx")
 
 
+def _safe_norm(p):
+    """★ 只剥前导 "./"，不碰前导 "/" 与 "../"（D-37 阻断）。"""
+    s = (p or "").replace("\\", "/")
+    while s.startswith("./"):
+        s = s[2:]
+    return s
+
 def resolve_with_config(*, specifier, importing_file_path, tree_paths,
                         tsconfig_observation=None, package_observation=None,
                         import_kind="named_import", is_type_only=False,
@@ -333,7 +340,7 @@ def _join(source_path, specifier):
 
 def _file_candidates(path, tree_paths):
     """给定路径（可能无扩展名），在 Tree 中找候选。"""
-    paths = {p.lstrip("./") for p in tree_paths}
+    paths = {_safe_norm(p) for p in tree_paths}
     out = []
     if any(path.endswith(e) for e in RESOLVE_EXTS) and path in paths:
         return [path]

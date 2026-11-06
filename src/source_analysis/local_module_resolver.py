@@ -19,6 +19,13 @@ for _p in ("source_analysis",):
 import source_models as SM
 
 
+def _safe_norm(p):
+    """★ 只剥前导 "./"，不碰前导 "/" 与 "../"（D-37 阻断）。"""
+    s = (p or "").replace("\\", "/")
+    while s.startswith("./"):
+        s = s[2:]
+    return s
+
 def _norm_dir(path):
     return [p for p in path.split("/") if p not in ("", ".")]
 
@@ -106,7 +113,7 @@ def _candidates_for(base_parts, imported, tree_paths):
     `import pkg`         → pkg.py 或 pkg/__init__.py
     `from pkg import core` → pkg/core.py 或 pkg/core/__init__.py
     """
-    paths = {p.lstrip("./") for p in tree_paths}
+    paths = {_safe_norm(p) for p in tree_paths}
 
     # ★ from X import Y：Y 若是子模块，Python 语义上优先取子模块（不是歧义）
     if imported and imported != "*":

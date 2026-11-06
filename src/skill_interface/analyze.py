@@ -56,8 +56,18 @@ def analyze(*, url, ref=None, data_root=None, max_requests=40,
             offline=False, refresh=False, use_token=True) -> dict:
     """采集 → 快照 → Facts → Claim/Verification → 可查询资产。
 
-    ★ 真实走 GitHub API；不复制另一套实现。
+    ★ GitHub URL 走 GitHub API；本地 Git 路径走只读 git 入口。
+      两条路径共用同一条 ingest 链路，不复制第二套实现。
     """
+    # ★ 本地仓库入口：路径存在且是 git 仓库时走本地只读采集
+    if isinstance(url, str) and not url.startswith(("http://", "https://")):
+        _maybe = Path(url).expanduser()
+        if _maybe.is_dir() and (_maybe / ".git").exists():
+            return analyze_local(
+                repo_path=str(_maybe), ref=ref or commit or "HEAD",
+                data_root=data_root, target_path=target_path,
+                facts_limit=facts_limit)
+
     from knowledge_store import KnowledgeStore
     from github_client import GitHubClient
     from source_snapshot import build_snapshot
@@ -360,3 +370,87 @@ def _now_iso():
     import datetime
     tz = datetime.timezone(datetime.timedelta(hours=8))
     return datetime.datetime.now(tz).isoformat(timespec="seconds")
+
+
+def analyze_local(*, repo_path, ref="HEAD", data_root=None,
+                  target_path="README", facts_limit=20) -> dict:
+    """本地 Git 仓库 → 同一条 Snapshot / Facts / Claim / Verification 链路。
+
+    ★ 零网络。★ 只读 git 对象库，不执行仓库代码。
+    """
+    from knowledge_store import KnowledgeStore
+    from ingest_coordinator import ingest_snapshot
+    import extractor
+    import ingest as FI
+    import ec_models as EM
+    import verifier as V
+    import verification_store as VS
+    import local_repo_source as LRS
+
+    from paths import DEFAULT_DATA_ROOT as _DDR
+    root = data_root or _DDR
+    p = db_path(root)
+    guard_inside_project_db(p)
+    p.parent.mkdir(parents=True, exist_ok=True)
+
+    try:
+        snap, blobs, meta = LRS.collect_local(repo_path, ref=ref)
+    except LRS.LocalRepoError as err:
+        raise SkillError(f"本地仓库读取失败：{err.detail}",
+                         code=err.code, exit_code=EXIT_UNAVAILABLE,
+                         detail={"repo": repo_path, "code": err.code})
+
+    store = KnowledgeStore(str(p))
+    facts, claims, verifs = [], [], []
+    try:
+        sid = ingest_snapshot(store, snap)["asset_id"]
+        repo_id = meta["repository_id"]
+        commit_sha = meta["commit_sha"]
+
+        # ★ 内容级链路：捕获字节 → 内容资产 → 内容事实
+        import local_content_ingest as LCI
+        content_results = LCI.ingest_local_content(
+            store, data_root=root, repository_id=repo_id,
+            commit_sha=commit_sha, snapshot_asset_id=sid,
+            blobs=blobs, tree_paths=set(blobs))
+        content_facts_total = sum(r.get("facts") or 0 for r in content_results)
+
+        existing = _existing_claims(store, repo_id)
+        if target_path and target_path not in existing:
+            f = extractor.extract_file_path_observation(
+                store, snapshot_asset_id=sid, target_path=target_path)
+            FI.ingest_fact(store, f)
+            claim = EM.build_path_claim(
+                repository_id=repo_id, commit_sha=commit_sha,
+                target_path=target_path, expected_exists=True,
+                claim_origin="skill_analyze_local")
+            ver = V.verify_path_claim(store, claim, [f.fact_id])
+            VS.ingest_claim(store, claim)
+            VS.ingest_verification(store, ver, repository_id=repo_id)
+            facts.append(f.fact_id)
+            claims.append(claim.claim_id)
+            verifs.append({"verification_id": ver.verification_id,
+                           "status": ver.status})
+
+        return {
+            "ok": True,
+            "repository_id": repo_id,
+            "commit_sha": commit_sha,
+            "root_tree_sha": meta["root_tree_sha"],
+            "snapshot_asset_id": sid,
+            "source": "LOCAL_GIT",
+            "network_requests": 0,
+            "file_count": meta["file_count"],
+            "blob_count": meta["blob_count"],
+            "target_path": target_path,
+            "facts": facts, "claims": claims, "verifications": verifs,
+            "content": content_results,
+            "content_facts_total": content_facts_total,
+            "limitations": [
+                "本地 Git 采集：零网络，只读对象库",
+                "不执行仓库代码、不跑安装脚本或测试",
+                "本地仓库不是 GitHub 远程仓库",
+            ],
+        }
+    finally:
+        store.close()

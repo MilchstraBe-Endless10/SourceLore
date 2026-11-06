@@ -25,6 +25,15 @@ MAX_DEPTH = 8
 CONFIG_NAMES = ("tsconfig.json", "jsconfig.json")
 
 
+def _safe_norm(p):
+    """★ 只剥前导 "./"，不碰前导 "/" 与 "../"（D-37 阻断）。"""
+    s = (p or "").replace("\\", "/")
+    while s.startswith("./"):
+        s = s[2:]
+    return s
+
+
+
 def resolve_reference_path(*, declared_path, from_config_dir, tree_paths):
     """把 references[].path 解析成仓库相对配置路径。
 
@@ -39,7 +48,7 @@ def resolve_reference_path(*, declared_path, from_config_dir, tree_paths):
     if norm is None:
         return None, PM.PROJECT_REFERENCE_OUTSIDE_REPOSITORY
 
-    paths = {p.lstrip("./") for p in tree_paths}
+    paths = {_safe_norm(p) for p in tree_paths}
 
     # ① 显式配置文件
     if norm.endswith(".json"):

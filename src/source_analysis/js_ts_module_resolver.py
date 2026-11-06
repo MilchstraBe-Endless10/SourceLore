@@ -25,6 +25,13 @@ UNSUPPORTED_POLICY = "UNSUPPORTED_RESOLUTION_POLICY"
 RESOLVE_EXTS = (".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs")
 
 
+def _safe_norm(p):
+    """★ 只剥前导 "./"，不碰前导 "/" 与 "../"（D-37 阻断）。"""
+    s = (p or "").replace("\\", "/")
+    while s.startswith("./"):
+        s = s[2:]
+    return s
+
 def resolve_js_import(*, import_record, source_path, tree_paths,
                      source_completeness="COMPLETE"):
     """返回 {status, candidates, reason}。"""
@@ -86,7 +93,7 @@ def _join(source_path, spec):
 
 def _candidates(base, tree_paths):
     """生成候选：精确文件 / index 约定 / 带扩展名。"""
-    paths = {p.lstrip("./") for p in tree_paths}
+    paths = {_safe_norm(p) for p in tree_paths}
     out = []
 
     def add(path, kind):

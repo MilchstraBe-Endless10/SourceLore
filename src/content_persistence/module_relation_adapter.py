@@ -135,16 +135,18 @@ def _matches(claim, fact, binding):
         return False
     if str(fact.get("repository_id")) != str(claim.repository_id):
         return False
+    # ★ claim 侧期望字段名 → fact 侧实际字段名（D-41 同类，必须有显式映射）
+    ALIAS = {
+        "expected_target_path": "resolved_target_path",
+        "expected_matched_rule": "matched_config_rule",
+        "expected_state": "state",
+    }
     for k in ("module_specifier", "import_kind", "is_type_only",
               "expected_target_path", "expected_matched_rule"):
         want = binding.get(k)
         if want is None:
             continue
-        got = subject.get(k)
-        if k == "expected_target_path":
-            got = subject.get("resolved_target_path")
-        elif k == "expected_matched_rule":
-            got = subject.get("matched_config_rule")
+        got = subject.get(ALIAS.get(k, k))
         if got != want:
             return False
     return True
