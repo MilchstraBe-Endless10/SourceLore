@@ -84,6 +84,10 @@ def extract_config_surface(data, *, config_dir):
         "module_resolution": comp.get("moduleResolution"),
         "custom_conditions": comp.get("customConditions"),
         "paths_declared": isinstance(comp.get("paths"), dict),
+        # ★ files/include/exclude 属于顶层字段，也要带出供继承合成使用
+        "files": data.get("files") if "files" in data else None,
+        "include": data.get("include") if "include" in data else None,
+        "exclude": data.get("exclude") if "exclude" in data else None,
         "config_dir": config_dir,
     }
 

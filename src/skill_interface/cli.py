@@ -65,7 +65,7 @@ def build_parser():
                    help="固定 Commit（content 类型必需）")
     q.add_argument("--type", default="path",
                    choices=["path", "claims", "version", "content", "code",
-                            "relation"])
+                            "relation", "project"])
     q.add_argument("--path", default=None)
     q.add_argument("--compare-commit", default=None)
     q.add_argument("--max-results", type=int, default=50)
@@ -78,6 +78,8 @@ def build_parser():
                    help="关系查询：imports（配合 --type relation）")
     q.add_argument("--show-resolution", action="store_true",
                    help="显示解析状态与配置细节")
+    q.add_argument("--config", default=None, help="按 tsconfig 路径过滤")
+    q.add_argument("--file", default=None, help="按源码文件路径过滤归属")
 
     c = sub.add_parser("card", help="生成知识卡片（本地 HTML）")
     c.add_argument("--repository-id", required=True)
@@ -191,6 +193,18 @@ def _dispatch(cmd, args):
         return emit_ok(out)
 
     if cmd == "query":
+        if getattr(args, "type", None) == "project":
+            import ts_project_knowledge as TK
+            if getattr(args, "file", None) and not getattr(args, "config", None):
+                return emit_ok(TK.query_membership(
+                    repository_id=args.repository_id,
+                    file_path=args.file, commit_sha=args.commit,
+                    data_root=root))
+            return emit_ok(TK.query_projects(
+                repository_id=args.repository_id, commit_sha=args.commit,
+                config_path=getattr(args, "config", None),
+                show_references=bool(getattr(args, "show_resolution", False)),
+                data_root=root))
         if getattr(args, "type", None) == "relation":
             import source_knowledge as SK
             return emit_ok(SK.query_module_relations(

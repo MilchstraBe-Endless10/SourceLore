@@ -43,6 +43,8 @@ SourceLore 是一个**本地知识库工具**，不是模型服务。它做的�
 | 查源码结构知识 | `query <rid> --commit <sha> --type code` |
 | 源码结构卡片 | `card --repository-id <rid> --commit <sha> --path <p> --code` |
 | 查静态模块关系 | `query <rid> --commit <sha> --type relation` |
+| 查 TypeScript 项目 | `query <rid> --commit <sha> --type project` |
+| 查文件项目归属 | `query <rid> --commit <sha> --type project --file <p>` |
 | 关系卡片 | 由 `source_knowledge.render_relation_card` 生成 |
 | 历史版本 | `history <repository_id>` |
 
@@ -195,6 +197,62 @@ card  --repository-id <rid> --commit <sha> --path P --code
 ★ `require("x")` 是**调用观察**（`LITERAL_REQUIRE_CALL_OBSERVED`），不是 ESM 声明。
 ★ `require(var)` / `import(var)` → `DYNAMIC_MODULE_SPECIFIER`，不猜目标。
 ★ `import type` → `is_type_only=true`，**不是运行时依赖**。
+
+### TypeScript 项目知识（F2-P5J）
+
+```
+query <rid> --commit <sha> --type project [--config P] [--file P] [--show-resolution]
+```
+
+#### 项目发现
+
+只认 **tsconfig.json / jsconfig.json**（标准命名）。被 `extends` 引用的 `base.json` 之类
+是基础配置，**不登记为独立项目**。
+
+#### extends 语义（关键区分）
+
+| 字段 | 是否随 extends 继承 |
+|---|---|
+| `files` / `include` / `exclude` | **是**（子配置有则覆盖） |
+| `references` | **否**（只读本配置顶层） |
+
+#### references
+
+只处理**同仓库同 Commit**的本地配置。支持指向目录（自动找 tsconfig.json/jsconfig.json）
+与指向具体配置文件；检测循环与深度上限（8）。
+
+`PROJECT_REFERENCE_TARGET_VERIFIED` 只表示目标配置已验证存在——
+**不代表 B 已构建、不代表 A 已使用 B 的产物**。
+
+#### files / include / exclude
+
+- `files` 显式列出 **优先于 include，且不受 exclude 影响**
+- `exclude` **只过滤 include 扫描**，不是「永不进入 TypeScript Program」
+- `files: []` **不触发默认扫描**（显式空数组 = 无输入文件）
+- 未声明 files 且未声明 include → 默认递归扫描（`allowJs=false` 时排除 .js/.jsx）
+
+支持的模式子集：`src/**/*.ts`、`src/*.tsx`、精确路径、`*.d.ts`。
+不支持：`{a,b}` 大括号、`!` 取反、绝对路径、多重 `**` → `UNSUPPORTED_SELECTION_RULE`。
+
+#### 归属状态（语义各自独立）
+
+`INPUT_EXPLICITLY_LISTED` / `INPUT_MATCHED_INCLUDE` / `INPUT_EXCLUDED_FROM_INCLUDE` /
+`INPUT_POSSIBLE_VIA_IMPORT` / `INPUT_MATCHED_MULTIPLE_PROJECTS` / `INPUT_NOT_PROVEN` /
+`CONFIG_INCOMPLETE` / `UNSUPPORTED_SELECTION_RULE`
+
+★ `INPUT_EXCLUDED_FROM_INCLUDE` ≠ 「不可能进入 TypeScript Program」。
+★ 只有前三者构成归属候选；`INPUT_POSSIBLE_VIA_IMPORT` 不入库为归属事实。
+
+#### 项目上下文
+
+唯一可验证 → `PROJECT_CONTEXT_SELECTED`；多候选 → `PROJECT_CONTEXT_AMBIGUOUS`（**不任选**）。
+
+#### Node 条件导出键顺序（P5I 修正）
+
+★ **按配置对象键的原始顺序匹配**，第一个命中且可解析者胜出。
+★ `default` 是**始终匹配**的兜底——不因它在前面就跳过。
+★ 多个条件同时可用 → 按顺序取第一个，**不是歧义**。
+★ `types` 是 TypeScript 键，不在 Node 运行时默认条件里。
 
 ### 配置感知模块解析（F2-P5I）
 

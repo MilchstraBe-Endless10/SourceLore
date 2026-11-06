@@ -1,0 +1,295 @@
+{
+  "artifact": "F2_P5J_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-06T12:06:27+08:00",
+  "baseline_commit": "9433e43",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "crosswalk_matches_frozen": true,
+  "gates": {
+    "A_NODE_CONDITIONAL_ORDER_REGRESSION": {
+      "status": "DONE",
+      "evidence": "条件按配置对象键顺序匹配；default 始终匹配；多条件按序取第一；15 项专门测试"
+    },
+    "B_TS_PROJECT_CONFIG_DISCOVERY": {
+      "status": "DONE",
+      "evidence": "只认 tsconfig.json/jsconfig.json；extends 基础配置不登记为项目；状态五态"
+    },
+    "C_TS_PROJECT_REFERENCE_RESOLUTION": {
+      "status": "DONE",
+      "evidence": "目录/文件两种目标；循环与深度检测；越界拒绝"
+    },
+    "D_TS_PROJECT_REFERENCE_EVIDENCE": {
+      "status": "DONE",
+      "evidence": "源配置+声明路径+目标配置 Blob 三组证据"
+    },
+    "E_TS_FILES_SELECTION": {
+      "status": "DONE",
+      "evidence": "files 优先于 include 且不受 exclude 影响"
+    },
+    "F_TS_INCLUDE_EXCLUDE_SEMANTICS": {
+      "status": "DONE",
+      "evidence": "exclude 只过滤 include；不支持模式显式降级"
+    },
+    "G_TS_CONFIG_INHERITANCE_SEMANTICS": {
+      "status": "DONE",
+      "evidence": "files/include/exclude 继承，references 不继承"
+    },
+    "H_TS_SOLUTION_STYLE_PROJECTS": {
+      "status": "DONE",
+      "evidence": "files:[] + references 识别；根配置不获得子项目文件归属"
+    },
+    "I_TS_MONOREPO_MEMBERSHIP": {
+      "status": "DONE",
+      "evidence": "两子项目各自 tsconfig 隔离；同文件多项目返回多候选"
+    },
+    "J_TS_PROJECT_CONTEXT_RESOLUTION": {
+      "status": "DONE",
+      "evidence": "唯一→SELECTED；多候选→AMBIGUOUS 不任选"
+    },
+    "K_TS_PROJECT_FACT_PERSISTENCE": {
+      "status": "DONE",
+      "evidence": "项目/引用/归属三类事实真实入库；幂等"
+    },
+    "L_TS_PROJECT_CLAIM_VERIFICATION": {
+      "status": "DONE",
+      "evidence": "17 状态映射全部合法 EC 码；绝不产 refuted"
+    },
+    "M_TS_PROJECT_RESEARCH_QUERY": {
+      "status": "DONE",
+      "evidence": "只读查询 network_requests 恒 0"
+    },
+    "N_TS_PROJECT_KNOWLEDGE_CARDS": {
+      "status": "DONE",
+      "evidence": "三型卡片；CSP/无 script/转义全过"
+    },
+    "O_INSTALLED_SKILL_TS_PROJECT_E2E": {
+      "status": "DONE",
+      "evidence": "安装版 CLI：projects=3 solution=1 refs=2 net=0；文件归属唯一"
+    },
+    "P_MULTI_COMMIT_PROJECT_ISOLATION": {
+      "status": "DONE",
+      "evidence": "A=3 项目；B=4 项目（多 packages/util）；关系独立"
+    },
+    "Q_EXISTING_SOURCE_REGRESSION": {
+      "status": "DONE",
+      "evidence": "source_analysis 88 + js_ts_analysis 72 + module_resolution 148 全绿"
+    },
+    "R_REAL_GITHUB_TS_PROJECT_E2E": {
+      "status": "NOT_VERIFIED",
+      "evidence": "无已核验真实仓库授权"
+    },
+    "S_NATURAL_LANGUAGE_AUTO_TRIGGER": {
+      "status": "NOT_VERIFIED",
+      "evidence": "无独立会话证据"
+    },
+    "T_DISTRIBUTION_READY": {
+      "status": "NOT_READY",
+      "evidence": "B-1/B-2/B-3 OPEN"
+    }
+  },
+  "found_defects": [
+    {
+      "id": "D-34",
+      "title": "Node 条件多可用被判为歧义",
+      "impact": "违反 Node 规范——实际按配置键顺序取第一",
+      "fix": "重写 expand_condition 为按键遍历，先命中者胜出",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-35",
+      "title": "null 条件值未触发阻断",
+      "impact": "null 进入递归后被当作普通空值忽略",
+      "fix": "循环内优先判 null → EXPORT_EXPLICITLY_BLOCKED",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-36",
+      "title": "候选清单被提前 return 截断",
+      "impact": "命中后立即返回，其余键未记录，诊断信息不全",
+      "fix": "改为记录全部键后统一按 won 定论",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-37",
+      "title": "_norm 的 lstrip('./') 吞掉绝对路径与越界",
+      "impact": "`/abs/**` 与 `../../etc` 被误当合法相对路径",
+      "fix": "改用逐段剥离 ./，绝对路径用原始值判定",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-38",
+      "title": "extends 基础配置被误登记为独立项目",
+      "impact": "base.json 带着自己的 include 抢走了子项目的文件归属",
+      "fix": "项目发现只认标准命名配置",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-39",
+      "title": "files/include/exclude 未随 extends 继承",
+      "impact": "违反 TypeScript 语义——这些字段会被继承（只有 references 不会）",
+      "fix": "从继承链取父配置字段；extract_config_surface 带出顶层字段",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-40",
+      "title": "INPUT_POSSIBLE_VIA_IMPORT 被当成归属候选",
+      "impact": "'可能通过 import 进入'被误报为多项目归属",
+      "fix": "只有前三态构成归属候选；入库侧同样过滤",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-41",
+      "title": "裁决绑定字段名与事实字段名不一致",
+      "impact": "expected_state 对 state，永远匹配不上",
+      "fix": "加 ALIAS 显式映射",
+      "status": "FIXED"
+    }
+  ],
+  "test_metrics": {
+    "gold": "40/40（要求 ≥40）",
+    "node_condition": "15 项含 default 位置/键顺序/嵌套/null",
+    "membership": "8 状态逐条断言",
+    "false_positive": 0,
+    "false_negative": 0,
+    "correct_abstention": "配置缺失/继承未解/歧义/不完整/不支持 → 全部 abstain"
+  },
+  "blocking_metrics_zero": {
+    "wrong_membership_certain": 0,
+    "refs_cross_commit": 0,
+    "exclude_as_absolute": 0,
+    "inherited_references_wrong": 0,
+    "incomplete_as_negative": 0,
+    "condition_order_wrong": 0,
+    "bad_config_supported": 0,
+    "unevidenced_verified": 0,
+    "query_network": 0,
+    "query_wrote_assets": 0
+  },
+  "tests": {
+    "runtime": {
+      "tests": 45,
+      "ok": true,
+      "exit": 0
+    },
+    "storage": {
+      "tests": 53,
+      "ok": true,
+      "exit": 0
+    },
+    "collector": {
+      "tests": 48,
+      "ok": true,
+      "exit": 0
+    },
+    "facts": {
+      "tests": 44,
+      "ok": true,
+      "exit": 0
+    },
+    "evidence_claims": {
+      "tests": 36,
+      "ok": true,
+      "exit": 0
+    },
+    "lifecycle": {
+      "tests": 142,
+      "ok": true,
+      "exit": 0
+    },
+    "views": {
+      "tests": 50,
+      "ok": true,
+      "exit": 0
+    },
+    "renderer": {
+      "tests": 59,
+      "ok": true,
+      "exit": 0
+    },
+    "research": {
+      "tests": 122,
+      "ok": true,
+      "exit": 0
+    },
+    "skill_interface": {
+      "tests": 69,
+      "ok": true,
+      "exit": 0
+    },
+    "content": {
+      "tests": 77,
+      "ok": true,
+      "exit": 0
+    },
+    "blob_capture": {
+      "tests": 59,
+      "ok": true,
+      "exit": 0
+    },
+    "content_persistence": {
+      "tests": 63,
+      "ok": true,
+      "exit": 0
+    },
+    "content_skill": {
+      "tests": 49,
+      "ok": true,
+      "exit": 0
+    },
+    "source_analysis": {
+      "tests": 88,
+      "ok": true,
+      "exit": 0
+    },
+    "js_ts_analysis": {
+      "tests": 72,
+      "ok": true,
+      "exit": 0
+    },
+    "module_resolution": {
+      "tests": 148,
+      "ok": true,
+      "exit": 0
+    },
+    "ts_projects": {
+      "tests": 136,
+      "ok": true,
+      "exit": 0
+    }
+  },
+  "total_tests": 1360,
+  "all_tests_ok": true,
+  "evidence_levels": {
+    "PROJECT_REFERENCE_DECLARED": "DONE",
+    "PROJECT_REFERENCE_TARGET_VERIFIED": "DONE",
+    "FILE_INPUT_SELECTION_OBSERVED": "DONE",
+    "PROJECT_MEMBERSHIP_CANDIDATE": "DONE",
+    "PROJECT_CONTEXT_SELECTED": "DONE",
+    "MODULE_MAPPING_CANDIDATE": "DONE(P5I)",
+    "RUNTIME_MODULE_VERIFIED": "NOT_GRANTABLE"
+  },
+  "still_open": [
+    {
+      "gate": "REAL_GITHUB_TS_PROJECT_E2E",
+      "status": "NOT_VERIFIED",
+      "reason": "缺授权"
+    },
+    {
+      "gate": "NATURAL_LANGUAGE_AUTO_TRIGGER",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "gate": "DISTRIBUTION_READY",
+      "status": "NOT_READY"
+    }
+  ],
+  "explicitly_not_claimed": [
+    "配置存在 != 构建成功",
+    "references != 目标已构建",
+    "exclude != 永不进入 Program",
+    "files/include 匹配 != 类型检查通过",
+    "不执行 tsc --build",
+    "不生成编译产物",
+    "不建调用图/数据流图"
+  ]
+}

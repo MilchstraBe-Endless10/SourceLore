@@ -140,12 +140,25 @@ class TestConditions(unittest.TestCase):
                                 available_conditions=["types"])
         self.assertEqual(r["target"], "./t.d.ts")
 
-    def test_multiple_available_not_guessed(self):
-        """★ 阻断级：多个条件可用时不得任选一条。"""
+    def test_multiple_available_follows_key_order(self):
+        """★ Node 规范：多条件同时可用时按**配置键顺序**取第一个命中者。
+
+        旧版一律判歧义是错的——规范明确按对象键顺序匹配。
+        """
         r = PM.expand_condition(self.COND, available_conditions=["import", "require"])
-        self.assertFalse(r["resolved"])
-        self.assertEqual(r["reason"], "MULTIPLE_CONDITIONS_AVAILABLE")
-        self.assertIsNone(r["target"])
+        self.assertTrue(r["resolved"])
+        # COND 的键顺序是 import → require → default
+        self.assertEqual(r["condition_used"], "import")
+        self.assertEqual(r["target"], "./e.js")
+
+    def test_key_order_changes_result(self):
+        """★ 键集合相同、顺序不同 → 结果不同。"""
+        a = {"import": "./e.js", "require": "./c.cjs"}
+        b = {"require": "./c.cjs", "import": "./e.js"}
+        r1 = PM.expand_condition(a, available_conditions=["import", "require"])
+        r2 = PM.expand_condition(b, available_conditions=["import", "require"])
+        self.assertEqual(r1["target"], "./e.js")
+        self.assertEqual(r2["target"], "./c.cjs")
 
     def test_unknown_custom_condition_kept(self):
         r = PM.expand_condition({"custom": "./c.js"},
@@ -170,8 +183,8 @@ class TestConditions(unittest.TestCase):
         self.assertEqual(r["resolution_state"], "LOCAL_MODULE_RESOLVED")
         self.assertEqual(r["resolved_target_path"], "e.js")
 
-    def test_condition_unresolved_when_multiple_available(self):
-        """★ 阻断级：两个条件同时可用时不得任选。"""
+    def test_condition_follows_key_order_in_resolver(self):
+        """★ 多条件可用 → 按配置键顺序确定（import 在前 → 取 import）。"""
         tree = {"e.js", "c.cjs"}
         r = R.resolve_with_config(
             specifier="my-app/cond", importing_file_path="src/app.ts",
@@ -179,8 +192,8 @@ class TestConditions(unittest.TestCase):
             conditions={"import", "require"},
             package_observation=pkg(declared_name="my-app",
                                     declared_exports={"./cond": self.COND}))
-        self.assertEqual(r["resolution_state"], "RESOLUTION_CONTEXT_INCOMPLETE")
-        self.assertIsNone(r["resolved_target_path"])
+        self.assertEqual(r["resolution_state"], "LOCAL_MODULE_RESOLVED")
+        self.assertEqual(r["resolved_target_path"], "e.js")
 
     def test_require_kind_selects_require(self):
         tree = {"c.cjs", "e.js"}

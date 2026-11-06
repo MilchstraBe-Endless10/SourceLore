@@ -66,73 +66,143 @@ def is_conditional(value):
     return not any(k.startswith(".") or k.startswith("#") for k in keys)
 
 
-def expand_condition(value, *, available_conditions, capture=None):
-    """在给定条件集合下展开条件对象。
+def expand_condition(value, *, available_conditions, capture=None,
+                     conditions_deterministic=True):
+    """按 Node 规范展开条件对象。
 
-    ★ 条件集合不足时返回多个候选并标记 unresolved，绝不选第一个。
+    ★ 规范要点（https://nodejs.org/api/packages.html#conditional-exports）：
+      1. 条件对象**按键的原始顺序**匹配，第一个命中者胜出。
+      2. `default` 是**始终匹配**的通用条件——不因它在前面就跳过。
+      3. 若某个命中键的值解析不出目标，**继续尝试下一个**。
+      4. `types` 是 TypeScript 的键，不是 Node 运行时默认条件；
+         只有显式放进 available_conditions 才算可用。
 
-    返回 {"target": str|None, "candidates": [...], "resolved": bool}
+    ★ 条件集合本身不确定时（conditions_deterministic=False 且存在未知键），
+      返回未解析，绝不任选。
     """
     if isinstance(value, str):
-        t = value.replace("*", capture) if (capture is not None and "*" in value) else value
+        t = (value.replace("*", capture)
+             if (capture is not None and "*" in value) else value)
         return {"target": t, "candidates": [t], "resolved": True,
-                "condition_used": None}
+                "condition_used": None, "skipped": []}
+
     if isinstance(value, list):
-        # 回退数组：按顺序尝试
-        strs = [v for v in value if isinstance(v, str)]
-        if len(strs) == 1:
-            return {"target": strs[0], "candidates": strs, "resolved": True,
-                    "condition_used": "array"}
-        return {"target": None, "candidates": strs, "resolved": False,
-                "condition_used": "array", "reason": "MULTI_TARGET_FALLBACK"}
-    if isinstance(value, dict):
-        cands = []
-        used = None
-        # ★ default 是兜底键：无论条件集合如何，都先记为"可兜底"
-        default_entry = None
-        for k, v in value.items():
-            if k == "default":
-                inner_d = expand_condition(v, available_conditions=available_conditions,
-                                          capture=capture)
-                default_entry = {"condition": "default",
-                                 "target": inner_d.get("target")}
-                cands.append(default_entry)
-                continue
-            if k in available_conditions:
-                inner = expand_condition(v, available_conditions=available_conditions,
-                                        capture=capture)
+        # 回退数组：按顺序，第一个能解析的胜出
+        for item in value:
+            if isinstance(item, str):
+                t = (item.replace("*", capture)
+                     if (capture is not None and "*" in item) else item)
+                return {"target": t, "candidates": [item], "resolved": True,
+                        "condition_used": "array", "skipped": []}
+            if item is None:
+                return {"target": None, "candidates": [], "resolved": False,
+                        "condition_used": None,
+                        "reason": "EXPORT_EXPLICITLY_BLOCKED", "skipped": []}
+            if isinstance(item, dict):
+                inner = expand_condition(
+                    item, available_conditions=available_conditions,
+                    capture=capture,
+                    conditions_deterministic=conditions_deterministic)
                 if inner["resolved"] and inner["target"]:
-                    cands.append({"condition": k, "target": inner["target"]})
-                    if used is None:
-                        used = k
+                    return inner
+        return {"target": None, "candidates": [], "resolved": False,
+                "condition_used": "array",
+                "reason": "NO_RESOLVABLE_ARRAY_ENTRY", "skipped": []}
+
+    if isinstance(value, dict):
+        if not value:
+            return {"target": None, "candidates": [], "resolved": False,
+                    "condition_used": None,
+                    "reason": "EMPTY_CONDITION_OBJECT", "skipped": []}
+
+        cands = []
+        skipped = []
+        saw_unknown = False
+        won = None
+        won_target = None
+        blocker = None
+
+        for k, v in value.items():
+            # ── 判定该键在当前条件下是否命中 ──
+            if k == "default":
+                hit = True
+            elif k in (available_conditions or ()):
+                hit = True
             else:
-                # 未满足的条件：记录候选但不选它
-                inner = expand_condition(v, available_conditions=available_conditions,
-                                        capture=capture)
-                cands.append({"condition": k,
-                              "target": inner.get("target"),
-                              "available": False})
-        # ★ default 是兜底条件：仅在没有任何其它可用条件时才生效
-        non_default = [c for c in cands
-                       if c.get("available") is not False
-                       and c.get("target")
-                       and c.get("condition") != "default"]
-        resolved_ones = non_default if non_default else (
-            [default_entry] if default_entry and default_entry.get("target")
-            else [])
-        if len(resolved_ones) == 1:
-            return {"target": resolved_ones[0]["target"],
-                    "candidates": cands, "resolved": True,
-                    "condition_used": resolved_ones[0]["condition"]}
-        if len(resolved_ones) > 1:
-            # ★ 多个可用条件 → 无法唯一确定
+                hit = False
+                if k not in KNOWN_CONDITIONS:
+                    saw_unknown = True
+
+            inner = None
+            if hit and v is None:
+                # ★ null 是显式阻断，必须先于递归判定
+                cands.append({"condition": k, "matched": True,
+                              "target": None, "resolved": False})
+                return {"target": None, "candidates": cands,
+                        "resolved": False, "condition_used": k,
+                        "reason": "EXPORT_EXPLICITLY_BLOCKED",
+                        "skipped": skipped}
+            if hit:
+                inner = expand_condition(
+                    v, available_conditions=available_conditions,
+                    capture=capture,
+                    conditions_deterministic=conditions_deterministic)
+
+            cands.append({
+                "condition": k, "matched": hit,
+                "target": inner.get("target") if inner else None,
+                "resolved": bool(inner and inner.get("resolved")),
+            })
+
+            if not hit:
+                skipped.append({"condition": k,
+                                "reason": "CONDITION_NOT_ACTIVE"})
+                continue
+
+            # ★ 命中且能解析 → 记录为胜出，但继续遍历其余键
+            #   （候选清单必须包含全部键，供诊断与展示）
+            if inner and inner["resolved"] and inner["target"] and won is None:
+                won = k
+                won_target = inner["target"]
+
+            # 命中但值为 null → 显式阻断（仍先记满候选，见循环后处理）
+            if inner and inner.get("reason") == "EXPORT_EXPLICITLY_BLOCKED":
+                blocker = k
+                continue
+
+            # 命中但解析不出 → 记录并继续尝试下一个
+            if won is None:
+                skipped.append({"condition": k,
+                                "reason": (inner or {}).get("reason")
+                                or "NO_RESOLVABLE_TARGET"})
+
+        # ★ 显式阻断优先于任何命中
+        if blocker is not None:
+            return {"target": None, "candidates": cands, "resolved": False,
+                    "condition_used": blocker,
+                    "reason": "EXPORT_EXPLICITLY_BLOCKED",
+                    "skipped": skipped}
+
+        # ★ 有胜出者 → 按其顺序最先者定论
+        if won is not None:
+            return {"target": won_target, "candidates": cands,
+                    "resolved": True, "condition_used": won,
+                    "skipped": skipped}
+
+        # ★ 条件集合不确定且存在未知键 → 不能断定没有匹配
+        if saw_unknown and not conditions_deterministic:
             return {"target": None, "candidates": cands, "resolved": False,
                     "condition_used": None,
-                    "reason": "MULTIPLE_CONDITIONS_AVAILABLE"}
+                    "reason": "UNKNOWN_CONDITIONS_PRESENT",
+                    "skipped": skipped}
+
         return {"target": None, "candidates": cands, "resolved": False,
-                "condition_used": None, "reason": "NO_MATCHING_CONDITION"}
+                "condition_used": None, "reason": "NO_MATCHING_CONDITION",
+                "skipped": skipped}
+
     return {"target": None, "candidates": [], "resolved": False,
-            "condition_used": None, "reason": "UNSUPPORTED_EXPORT_VALUE"}
+            "condition_used": None, "reason": "UNSUPPORTED_EXPORT_VALUE",
+            "skipped": []}
 
 
 def match_subpath(exports_map, subpath):

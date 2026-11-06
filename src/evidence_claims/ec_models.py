@@ -68,8 +68,16 @@ CLAIM_EXPORT = "source_export_declared"
 CLAIM_MODULE_RELATION = "static_module_relation_resolved"
 CLAIM_CONFIG_PATHS = "module_config_paths_declared"
 MODULE_CLAIM_TYPES = frozenset({CLAIM_MODULE_RELATION, CLAIM_CONFIG_PATHS})
+# F2-P5J：TypeScript 项目 / 引用 / 归属
+CLAIM_TS_PROJECT = "tsconfig_project_declared"
+CLAIM_TS_PROJECT_REFERENCE = "tsconfig_project_reference_declared"
+CLAIM_TS_MEMBERSHIP = "tsconfig_file_membership_candidate"
+TS_PROJECT_CLAIM_TYPES = frozenset({CLAIM_TS_PROJECT,
+                                    CLAIM_TS_PROJECT_REFERENCE,
+                                    CLAIM_TS_MEMBERSHIP})
 SOURCE_CLAIM_TYPES = frozenset({CLAIM_SYMBOL, CLAIM_IMPORT,
-                                CLAIM_LOCAL_MODULE, CLAIM_EXPORT}) | MODULE_CLAIM_TYPES
+                                CLAIM_LOCAL_MODULE, CLAIM_EXPORT
+                                }) | MODULE_CLAIM_TYPES | TS_PROJECT_CLAIM_TYPES
 SUPPORTED_CLAIM_TYPES = (frozenset({CLAIM_PATH_EXISTS})
                          | CONTENT_CLAIM_TYPES | SOURCE_CLAIM_TYPES)
 CLAIM_SCHEMA_VERSION = "claim-schema/1"
