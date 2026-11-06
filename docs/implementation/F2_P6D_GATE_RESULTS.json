@@ -1,0 +1,237 @@
+{
+  "artifact": "F2_P6D_GATE_RESULTS",
+  "schema_version": 1,
+  "generated_at": "2026-11-06T15:57:43+08:00",
+  "baseline_commit": "625cc71",
+  "crosswalk_sha256": "42841207b8088c8976a625850da12cbdfa6ac0d3ab3283de98a5eebe98c08e0b",
+  "crosswalk_matches_frozen": true,
+  "plan_consistency": {
+    "root_cause": "P6C 贴的计划与执行输出是不同时刻（计划先于采集），非判定分歧",
+    "same_state_verified": true,
+    "plan_estimated_requests": 0,
+    "execution_network_requests": 0,
+    "execution_reused": 3,
+    "data_root": "/tmp/p6b_real（两次相同，未换库掩盖）",
+    "mechanism": {
+      "plan_id": true,
+      "inventory_digest": true,
+      "revalidate_states": [
+        "PLAN_FRESH",
+        "PLAN_STALE_REVALIDATED",
+        "PLAN_CONTEXT_MISMATCH"
+      ],
+      "always_uses_fresh_inventory": true
+    }
+  },
+  "commonjs_coverage": {
+    "previous_wrong": "0 事实一律 VALID_EMPTY_RESULT",
+    "current": "UNSUPPORTED_SEMANTIC_FORM",
+    "detected_forms": [
+      "commonjs_module_exports"
+    ],
+    "explain": "语法解析成功，但存在已识别且规则族未覆盖的语义形态；不能据此判定该文件没有导出",
+    "states": [
+      "SUPPORTED_FACTS_EXTRACTED",
+      "VALID_EMPTY_RESULT",
+      "UNSUPPORTED_SEMANTIC_FORM",
+      "PARSE_FAILED",
+      "SOURCE_CONTENT_NOT_CAPTURED",
+      "SOURCE_FACTS_NOT_PERSISTED"
+    ],
+    "supported_rule_families": [
+      "symbol_declaration",
+      "es_export_statement",
+      "es_import_statement"
+    ],
+    "not_overclaiming": "不宣称完整理解 JavaScript"
+  },
+  "second_repository": {
+    "candidate": "sindresorhus/is-plain-obj",
+    "status": "NOT_COLLECTED",
+    "reason": "GitHub 配额耗尽 remaining=0/60, reset 2614s",
+    "note": "未用 is-number 数据冒充第二仓库"
+  },
+  "existing_repository": {
+    "repository_id": "24313173",
+    "commit_sha": "98e8ff1da1a89f93d1397a24d7413ed15421c139",
+    "assets": 3,
+    "facts": 51,
+    "claims": 18,
+    "verifications": 18,
+    "index_js_coverage": "UNSUPPORTED_SEMANTIC_FORM"
+  },
+  "gates": {
+    "A_CAPTURE_PLAN_STATE_CONSISTENCY": {
+      "status": "DONE"
+    },
+    "B_CAPTURE_PLAN_INVALIDATION": {
+      "status": "DONE"
+    },
+    "C_REQUEST_BUDGET_REGRESSION": {
+      "status": "DONE"
+    },
+    "D_COMMONJS_COVERAGE_DIAGNOSIS": {
+      "status": "DONE"
+    },
+    "E_REAL_ESM_REPOSITORY_IDENTITY": {
+      "status": "BLOCKED"
+    },
+    "F_REAL_ESM_LICENSE_AUTHORIZATION": {
+      "status": "BLOCKED"
+    },
+    "G_REAL_ESM_BLOB_CAPTURE": {
+      "status": "BLOCKED"
+    },
+    "H_REAL_ESM_BLOB_INTEGRITY": {
+      "status": "BLOCKED"
+    },
+    "I_REAL_ESM_SOURCE_FACTS": {
+      "status": "BLOCKED"
+    },
+    "J_REAL_ESM_CLAIM_VERIFICATION": {
+      "status": "BLOCKED"
+    },
+    "K_REAL_ESM_INSTALLED_SKILL_QUERY": {
+      "status": "BLOCKED"
+    },
+    "L_REAL_ESM_SOURCE_CARD": {
+      "status": "BLOCKED"
+    },
+    "M_MULTI_REPOSITORY_ISOLATION": {
+      "status": "PARTIAL",
+      "reason": "单仓库隔离机制在；第二仓库未入库，不能算已验证"
+    },
+    "N_OFFLINE_RESTART_REUSE": {
+      "status": "DONE"
+    },
+    "O_SUCCESS_CONTRACT_REGRESSION": {
+      "status": "DONE"
+    },
+    "P_EXISTING_SOURCE_REGRESSION": {
+      "status": "DONE"
+    },
+    "Q_NATURAL_LANGUAGE_AUTO_TRIGGER": {
+      "status": "NOT_VERIFIED"
+    },
+    "R_DISTRIBUTION_READY": {
+      "status": "NOT_READY"
+    }
+  },
+  "defects": [
+    {
+      "id": "D-53",
+      "title": "解析成功后语义误报为空",
+      "impact": "0 事实一律报 VALID_EMPTY_RESULT，把「规则没覆盖」说成「文件没有东西」",
+      "fix": "先查未支持形态再判空；新增 UNSUPPORTED_SEMANTIC_FORM",
+      "status": "FIXED"
+    },
+    {
+      "id": "D-54",
+      "title": "计划缺少上下文标识与失效重校验",
+      "impact": "计划的存储状态与执行时不同时，无法判断该不该按旧计划发请求",
+      "fix": "plan_id + inventory_digest + revalidate 三态",
+      "status": "FIXED"
+    }
+  ],
+  "blocking_metrics": {
+    "plan_execute_divergence": 0,
+    "unsupported_reported_as_empty": 0,
+    "second_repo_faked": 0,
+    "readonly_query_wrote": 0,
+    "needless_redownload": 0
+  },
+  "tests": {
+    "runtime": {
+      "tests": 45,
+      "ok": true
+    },
+    "storage": {
+      "tests": 53,
+      "ok": true
+    },
+    "collector": {
+      "tests": 48,
+      "ok": true
+    },
+    "facts": {
+      "tests": 44,
+      "ok": true
+    },
+    "evidence_claims": {
+      "tests": 36,
+      "ok": true
+    },
+    "lifecycle": {
+      "tests": 142,
+      "ok": true
+    },
+    "views": {
+      "tests": 50,
+      "ok": true
+    },
+    "renderer": {
+      "tests": 59,
+      "ok": true
+    },
+    "research": {
+      "tests": 122,
+      "ok": true
+    },
+    "skill_interface": {
+      "tests": 69,
+      "ok": true
+    },
+    "content": {
+      "tests": 77,
+      "ok": true
+    },
+    "blob_capture": {
+      "tests": 59,
+      "ok": true
+    },
+    "content_persistence": {
+      "tests": 63,
+      "ok": true
+    },
+    "content_skill": {
+      "tests": 49,
+      "ok": true
+    },
+    "source_analysis": {
+      "tests": 88,
+      "ok": true
+    },
+    "js_ts_analysis": {
+      "tests": 72,
+      "ok": true
+    },
+    "module_resolution": {
+      "tests": 148,
+      "ok": true
+    },
+    "ts_projects": {
+      "tests": 136,
+      "ok": true
+    },
+    "product_acceptance": {
+      "tests": 21,
+      "ok": true
+    },
+    "capture_maintenance": {
+      "tests": 21,
+      "ok": true
+    },
+    "product_multirepo": {
+      "tests": 20,
+      "ok": true
+    }
+  },
+  "total_tests": 1422,
+  "all_tests_ok": true,
+  "explicitly_not_claimed": [
+    "单仓库通过 != 多仓库隔离已验证",
+    "Blob 获取成功 != Source Facts 成功",
+    "Parser 运行成功 != Claim Verification 成功",
+    "UNSUPPORTED_SEMANTIC_FORM != 文件没有导出"
+  ]
+}

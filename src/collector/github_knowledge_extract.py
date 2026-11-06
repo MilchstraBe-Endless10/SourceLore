@@ -134,10 +134,27 @@ def extract_captured(*, store, data_root, repository_id, commit_sha,
                     rec["symbols"] = len(obs.get("observed_symbols") or [])
                     rec["exports"] = len(obs.get("observed_exports") or [])
                     rec["imports"] = len(obs.get("observed_imports") or [])
-                    if n == 0:
+                    # ★ D-53：解析成功 != 语义被理解。
+                    #   0 事实时不能一律报 VALID_EMPTY_RESULT，
+                    #   必须先查有没有「已识别但未支持」的形态。
+                    import semantic_coverage as SC
+                    text = raw.decode("utf-8", "replace")
+                    forms = SC.detect_unsupported_forms(text)
+                    cov = SC.coverage_report(
+                        file_path=path, language=obs.get("language") or "javascript",
+                        parser_version="js-ts/1",
+                        parse_status=obs.get("parse_status") or "PARSE_COMPLETE",
+                        facts_persisted=n, claims_verified=0,
+                        observed_nodes=(len(obs.get("observed_symbols") or [])
+                                        + len(obs.get("observed_exports") or [])
+                                        + len(obs.get("observed_imports") or [])),
+                        unsupported_forms=forms)
+                    rec["coverage"] = cov
+                    rec["analysis_coverage"] = cov["analysis_coverage"]
+                    if cov["analysis_coverage"] == SC.UNSUPPORTED_SEMANTIC_FORM:
                         rec["notes"].append(
-                            "VALID_EMPTY_RESULT: 该文件在解析契约内无可登记结构 "
-                            "(可能是 CommonJS module.exports，不在当前 export 契约)")
+                            "UNSUPPORTED_SEMANTIC_FORM: 存在已识别但规则族未覆盖的形态 "
+                            + ",".join(forms))
             except Exception as e:
                 rec["notes"].append("SOURCE_PARSE_FAILED:%s" % type(e).__name__)
 
