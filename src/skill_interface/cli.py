@@ -330,8 +330,19 @@ def _dispatch(cmd, args):
                     commit_sha=getattr(args, "commit", None),
                     file_path=getattr(args, "path", None),
                     data_root=root or _DDR)
+                _nm = None
+                try:
+                    from knowledge_store import KnowledgeStore as _KS
+                    from paths import db_path as _dbp
+                    _ks = _KS(str(_dbp(root or _DDR)), create=False)
+                    _nm = BCARD.lookup_repo_name(_ks, args.repository_id)
+                    _ks.close()
+                except Exception:
+                    _nm = None
                 return emit_ok({"format": "bot_block",
-                                "text": BCARD.render_bot_block(query_result=q),
+                                "repository": _nm,
+                                "text": BCARD.render_bot_block(query_result=q,
+                                                               repo_name=_nm),
                                 "network_requests": 0})
             import source_knowledge as SK
             return emit_ok(SK.render_source_card(

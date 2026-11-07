@@ -125,3 +125,24 @@ def render_bot_block(*, query_result, repo_name=None):
         for x in lim[:3]:
             lines.append(f"- {x}")
     return "\n".join(lines)
+
+
+def lookup_repo_name(store, repository_id):
+    """从 subject_record 读仓库显示名；读不到返回 None（**不猜**）。"""
+    try:
+        rows = store.conn.execute(
+            "SELECT asset_id FROM index_rows WHERE asset_type='subject_record' "
+            "AND repository_id=? LIMIT 20", (str(repository_id),)).fetchall()
+        for r in rows:
+            got = store.get_asset(r["asset_id"], verify=True)
+            if not got.get("ok"):
+                continue
+            pl = ((got.get("asset") or {}).get("payload") or {})
+            if pl.get("record_kind") != "repository_display_name":
+                continue
+            nm = pl.get("resolved_repository")
+            if nm:
+                return nm
+    except Exception:
+        return None
+    return None
