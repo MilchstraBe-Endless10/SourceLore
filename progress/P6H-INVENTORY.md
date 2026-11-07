@@ -328,3 +328,16 @@ Bot 相关包（`~/.config/open-deepseek-harness-desktop/dsh-home/profiles/web/n
 - 读 `botui-core/dist/index.d.ts` 全接口
 - 读 tobs 如何把内容渲染成消息块（找 card/render 相关）
 - 设计「源码知识」在 Bot 内的呈现（点阵风格 + 五档裁决）
+
+## 用户三项要求的当前状态（2026-11-07 10:00）
+| 要求 | 状态 |
+|---|---|
+| ① 卡片进 Bot 内建界面（删掉网页 HTML 路径） | **调查完成，设计未做** |
+| ② 先查 Bot 真实排版再加功能 | **已查实**（见上：botui-core 点阵体系） |
+| ③ 不要再等配额 | **已解决**（git 协议绕过，见 D-71） |
+
+## 下一步（压缩后从这里继续）
+1. 读 `@botharness/botui-core/dist/index.d.ts` 拿全 API
+2. 查 tobs 如何把 agent 输出渲染成消息块（找 card/render/block）
+3. 设计 SourceLore 源码知识的 Bot 内呈现（点阵 + 五档裁决），**不改别人排版**
+4. 用 git 协议补采 preact 真字节（已拿到 src/index.js 423B / package.json 6739B，OID 已核）
