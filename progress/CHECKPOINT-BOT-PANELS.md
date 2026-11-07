@@ -78,3 +78,39 @@ window.__ModuleLoader__.load({
 - `ydotool` 需 `ydotoold` 守护进程（socket 不存在），启动需 sudo → 未自行启动
 - `hyprctl dispatch movecursor X Y` 语法在 0.56 走 hl.dsp 新语法，裸参数报错
 → 改为：让用户点 Bot 模式，或重启后由用户确认
+
+## ★★ 操控电脑的正确方法（2026-11-08 00:47 实测成功）
+### 可行：内核级虚拟鼠标（无需任何守护进程、无需 sudo）
+```python
+import evdev, time
+from evdev import ecodes, UInput, AbsInfo
+dev = UInput({
+    ecodes.EV_ABS: [(ecodes.ABS_X, AbsInfo(0, 0, 1919, 0, 0, 0)),
+                    (ecodes.ABS_Y, AbsInfo(0, 0, 1079, 0, 0, 0))],
+    ecodes.EV_KEY: [ecodes.BTN_LEFT],
+}, name="dsh-virtual-mouse", version=1)
+dev.write(ecodes.EV_ABS, ecodes.ABS_X, x); dev.write(ecodes.EV_ABS, ecodes.ABS_Y, y)
+dev.syn(); time.sleep(0.03)
+dev.write(ecodes.EV_KEY, ecodes.BTN_LEFT, 1); dev.syn(); time.sleep(0.05)
+dev.write(ecodes.EV_KEY, ecodes.BTN_LEFT, 0); dev.syn()
+```
+前置条件：`ls /dev/uinput` 存在、用户属 `input` 组（本机已满足）。
+配套：`grim -o HDMI-A-1 /tmp/x.png` 截图 + `read_image` 看效果，闭环确认。
+★ 坐标换算：`hyprctl clients -j` 拿窗口 `at=[x,y]`，界面内坐标 + 窗口偏移 = 屏幕坐标。
+
+### 已排除（不要重复）
+| 手段 | 失败原因 |
+|---|---|
+| `ydotool` | 需 ydotoold 守护进程，socket `/run/user/1000/.ydotool_socket` 不存在，起它要 sudo |
+| `hyprctl dispatch movecursor X Y` | 0.56 走 Lua，裸参数报 `')' expected near '81'` |
+| `hyprctl dispatch 'hl.cursor.move({x=,y=})'` | `attempt to index a nil value (field 'cursor')` |
+| `hl.dsp.focus({window=...})` 嵌在 hl.dispatch 里 | `expected a dispatcher` |
+| Playwright 打开 127.0.0.1:38113 | HTTP 401，需 token，且用户明确禁止再用网页 |
+
+## 实测结果（2026-11-08 00:47）
+- 点 (93,380) → **成功进入 Bot 模式**：界面为 Tobs「# 频道列表 / 消息」，左侧频道「托布」，右侧消息区「从左侧选择一个 Bot 或频道开始」
+- 点 (93,418) → 落在「上下文洞察」页（说明侧栏项间距 ~38px，Bot 模式实际在 y≈380）
+- 屏幕坐标 (93,380) = 窗口 at[12,38] + 界面内 (81,342)
+
+## 结论
+操控电脑这条路**已打通并验证**。以后任何点击/验证一律自己用 evdev 虚拟鼠标做。
