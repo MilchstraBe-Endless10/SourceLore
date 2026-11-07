@@ -357,3 +357,19 @@ Traversal     { 方向：left→right / clockwise / outside-in ... }      // 遍
 ★ 关键设计约束（用户明确）：
   - 卡片的宿主必须是 **Tobs/BotUI 的可视化界面**，不是独立 HTML 页、不是浏览器打开
   - 视觉语言沿用点阵/像素；**不改动 Tobs 既有排版**
+
+## Tobs 渲染层级（2026-11-07 10:01）
+```
+@botharness/tobs        dist/theme-schema.mjs（只有主题 schema，主包很小）
+@botharness/ui          lib/client.js（前 端 客户端，唯一实现文件）
+@botharness/botui-core  dist/index.js + botui-dot-matrix.css（点阵引擎）
+```
+★ `@botharness/ui/lib/client.js` 是**唯一的 UI 渲染实现**（含 card/Card 字样）。
+→ 卡片要进 Bot，必须挂在这条链上：agent 输出 → tobs → ui/client 渲染，
+  用 botui-core 的点阵能力画，而不是自造 HTML。
+
+## 供压缩后恢复的指针
+- 断点文件：progress/P6H-INVENTORY.md
+- Bot 包根：~/.config/open-deepseek-harness-desktop/dsh-home/profiles/web/node_modules/@botharness/
+- 数据根：…/GitHub_Knowledge_Base(Gihub知识库)/SourceLore_Data
+- preact 真字节在 /tmp/preact_probe（src/index.js 423B, package.json 6739B）
