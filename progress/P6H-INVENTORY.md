@@ -460,3 +460,28 @@ SourceLore 的知识不应伪装成 `card`（那是权限卡，语义完全不�
 ## 代码上要做的两件事（压缩后从这里开工）
 1. **删除网页卡片路径**：`source_card_renderer` 的 HTML 生成 + `cards/` 输出 + 浏览器打开。
 2. **新增 Bot 呈现模块**：把 `source_knowledge_query` 的结果转成 Bot 消息块（点阵 + 文本证据）。
+
+## 压缩后立即开工（不要重复调查）
+### 已否定方向（不要再试）
+- ❌ 复用 Bot 的 `card` 组件 —— 它是**工具授权卡**（allowed-once/always/denied），
+  语义是权限确认，不是知识展示。挪用即「改别人排版」，用户明令禁止。
+- ❌ 继续等 GitHub API 配额 —— 已证明可绕（git 协议）。
+
+### 已确认可用
+- ✅ `git clone --depth 1` 拿树/字节/OID，零 API 配额
+- ✅ `@botharness/botui-core`：点阵引擎，三张表（cells/order/brightness）
+- ✅ `@botharness/tobs` 是 agent preset，不阻断技能
+
+### 立即开工的两件事
+**A. 删网页路径**
+- `src/skill_interface/cli.py:321` → `SK.render_source_card(...)`
+- `src/skill_interface/source_knowledge.py:69-93` → `render_source_card` 写 HTML 到 cards/
+- `src/renderer/source_card_renderer.py:51` → `render_source_card_html`
+- 现有效果：`card` 子命令产出 `<data_root>/cards/SL-SCARD-*.html`
+
+**B. 加 Bot 呈现**
+- 新模块 `src/skill_interface/bot_card.py`：查询结果 → **Bot 消息内可读的结构化文本块**
+  （Markdown 表格 + 五档裁决标注 + 点阵符号 `` ▣/▤/□/△/· ``）
+- CLI `card --bot` 或新子命令输出该块，供 Bot 消息流直接显示
+- 不改 Tobs 任何排版，只是产生一段 agent 输出文本
+
