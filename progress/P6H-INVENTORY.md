@@ -416,3 +416,29 @@ cardChannelId
 ### 下一步（唯一）
 从 `client.js` 提取 card 的真实数据契约（字段名/状态枚举），
 据此设计 SourceLore 的知识块；再用 botui-core 点阵表达五档裁决。
+
+## ★★★ 关键区分：Bot 的 card ≠ 知识卡片（2026-11-07 10:02）
+从 `client.js` @689961 提取的真实契约：
+```
+cardOutcome: {
+  "allowed-once": "Allowed once",
+  "allowed-always-tool": "Always allowed",
+  "allowed-always-exact": "Always allowed",
+  "allowed-always-all": "Always allowed",
+  rejected: "Denied"
+}
+cardDecided: "Decided"
+cardAnswered: "Answered"
+cardCancelled: "Cancelled"
+cardExpired: "Expired"
+```
+★★ **Bot 的 card 是「工具授权确认卡」**（allow once / always / deny），
+   不是内容展示卡。它有决定/回答/取消/过期四种生命周期状态。
+
+## 因此正确的接入方式
+SourceLore 的知识不应伪装成 `card`（那是权限卡，语义完全不同）。
+应作为 **agent 的普通消息内容**呈现在 Bot 会话流里，
+用 **botui-core 点阵**表达五档裁决 —— 这才是「不改别人排版、只加功能」。
+
+★ 待办：确认 agent 消息里可否内联点阵/富内容（查 message block 渲染），
+  而不是复用 card。
