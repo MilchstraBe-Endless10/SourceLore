@@ -341,3 +341,19 @@ Bot 相关包（`~/.config/open-deepseek-harness-desktop/dsh-home/profiles/web/n
 2. 查 tobs 如何把 agent 输出渲染成消息块（找 card/render/block）
 3. 设计 SourceLore 源码知识的 Bot 内呈现（点阵 + 五档裁决），**不改别人排版**
 4. 用 git 协议补采 preact 真字节（已拿到 src/index.js 423B / package.json 6739B，OID 已核）
+
+## BotUI 点阵 API 核心（已读 index.d.ts）
+```
+DotGlyphSpec  { sides, radius, innerRadius, star, spin, aspect }   // 单个点的形状
+LatticeCell   { col, row, nx, ny }                                  // 保留的格子（归一化坐标）
+EnvelopeStop  = [position, brightness]
+Envelope      { stops, rest, duty, gauss, cycleMs }                 // 一格在一个周期里的亮度
+Traversal     { 方向：left→right / clockwise / outside-in ... }      // 遍历轴
+```
+★ 三张独立表：**哪些格子(cells) / 光按什么顺序走(order) / 每格多亮(brightness)**。
+★ 可扩展，互不影响 —— 这正是我们要「只加功能、不动别人排版」的切入点：
+  用 BotUI 的现成机制承载 SourceLore 的五档裁决，而不是自造 HTML。
+
+★ 关键设计约束（用户明确）：
+  - 卡片的宿主必须是 **Tobs/BotUI 的可视化界面**，不是独立 HTML 页、不是浏览器打开
+  - 视觉语言沿用点阵/像素；**不改动 Tobs 既有排版**
