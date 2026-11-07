@@ -129,3 +129,23 @@ DSH 进程       启动于 2026-11-07（当天早些时候，早于 20:48）
 
 ## 下一步（唯一）
 重启 DSH → 重新进入 Bot 模式 → 看 Home 区是否出现「源码知识卡片」。
+
+## ★ 重启已获用户明确授权（2026-11-08 00:50，用户原话「重启 DSH」）
+重启脚本：`/tmp/restart_verify.sh`
+- 日志：`/tmp/dsh_restart.log`
+- 重启后自动截图：`/tmp/after_restart.png`
+- 流程：SIGTERM 主进程 → 等 6s → `deepseek-harness` 拉起 → 轮询等窗口 → 截图
+
+## 重启后我要做的验证（不依赖会话记忆）
+1. 看 `/tmp/after_restart.png`
+2. 用 evdev 虚拟鼠标点 (93,380) 进 Bot 模式
+3. 确认 Home 区出现「源码知识卡片」面板
+4. 截图存证
+
+## 操控电脑定式（重启后照抄）
+```bash
+export WAYLAND_DISPLAY=wayland-1
+python3 /tmp/mouse.py X Y      # evdev 内核虚拟鼠标
+grim -o HDMI-A-1 /tmp/x.png   # 截图
+```
+坐标换算：`hyprctl clients -j` 拿窗口 at=[x,y]，界面坐标 + 窗口偏移 = 屏幕坐标。
