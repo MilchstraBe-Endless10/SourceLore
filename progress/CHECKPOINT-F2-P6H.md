@@ -50,3 +50,9 @@ API 配额消耗：0
 ★ 证明「热门仓库 + 真源码」完全不需要 API 配额。
 
 回归：skill_interface OK / renderer OK
+
+## 单测（10/10 OK）
+`tests/bot_presentation/test_bot_card.py`（需 `__init__.py`）：
+T1 满格▣ / T2 半格▤且不误报已验证 / T3 空心□ / T4 异形△ / T5 空位· /
+T6 **输出无任何 HTML 标签** / T7 非 FOUND 明确说答不了 / T8 纯函数不写盘 /
+T9 图例五符号齐 / T10 行号
