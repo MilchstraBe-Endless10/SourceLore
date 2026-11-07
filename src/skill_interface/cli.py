@@ -100,6 +100,8 @@ def build_parser():
     c.add_argument("--path", default=None)
     c.add_argument("--code", action="store_true",
                    help="生成源码结构卡片")
+    c.add_argument("--vault", default=None,
+                   help="同时导出为 Obsidian 双向链接笔记（给定 vault 目录）")
 
     return p
 
@@ -337,11 +339,17 @@ def _dispatch(cmd, args):
                     _ks.close()
                 except Exception:
                     _nm = None
-                return emit_ok({"format": "bot_block",
-                                "repository": _nm,
-                                "text": BCARD.render_bot_block(query_result=q,
-                                                               repo_name=_nm),
-                                "network_requests": 0})
+                _out = {"format": "bot_block", "repository": _nm,
+                        "text": BCARD.render_bot_block(query_result=q,
+                                                       repo_name=_nm),
+                        "network_requests": 0}
+                # ★ 可选：同步写进 Obsidian 库（双向链接笔记）
+                _vault = getattr(args, "vault", None)
+                if _vault:
+                    import obsidian_export as _OE
+                    _out["obsidian"] = _OE.export_query_to_vault(
+                        query_result=q, repo_name=_nm, vault_root=_vault)
+                return emit_ok(_out)
         if has_content or (getattr(args, "path", None)
                            and getattr(args, "commit", None)):
             import content_card as CCARD
