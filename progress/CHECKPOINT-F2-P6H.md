@@ -39,3 +39,14 @@ CLI 接入：`card --code` **默认**输出 `{format:"bot_block", text:..., netw
 - 回归测试（bot_card 单测、CLI 行为）
 - 用 git 协议补采 preact 真字节入库
 - 文档更新
+
+## preact 已真正入库（2026-07 12:04）
+```
+git 取字节 src/index.js 423B  oid 045fb679cfb6c813（与 GitHub 一致）
+SD.parse_source → PARSE_COMPLETE / EXTRACTED
+SFI.ingest_source_facts → facts written 13, reused 0
+API 配额消耗：0
+```
+★ 证明「热门仓库 + 真源码」完全不需要 API 配额。
+
+回归：skill_interface OK / renderer OK
