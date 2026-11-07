@@ -89,7 +89,7 @@ def build_parser():
     q.add_argument("--config", default=None, help="按 tsconfig 路径过滤")
     q.add_argument("--file", default=None, help="按源码文件路径过滤归属")
 
-    c = sub.add_parser("card", help="生成知识卡片（本地 HTML）")
+    c = sub.add_parser("card", help="查看知识（默认输出 Bot 内呈现文本块）")
     c.add_argument("--repository-id", required=True)
     c.add_argument("--claim-id", default=None)
     c.add_argument("--verification-id", default=None)
@@ -100,6 +100,8 @@ def build_parser():
     c.add_argument("--path", default=None)
     c.add_argument("--code", action="store_true",
                    help="生成源码结构卡片")
+    c.add_argument("--html", action="store_true",
+                   help="[遗留] 输出 HTML 文件；默认改为 Bot 文本块")
 
     return p
 
@@ -317,6 +319,20 @@ def _dispatch(cmd, args):
         has_content = any(getattr(args, k, None) for k in
                           ("content_fact_id", "content_claim_id"))
         if getattr(args, "code", False):
+            # ★ 默认走 Bot 内呈现（文本块，零 HTML、零文件）。用户要求删除网页路径。
+            #   `--html` 是显式遗留出口。
+            if not getattr(args, "html", False):
+                import bot_card as BCARD
+                import source_knowledge_query as _Q
+                from paths import DEFAULT_DATA_ROOT as _DDR
+                q = _Q.source_query(
+                    repository_id=args.repository_id,
+                    commit_sha=getattr(args, "commit", None),
+                    file_path=getattr(args, "path", None),
+                    data_root=root or _DDR)
+                return emit_ok({"format": "bot_block",
+                                "text": BCARD.render_bot_block(query_result=q),
+                                "network_requests": 0})
             import source_knowledge as SK
             return emit_ok(SK.render_source_card(
                 repository_id=args.repository_id,
