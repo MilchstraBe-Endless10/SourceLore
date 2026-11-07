@@ -392,3 +392,27 @@ cardChannelId
 1. 卡片进 Bot 内建可视化，**删除网页 HTML 路径**
 2. 先查别人排版，**只加功能不改排版**
 3. **不再等配额**（已用 git 协议解决，见 D-71）
+
+## 压缩后恢复要点（务必先读这段）
+### 已查实（不要重复调查）
+1. **GitHub API 配额可绕过**：`git clone --depth 1 --filter=blob:none` + `git ls-tree -r` +
+   `git cat-file` 拿到树/字节/OID，**不消耗 REST 配额**。实测 API=0 时 clone 仍成功，
+   commit `dbeba0d5…` 与 API 侧一致。preact 真字节已在 `/tmp/preact_probe`。
+2. **Bot 排版权威源**：`~/.config/.../profiles/web/node_modules/@botharness/`
+   - `botui-core`：点阵引擎，三张独立表（cells / order / brightness），
+     `createDotMatrix(el,{size,cols,rows,silhouette,dot,preset})`，
+     `DotGlyphSpec{sides,radius,innerRadius,star,spin,aspect}`，
+     `Envelope{stops,rest,duty,gauss,cycleMs}`，推荐 `npx @botharness/botui add dot-matrix`
+   - `ui/lib/client.js`（7.9MB 打包产物，导出 `queryClient`）**已含 card 卡片体系**：
+     `card / Card / BotIconCard / authorCard / attachmentCard`
+     `cardAnswered / cardCancelled / cardDecided / cardExpired / cardChannelId`
+3. **结论**：Tobs 本就有卡片机制 → SourceLore 应**接入**，不自造 HTML。
+
+### 必须完成的用户指令（三条）
+① 卡片进 Bot 内建可视化；**删掉网页 HTML + 浏览器打开那条路径**
+② 只加功能、不改 Tobs 排版
+③ 不再等配额
+
+### 下一步（唯一）
+从 `client.js` 提取 card 的真实数据契约（字段名/状态枚举），
+据此设计 SourceLore 的知识块；再用 botui-core 点阵表达五档裁决。
