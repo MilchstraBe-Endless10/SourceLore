@@ -1,0 +1,18 @@
+{
+  "name": "dsh-sourcelore-cards",
+  "version": "0.1.0",
+  "description": "SourceLore 知识卡片：把源码知识库的裁决结果做成带 UI 组件的卡片，可双击串联、可导出到 Obsidian 双向链接笔记。",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./package.json": "./package.json"
+  },
+  "files": ["index.js", "client.js", "cordis.patch.yml"],
+  "dsh": {
+    "bundle": { "patch": "./cordis.patch.yml" },
+    "client": { "platform": "web", "inject": [] }
+  },
+  "keywords": ["dsh", "plugin", "sourcelore", "knowledge-card"]
+}

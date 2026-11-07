@@ -1,0 +1,5 @@
+# dsh-sourcelore-cards 的 bundle patch：把宿主半边作为 row 插进 composition。
+# row id 必须与 index.js 导出的 name 一致。
+- insert:
+    - id: sourcelore-cards
+      name: 'dsh-sourcelore-cards'
