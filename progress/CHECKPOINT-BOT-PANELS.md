@@ -52,3 +52,29 @@ shell.overlay                  DSH 主界面浮层（★ 不是 Bot）
 - 重启 DSH 生效（需用户同意；用户此前已重启过一次，但那时装的是错的槽位）
 - 重启后在 **Bot 模式** 的 Home 区看「源码知识卡片」块
 - 若 bh:home 槽不渲染，退到 `botharness.settings.section`（作为设置页分区）
+
+## 客户端已按 Bot 槽位重写并验证（2026-11-07 20:49）
+```
+node -e vm 加载 client.js（mock window.__ModuleLoader__）
+→ id: dsh-sourcelore-cards | apply: function | inject: ["slots"]
+```
+外壳：
+```js
+window.__ModuleLoader__.load({
+  id: "dsh-sourcelore-cards",
+  factory: (require) => { ... exports.apply = apply
+                          exports.inject = ["slots"]
+                          return module.exports },
+})
+```
+槽位：`ctx.slots.inject("bh:home", () => ctx.slots.register(
+  {name:"bh:home", id, order:40, label:"源码知识卡片"}, () => h(Panel)))`
+
+## 待验证（重启后）
+- Bot 模式 Home 区是否出现「源码知识卡片」块
+- 若 bh:home 不渲染 → 退 `botharness.settings.section`
+
+## 点击 Bot 模式的障碍（记下来，别重复试）
+- `ydotool` 需 `ydotoold` 守护进程（socket 不存在），启动需 sudo → 未自行启动
+- `hyprctl dispatch movecursor X Y` 语法在 0.56 走 hl.dsp 新语法，裸参数报错
+→ 改为：让用户点 Bot 模式，或重启后由用户确认
