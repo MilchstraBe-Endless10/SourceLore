@@ -269,3 +269,22 @@ parse → PARSE_COMPLETE / EXTRACTED → 13 facts
 
 ## 回归
 **1499 项全绿**（基线 1489 + bot_presentation 新增 10）。
+
+## 追加三：网页路径彻底删除（2026-11-07 12:36）
+按用户要求「完全删除网页的东西」，不只是改默认值，而是真删：
+```
+删除 src/renderer/source_card_renderer.py        （176 行，无任何调用方）
+删除 src/skill_interface/source_knowledge.render_source_card
+删除 cli.py 的 --html 开关与其分支
+改   tools/f2p5h_e2e.py / f2p5g_e2e.py 改用 query_code + bot_card
+```
+全仓 `grep render_source_card` → **零残留**。
+
+端到端三项验证：
+```
+① cards 目录文件数 2 → 2（调用后不产出任何 HTML 文件）
+② --html 已不存在：error: unrecognized arguments: --html
+③ repository=preactjs/preact / format=bot_block / net=0 / 含 ▣ / 不含 <div|<html
+```
+
+回归：**1499 项全绿**。
