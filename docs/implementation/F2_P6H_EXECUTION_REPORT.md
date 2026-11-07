@@ -219,3 +219,53 @@ profile `agent-default-model` = provider `qodercn` / model `dfmodel` / reasoning
 | D-70b | 迁移漏搬 `repo_slugs.json` | 已合并补写到统一根 |
 | D-69 | `rebuild_index` 照抄 `assets.commit_sha`（整列 NULL）会清空索引 | 已修：payload 回退 + claim 反查；真实库验证 12/19→18/19，其余全保住 |
 
+
+---
+
+# 追加二（2026-11-07 12:33）
+
+## 用户三条指令落实
+### ① 卡片进 Bot，删网页路径
+新模块 `src/skill_interface/bot_card.py`：`render_bot_block()` 纯函数，零写盘零联网。
+`card --code` **默认**返回 `{format:"bot_block", repository:"owner/name", text:..., network_requests:0}`；
+`--html` 降为显式遗留出口（原 HTML 生成路径未删净，仅不再默认）。
+
+五档点阵字模（对齐 botui-core 的「格子亮度」语义）：
+```
+▣ 已验证·命题成立   ▤ 已观察·尚未验证   □ 证据不足
+△ 该语义形式不支持   · 尚未分析
+```
+
+实测 preact（42283287，commit dbeba0d5）：
+```
+**源码知识** · preactjs/preact（42283287）
+固定 Commit `dbeba0d59bb5` · 文件 `src/index.js`
+符号 0 · 导出 13 · 导入 0 · 事实 13
+▣ 13 项已获命题验证，可当结论引用。
+```
+
+### ② 排版调查结论（关键否定）
+Bot 的 `card` 是**工具授权卡**，不是内容卡：
+`cardOutcome` = allowed-once / allowed-always-tool / allowed-always-exact /
+allowed-always-all / rejected；生命周期 decided/answered/cancelled/expired。
+→ 挪用即「改别人排版」，禁止。知识改以**普通 agent 消息文本块**呈现，
+点阵符号天然贴合 Tobs 的点阵视觉语言，不改动其任何既有排版。
+
+Bot 视觉体系出处 `@botharness/botui-core`：
+三张独立表（cells / order / brightness）、
+`createDotMatrix(el,{size,cols,rows,silhouette,dots/preset})`、
+`DotGlyphSpec{sides,radius,innerRadius,star,spin,aspect}`、`Envelope{stops,rest,duty,gauss,cycleMs}`。
+
+### ③ 不再等配额 —— 证明可以完全不需要
+`git clone --depth 1 --filter=blob:none` 走 git 智能 HTTP 独立通道，
+不消耗 REST API 配额（实测 API remaining=0 时 clone 仍成功）。
+
+preact 全流程零配额完成：
+```
+git 取 src/index.js 423B  oid 045fb679cfb6c813（与 GitHub 一致）
+parse → PARSE_COMPLETE / EXTRACTED → 13 facts
+13 claim + 13 verification → 全 supported
+```
+
+## 回归
+**1499 项全绿**（基线 1489 + bot_presentation 新增 10）。
