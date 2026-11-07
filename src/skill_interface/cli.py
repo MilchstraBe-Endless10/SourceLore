@@ -100,8 +100,6 @@ def build_parser():
     c.add_argument("--path", default=None)
     c.add_argument("--code", action="store_true",
                    help="生成源码结构卡片")
-    c.add_argument("--html", action="store_true",
-                   help="[遗留] 输出 HTML 文件；默认改为 Bot 文本块")
 
     return p
 
@@ -321,7 +319,7 @@ def _dispatch(cmd, args):
         if getattr(args, "code", False):
             # ★ 默认走 Bot 内呈现（文本块，零 HTML、零文件）。用户要求删除网页路径。
             #   `--html` 是显式遗留出口。
-            if not getattr(args, "html", False):
+            if True:
                 import bot_card as BCARD
                 import source_knowledge_query as _Q
                 from paths import DEFAULT_DATA_ROOT as _DDR
@@ -344,11 +342,6 @@ def _dispatch(cmd, args):
                                 "text": BCARD.render_bot_block(query_result=q,
                                                                repo_name=_nm),
                                 "network_requests": 0})
-            import source_knowledge as SK
-            return emit_ok(SK.render_source_card(
-                repository_id=args.repository_id,
-                commit_sha=getattr(args, "commit", None),
-                file_path=getattr(args, "path", None), data_root=root))
         if has_content or (getattr(args, "path", None)
                            and getattr(args, "commit", None)):
             import content_card as CCARD

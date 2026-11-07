@@ -115,8 +115,12 @@ def phase_query():
 def phase_card(kind="js"):
     import source_knowledge as SK
     path = "app.js" if kind == "js" else "types.ts"
-    r = SK.render_source_card(repository_id=REPO, commit_sha=COMMIT_A,
-                              file_path=path, data_root=TMP)
+    import bot_card as _BC
+    _q = SK.query_code(repository_id=REPO, commit_sha=COMMIT_A,
+                       file_path=path, data_root=TMP)
+    r = {"ok": True, "format": "bot_block",
+         "text": _BC.render_bot_block(query_result=_q),
+         "network_requests": 0}
     print(json.dumps({"phase": "card", **r}, ensure_ascii=False))
 
 

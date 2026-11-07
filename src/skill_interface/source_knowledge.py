@@ -64,26 +64,3 @@ def render_relation_card(*, repository_id, commit_sha=None,
             "card_type": card["card_type"], "html_path": str(path),
             "html_bytes": len(htm.encode("utf-8")),
             "state": q.get("state"), "network_requests": 0}
-
-
-def render_source_card(*, repository_id, commit_sha=None, file_path=None,
-                       data_root=None, out_dir=None, card_type=None):
-    import source_knowledge_query as Q
-    import source_card_models as CM
-    import source_card_renderer as CR
-    from paths import DEFAULT_DATA_ROOT
-
-    q = Q.source_query(repository_id=repository_id, commit_sha=commit_sha,
-                       file_path=file_path,
-                       data_root=data_root or DEFAULT_DATA_ROOT)
-    card = CM.build_source_card(q, card_type=card_type)
-    htm = CR.render_source_card_html(card)
-    root = Path(data_root or DEFAULT_DATA_ROOT)
-    out = Path(out_dir) if out_dir else (root / "cards")
-    out.mkdir(parents=True, exist_ok=True)
-    path = out / (card["card_id"] + ".html")
-    path.write_text(htm, encoding="utf-8")
-    return {"ok": True, "card_id": card["card_id"],
-            "card_type": card["card_type"], "html_path": str(path),
-            "html_bytes": len(htm.encode("utf-8")),
-            "state": q.get("state"), "network_requests": 0}
