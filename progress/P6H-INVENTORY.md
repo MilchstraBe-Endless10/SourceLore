@@ -485,3 +485,30 @@ SourceLore 的知识不应伪装成 `card`（那是权限卡，语义完全不�
 - CLI `card --bot` 或新子命令输出该块，供 Bot 消息流直接显示
 - 不改 Tobs 任何排版，只是产生一段 agent 输出文本
 
+
+## ★ Bot 呈现模块已落地并验证（2026-11-07 12:02，提交 b4ebd13）
+新文件 `src/skill_interface/bot_card.py`：
+```python
+render_bot_block(query_result=..., repo_name=...) -> str   # 纯函数，零写盘零联网
+GLYPH = {SUPPORTED:"▣", OBSERVED:"▤", INSUFFICIENT:"□",
+         UNSUPPORTED:"△", NOT_ANALYZED:"·"}
+```
+实测输出（is-plain-obj/index.js）：
+```
+**源码知识** · sindresorhus/is-plain-obj（38923193）
+固定 Commit `666df7c10035` · 文件 `index.js`
+符号 2 · 导出 2 · 导入 0 · 事实 6
+▣ 已验证   ▤ 已观察未验证   □ 证据不足   △ 语义不支持   · 尚未分析
+|  | 对象 | 类型 | 行 | 裁决 | 证据 ID |
+| ▣ | isPlainObject.prototype | symbol |  | 已验证·命题成立 | 805cacc4 |
+| ▣ | isPlainObject | symbol |  | 已验证·命题成立 | b7dd6f09 |
+...
+▣ 4 项已获命题验证，可当结论引用。
+```
+同步改动：`source_knowledge_query._verdicts_block` 输出带 `start_line/end_line`。
+
+## 剩余（下一步）
+1. **接进 CLI**：`card --bot` 或新子命令 `botblock`，输出这段文本
+2. **删网页路径**：`cli.py:321` render_source_card / `source_knowledge.py:69` /
+   `source_card_renderer.py:51` 的 HTML 生成与 cards/ 写入
+3. 回归 + 文档
