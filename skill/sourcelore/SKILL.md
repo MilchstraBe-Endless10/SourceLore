@@ -79,7 +79,7 @@ python3 <技能目录>/scripts/sourcelore.py <子命令> [参数]
 - 固定 Commit 与 Tree 完整性标记（截断即标 `PARTIAL`，不会标 `COMPLETE`）
 - 路径存在命题的 Fact 生成与裁决
 - 按仓库 / Commit / 路径 / Claim 查询
-- 知识卡片 HTML（本地可打开）
+- **点阵知识块（直接在 Bot 对话里显示，不生成网页、不写文件）**
 - 历史版本列举
 
 ## 内容级知识（F2-P5C 新增）
@@ -166,6 +166,12 @@ card --repository-id <rid> --content-fact-id F
 ```
 query <rid> --commit <sha> --type code [--path P] [--symbol NAME] [--symbol-kind K] [--module M]
 card  --repository-id <rid> --commit <sha> --path P --code
+
+**输出形式**：`card ... --code` 默认返回 `{"format":"bot_block","repository":"owner/name",
+"text":"<点阵表格>","network_requests":0}` —— 直接把 `text` 展示给用户，
+**不要**打开浏览器、不要生成 HTML 文件。五档点阵含义：
+`▣ 已验证·命题成立` / `▤ 已观察·尚未验证` / `□ 证据不足` /
+`△ 该语义形式不支持` / `· 尚未分析`。
 ```
 
 支持 **Python（`.py`）** 用标准库 `ast`；**JS/JSX/TS/TSX** 用 tree-sitter（版本固定，见 `requirements-treesitter.txt`）。
