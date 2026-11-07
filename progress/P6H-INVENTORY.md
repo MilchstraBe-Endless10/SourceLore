@@ -298,3 +298,33 @@ package.json  6739B oid=4f012407f31f0269f63bbcc1a4044b437e91d7b3
 树枚举（`git ls-tree -r`）、字节（`git cat-file`）、OID（`git hash-object`）都能拿到，
 且 OID 与 GitHub 侧一致。
 → SourceLore 应支持「git 采集」作为 API 采集的等价路径，彻底摆脱 60/h 限额。
+
+## ★★ 用户新指令（2026-11-07 09:58）— 最高优先级
+1. **卡片必须进入 DeepSeek Bot 内建可视化界面，不是网页 HTML。**
+   → 要删掉「生成 HTML 卡片 + 浏览器打开」这条路径。
+2. **必须先调查 Bot 的真实排版，不得自造、不得改动别人的排版**，只在此基础上加功能。
+3. **不要再等配额** —— 要自己找办法。
+
+## 排版调查（已查实）
+Bot 相关包（`~/.config/open-deepseek-harness-desktop/dsh-home/profiles/web/node_modules/`）：
+```
+@botharness/tobs          1.6.0  Tobs — Team of bots with persistent memory...
+@botharness/botui-core           BotUI 引擎（framework-agnostic，无 DOM 依赖）
+@botharness/im-provider          IM 通道
+@botharness/browser/computer     Bot 浏览器/计算机
+@botharness/pixel-avatar/-banner/-morph   像素风视觉资产
+```
+★ `@botharness/botui-core` 是**排版的权威源**，不是 DSH 的 Web UI：
+  - 「decides which cells exist / what order the light moves in / how bright each cell is」
+  - 独立三张表可扩展：cells / order / brightness —— 互不影响
+  - `createDotMatrix(el, {size, cols, rows, silhouette, dot, preset})`
+  - 推荐用法 `npx @botharness/botui add dot-matrix`（复制源码进仓库）
+  - dist: `botui-dot-matrix.css` / `index.js` / `index.d.ts`
+
+★★ **结论：Tobs 的视觉语言是「点阵/像素」体系**，卡片不该是 HTML 页面，
+应该是 BotUI 的 dot-matrix 风格组件或 Bot 消息流里的原生块。
+
+## 待办
+- 读 `botui-core/dist/index.d.ts` 全接口
+- 读 tobs 如何把内容渲染成消息块（找 card/render 相关）
+- 设计「源码知识」在 Bot 内的呈现（点阵风格 + 五档裁决）
