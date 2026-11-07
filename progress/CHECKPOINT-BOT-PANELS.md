@@ -172,3 +172,22 @@ ctx.slots.entries(SECTION_SLOT) / ctx.slots.getVersion(SECTION_SLOT) / subscribe
 ## 显示位置
 它出现在 **Bot 设置页的分区列表**里（Bot 模式 → 设置 → 左侧分区中有「源码知识卡片」）。
 需要再重启 DSH 一次才生效（client 半改动必须重启）。
+
+## ★ 最终结论：Bot 只开一个第三方槽位（2026-11-08 01:03）
+全量清点 `@botharness/ui/lib/client.js` 中的 `renderSlot(...)` 调用：
+```
+botharness.settings.layout     ← Bot 设置页整体布局
+botharness.settings.section    ← Bot 设置页的单个分区
+```
+（`shell.overlay` 的 3 处 `slots.inject` 属于 DSH 主界面插件，不是 Bot。）
+
+**结论**：Bot 模式对第三方只开放「设置页分区」这一个入口。
+没有用于自由布局 Bot 主界面的公开 seam（`bh:home` 是退役 panel id、
+`dockPanels`/`channelSidebar` 是 `@botharness/ui` 内部私有注册表、外部拿不到句柄）。
+
+→ 已把插件注册到 `botharness.settings.section`。
+   位置：Bot 模式 → 设置 → 分区列表中的「源码知识卡片」。
+
+## 若要真正进 Bot 主界面（未来可选路径）
+1. 给 `@botharness` 提插件 seam 需求（正路，但不属于本任务范围）
+2. 或改 `@botharness/ui` 源码加一个公开 slot（改别人的包，需你明确授权）
