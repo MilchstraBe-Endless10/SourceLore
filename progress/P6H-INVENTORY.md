@@ -442,3 +442,21 @@ SourceLore 的知识不应伪装成 `card`（那是权限卡，语义完全不�
 
 ★ 待办：确认 agent 消息里可否内联点阵/富内容（查 message block 渲染），
   而不是复用 card。
+
+## 三条用户指令 —— 进度如实（2026-11-07 10:02）
+| # | 指令 | 状态 |
+|---|---|---|
+| ③ | 不等配额 | **已解决**：git 协议绕过（D-71），preact 真字节已拿到 |
+| ② | 先查 Bot 排版 | **已查实**：botui-core 点阵三表 + ui/client.js 的 card |
+| ① | 卡片进 Bot、删网页 | **设计方向已定，代码未写** |
+
+## ① 的设计方向（已定，待实现）
+`card` 是**工具授权卡**（allowed-once/always/denied + decided/answered/cancelled/expired），
+不能伪装成知识卡。
+→ SourceLore 知识作为**普通 agent 消息内容**呈现在 Bot 会话流，
+  用 botui-core 点阵表达五档裁决（满亮/半亮/空心/异形/空白），
+  这是「不改别人排版、只加功能」。
+
+## 代码上要做的两件事（压缩后从这里开工）
+1. **删除网页卡片路径**：`source_card_renderer` 的 HTML 生成 + `cards/` 输出 + 浏览器打开。
+2. **新增 Bot 呈现模块**：把 `source_knowledge_query` 的结果转成 Bot 消息块（点阵 + 文本证据）。
