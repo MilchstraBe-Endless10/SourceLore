@@ -284,3 +284,17 @@ preactjs/preact             id=42283287  claims=1
 repo_id **42283287** / commit `dbeba0d59bb59260ea4a90c5adf9f5a29d43cdab`
 ★ 配额在采集过程中耗尽（observed_remaining 15 → INSUFFICIENT_REMAINING），
 只拿到 1 fact + 1 claim，内容未采到。
+
+## ★★ D-71 GitHub API 配额可以完全绕开（2026-11-07 09:59）
+一直「等配额」是错的。实测：
+```
+git clone --depth 1 --filter=blob:none  https://github.com/preactjs/preact
+→ 成功，commit dbeba0d59bb59260ea4a90c5adf9f5a29d43cdab（与 API 采到的一致）
+API 配额同时为 0，完全不影响
+src/index.js  423B  oid=045fb679cfb6c813509f3b01be3eee151496ef0c
+package.json  6739B oid=4f012407f31f0269f63bbcc1a4044b437e91d7b3
+```
+★ 结论：**Git 智能 HTTP 协议走的是独立通道，不消耗 REST API 配额。**
+树枚举（`git ls-tree -r`）、字节（`git cat-file`）、OID（`git hash-object`）都能拿到，
+且 OID 与 GitHub 侧一致。
+→ SourceLore 应支持「git 采集」作为 API 采集的等价路径，彻底摆脱 60/h 限额。
