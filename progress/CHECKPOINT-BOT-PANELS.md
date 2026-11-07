@@ -149,3 +149,26 @@ python3 /tmp/mouse.py X Y      # evdev 内核虚拟鼠标
 grim -o HDMI-A-1 /tmp/x.png   # 截图
 ```
 坐标换算：`hyprctl clients -j` 拿窗口 at=[x,y]，界面坐标 + 窗口偏移 = 屏幕坐标。
+
+## ★★★ 根因确定：bh:home 不是 slot，是已退役 panel id（2026-11-08 01:02）
+源码证据（`@botharness/ui/lib/client.js`）：
+```js
+const HOME_SLOT = "bh:home";
+const RETIRED_RAIL_IDS = [HOME_SLOT, "bh:tob-mode"];   // ← 已退役
+```
+`bh:home` 只被用于：快捷键别名（"Bot mode"/"Tob"/"Home"）、布局迁移、`removeHomePanel`。
+它**从不作为 slot 被 renderSlot 渲染** → 注册上去必然静默不显示。
+
+**真正被渲染的 slot**（同一文件核实）：
+```js
+const SECTION_SLOT = "botharness.settings.section";
+renderSlot(SECTION_SLOT, { close }, { only: active.id })   // ← 有真实渲染调用
+ctx.slots.entries(SECTION_SLOT) / ctx.slots.getVersion(SECTION_SLOT) / subscribe
+```
+→ 已改为 `ctx.slots.inject("botharness.settings.section", ...)`
+   register({name:"botharness.settings.section", id, order:40, label:"源码知识卡片"}, Panel)
+验证：`node --check` OK；vm 加载 `inject:["slots"]`；client.js:219 已是 SECTION_SLOT。
+
+## 显示位置
+它出现在 **Bot 设置页的分区列表**里（Bot 模式 → 设置 → 左侧分区中有「源码知识卡片」）。
+需要再重启 DSH 一次才生效（client 半改动必须重启）。

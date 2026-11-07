@@ -22,7 +22,9 @@ window.__ModuleLoader__.load({
     var module = { exports: {} };
     var exports = module.exports;
 
-  var HOME_SLOT = "bh:home";
+  // ★ bh:home 是**已退役的 panel id**（源码 RETIRED_RAIL_IDS = [HOME_SLOT, "bh:tob-mode"]），
+  //   不是可注册的 slot。注册到它上面不会渲染 —— 这是上一版看不到面板的根因。
+  var SECTION_SLOT = "botharness.settings.section";
   var ID = "dsh-sourcelore-cards";
 
   var STATE = {
@@ -214,9 +216,9 @@ window.__ModuleLoader__.load({
   }
 
   function apply(ctx) {
-    ctx.slots.inject(HOME_SLOT, function () {
+    ctx.slots.inject(SECTION_SLOT, function () {
       return ctx.slots.register(
-        { name: HOME_SLOT, id: ID, order: 40, label: "源码知识卡片" },
+        { name: SECTION_SLOT, id: ID, order: 40, label: "源码知识卡片" },
         function (react) {
           var h = react.createElement;
           var useState = react.useState;
