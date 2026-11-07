@@ -373,3 +373,22 @@ Traversal     { 方向：left→right / clockwise / outside-in ... }      // 遍
 - Bot 包根：~/.config/open-deepseek-harness-desktop/dsh-home/profiles/web/node_modules/@botharness/
 - 数据根：…/GitHub_Knowledge_Base(Gihub知识库)/SourceLore_Data
 - preact 真字节在 /tmp/preact_probe（src/index.js 423B, package.json 6739B）
+
+## ★★ Bot UI 已有卡片机制（2026-11-07 10:01）
+`@botharness/ui/lib/client.js` = 7.9MB 打包产物，导出 `queryClient`。
+内含既有卡片组件（grep 到的标识符）：
+```
+card / Card / BotIconCard / authorCard / attachmentCard
+cardAnswered / cardCancelled / cardDecided / cardExpired
+cardChannelId
+```
+★★ **结论：Tobs/BotUI 本来就有一套「卡片」组件**，且有回答/取消/裁决/过期等状态。
+  → SourceLore 不该自造 HTML 卡片，应**接入这套既有卡片**（用户原话：
+     「别人是怎么样的，我们只需要添加一下功能」）。
+  → 五档裁决可映射到这套卡片的状态字段，点阵用 botui-core 画。
+  → 关键待办：搞清 card 的数据契约（字段名）—— 从 client.js 里提取。
+
+## 用户三项要求（重申，不可偏离）
+1. 卡片进 Bot 内建可视化，**删除网页 HTML 路径**
+2. 先查别人排版，**只加功能不改排版**
+3. **不再等配额**（已用 git 协议解决，见 D-71）
