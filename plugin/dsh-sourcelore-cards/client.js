@@ -1,192 +1,237 @@
 /**
- * dsh-sourcelore-cards — 浏览器半。
+ * dsh-sourcelore-cards — 浏览器半（Bot 模式面板）。
  *
- * ★ 设计依据（已查证，不是自造）：
- * 1. 知识卡片 ≠ 聊天里的表格/清单。它是一条知识 = 一张卡，
- *    卡与卡之间**互相串联**（Zettelkasten 的核心是连接，不是分类）。
- * 2. UI 必须「有设计感」：这里用**卡片墙**（masonry 风格）+ 状态色带 +
- *    悬停浮起 + 点击展开关联链，而不是一行行文字。
- * 3. 双向链接：卡片上直接标出「链到哪」，并一键导出成 Obsidian 笔记
- *    （导出由宿主半执行，客户端只发意图）。
+ * ★ 接入机制的权威依据（核实自 dsh-agent-model-statusbar/client.js:317-327，
+ *   它是本机上真实可用的 Bot 插件范例）：
+ *     ctx.slots.inject("<slot>", () => ctx.slots.register({name,id,order,label}, render))
+ *     exports.inject = ["slots"]     ← ★ 少了这一行整包**静默失效**
  *
- * ★ 实测约束：sidebar.footer.action 只有 256×36px，面板必须 position:fixed
- *   挂在槽位外自己定位（同 dsh-agent-clock 的结论）。
+ * ★ Bot 模式的槽位（核实自 @botharness/ui/lib/client.js）：
+ *     bh:home                    Bot 主页区   ← 本插件用这个
+ *     bh:workspace-rail          工作区侧栏
+ *     bh:channels                频道列表
+ *     bh:channel-body            消息主体
+ *     botharness.settings.section  Bot 设置页分区
+ *
+ * ★ 为什么不是 shell.overlay：那是 DSH 主界面的浮层，不是 Bot 模式。
+ *   用户明确要求「显示在 Bot 模式界面之中」。
  */
-const STYLE_ID = 'sourcelore-cards-style'
+window.__ModuleLoader__.load({
+  id: "dsh-sourcelore-cards",
+  factory: (require) => {
+    var module = { exports: {} };
+    var exports = module.exports;
 
-const STATE = {
-  SUPPORTED_SOURCE_CLAIM:    { zh: '已验证',  color: '#3ddc84', ring: 'rgba(61,220,132,.35)' },
-  OBSERVED_SOURCE_FACT:      { zh: '已观察',  color: '#f5b942', ring: 'rgba(245,185,66,.35)' },
-  INSUFFICIENT_EVIDENCE:     { zh: '证据不足', color: '#8a8f98', ring: 'rgba(138,143,152,.3)' },
-  UNSUPPORTED_SEMANTIC_FORM: { zh: '不支持',  color: '#b07cff', ring: 'rgba(176,124,255,.35)' },
-  NOT_ANALYZED:              { zh: '未分析',  color: '#5a6068', ring: 'rgba(90,96,104,.3)' },
-}
+  var HOME_SLOT = "bh:home";
+  var ID = "dsh-sourcelore-cards";
 
-function css() {
-  return `
-.slc-wrap{position:fixed;z-index:1100;width:min(680px,82vw);max-height:min(70vh,620px);
-  overflow:auto;padding:18px;border-radius:16px;
-  background:linear-gradient(160deg,#1b1d22 0%,#14161a 100%);
-  border:1px solid rgba(255,255,255,.09);
-  box-shadow:0 24px 64px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.03) inset;
-  color:#e8eaee;font-size:13px;line-height:1.55}
-.slc-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.slc-title{font-weight:650;font-size:15px;letter-spacing:.2px}
-.slc-repo{font-family:ui-monospace,monospace;font-size:11px;color:#9aa1ab;
-  background:rgba(255,255,255,.05);padding:2px 7px;border-radius:6px}
-.slc-sub{color:#828893;font-size:11.5px;margin-bottom:14px}
-.slc-wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
-.slc-card{position:relative;padding:11px 13px 11px 17px;border-radius:11px;
-  background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);
-  cursor:pointer;transition:transform .16s ease,box-shadow .16s ease,background .16s ease}
-.slc-card:hover{transform:translateY(-2px);background:rgba(255,255,255,.06);
-  box-shadow:0 10px 26px rgba(0,0,0,.38)}
-.slc-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
-  border-radius:11px 0 0 11px;background:var(--sc)}
-.slc-name{font-family:ui-monospace,monospace;font-size:12.5px;font-weight:600;
-  color:#f2f4f7;word-break:break-all;margin-bottom:5px}
-.slc-meta{display:flex;align-items:center;gap:7px;font-size:10.5px;color:#828893}
-.slc-dot{width:6px;height:6px;border-radius:50%;background:var(--sc);box-shadow:0 0 0 3px var(--sr)}
-.slc-badge{margin-left:auto;font-size:10px;padding:1px 6px;border-radius:999px;
-  color:var(--sc);background:var(--sr);border:1px solid var(--sc)}
-.slc-links{margin-top:9px;padding-top:8px;border-top:1px dashed rgba(255,255,255,.09);
-  font-size:10.5px;color:#8d939d;display:none}
-.slc-card.expanded .slc-links{display:block}
-.slc-link{color:#7fc3ff;text-decoration:none}
-.slc-foot{display:flex;gap:8px;margin-top:16px;padding-top:12px;
-  border-top:1px solid rgba(255,255,255,.07)}
-.slc-btn{font:inherit;font-size:12px;padding:6px 13px;border-radius:8px;cursor:pointer;
-  border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:#e8eaee}
-.slc-btn:hover{background:rgba(255,255,255,.1)}
-.slc-btn.primary{background:rgba(79,140,255,.18);border-color:rgba(79,140,255,.5);color:#a9c8ff}
-.slc-empty{color:#828893;padding:26px 0;text-align:center}`
-}
+  var STATE = {
+    SUPPORTED_SOURCE_CLAIM:    { zh: "已验证",  c: "#3ddc84", ring: "rgba(61,220,132,.32)" },
+    OBSERVED_SOURCE_FACT:      { zh: "已观察",  c: "#f5b942", ring: "rgba(245,185,66,.32)" },
+    INSUFFICIENT_EVIDENCE:     { zh: "证据不足", c: "#8a8f98", ring: "rgba(138,143,152,.28)" },
+    UNSUPPORTED_SEMANTIC_FORM: { zh: "不支持",  c: "#b07cff", ring: "rgba(176,124,255,.32)" },
+    NOT_ANALYZED:              { zh: "未分析",  c: "#5a6068", ring: "rgba(90,96,104,.28)" },
+  };
 
-function ensureStyle() {
-  if (document.getElementById(STYLE_ID)) return
-  const s = document.createElement('style')
-  s.id = STYLE_ID
-  s.textContent = css()
-  document.head.appendChild(s)
-}
-
-async function getJson(url) {
-  const r = await fetch(url, { headers: { accept: 'application/json' } })
-  return await r.json()
-}
-
-function buildPanel() {
-  const wrap = document.createElement('div')
-  wrap.className = 'slc-wrap'
-  wrap.innerHTML = `
-    <div class="slc-head">
-      <span class="slc-title">知识卡片</span>
-      <span class="slc-repo" id="slc-repo">—</span>
-    </div>
-    <div class="slc-sub" id="slc-sub">正在读取…</div>
-    <div class="slc-wall" id="slc-wall"></div>
-    <div class="slc-foot">
-      <button class="slc-btn primary" id="slc-export">导出到 Obsidian</button>
-      <button class="slc-btn" id="slc-close">关闭</button>
-    </div>`
-  return wrap
-}
-
-function renderCards(wrap, data) {
-  const wall = wrap.querySelector('#slc-wall')
-  const repo = wrap.querySelector('#slc-repo')
-  const sub = wrap.querySelector('#slc-sub')
-  repo.textContent = data.repository || ('repo ' + (data.repository_id || '-'))
-  const claims = data.claims || []
-  if (!claims.length) {
-    sub.textContent = '这个文件没有可展示的裁决'
-    wall.innerHTML = '<div class="slc-empty">没有卡片</div>'
-    return
+  function api(path) {
+    return "/api/dsh-sourcelore-cards" + path;
   }
-  sub.textContent = `${claims.length} 张卡片 · commit ${String(data.commit_sha || '').slice(0, 10)} · 文件 ${data.file_path || ''}`
-  wall.innerHTML = ''
-  for (const c of claims) {
-    const st = STATE[c.display_level] || STATE.NOT_ANALYZED
-    const s = c.subject || {}
-    const name = s.qualified_name || s.exported_name || s.module_name || '?'
-    const card = document.createElement('div')
-    card.className = 'slc-card'
-    card.style.setProperty('--sc', st.color)
-    card.style.setProperty('--sr', st.ring)
-    card.innerHTML = `
-      <div class="slc-name">${name}</div>
-      <div class="slc-meta">
-        <span class="slc-dot"></span>
-        <span>${c.kind || ''}</span>
-        <span>${c.start_line ? 'L' + c.start_line : ''}</span>
-        <span class="slc-badge">${st.zh}</span>
-      </div>
-      <div class="slc-links">
-        <div>↗ 仓库 <span class="slc-link">${repo.textContent}</span></div>
-        <div>↗ 文件 <span class="slc-link">${data.file_path || ''}</span></div>
-        <div>↗ claim <span class="slc-link">${(c.claim_id || '').slice(-8)}</span></div>
-      </div>`
-    card.addEventListener('click', () => card.classList.toggle('expanded'))
-    wall.appendChild(card)
+
+  function getJson(url) {
+    return fetch(url, { headers: { accept: "application/json" } })
+      .then(function (r) { return r.json(); });
   }
-}
 
-export function apply(ctx) {
-  ensureStyle()
+  var S = {
+    wrap: {
+      display: "flex", flexDirection: "column", gap: "14px",
+      padding: "20px 22px", height: "100%", overflowY: "auto",
+      boxSizing: "border-box", color: "inherit", fontSize: "13px", lineHeight: "1.55",
+    },
+    head: { display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" },
+    title: { fontSize: "15px", fontWeight: "650", letterSpacing: ".2px" },
+    repo: {
+      fontFamily: "ui-monospace,monospace", fontSize: "11px", opacity: ".75",
+      background: "rgba(127,127,127,.14)", padding: "2px 8px", borderRadius: "6px",
+    },
+    sub: { fontSize: "11.5px", opacity: ".62" },
+    wall: {
+      display: "grid", gap: "10px",
+      gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+    },
+    card: {
+      position: "relative", padding: "11px 13px 11px 17px", borderRadius: "11px",
+      background: "rgba(127,127,127,.08)", border: "1px solid rgba(127,127,127,.18)",
+      cursor: "pointer", transition: "transform .16s ease, box-shadow .16s ease, background .16s ease",
+    },
+    cardHover: {
+      transform: "translateY(-2px)",
+      boxShadow: "0 10px 26px rgba(0,0,0,.28)",
+      background: "rgba(127,127,127,.14)",
+    },
+    name: {
+      fontFamily: "ui-monospace,monospace", fontSize: "12.5px", fontWeight: "600",
+      wordBreak: "break-all", marginBottom: "5px",
+    },
+    meta: { display: "flex", alignItems: "center", gap: "7px", fontSize: "10.5px", opacity: ".7" },
+    dot: { width: "6px", height: "6px", borderRadius: "50%", flex: "none" },
+    badge: { marginLeft: "auto", fontSize: "10px", padding: "1px 7px", borderRadius: "999px" },
+    links: {
+      marginTop: "9px", paddingTop: "8px", borderTop: "1px dashed rgba(127,127,127,.28)",
+      fontSize: "10.5px", opacity: ".78", display: "none", lineHeight: "1.75",
+    },
+    foot: { display: "flex", gap: "8px", marginTop: "auto", paddingTop: "12px" },
+    btn: {
+      font: "inherit", fontSize: "12px", padding: "6px 14px", borderRadius: "8px",
+      cursor: "pointer", border: "1px solid rgba(127,127,127,.3)",
+      background: "rgba(127,127,127,.1)", color: "inherit",
+    },
+    empty: { opacity: ".6", padding: "28px 0", textAlign: "center" },
+  };
 
-  // ★ 注册侧栏按钮（拿不到槽位就退到悬浮球，绝不无声失败）
-  const mount = () => {
-    let slot = null
-    try {
-      slot = ctx?.sidebar?.footerAction?.()
-    } catch { slot = null }
-    const btn = document.createElement('button')
-    btn.title = 'SourceLore 知识卡片'
-    btn.textContent = '◈'
-    Object.assign(btn.style, {
-      width: '36px', height: '36px', borderRadius: '50%', cursor: 'pointer',
-      border: '1px solid rgba(255,255,255,.14)',
-      background: 'rgba(255,255,255,.06)', color: '#e8eaee', fontSize: '15px',
-    })
-    let panel = null
-    btn.addEventListener('click', async (e) => {
-      e.stopPropagation()
-      if (panel) { panel.remove(); panel = null; return }
-      panel = buildPanel()
-      const r = btn.getBoundingClientRect()
-      panel.style.left = Math.max(12, r.left - 690) + 'px'
-      panel.style.bottom = '24px'
-      document.body.appendChild(panel)
-      panel.querySelector('#slc-close').onclick = () => { panel.remove(); panel = null }
-      try {
-        const repos = await getJson('/api/dsh-sourcelore-cards/repositories')
-        const first = (repos.repositories || [])[0]
-        if (!first) { panel.querySelector('#slc-sub').textContent = '知识库为空'; return }
-        const q = `?repository_id=${encodeURIComponent(first.repository_id)}`
-        const card = await getJson('/api/dsh-sourcelore-cards/card' + q)
-        renderCards(panel, { ...card, repository: first.repository })
-        panel.querySelector('#slc-export').onclick = async () => {
-          const vault = prompt('Obsidian vault 目录：')
-          if (!vault) return
-          const out = await getJson(`/api/dsh-sourcelore-cards/export${q}&vault=${encodeURIComponent(vault)}`)
-          const o = out.obsidian || {}
-          panel.querySelector('#slc-sub').textContent =
-            `已导出 ${o.notes_written || 0} 篇笔记到 ${vault}`
-        }
-      } catch (err) {
-        panel.querySelector('#slc-sub').textContent = '读取失败：' + err.message
-      }
-    })
+  function StatusCard(props) {
+    var h = props.h;
+    var item = props.item;
+    var st = STATE[item.state] || STATE.NOT_ANALYZED;
+    var open = props.open;
+    var hover = props.hover;
+    var style = Object.assign({}, S.card, hover ? S.cardHover : null);
+    var left = {
+      position: "absolute", left: 0, top: 0, bottom: 0, width: "3px",
+      borderRadius: "11px 0 0 11px", background: st.c,
+    };
+    return h("div", {
+      style: style,
+      onClick: props.onToggle,
+      onMouseEnter: props.onHover,
+      onMouseLeave: props.onLeave,
+      title: item.name,
+    },
+      h("div", { style: left }),
+      h("div", { style: S.name }, item.name),
+      h("div", { style: S.meta },
+        h("span", { style: Object.assign({}, S.dot, { background: st.c }) }),
+        h("span", null, item.kind || ""),
+        h("span", null, item.line ? "L" + item.line : ""),
+        h("span", {
+          style: Object.assign({}, S.badge, {
+            color: st.c, background: st.ring, border: "1px solid " + st.c,
+          }),
+        }, st.zh)),
+      open ? h("div", { style: Object.assign({}, S.links, { display: "block" }) },
+        h("div", null, "↗ 仓库 ", props.repo),
+        h("div", null, "↗ 文件 " + (props.file || "-")),
+        h("div", null, "↗ claim ..." + String(item.claim_id || "").slice(-8))
+      ) : null
+    );
+  }
 
-    if (slot && typeof slot.mount === 'function') slot.mount(btn, { order: 70 })
-    else {
-      Object.assign(btn.style, { position: 'fixed', right: '18px', bottom: '84px', zIndex: 1050 })
-      document.body.appendChild(btn)
+  function Panel(props) {
+    var h = props.h;
+    var st = props.state;
+    var set = props.set;
+
+    if (st.status === "loading") {
+      return h("div", { style: S.wrap }, h("div", { style: S.sub }, "正在读取 SourceLore 知识库…"));
     }
+    if (st.status === "failed") {
+      return h("div", { style: S.wrap },
+        h("div", { style: S.title }, "知识卡片"),
+        h("div", { style: S.sub }, "读取失败：" + st.message));
+    }
+
+    var items = st.items || [];
+    return h("div", { style: S.wrap },
+      h("div", { style: S.head },
+        h("span", { style: S.title }, "源码知识卡片"),
+        h("span", { style: S.repo }, st.repo || "-"),
+        h("span", { style: S.sub }, items.length + " 张")),
+      h("div", { style: S.sub },
+        st.commit ? "commit " + String(st.commit).slice(0, 10) : "",
+        st.file ? " · " + st.file : ""),
+
+      items.length === 0
+        ? h("div", { style: S.empty }, "这个文件还没有可展示的裁决")
+        : h("div", { style: S.wall }, items.map(function (it, i) {
+            return h(StatusCard, {
+              key: String(i), h: h, item: it, repo: st.repo, file: st.file,
+              open: st.openIdx === i, hover: st.hoverIdx === i,
+              onToggle: function () { set({ openIdx: st.openIdx === i ? -1 : i }); },
+              onHover: function () { set({ hoverIdx: i }); },
+              onLeave: function () { set({ hoverIdx: -1 }); },
+            });
+          })),
+
+      h("div", { style: S.foot },
+        h("button", {
+          style: S.btn,
+          onClick: function () {
+            var vault = window.prompt("Obsidian vault 目录：");
+            if (!vault) return;
+            getJson(api("/export?repository_id=" + encodeURIComponent(st.rid)
+              + (st.commit ? "&commit=" + st.commit : "")
+              + (st.file ? "&path=" + encodeURIComponent(st.file) : "")
+              + "&vault=" + encodeURIComponent(vault)))
+              .then(function (o) {
+                var r = o.obsidian || {};
+                set({ note: "已导出 " + (r.notes_written || 0) + " 篇笔记到 " + vault });
+              });
+          },
+        }, "导出到 Obsidian"),
+        h("button", {
+          style: S.btn,
+          onClick: function () {
+            set({ status: "loading" });
+            loadFirst(set);
+          },
+        }, "刷新"),
+        st.note ? h("span", { style: S.sub }, st.note) : null)
+    );
   }
 
-  if (document.body) mount()
-  else document.addEventListener('DOMContentLoaded', mount, { once: true })
-}
+  function loadFirst(set) {
+    getJson(api("/repositories")).then(function (r) {
+      var first = (r.repositories || [])[0];
+      if (!first) { set({ status: "ok", items: [], repo: "-" }); return; }
+      getJson(api("/card?repository_id=" + encodeURIComponent(first.repository_id)))
+        .then(function (c) {
+          var items = (c.claims || []).map(function (x) {
+            var s = x.subject || {};
+            return {
+              name: s.qualified_name || s.exported_name || s.module_name || "?",
+              kind: x.kind, state: x.display_level,
+              line: x.start_line, claim_id: x.claim_id,
+            };
+          });
+          set({
+            status: "ok", items: items, openIdx: -1, hoverIdx: -1,
+            repo: c.repository || first.repository || String(first.repository_id),
+            rid: first.repository_id, commit: c.commit_sha, file: c.file_path,
+          });
+        })
+        .catch(function (e) { set({ status: "failed", message: String(e.message || e) }); });
+    }).catch(function (e) { set({ status: "failed", message: String(e.message || e) }); });
+  }
 
-export const name = 'dsh-sourcelore-cards'
+  function apply(ctx) {
+    ctx.slots.inject(HOME_SLOT, function () {
+      return ctx.slots.register(
+        { name: HOME_SLOT, id: ID, order: 40, label: "源码知识卡片" },
+        function (react) {
+          var h = react.createElement;
+          var useState = react.useState;
+          var useEffect = react.useEffect;
+          var st = useState({ status: "loading", items: [], openIdx: -1, hoverIdx: -1 });
+          var s = st[0], set = st[1];
+          useEffect(function () { loadFirst(set); }, []);
+          return h(Panel, { h: h, state: s, set: set });
+        }
+      );
+    });
+  }
+
+    exports.apply = apply;
+    exports.inject = ["slots"];
+    return module.exports;
+  },
+});
