@@ -265,6 +265,8 @@ def _verdicts_block(store, repository_id, commit_sha, file_path,
     for f in symbols:
         sub = f.get("subject") or {}
         out.append({"fact_id": f.get("fact_id"), "kind": "symbol",
+                    "start_line": f.get("start_line"),
+                    "end_line": f.get("end_line"),
                     "subject": sub,
                     **_verdict_for(claims, verifs, "source_symbol_declared", {
                         "file_path": file_path,
@@ -273,6 +275,8 @@ def _verdicts_block(store, repository_id, commit_sha, file_path,
     for f in exports:
         sub = f.get("subject") or {}
         out.append({"fact_id": f.get("fact_id"), "kind": "export",
+                    "start_line": f.get("start_line"),
+                    "end_line": f.get("end_line"),
                     "subject": sub,
                     **_verdict_for(claims, verifs, "source_export_declared", {
                         "file_path": file_path,
