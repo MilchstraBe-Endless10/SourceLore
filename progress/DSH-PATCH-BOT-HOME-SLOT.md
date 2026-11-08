@@ -73,3 +73,15 @@ md5 恢复 f12479a21c3498c0ff8d370277a99d51，node --check OK，botharness.bot.h
    （写最小复现，不能靠读代码猜）
 2. 再改 Welcome
 3. 一次只改一处，每步重启验证
+
+## ★ 恢复确认（2026-11-08 16:25）
+重启后（Web GUI 端口 36937）自己点进 Bot 模式：
+- 正常显示 Tobs「# 频道列表」+ 左侧「托布」+ 右侧「消息」区
+- client.js md5 = f12479a21c34（原版）
+→ 补丁造成的 Bot 面板空白已彻底修复。
+
+## 教训（下次改第三方 UI 包必守）
+1. 先写最小复现验证机制，不靠读代码猜（我猜 children→props 透传，猜错并直接改主界面）
+2. 一次只改一处，每步重启验证
+3. 改前必须确认回滚路径可用（这次全靠 /tmp/botharness-ui-client.js.orig 救回来）
+4. 别把「2 entries did not activate」当成自己的锅 —— 那是 11-01 就存在的 computer-use 重复注册
