@@ -229,26 +229,26 @@ window.__ModuleLoader__.load({
     return h(Panel, { h: h, state: s, set: set });
   }
 
-  function apply(ctx) {
-    ctx.inject(["dockPanels"], function (c) {
-      var dock = c.dockPanels;
-      if (!dock || typeof dock.register !== "function") return;
-      c.effect(function () {
-        return dock.register({
-          id: ID,
-          title: "源码知识卡片",
-          icon: "layers",
-          scope: "global",
-          order: 60,
-          defaultPosition: { zone: "right" },
-          component: SourcelorePanel,
-        });
-      });
-    });
+  // ★ Bot 主页槽位：window.__bhHomeSlots__（由 @botharness/ui 的 BhHomeSlot 渲染）
+  //   插件只推 {id, component}，UI 侧无注册时不渲染任何东西，因此不影响 Bot 原生外观。
+  var SLOT_KEY = "__bhHomeSlots__";
+
+  function slotList() {
+    if (typeof window === "undefined") return null;
+    if (!Array.isArray(window[SLOT_KEY])) window[SLOT_KEY] = [];
+    return window[SLOT_KEY];
+  }
+
+  function apply() {
+    var list = slotList();
+    if (!list) return;
+    if (list.some(function (x) { return x && x.id === ID; })) return;
+    list.push({ id: ID, component: SourcelorePanel });
+    try { window.dispatchEvent(new window.Event("bh-home-slot")); } catch (e) {}
   }
 
     exports.apply = apply;
-    exports.inject = ["slots", "dockPanels"];
+    exports.inject = ["slots"];
     return module.exports;
   },
 });
