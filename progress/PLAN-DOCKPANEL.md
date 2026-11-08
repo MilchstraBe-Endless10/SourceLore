@@ -39,3 +39,52 @@
 
 ## 回滚
 只改插件自己的 client.js，不碰任何第三方包 → 回滚 = 改回原文件，`git checkout` 即恢复。
+
+## 实施完成 + 离线验证（2026-08-08 18:00）
+插件 `client.js` 改动：
+```js
+// factory 内照范例取 react
+var react = require("react");
+
+// 包装组件：DockPanel.component 是普通 react 组件
+function SourcelorePanel() {
+  var h = react.createElement;
+  var st = react.useState({status:"loading", items:[], openIdx:-1, hoverIdx:-1});
+  ...
+  return h(Panel, { h: h, state: s, set: set });
+}
+
+function apply(ctx) {
+  ctx.inject(["dockPanels"], function (c) {
+    var dock = c.dockPanels;
+    if (!dock || typeof dock.register !== "function") return;   // 无 Bot 环境时静默跳过
+    c.effect(function () {
+      return dock.register({
+        id: ID, title: "源码知识卡片", icon: "layers",
+        scope: "global", order: 60,
+        defaultPosition: { zone: "right" },
+        component: SourcelorePanel,
+      });
+    });
+  });
+}
+exports.inject = ["slots", "dockPanels"];
+```
+
+## 离线 mock 验证结果（真跑，非推断）
+```
+inject 依赖: [["dockPanels"]]
+注册面板: dsh-sourcelore-cards | 源码知识卡片
+scope/zone: global / right
+component: function
+```
+（mock 的 effect 立即执行 fn，与 cordis effect 真实行为一致）
+
+## 安全性
+- **不改 @botharness/ui 任何字节** → 升级包不会覆盖，补丁不会丢
+- 插件自己 `git checkout` 即可回滚
+- `dock.register` 返回 dispose，由 `c.effect` 管理生命周期 → 插件卸载自动撤销
+- Bot 原有界面：只往停靠区**新增**一个面板，不动 channelSidebar / Welcome / 设置页
+
+## 待重启验证
+重启 DSH → 进 Bot 模式 → 看右侧停靠区是否出现「源码知识卡片」

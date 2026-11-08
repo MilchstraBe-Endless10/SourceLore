@@ -21,11 +21,9 @@ window.__ModuleLoader__.load({
   factory: (require) => {
     var module = { exports: {} };
     var exports = module.exports;
+    var react = require("react");   // ★ 照 dsh-agent-model-statusbar 的写法，factory 内直接 require
 
-  // ★ 当前用官方唯一可用槽位（bot 设置页分区）。
-  //   @botharness/ui 补丁已回滚（见 progress/DSH-PATCH-BOT-HOME-SLOT.md 记录的原因），
-  //   若要重新启用 botharness.bot.home，需先重打 ui 补丁再改回这里。
-  var HOME_SLOT = "botharness.settings.section";
+  // ★ 目标：Bot 模式内的停靠面板。用官方 dockPanels 服务（见 progress/PLAN-DOCKPANEL.md）
   var ID = "dsh-sourcelore-cards";
 
   var STATE = {
@@ -216,25 +214,41 @@ window.__ModuleLoader__.load({
     }).catch(function (e) { set({ status: "failed", message: String(e.message || e) }); });
   }
 
+  // ── Bot 模式停靠面板 ──────────────────────────────────────────────
+  // 用 @botharness/ui 公开导出的 ./panels 契约：
+  //   DockPanelRegistry.register(panel: DockPanel): () => void
+  // Bot 运行时 ctx.provide("dockPanels", dockPanels) → 插件可 ctx.inject(['dockPanels'])
+  // 渲染确认：dockPanelList = registeredDockPanels ?? dockEntryPanels
+  // 这条路**完全不改 @botharness/ui 源码**，升级包不会丢补丁，也不影响 Bot 原有界面。
+
+  function SourcelorePanel() {
+    var h = react.createElement;
+    var st = react.useState({ status: "loading", items: [], openIdx: -1, hoverIdx: -1 });
+    var s = st[0], set = st[1];
+    react.useEffect(function () { loadFirst(set); }, []);
+    return h(Panel, { h: h, state: s, set: set });
+  }
+
   function apply(ctx) {
-    ctx.slots.inject(HOME_SLOT, function () {
-      return ctx.slots.register(
-        { name: HOME_SLOT, id: ID, order: 40, label: "源码知识卡片" },
-        function (react) {
-          var h = react.createElement;
-          var useState = react.useState;
-          var useEffect = react.useEffect;
-          var st = useState({ status: "loading", items: [], openIdx: -1, hoverIdx: -1 });
-          var s = st[0], set = st[1];
-          useEffect(function () { loadFirst(set); }, []);
-          return h(Panel, { h: h, state: s, set: set });
-        }
-      );
+    ctx.inject(["dockPanels"], function (c) {
+      var dock = c.dockPanels;
+      if (!dock || typeof dock.register !== "function") return;
+      c.effect(function () {
+        return dock.register({
+          id: ID,
+          title: "源码知识卡片",
+          icon: "layers",
+          scope: "global",
+          order: 60,
+          defaultPosition: { zone: "right" },
+          component: SourcelorePanel,
+        });
+      });
     });
   }
 
     exports.apply = apply;
-    exports.inject = ["slots"];
+    exports.inject = ["slots", "dockPanels"];
     return module.exports;
   },
 });
