@@ -41,3 +41,35 @@ cp /tmp/botharness-ui-client.js.orig <新包>/lib/client.js   # 仅当版本相�
 ## 风险与回滚
 - 只加代码不改既有逻辑，`renderSlot === void 0` 时 extra 为 null，无插件时行为与原来一致
 - 回滚：`cp /tmp/botharness-ui-client.js.orig <该文件>`
+
+## ★ 2026-11-08 12:25 回滚：补丁导致 Bot 面板空白
+### 现象
+打完补丁并重启（12:20，PID 58367）后，点「Bot 模式」：
+- 先显示 DSH 首页「探索未至之境」，再变成**空白**
+- 原本应显示 Tobs「# 频道列表 / 消息」界面
+→ Bot 面板没能挂载。
+
+### 回滚动作（已完成）
+```
+cp /tmp/botharness-ui-client.js.orig  → @botharness/ui/lib/client.js
+md5 恢复 f12479a21c3498c0ff8d370277a99d51，node --check OK，botharness.bot.home 0 处
+```
+插件侧 `client.js` HOME_SLOT 已退回官方 `botharness.settings.section`。
+
+### 排除的误判（重要，别再怀疑）
+`dsh: warning: 2 entries did not activate` 在日志里从 **2026-11-01** 起每次启动都有
+（10221 / 10277 / 10329 / 10378 / 10426 / 10472 行），
+真实原因是 `computer use provider "botharness-computer" is already registered`
+—— **既有问题，与本次补丁无关**。
+
+### 补丁为什么失败（推断，未逐字验证）
+`children: { "botharness.bot.home": {kind:"list", scope:"root"} }` 很可能要求
+宿主组件里的 slot 必须由 `ctx.slots.register` 注册的「条目」承载，
+而 `Welcome` 只是个普通组件、不是注册条目；
+`renderSlot` 注入到 props 的路径我并未真正验证（只是推断 ...props 会透传）。
+
+### 若要重试的正确顺序
+1. 单独验证「children 声明 → renderSlot 自动进 props」这一步是否成立
+   （写最小复现，不能靠读代码猜）
+2. 再改 Welcome
+3. 一次只改一处，每步重启验证

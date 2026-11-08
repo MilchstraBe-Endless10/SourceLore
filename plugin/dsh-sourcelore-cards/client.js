@@ -22,12 +22,10 @@ window.__ModuleLoader__.load({
     var module = { exports: {} };
     var exports = module.exports;
 
-  // ★★ 本机 @botharness/ui 已打了 DSH-PATCH，新增公开槽位 botharness.bot.home：
-  //    - Welcome() 增加 renderSlot(WELCOME_SLOT, {})
-  //    - main slot 条目声明 children: { "botharness.bot.home": {kind:"list", scope:"root"} }
-  //    - BotMainContent / Welcome 增加 renderSlot prop 透传
-  //  该槽位出现在 Bot 模式主页（未选中任何 Bot/频道时的欢迎区）。
-  var HOME_SLOT = "botharness.bot.home";
+  // ★ 当前用官方唯一可用槽位（bot 设置页分区）。
+  //   @botharness/ui 补丁已回滚（见 progress/DSH-PATCH-BOT-HOME-SLOT.md 记录的原因），
+  //   若要重新启用 botharness.bot.home，需先重打 ui 补丁再改回这里。
+  var HOME_SLOT = "botharness.settings.section";
   var ID = "dsh-sourcelore-cards";
 
   var STATE = {
