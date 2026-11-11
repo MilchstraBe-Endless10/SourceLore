@@ -71,3 +71,52 @@ src/index.js      preact            -> UNSUPPORTED_RESOLUTION_POLICY  ← 裸模
 
 注意：`tree_paths` 只有 8 个文件时，解析出的关系也仅覆盖这 8 个文件之间的引用，
 **必须在输出里如实标注覆盖面，不得暗示全仓库依赖图完整**。
+
+---
+
+## relation 打通（02:39）
+
+`tools/extract_symbols.py` 已加 relation 阶段：收集已采集文件集合作 `tree_paths`，
+对每个 import 调 `resolve_js_import`，成功则 `build_relation_fact` + `ingest_fact`。
+
+**踩到的坑**：`resolve_js_import` 成功返回的字符串是 `"LOCAL_MODULE_RESOLVED"`，
+但这个常量分散在 `config_aware_resolver` / `source_models` 多处、
+`js_ts_module_resolver` 里没有 `RESOLVED` 属性。
+试过 `RES.RESOLVED`、`CM.LOCAL_MODULE_RESOLVED` 都报 AttributeError，
+**最终改用字面量 `"LOCAL_MODULE_RESOLVED"`**（已用实测确认取值）。
+
+### 实测结果
+
+```
+relation: RELATIONS_FOUND  行=10  resolved=10
+
+src/component.js     ./constants      -> src/constants.js
+src/component.js     ./create-element -> src/create-element.js
+src/component.js     ./diff/index     -> src/diff/index.js
+src/component.js     ./options        -> src/options.js
+src/create-element.js ./options       -> src/options.js
+src/create-element.js ./constants     -> src/constants.js
+src/diff/index.js    ../component     -> src/component.js
+src/diff/index.js    ../constants     -> src/constants.js
+src/diff/index.js    ../create-element-> src/create-element.js
+src/diff/index.js    ../options       -> src/options.js
+```
+
+裸模块（如 `preact`）按设计返回 `UNSUPPORTED_RESOLUTION_POLICY`，不假装能解析。
+
+### 覆盖面必须如实标注
+
+`tree_paths=6`（已采集的 6 个 preact 源文件）。
+这 10 条边**只覆盖这 6 个文件之间的相对引用，不代表全仓库依赖图**。
+脚本输出里已带 `coverage_note` 字段说明这一点。
+
+## 需求矩阵四项最终实测（preact）
+
+```
+code    : symbols=118  imports=36  exports=33   COVERED_BY_EXTRACTED_SOURCE
+relation: RELATIONS_FOUND  行=10  resolved=10
+content : README=14884B  OBSERVED
+docs    : 5 篇，readme 14981B
+```
+
+四项全部有真实数据，无一项是空壳或占位。

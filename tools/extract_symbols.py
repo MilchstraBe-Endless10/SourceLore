@@ -108,6 +108,8 @@ def main(argv=None):
             syms = obs.get("observed_symbols") or []
             report.setdefault("_observations", []).append(
                 (src["file_path"], obs))
+            report.setdefault("_relations_src", []).append(
+                (src["file_path"], obs))
         except Exception as exc:
             report["errors"].append({"file_path": src["file_path"],
                                      "error": "parse: %s" % exc})
@@ -160,6 +162,81 @@ def main(argv=None):
             "skip_samples": agg["skipped"][:5],
         }
         report.pop("_observations", None)
+
+    # ── relation 阶段：把已采集文件之间的相对 import 解析成真实路径 ──
+    #   ★ 只用「已采集文件集合」作 tree_paths。解析结果只覆盖这些文件之间的引用，
+    #     不得声称是全仓库依赖图。
+    if not a.dry_run:
+        try:
+            import js_ts_module_resolver as RES
+            import module_relation_ingest as MRI
+            # ★ 实测 resolve_js_import 成功时返回字符串 "LOCAL_MODULE_RESOLVED"，
+            #   该常量分散在多个模块，直接用字面量最稳（已实测确认）。
+            RESOLVED_STATE = "LOCAL_MODULE_RESOLVED"
+            import ingest as FI
+
+            tree_paths = sorted({x.get("file_path") for x in
+                                 _iter_captured_sources(store, a.repository_id)
+                                 if x.get("file_path")})
+            rel_written, rel_skipped = [], []
+            for file_path, o in (report.get("_relations_src") or []):
+                for imp in (o.get("observed_imports") or []):
+                    r = RES.resolve_js_import(
+                        import_record=imp, source_path=file_path,
+                        tree_paths=tree_paths)
+                    if r.get("status") != RESOLVED_STATE:
+                        continue
+                    target = r["candidates"][0]["path"]
+                    resolution = {
+                        "resolution_id": "SL-REL-%s-%s" % (
+                            o["observation_id"].split("-")[-1],
+                            abs(hash((file_path, imp.get("module_specifier"),
+                                      target))) % (10 ** 12)),
+                        "repository_id": str(a.repository_id),
+                        "commit_sha": o["commit_sha"],
+                        "importing_file_path": file_path,
+                        "module_specifier": imp.get("module_specifier"),
+                        "import_kind": imp.get("import_kind"),
+                        "is_type_only": bool(imp.get("is_type_only")),
+                        "resolved_target_path": target,
+                        "resolution_state": r["status"],
+                        "resolution_policy": "RELATIVE_LOCAL",
+                        "candidate_paths": r.get("candidates") or [],
+                        "importing_blob_oid": o.get("git_blob_oid"),
+                        "importing_content_asset_id": o.get("content_asset_id"),
+                        "resolver_version": "js-ts-resolver/1",
+                        "provenance_level": "OBSERVED",
+                    }
+                    ev_refs = [imp.get("evidence_ref")] if imp.get("evidence_ref") else []
+                    try:
+                        fact = MRI.build_relation_fact(
+                            resolution=resolution, evidence_refs=ev_refs)
+                        prev = store.conn.execute(
+                            "SELECT asset_id FROM index_rows WHERE "
+                            "asset_type='extracted_fact' AND logical_identity=?",
+                            (fact.fact_id,)).fetchone()
+                        if prev:
+                            rel_skipped.append({"reason": "reused"})
+                            continue
+                        res = FI.ingest_fact(store, fact)
+                        if res.get("ok"):
+                            rel_written.append({
+                                "from": file_path, "spec": imp.get("module_specifier"),
+                                "to": target})
+                        else:
+                            rel_skipped.append({"reason": res.get("error")})
+                    except Exception as exc:
+                        rel_skipped.append({"reason": str(exc)})
+            report["relation"] = {
+                "tree_paths": len(tree_paths),
+                "written": len(rel_written),
+                "skipped": len(rel_skipped),
+                "edges": rel_written[:20],
+                "coverage_note": ("仅覆盖已采集 %d 个文件之间的相对引用，"
+                                  "不代表全仓库依赖图" % len(tree_paths)),
+            }
+        except Exception as exc:
+            report["relation"] = {"error": str(exc)}
 
     print(json.dumps(report, ensure_ascii=False, indent=2, default=str))
     return 0
