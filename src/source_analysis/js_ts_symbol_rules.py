@@ -258,6 +258,37 @@ def _classify(node, raw, root):
             return k, nm, _qual_decl(decl, nm, raw), extra
         return None, None, None, {}
 
+    # ── CJS/UMD 赋值导出：module.exports = function(){} / exports.foo = ... ──
+    #   ★ 2026-11-12 实证：is-number 的 index.js 正是这种形态，
+    #     旧规则不识别 → 整个仓库 symbols=0 且 coverage=NOT_COVERED，属假阴性。
+    if t == "assignment_expression":
+        left = _child_by_field(node, "left")
+        value = _child_by_field(node, "right")
+        if left is None or value is None:
+            return None, None, None, {}
+        target = _cjs_export_target(left, raw)
+        if not target:
+            return None, None, None, {}
+        if value.type in (FUNC_EXPR, FUNC, ARROW):
+            # 匿名函数赋给 module.exports → 用导出目标名作为符号名
+            nm = target
+            extra = {"binding_kind": "cjs_export",
+                     "value_kind": value.type,
+                     "export_target": target,
+                     "anonymous_export": True}
+            if value.type == ARROW:
+                return JS_ARROW_FUNCTION, nm, nm, extra
+            return JS_FUNCTION_EXPRESSION, nm, nm, extra
+        if value.type in (CLASS_DECL, "class"):
+            # ★ 类声明自身会由 class_declaration 分支产出；
+            #   这里只在匿名类（无 name）时补一条，避免重复计数。
+            cls_name = _ident_child(value, raw)
+            if cls_name:
+                return None, None, None, {}
+            return JS_CLASS, target, target, {
+                "binding_kind": "cjs_export", "export_target": target}
+        return None, None, None, {}
+
     # ── 对象字面量方法 ──
     if t == PAIR and parent is not None and parent.type == OBJECT:
         key = _child_by_field(node, "key")
@@ -344,3 +375,26 @@ def _collect_exports(root, raw):
                         "start_byte": node.start_byte,
                         "end_byte": node.end_byte})
     return out
+
+
+def _cjs_export_target(left_node, raw):
+    """识别 module.exports / exports.foo / module.exports.foo 形式，返回导出名。
+
+    ★ 只认赋值左侧，不接受任意 member_expression：
+      - `module.exports`            -> "module.exports"
+      - `module.exports.foo`        -> "foo"
+      - `exports.foo`               -> "foo"
+    其它（如 `this.x`、`obj.x`）一律返回 None，避免把普通赋值当导出。
+    """
+    if left_node.type != "member_expression":
+        return None
+    text = _text(left_node, raw).strip()
+    if not text:
+        return None
+    if text == "module.exports":
+        return "module.exports"
+    if text.startswith("module.exports."):
+        return text[len("module.exports."):]
+    if text.startswith("exports."):
+        return text[len("exports."):]
+    return None
