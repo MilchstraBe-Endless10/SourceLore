@@ -296,17 +296,39 @@ DOCS = {
 }
 
 
-def write_derived_views(*, data_root, repository_id, commit_sha, card, graph):
-    """把卡片数据与文档写入派生视图目录。返回写出的文件清单。"""
+def write_derived_views(*, data_root, repository_id, commit_sha, card, graph,
+                        documents=None):
+    """把卡片数据与文档写入派生视图目录。返回写出的文件清单。
+
+    ★ documents 由 repo_miner 产出（真实项目知识）。存在时：
+      - 每篇文档落一份 markdown（人可直接读）
+      - 正文同时写进 card-data.json 的 documents 字段（卡片据此渲染全文）
+      不存在时退回旧的模板 md（保证向后兼容，不静默丢文件）。
+    """
     out = os.path.join(str(data_root), "派生视图", str(repository_id), str(commit_sha))
     os.makedirs(out, exist_ok=True)
 
     written = []
-    for name, fn in DOCS.items():
-        p = os.path.join(out, name)
-        with open(p, "w", encoding="utf-8") as f:
-            f.write(fn(card, graph))
-        written.append(p)
+    if documents:
+        for d in documents:
+            name = str(d.get("document_id") or "doc") + ".md"
+            p = os.path.join(out, name)
+            buf = [f"# {d.get('title') or name}", ""]
+            for sec in d.get("sections") or []:
+                buf.append("## " + str(sec.get("heading") or ""))
+                buf.append("")
+                buf.append(str(sec.get("body") or ""))
+                buf.append("")
+            buf.append("> 本文件为派生视图，内容全部来自已登记知识资产。")
+            with open(p, "w", encoding="utf-8") as f:
+                f.write("\n".join(buf))
+            written.append(p)
+    else:
+        for name, fn in DOCS.items():
+            p = os.path.join(out, name)
+            with open(p, "w", encoding="utf-8") as f:
+                f.write(fn(card, graph))
+            written.append(p)
 
     p = os.path.join(out, "card-data.json")
     with open(p, "w", encoding="utf-8") as f:

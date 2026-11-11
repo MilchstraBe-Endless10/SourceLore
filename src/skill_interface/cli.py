@@ -89,6 +89,9 @@ def build_parser():
     q.add_argument("--config", default=None, help="按 tsconfig 路径过滤")
     q.add_argument("--file", default=None, help="按源码文件路径过滤归属")
 
+    d = sub.add_parser("derive", help="生成仓库派生视图与项目知识文档（离线，不联网）")
+    d.add_argument("repository_id", nargs="?", help="仓库 ID；省略则处理全部仓库")
+
     c = sub.add_parser("card", help="查看知识（默认输出 Bot 内呈现文本块）")
     c.add_argument("--repository-id", required=True)
     c.add_argument("--claim-id", default=None)
@@ -314,6 +317,16 @@ def _dispatch(cmd, args):
                           max_results=args.max_results, data_root=root)
         S.record_operation("query", out)
         return emit_ok(out)
+
+    if cmd == "derive":
+        import repo_derive_runner as DR
+        from paths import DEFAULT_DATA_ROOT as _DDR2
+        _root = root or _DDR2
+        if args.repository_id:
+            _one = DR.derive_one(repository_id=args.repository_id, data_root=_root)
+            return emit_ok(_one)
+        _all = DR.derive_all(data_root=_root)
+        return emit_ok({"ok": all(x.get("ok") for x in _all), "results": _all})
 
     if cmd == "card":
         has_content = any(getattr(args, k, None) for k in
