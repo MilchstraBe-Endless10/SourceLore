@@ -68,3 +68,39 @@ query 42283287 --type content --commit dbeba0d5 --path README.md
    等配额重置或配 token 即可。文档见 `progress/TREE-BLOCKER-REAL-CAUSE-2026-11-12.md`。
 2. **imports=0** — 目前只抓了 3 个源文件，其中没有跨模块 import 语句。
    `observed_imports` 通道已就绪，抓到含 import 的源文件即可产出。
+
+---
+
+## 补充：三仓库符号现状（01:38 实测）
+
+```
+24313173 is-number     symbols=0   exports=0   imports=0   coverage=NOT_COVERED
+38923193 is-plain-obj  symbols=4   exports=2   imports=0   coverage=COVERED_BY_EXTRACTED_SOURCE
+42283287 preact        symbols=49  exports=13  imports=0   coverage=COVERED_BY_EXTRACTED_SOURCE
+```
+
+### is-number 的 0 符号是真实规则缺口（不是采集问题）
+
+它的 `index.js`（411 B）内容形态是：
+
+```js
+module.exports = function(num) {
+  if (typeof num === 'number') { return num - num === 0; }
+  ...
+};
+```
+
+即 **`assignment_expression` + 匿名 `function_expression`**。
+`js_ts_symbol_rules._classify` 目前处理 `function_declaration` / `class_declaration`
+/ `lexical_declaration`，不认 `module.exports = function(){}` 这种 UMD/CJS 主流写法。
+
+**这是需要补的规则，不是数据缺失。** 已记录，未在本轮修改
+（改判定链核心需要独立验证，不能顺手动）。
+
+### imports=0 的原因
+
+只抓了 3 个源文件（index.js / component.js / diff/index.js），
+其中没有跨模块 `import`/`require` 语句。
+`observed_imports` 通道已就绪（`source_fact_ingest.py` 有 RULE_IMPORT 分支），
+抓到含 import 的源文件即可产出。preact 的 `src/index.js`(423B) 是纯 re-export，
+理论上应有 export 事实（现有 exports=13 已含）。
