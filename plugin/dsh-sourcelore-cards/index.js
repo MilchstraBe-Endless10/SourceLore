@@ -15,13 +15,18 @@ import { createRequire } from 'node:module'
 export const name = 'dsh-sourcelore-cards'
 
 /**
- * ★ inject 声明的是「客户端半需要哪些服务」。
- *   Tobs（@botharness/ui 1.6.1）通过 ctx.provide("dockPanels") 暴露面板注册表，
- *   内置的「活动中心」「插件市场」都走它。声明后客户端半的 apply(ctx)
- *   才能通过 ctx.inject(["dockPanels"], …) 拿到注册表。
- *   （此前是 []，导致 apply 拿不到服务，改 UI 包才白屏——那是错的解法。）
+ * ★ inject 必须留空 —— 这是 2026-11-12 实证的结论。
+ *
+ * 声明 ["dockPanels"] 会让宿主半永久 pending：
+ *   `sourcelore-cards (dsh-sourcelore-cards): pending (waiting for service: dockPanels)`
+ * 因为 dockPanels 是 **Tobs 客户端**通过 ctx.provide 暴露的服务，
+ * 只在浏览器侧的 cordis 上下文里，宿主 Node 侧根本看不到。
+ * 宿主 pending → 整个插件（含客户端 bundle 投递）都不挂载。
+ *
+ * 客户端半要拿 dockPanels，在 client.js 的 apply(ctx) 里用
+ * ctx.inject(["dockPanels"], …) 即可，不需要在宿主这里声明。
  */
-export const inject = ['dockPanels']
+export const inject = []
 
 const CLI_PATH = process.env.SOURCELORE_CLI
   || '/home/arlune_innersea/.agents/skills/sourcelore/scripts/sourcelore.py'

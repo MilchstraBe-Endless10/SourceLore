@@ -501,26 +501,47 @@ window.__ModuleLoader__.load({
 
   function apply(ctx) {
     if (!ctx || typeof ctx.get !== "function") return;
-    ctx.inject(["dockPanels"], function (panelCtx) {
-      var registry = panelCtx.dockPanels || ctx.get("dockPanels");
-      if (!registry || typeof registry.register !== "function") {
-        try { ctx.logger && ctx.logger.warn("[sourcelore] dockPanels 不可用"); } catch (e) {}
-        return;
-      }
-      if (_dispose) { try { _dispose(); } catch (e) {} _dispose = null; }
-      _dispose = registry.register({
-        id: PANEL_ID,
-        title: "仓库知识卡片",
-        icon: "folder",
-        scope: "global",
-        order: 520,
-        defaultPosition: { zone: "right" },
-        component: function () { return react.createElement(SourcelorePanel); },
-      });
+    var done = false;
+
+    function tryRegister(registry, viaLabel) {
+      if (done || !registry || typeof registry.register !== "function") return false;
       try {
-        ctx.logger && ctx.logger.info("[sourcelore] 面板已注册: " + PANEL_ID + " BUILD=" + BUILD);
-      } catch (e) {}
-    });
+        if (_dispose) { try { _dispose(); } catch (e) {} }
+        _dispose = registry.register({
+          id: PANEL_ID,
+          title: "仓库知识卡片",
+          icon: "folder",
+          scope: "global",
+          order: 520,
+          defaultPosition: { zone: "right" },
+          component: function () { return react.createElement(SourcelorePanel); },
+        });
+        done = true;
+        try { ctx.logger && ctx.logger.info("[sourcelore] 面板已注册 via " + viaLabel + " BUILD=" + BUILD); } catch (e) {}
+        return true;
+      } catch (e) {
+        try { ctx.logger && ctx.logger.warn("[sourcelore] register 失败(" + viaLabel + "): " + (e && e.message)); } catch (e2) {}
+        return false;
+      }
+    }
+
+    // 路径 1：注入回调（服务已就绪时走这条）
+    try {
+      ctx.inject(["dockPanels"], function (c) {
+        tryRegister(c && c.dockPanels, "inject");
+      });
+    } catch (e) {}
+
+    // 路径 2：轮询 ctx.get（Tobs 可能在 apply 之后才 provide）
+    var tries = 0;
+    function poll() {
+      if (done || tries++ > 40) return;
+      var r = null;
+      try { r = ctx.get("dockPanels"); } catch (e) {}
+      if (tryRegister(r, "poll#" + tries)) return;
+      setTimeout(poll, 250);
+    }
+    setTimeout(poll, 0);
   }
 
   exports.apply = apply;
