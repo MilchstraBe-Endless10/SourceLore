@@ -428,14 +428,10 @@ window.__ModuleLoader__.load({
   // ★ 错误边界：本卡片任何异常都不得冒泡到 Bot 主面板（否则整个 Welcome 白屏）
   // ★ 极简安全壳：不依赖 react hooks、不依赖任何 S（样式表）以外的对象，
   //   确保即使内部逻辑全崩，Bot 主面板也不会跟着白屏。
+  // ★ 必须用 createElement 渲染 Panel，绝不能直接调用 Panel(props)：
+  //   Panel 内用了 useState/useEffect，当普通函数调用会破坏 hooks 上下文 → 整个 Bot 面板白屏。
   function SafePanel(props) {
-    try {
-      return Panel(props);
-    } catch (e) {
-      return react.createElement("div", {
-        style: { padding: "16px", fontSize: "12px", color: "#c0392b" },
-      }, "SourceLore 渲染异常：" + String(e && e.message || e));
-    }
+    return react.createElement(Panel, props);
   }
 
   function Panel(props) {
@@ -491,27 +487,45 @@ window.__ModuleLoader__.load({
     return window[SLOT_KEY];
   }
 
-  function apply() {
-    var list = slotList();
-    if (!list) return;
-    // ★ 先删掉本插件留下的**所有**旧条目（含旧版本号），再 push 新条目。
-    //   两个实测教训：
-    //   1) id 不变 → BhHomeSlot 用 "bh-home-"+id 作 React key，React 复用旧实例；
-    //   2) 只按 ID 匹配替换 → 旧条目 id 是 ID、新条目是 ID:vBUILD，两者不相等，
-    //      结果新旧并存，界面上看的是旧的那个（改了代码却毫无反应）。
-    var entryId = ID + ":v" + BUILD;
-    for (var i = list.length - 1; i >= 0; i--) {
-      var it = list[i];
-      if (it && typeof it.id === "string" && it.id.indexOf(ID) === 0) {
-        list.splice(i, 1);
+  // ★ 官方扩展点（2026-11-11 从 @botharness/ui 1.6.1 源码实证）：
+  //   Tobs 自己用 ctx.provide("dockPanels") 暴露注册表，内置的「活动中心」「插件市场」
+  //   都通过 dockPanels.register(panel) 注册。第三方插件走同一个口子即可——
+  //   既不用改 @botharness/ui，也不会被 Tobs 升级覆盖。
+  //
+  //   panel 契约（照 createMarketPanel 抄的）：
+  //     { id, title, icon, scope:"global", order, defaultPosition:{zone:"right"},
+  //       component: () => ReactNode, headerAction?: () => ReactNode }
+  //   id 校验：/^[a-zA-Z0-9:@._-]{1,160}$/，且不得以 "instance:" 开头。
+  var PANEL_ID = "sourcelore:repo-cards";
+  var _dispose = null;
+
+  function apply(ctx) {
+    if (!ctx || typeof ctx.get !== "function") return;
+    ctx.inject(["dockPanels"], function (panelCtx) {
+      var registry = panelCtx.dockPanels || ctx.get("dockPanels");
+      if (!registry || typeof registry.register !== "function") {
+        try { ctx.logger && ctx.logger.warn("[sourcelore] dockPanels 不可用"); } catch (e) {}
+        return;
       }
-    }
-    list.push({ id: entryId, component: SafePanel });
-    try { window.dispatchEvent(new window.Event("bh-home-slot")); } catch (e) {}
+      if (_dispose) { try { _dispose(); } catch (e) {} _dispose = null; }
+      _dispose = registry.register({
+        id: PANEL_ID,
+        title: "仓库知识卡片",
+        icon: "folder",
+        scope: "global",
+        order: 520,
+        defaultPosition: { zone: "right" },
+        component: function () { return react.createElement(SourcelorePanel); },
+      });
+      try {
+        ctx.logger && ctx.logger.info("[sourcelore] 面板已注册: " + PANEL_ID + " BUILD=" + BUILD);
+      } catch (e) {}
+    });
   }
 
-    exports.apply = apply;
-    exports.inject = ["slots"];
+  exports.apply = apply;
+    // ★ 官方服务名：dockPanels（Tobs 内置「活动中心」「插件市场」用的同一个）
+    exports.inject = ["dockPanels"];
     return module.exports;
   },
 });

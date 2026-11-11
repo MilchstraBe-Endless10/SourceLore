@@ -14,8 +14,14 @@ import { createRequire } from 'node:module'
 
 export const name = 'dsh-sourcelore-cards'
 
-/** 不依赖宿主注入的任何服务 —— 自己 spawn CLI。 */
-export const inject = []
+/**
+ * ★ inject 声明的是「客户端半需要哪些服务」。
+ *   Tobs（@botharness/ui 1.6.1）通过 ctx.provide("dockPanels") 暴露面板注册表，
+ *   内置的「活动中心」「插件市场」都走它。声明后客户端半的 apply(ctx)
+ *   才能通过 ctx.inject(["dockPanels"], …) 拿到注册表。
+ *   （此前是 []，导致 apply 拿不到服务，改 UI 包才白屏——那是错的解法。）
+ */
+export const inject = ['dockPanels']
 
 const CLI_PATH = process.env.SOURCELORE_CLI
   || '/home/arlune_innersea/.agents/skills/sourcelore/scripts/sourcelore.py'
