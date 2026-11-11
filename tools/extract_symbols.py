@@ -238,6 +238,75 @@ def main(argv=None):
         except Exception as exc:
             report["relation"] = {"error": str(exc)}
 
+    # ── ts_project 阶段：jsconfig.json / tsconfig.json → 项目声明事实 ──
+    if not a.dry_run:
+        try:
+            import ts_project_context as TPC
+            import ts_project_ingest as TPI
+
+            # ★ tree_paths 必须包含**所有已采集文件**（含配置文件本身），
+            #   不能只用可解析的源码文件——否则 discover_config_paths 找不到 jsconfig。
+            tree_paths = sorted({
+                json.loads(pj).get("file_path")
+                for (pj,) in store.conn.execute(
+                    "select payload_json from assets where repository_id=? "
+                    "and asset_type='captured_blob_content'",
+                    (str(a.repository_id),)).fetchall()
+                if json.loads(pj).get("file_path")})
+            # 收集配置文件字节
+            config_blobs = {}
+            for (asset_id, pj) in store.conn.execute(
+                    "select asset_id, payload_json from assets where "
+                    "repository_id=? and asset_type='captured_blob_content'",
+                    (str(a.repository_id),)).fetchall():
+                pp = json.loads(pj)
+                fp = pp.get("file_path") or ""
+                if not fp.endswith(("tsconfig.json", "jsconfig.json")):
+                    continue
+                sha = (pp.get("content_sha256") or "").split(":", 1)[-1]
+                got = BS.get_bytes(data_root=data_root, content_sha256=sha,
+                                   verify=True)
+                if got.get("ok"):
+                    config_blobs[fp] = {
+                        "raw": got["raw"],
+                        "blob_oid": pp.get("git_blob_oid"),
+                        "content_asset_id": asset_id,
+                        "content_digest": sha,
+                    }
+            if config_blobs:
+                built = TPC.build_all_projects(
+                    tree_paths=tree_paths, config_blobs=config_blobs,
+                    repository_id=str(a.repository_id),
+                    commit_sha=list(config_blobs.values()) and
+                               json.loads(store.conn.execute(
+                                   "select payload_json from assets where asset_type="
+                                   "'captured_blob_content' and repository_id=? limit 1",
+                                   (str(a.repository_id),)).fetchone()[0]).get("commit_sha"),
+                    provenance_level="OBSERVED")
+                proj_new = proj_reused = proj_fail = 0
+                for proj in (built.get("projects") or []):
+                    r = TPI.ingest_project(store, project=proj)
+                    # ★ _put 返回 {written:bool, reused:bool}，没有 ok 键。
+                    #   把 reused 当失败会误报——先前的 projects_written=0 就是这个 bug。
+                    if r.get("written"):
+                        proj_new += 1
+                    elif r.get("reused"):
+                        proj_reused += 1
+                    else:
+                        proj_fail += 1
+                report["ts_project"] = {
+                    "config_blobs": list(config_blobs),
+                    "projects_built": len(built.get("projects") or []),
+                    "projects_new": proj_new,
+                    "projects_reused": proj_reused,
+                    "projects_failed": proj_fail,
+                }
+            else:
+                report["ts_project"] = {
+                    "config_blobs": [], "note": "未采集到 tsconfig.json / jsconfig.json"}
+        except Exception as exc:
+            report["ts_project"] = {"error": str(exc)}
+
     print(json.dumps(report, ensure_ascii=False, indent=2, default=str))
     return 0
 
