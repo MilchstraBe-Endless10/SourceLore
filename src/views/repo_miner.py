@@ -16,22 +16,55 @@ SCHEMA = "sourcelore-project-doc/1"
 
 # ── 取已采集的内容资产 ───────────────────────────────────────────
 
-def _blob_texts(store, repository_id):
-    """取已采集的文件内容（若采集过）。返回 {path: text}。"""
+def _blob_texts(store, repository_id, data_root):
+    """取已采集的文件正文。
+
+    ★ 关键事实（2026-11-11 审计纠正）：
+      正文**不在** captured_blob_content 的 payload 里（那里只有元数据）；
+      真正的字节存在 `<data_root>/blobs/<sha256>.bin`，
+      由 `blob_content_store.get_bytes()` 按 content_sha256 读回并校验。
+
+    ★ 必须走正式 Storage API，不得自行拼路径、不得重新下载。
+    """
     out = {}
+    meta = {}
     try:
+        import blob_content_store as BCS
         rows = store.conn.execute(
             "SELECT payload_json FROM assets WHERE asset_type='captured_blob_content' "
             "AND repository_id=?", (str(repository_id),)).fetchall()
         for r in rows:
             pl = json.loads(r["payload_json"])
-            path = pl.get("normalized_path") or pl.get("path")
-            text = pl.get("text") or pl.get("content")
-            if path and isinstance(text, str):
-                out[path] = text
-    except Exception:
-        pass
-    return out
+            path = (pl.get("file_path") or pl.get("normalized_path")
+                    or pl.get("path"))
+            digest = pl.get("content_sha256")
+            if not path or not digest:
+                continue
+            got = BCS.get_bytes(data_root=data_root, content_sha256=digest,
+                                verify=True)
+            if not got.get("ok"):
+                meta[path] = {"error": got.get("error"), "digest": digest}
+                continue
+            raw = got.get("raw") or b""
+            try:
+                text = raw.decode("utf-8")
+            except UnicodeDecodeError:
+                try:
+                    text = raw.decode("utf-8", errors="replace")
+                except Exception:
+                    text = ""
+            out[path] = text
+            meta[path] = {
+                "digest": digest,
+                "byte_length": got.get("byte_length"),
+                "copy_permitted": pl.get("copy_permitted"),
+                "distribution_allowed": pl.get("distribution_allowed"),
+                "provenance_level": pl.get("provenance_level"),
+                "git_blob_oid": pl.get("git_blob_oid"),
+            }
+    except Exception as e:
+        meta["__error__"] = f"{type(e).__name__}: {e}"
+    return out, meta
 
 
 def _readme_from_tree(texts, tree_entries):
@@ -137,9 +170,76 @@ def _install_like(sec):
 
 # ── 文档章节构造 ────────────────────────────────────────────────
 
+# ── 从已读原文抽取可陈述的符号事实（不推测）────────────────────
+
+_JS_EXPORT = re.compile(
+    r"^\s*export\s+(default\s+)?(?:async\s+)?"
+    r"(function|class|const|let|var)\s+([A-Za-z_$][\w$]*)", re.M)
+_JS_EXPORT_FROM = re.compile(
+    r"^\s*export\s+\{([^}]*)\}\s+from\s+['\"]([^'\"]+)['\"]", re.M)
+_JS_EXPORT_STAR = re.compile(
+    r"^\s*export\s+\*\s+from\s+['\"]([^'\"]+)['\"]", re.M)
+_JS_FUNC = re.compile(
+    r"^\s*(?:async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(", re.M)
+_PY_DEF = re.compile(r"^\s*def\s+([A-Za-z_]\w*)\s*\(", re.M)
+_PY_CLASS = re.compile(r"^\s*class\s+([A-Za-z_]\w*)", re.M)
+
+
+def extract_symbols_from_source(path, text):
+    """从已采集的源码文本里抽符号。只陈述字面可见的声明。"""
+    if not text:
+        return []
+    out = []
+    low = path.lower()
+
+    if low.endswith((".js", ".mjs", ".cjs", ".jsx", ".ts", ".tsx")):
+        for m in _JS_EXPORT.finditer(text):
+            is_default = bool(m.group(1))
+            kind = m.group(2)
+            name = m.group(3)
+            line = text[:m.start()].count("\n") + 1
+            out.append({
+                "name": name, "kind": kind,
+                "export_kind": "default" if is_default else "named",
+                "line": line, "path": path,
+            })
+        for m in _JS_EXPORT_FROM.finditer(text):
+            names = [x.strip().split(" as ")[-1].strip()
+                     for x in m.group(1).split(",") if x.strip()]
+            line = text[:m.start()].count("\n") + 1
+            for nm in names:
+                if nm:
+                    out.append({"name": nm, "kind": "re_export",
+                                "export_kind": "named", "target": m.group(2),
+                                "line": line, "path": path})
+        for m in _JS_EXPORT_STAR.finditer(text):
+            line = text[:m.start()].count("\n") + 1
+            out.append({"name": "*", "kind": "re_export",
+                        "export_kind": "star", "target": m.group(1),
+                        "line": line, "path": path})
+    elif low.endswith(".py"):
+        for m in _PY_DEF.finditer(text):
+            out.append({"name": m.group(1), "kind": "function",
+                        "export_kind": "module",
+                        "line": text[:m.start()].count("\n") + 1, "path": path})
+        for m in _PY_CLASS.finditer(text):
+            out.append({"name": m.group(1), "kind": "class",
+                        "export_kind": "module",
+                        "line": text[:m.start()].count("\n") + 1, "path": path})
+    # 去重（同 名+kind+行）
+    seen, uniq = set(), []
+    for x in out:
+        k = (x.get("name"), x.get("kind"), x.get("line"), x.get("path"))
+        if k in seen:
+            continue
+        seen.add(k)
+        uniq.append(x)
+    return uniq
+
+
 def build_overview(*, repo_name, commit_sha, tree_entries, readme_path,
                    readme_sections, manifest, manifest_path, code_rows,
-                   claims, coverage_note):
+                   claims, coverage_note, source_symbols=None):
     secs = []
 
     # 1) 项目用途：直接引 README 首段（有证据）
@@ -201,10 +301,27 @@ def build_overview(*, repo_name, commit_sha, tree_entries, readme_path,
             "refs": [],
         })
 
-    # 3) 入口与主要导出（来自真实 code 观察）
+    # 3) 入口与主要导出：优先 AST 观察，回退从已采原文直接读出的声明
     exports = [c for c in (code_rows or [])
                if (c.get("kind") in ("export", "import")) ]
-    if exports:
+    if not exports and source_symbols:
+        lines = ["以下符号声明**直接从已采集的源文件正文读出**"
+                 "（本 Commit 未做 AST 结构分析，故按字面匹配）：", "",
+                 "| 名称 | 类型 | 导出方式 | 文件 | 行号 |",
+                 "|---|---|---|---|---|"]
+        for x in source_symbols[:40]:
+            lines.append(f"| `{x.get('name')}` | {x.get('kind')} | "
+                         f"{x.get('export_kind')} | `{x.get('path')}` | "
+                         f"{x.get('line')} |")
+        refs = []
+        for x in source_symbols[:40]:
+            d = (x.get("digest") or "")
+            if d:
+                refs.append({"kind": "blob", "digest": d,
+                             "path": x.get("path"), "line": x.get("line")})
+        secs.append({"section_id": "entrypoints", "heading": "主要导出与符号",
+                     "body": "\n".join(lines), "refs": refs})
+    elif exports:
         lines = ["以下导出/导入观察来自源码 AST 解析，"
                  "**只陈述声明存在，不推断运行行为**：", ""]
         lines.append("| 名称 | 类型 | 指向模块 | 行号 |")
@@ -223,9 +340,10 @@ def build_overview(*, repo_name, commit_sha, tree_entries, readme_path,
                               for c in exports[:30]]})
     else:
         secs.append({
-            "section_id": "entrypoints", "heading": "主要导出与模块指向",
-            "body": ("未分析。本 Commit 尚未做源码结构解析，"
-                     "因此没有可陈述的导出或入口；这不代表项目没有导出。"),
+            "section_id": "entrypoints", "heading": "主要导出与符号",
+            "body": ("未分析。本 Commit 既未做源码结构分析，"
+                     "也未采集到可解析的源文件正文；"
+                     "这不代表项目没有导出。"),
             "refs": [],
         })
 
@@ -315,7 +433,8 @@ def build_structure_doc(*, repo_name, commit_sha, tree_entries, coverage_note):
     return {"document_id": "structure", "title": "文件结构", "sections": secs}
 
 
-def build_deps_doc(*, repo_name, commit_sha, code_rows, manifest, manifest_path):
+def build_deps_doc(*, repo_name, commit_sha, code_rows, manifest, manifest_path,
+                   source_symbols=None):
     """模块与依赖。区分「已解析」「未解析」「未分析」。"""
     secs = []
     imports = []
@@ -343,10 +462,30 @@ def build_deps_doc(*, repo_name, commit_sha, code_rows, manifest, manifest_path)
                      "body": "\n".join(lines),
                      "refs": [{"kind": "source_fact", "fact_id": i["fact_id"]}
                               for i in imports[:60] if i.get("fact_id")]})
+    elif source_symbols:
+        lines = ["**从已采集源文件正文直接读出的模块指向**"
+                 "（本 Commit 未做 AST 结构解析，按字面匹配）：", "",
+                 "| 名称 | 关系 | 目标模块 | 文件 | 行号 |",
+                 "|---|---|---|---|---|"]
+        n = 0
+        for x in source_symbols:
+            if x.get("kind") not in ("re_export",):
+                continue
+            lines.append(f"| `{x.get('name')}` | {x.get('kind')} | "
+                         f"`{x.get('target') or '-'}` | `{x.get('path')}` | "
+                         f"{x.get('line')} |")
+            n += 1
+        if n == 0:
+            lines.append("| — | 未发现模块指向 | — | — | — |")
+        lines.append("")
+        lines.append("> 说明符能否落到真实文件由 resolver 决定；未解析不等于不存在。")
+        secs.append({"section_id": "imports", "heading": "内部模块指向",
+                     "body": "\n".join(lines), "refs": []})
     else:
         secs.append({
             "section_id": "imports", "heading": "内部模块指向",
-            "body": ("未分析。本 Commit 尚未做源码结构解析；"
+            "body": ("未分析。本 Commit 既未做源码结构解析，"
+                     "也未采集到可解析的源文件正文；"
                      "**这不代表项目没有依赖**。"),
             "refs": [],
         })
@@ -421,12 +560,22 @@ def build_claims_doc(*, repo_name, commit_sha, claims, verifications):
 
 
 def mine_project_knowledge(*, store, repository_id, commit_sha, tree_entries,
-                           code_rows, claims, verifications):
+                           code_rows, claims, verifications, data_root):
     """总入口：产出 documents + project 元信息。"""
-    texts = _blob_texts(store, repository_id)
+    texts, blob_meta = _blob_texts(store, repository_id, data_root)
     readme_path, readme_text = _readme_from_tree(texts, tree_entries)
     manifest_path, manifest = _manifest_from_tree(texts, tree_entries)
     readme_sections = parse_markdown(readme_text) if readme_text else []
+
+    # ★ 从已读原文抽符号（只在没有 AST 观察时作为回退证据）
+    source_symbols = []
+    for path, text in texts.items():
+        if not text:
+            continue
+        digest = (blob_meta.get(path) or {}).get("digest")
+        for sym in extract_symbols_from_source(path, text):
+            sym["digest"] = digest
+            source_symbols.append(sym)
 
     repo_name = None
     try:
@@ -449,7 +598,8 @@ def mine_project_knowledge(*, store, repository_id, commit_sha, tree_entries,
                        tree_entries=tree_entries, readme_path=readme_path,
                        readme_sections=readme_sections, manifest=manifest,
                        manifest_path=manifest_path, code_rows=code_rows,
-                       claims=claims, coverage_note=coverage_note),
+                       claims=claims, coverage_note=coverage_note,
+                       source_symbols=source_symbols),
         build_readme_doc(repo_name=repo_name, commit_sha=commit_sha,
                          readme_path=readme_path,
                          readme_sections=readme_sections),
@@ -458,7 +608,8 @@ def mine_project_knowledge(*, store, repository_id, commit_sha, tree_entries,
                             coverage_note=coverage_note),
         build_deps_doc(repo_name=repo_name, commit_sha=commit_sha,
                        code_rows=code_rows, manifest=manifest,
-                       manifest_path=manifest_path),
+                       manifest_path=manifest_path,
+                       source_symbols=source_symbols),
         build_claims_doc(repo_name=repo_name, commit_sha=commit_sha,
                          claims=claims, verifications=verifications),
     ]
@@ -472,6 +623,9 @@ def mine_project_knowledge(*, store, repository_id, commit_sha, tree_entries,
     return {
         "documents": docs,
         "project": {
+            "blobs_read": len(texts),
+            "symbols_from_source": len(source_symbols),
+            "blob_meta": blob_meta,
             "readme_path": readme_path,
             "readme_captured": bool(readme_text),
             "manifest_path": manifest_path,

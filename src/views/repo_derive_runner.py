@@ -102,7 +102,8 @@ def derive_one(*, repository_id, data_root, store=None, logger=None):
         mined = RM.mine_project_knowledge(
             store=store, repository_id=str(repository_id),
             commit_sha=commit_sha, tree_entries=tree_entries,
-            code_rows=code_rows, claims=claims, verifications=verifs)
+            code_rows=code_rows, claims=claims, verifications=verifs,
+            data_root=data_root)
 
         repo_name = None
         try:
