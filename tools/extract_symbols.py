@@ -92,20 +92,28 @@ def main(argv=None):
         raw = got["raw"]
 
         try:
-            tree, status, diags = TR.parse_bytes(raw, src["language"])
-            root = tree.root_node
-            # 行起点表：collect_symbols 需要 starts 计算 byte_range
-            starts = [0]
-            for i, b in enumerate(raw):
-                if b == 0x0A:
-                    starts.append(i + 1)
-            syms, exports, sym_diags = RULES.collect_symbols(
-                root, raw, starts=starts, language=src["language"])
-            parse_status = status
+            # ★ 用官方 parse_source：一次产出 symbols / imports / exports / evidence_ranges，
+            #   不要再手工拼 observation（会漏掉 imports 与 exports 的 evidence_ref）。
+            import js_ts_parser as JTP
+            obs = JTP.parse_source(
+                raw,
+                repository_id=str(a.repository_id),
+                commit_sha=src["commit_sha"],
+                file_path=src["file_path"],
+                git_blob_oid=src["git_blob_oid"],
+                content_asset_id=src["asset_id"],
+                content_sha256="sha256:" + src["content_sha256"],
+                provenance_level="OBSERVED",
+            )
+            syms = obs.get("observed_symbols") or []
+            report.setdefault("_observations", []).append(
+                (src["file_path"], obs))
         except Exception as exc:
             report["errors"].append({"file_path": src["file_path"],
                                      "error": "parse: %s" % exc})
             continue
+        parse_status = obs.get("status", "")
+        diags = {"has_error": parse_status != "EXTRACTED"}
 
         report["scanned"].append({
             "file_path": src["file_path"],
@@ -124,70 +132,34 @@ def main(argv=None):
     report["scanned_count"] = len(report["scanned"])
     report["symbol_count"] = len(report["symbols"])
 
-    if not a.dry_run and report["symbols"]:
+    if not a.dry_run and report.get("_observations"):
         import source_fact_ingest as SFI
         agg = {"written": [], "reused": [], "skipped": []}
-        # ★ ingest_source_facts 按「单文件一次 observation」设计，逐文件调用
-        for src in sources:
-            fsyms = [x for x in report["symbols"]
-                     if x["file_path"] == src["file_path"]]
-            if not fsyms:
+        for file_path, o in report["_observations"]:
+            if not (o.get("observed_symbols") or o.get("observed_imports")
+                    or o.get("observed_exports")):
                 continue
-            ev_ranges, obs_syms = [], []
-            for i, sym in enumerate(fsyms):
-                label = "sym%d" % i
-                ev_ranges.append({
-                    "label": label,
-                    "start_byte": sym["start_byte"], "end_byte": sym["end_byte"],
-                    "start_line": sym["start_line"], "end_line": sym["end_line"],
-                })
-                obs_syms.append({
-                    "symbol_kind": sym["symbol_kind"],
-                    "symbol_name": sym["symbol_name"],
-                    "qualified_name": sym["qualified_name"],
-                    "evidence_ref": label,
-                })
-            obs = {
-                "observation_id": "SL-OBS-%s-%s" % (a.repository_id,
-                                                    src["asset_id"].split("-")[-1]),
-                "repository_id": str(a.repository_id),
-                "commit_sha": src["commit_sha"],
-                "file_path": src["file_path"],
-                "git_blob_oid": src["git_blob_oid"],
-                "content_asset_id": src["asset_id"],
-                "content_sha256": "sha256:" + src["content_sha256"],
-                "parser_id": "tree-sitter-js-ts",
-                "parser_version": "0.26.0",
-                "language": src["language"],
-                "provenance_level": "OBSERVED",
-                "source_completeness": "COMPLETE",
-                "extraction_status": "EXTRACTED",
-                "source_snapshot_id": None,
-                "evidence_ranges": ev_ranges,
-                "observed_symbols": obs_syms,
-                "observed_imports": [],
-                "observed_exports": [],
-            }
             try:
-                r = SFI.ingest_source_facts(store, observation=obs,
+                r = SFI.ingest_source_facts(store, observation=o,
                                             source_snapshot_id=None)
                 for k in ("written", "reused", "skipped"):
                     agg[k].extend(r.get(k) or [])
                 report.setdefault("ingest_files", []).append({
-                    "file_path": src["file_path"],
+                    "file_path": file_path,
                     "written": len(r.get("written") or []),
                     "reused": len(r.get("reused") or []),
                     "skipped": len(r.get("skipped") or []),
                 })
             except Exception as exc:
                 report.setdefault("ingest_files", []).append({
-                    "file_path": src["file_path"], "error": str(exc)})
+                    "file_path": file_path, "error": str(exc)})
         report["ingest"] = {
             "written": len(agg["written"]),
             "reused": len(agg["reused"]),
             "skipped": len(agg["skipped"]),
-            "skip_samples": agg["skipped"][:3],
+            "skip_samples": agg["skipped"][:5],
         }
+        report.pop("_observations", None)
 
     print(json.dumps(report, ensure_ascii=False, indent=2, default=str))
     return 0
