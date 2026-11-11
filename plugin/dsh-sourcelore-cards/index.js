@@ -114,6 +114,17 @@ let PANEL_STATUS = null
             // ★ 文档正文由 card-data.documents 携带（derive 时由 repo_miner 生成）。
             //   若旧数据没有 documents，退回读取 .md 文件并按 ## 切章，保证不空手。
             let documents = (cardData && cardData.documents) || []
+            // ★ 归一化：派生视图里字段是 document_id，客户端按 id 取值。
+            //   这里补 id 别名，并保证 title/sections 一定存在，避免客户端空手。
+            documents = documents.map(function (d, i) {
+              const sid = d.document_id || d.id || ('doc' + i)
+              return Object.assign({}, d, {
+                id: sid,
+                document_id: sid,
+                title: d.title || sid,
+                sections: Array.isArray(d.sections) ? d.sections : [],
+              })
+            })
             if (!documents.length) {
               const mdFiles = fs.readdirSync(dir).filter((f) => f.endsWith('.md'))
               documents = mdFiles.map((f) => {
