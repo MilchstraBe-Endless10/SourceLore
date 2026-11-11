@@ -545,8 +545,11 @@ window.__ModuleLoader__.load({
   }
 
   exports.apply = apply;
-    // ★ 官方服务名：dockPanels（Tobs 内置「活动中心」「插件市场」用的同一个）
-    exports.inject = ["dockPanels"];
+    // ★★ 这里必须留空！2026-11-12 实证：
+    //   client 的 inject 同样会被宿主看到，声明客户端服务 dockPanels 会让插件永久
+    //   pending（waiting for service: dockPanels）→ 整个插件不挂载。
+    //   dockPanels 在 apply(ctx) 内部用 ctx.inject / ctx.get 取，不需要在这里声明。
+    exports.inject = [];
     return module.exports;
   },
 });
