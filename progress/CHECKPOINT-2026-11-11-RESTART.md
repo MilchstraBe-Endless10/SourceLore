@@ -65,3 +65,38 @@ id 校验 `/^[a-zA-Z0-9:@._-]{1,160}$/`，禁 `instance:` 前缀；`register()` 
 - 重启前端口 40475；重启后端口会变，从 `/proc/$(pgrep -f "dsh web")/environ` 的 DSH_WEB_URL 取
 - `@botharness/ui` 当前 1.6.1、md5 `1f71cba1c5fe3221d41110a1496cf7bd`（**官方原版，未打补丁**）
 - 插件 HTTP 路由无需 token；页面本身需要 token（日志里有 `?token=`）
+
+---
+
+## 状态更新（2026-11-12 00:03）
+
+重启完成，新端口 **44839**，DSH 启动于 23:58:46。
+
+### 已验证
+
+- 服务器返回的 client bundle **确实含** `exports.inject = ["dockPanels"]`
+  （`curl .../client.js&rev=845538ca7766 | grep 'inject ='` 有两处命中：
+   第 7 行是注释里的示例文字，第 528 行是真代码）
+- 插件目录是 pnpm **symlink**，指向
+  `SourceLore/plugin/dsh-sourcelore-cards` —— 加载的就是我改的那份
+- 磁盘上只有一份副本（find / 确认）
+- `index.js` mtime 23:55 < 启动时间 23:58:46，理论上应读到 `['dockPanels']`
+
+### 未解释的现象
+
+`/plugins/events` 的 graph 里仍是：
+```
+{"id":"dsh-sourcelore-cards","rev":"845538ca7766","inject":[]}
+```
+- `rev` 没变（一直是 845538ca7766，早于本次改动）
+- `inject` 仍是 `[]`
+
+推测：graph 的 inject/rev 可能是**启动时缓存的插件元数据**，
+不随 client.js 改动刷新；或 index.js 的 export 未被解析器识别。
+
+### 下一步（按序，别跳）
+
+1. 精确点 Bot 模式（左侧导航 y≈331，不是 367——365 那行是自动化任务）
+2. 看右侧是否出现「仓库知识卡片」面板
+3. 若没有：查 DSH 启动日志里有没有 `[sourcelore]` 相关 warn/error
+4. 若仍没有：改用 `ctx.get("dockPanels")` 直接取（不依赖 inject 声明）
