@@ -120,3 +120,27 @@ docs    : 5 篇，readme 14981B
 ```
 
 四项全部有真实数据，无一项是空壳或占位。
+
+
+---
+
+## 三仓库终态（02:41）
+
+```
+is-number      sym=  2  imp=  0  exp=  0  rel=NO_RELATIONS(0)
+is-plain-obj   sym=  4  imp=  0  exp=  2  rel=NO_RELATIONS(0)
+preact         sym=118  imp= 36  exp= 33  rel=RELATIONS_FOUND(10)
+```
+
+### 为什么前两个没有 relation —— 不是缺陷
+
+`is-number` 的 `index.js` 是单文件 411 B，`is-plain-obj` 的 `index.js` 是 344 B。
+两个都是**单文件库，本身没有内部模块依赖**。
+所以 `NO_RELATIONS` 是**如实反映事实**，不是能力缺失。
+（对照：preact 有 6 个已采集源文件互引，故得 10 条边。）
+
+### 同时修正了文档文案
+
+`src/views/repo_miner.py` 原写「本 Commit 未做 AST 结构解析，按字面匹配」—— 已过时。
+tree-sitter 接入后改为「tree-sitter 解析 + 相对路径解析；仅覆盖已采集文件」，
+避免文档自称能力和实际能力不一致。

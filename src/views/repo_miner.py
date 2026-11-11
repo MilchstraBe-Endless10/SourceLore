@@ -463,8 +463,11 @@ def build_deps_doc(*, repo_name, commit_sha, code_rows, manifest, manifest_path,
                      "refs": [{"kind": "source_fact", "fact_id": i["fact_id"]}
                               for i in imports[:60] if i.get("fact_id")]})
     elif source_symbols:
-        lines = ["**从已采集源文件正文直接读出的模块指向**"
-                 "（本 Commit 未做 AST 结构解析，按字面匹配）：", "",
+        # ★ 2026-11-12：tree-sitter 已接入（tools/extract_symbols.py 产出
+        #   source_structure_observation 与 static_module_resolution），
+        #   不再是「按字面匹配」。文案必须与事实一致。
+        lines = ["**从已采集源文件解析出的模块指向**"
+                 "（tree-sitter 解析 + 相对路径解析；仅覆盖已采集文件）：", "",
                  "| 名称 | 关系 | 目标模块 | 文件 | 行号 |",
                  "|---|---|---|---|---|"]
         n = 0
