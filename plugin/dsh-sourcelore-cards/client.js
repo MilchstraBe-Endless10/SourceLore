@@ -26,7 +26,7 @@ window.__ModuleLoader__.load({
   // ★ 目标：Bot 模式内的停靠面板。用官方 dockPanels 服务（见 progress/PLAN-DOCKPANEL.md）
   var ID = "dsh-sourcelore-cards";
   // ★ 每次改渲染逻辑就改这个值，用来强制 React 重建组件实例。
-  var BUILD = "2026-11-10-1030";
+  var BUILD = "2026-11-12-0305";
 
   var STATE = {
     SUPPORTED_SOURCE_CLAIM:    { zh: "已验证",  c: "#3ddc84", ring: "rgba(61,220,132,.32)" },
@@ -560,20 +560,39 @@ window.__ModuleLoader__.load({
           try { ctx.logger && ctx.logger.warn("[sourcelore] 注册失败: " + msg); } catch (e2) {}
         }
       }
-      // 注册成功后主动打开面板（幂等：失败也无妨）
-      try {
-        if (typeof reg.open === "function") {
-          var cur = null;
-          try { cur = typeof reg.opened === "function" ? reg.opened() : null; } catch (e) {}
-          var isOpen = false;
-          try { isOpen = Array.isArray(cur) && cur.indexOf(PANEL_ID) >= 0; } catch (e) {}
-          if (!isOpen) reg.open(PANEL_ID);
-        } else {
-        }
-      } catch (e) {
-        try { ctx.logger && ctx.logger.warn("[sourcelore] open 失败: " + (e && e.message)); } catch (e2) {}
-      }
+      // ★ 主动打开：registry.open(id) 内部是 `layout?.open(id)`，
+      //   而 layout 只在 Bot 面板挂载时由 attach() 注入（registry.available()）。
+      //   Bot 模式未挂载时调用会被静默丢弃 —— 必须轮询到 available() 为真再开。
+      openWhenReady();
+
     })();
+
+    // ★ 等 dock 布局真正挂载后再开面板（最多约 60 秒）
+    function openWhenReady() {
+      var n = 0;
+      function tick() {
+        n++;
+        var r = null;
+        try { r = ctx.get("dockPanels"); } catch (e) {}
+        if (r && typeof r.open === "function") {
+          var ready = false;
+          try { ready = typeof r.available === "function" ? r.available() : true; } catch (e) { ready = false; }
+          var isOpen = false;
+          try { isOpen = typeof r.isOpen === "function" ? r.isOpen(PANEL_ID) : false; } catch (e) {}
+          if (ready && !isOpen) {
+            try { r.open(PANEL_ID); } catch (e) {}
+            try { ctx.logger && ctx.logger.info("[sourcelore] panel opened after " + n + " ticks"); } catch (e) {}
+            // 再确认一次
+            setTimeout(function () {
+              try { if (typeof r.isOpen === "function" && !r.isOpen(PANEL_ID)) r.open(PANEL_ID); } catch (e) {}
+            }, 800);
+            return;
+          }
+        }
+        if (n < 240) setTimeout(tick, 250);
+      }
+      setTimeout(tick, 300);
+    }
 
     // 路径 1：注入回调（服务已就绪时走这条）
     try {

@@ -67,6 +67,7 @@ let PANEL_STATUS = null
         const url = new URL(req.url ?? '/', 'http://localhost')
         const path = url.pathname.replace(/\/+$/, '')
         const q = url.searchParams
+        const method = (req.method || 'GET').toUpperCase()
         const send = (code, obj) => {
           res.statusCode = code
           res.setHeader('content-type', 'application/json; charset=utf-8')
