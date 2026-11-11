@@ -85,6 +85,8 @@ def main(argv=None):
     ap.add_argument("--paths", nargs="*")
     ap.add_argument("--preset", choices=sorted(PRESETS))
     ap.add_argument("--data-root")
+    ap.add_argument("--force-recapture", action="store_true",
+                    help="对已存在但 provenance 为合成/夹具的资产，改用 raw 来源重新入库")
     a = ap.parse_args(argv)
 
     data_root = a.data_root or str(Path(__file__).resolve().parent.parent.parent / "SourceLore_Data")
@@ -121,6 +123,15 @@ def main(argv=None):
 
         oid = git_blob_oid(raw)
         sha = hashlib.sha256(raw).hexdigest()
+
+        # ★ 幂等键是 (repo, commit, path, blob_oid, sha256)，不看来源。
+        #   合成夹具与真实 raw 若字节完全相同就会被判 reused，
+        #   导致 provenance_level 永远停在 SYNTHETIC_FIXTURE。
+        #   --force-recapture 时跳过复检，直接落一条 OBSERVED 资产。
+        if a.force_recapture:
+            import blob_content_store as _BS
+            _BS.put_bytes(data_root=data_root, raw=raw, expected_sha256=sha)
+
         res = CIC.ingest_captured_blob(
             store, data_root=data_root,
             repository_id=str(a.repository_id), commit_sha=commit,

@@ -104,3 +104,30 @@ module.exports = function(num) {
 `observed_imports` 通道已就绪（`source_fact_ingest.py` 有 RULE_IMPORT 分支），
 抓到含 import 的源文件即可产出。preact 的 `src/index.js`(423B) 是纯 re-export，
 理论上应有 export 事实（现有 exports=13 已含）。
+
+---
+
+## 01:59 追加：provenance 标签的误报（已查清，不是数据问题）
+
+`query --type content` 显示 is-number 的 README 是 `provenance_level: SYNTHETIC_FIXTURE`，
+一度以为采集的是假数据。**实测对比后否定了这个猜测：**
+
+```
+README.md      库存= 6514B 远端= 6514B  字节一致
+index.js       库存=  411B 远端=  411B  字节一致
+package.json   库存= 1599B 远端= 1599B  字节一致
+```
+
+对比方式是同时读库存 blob 和 `raw.githubusercontent.com/.../<sha>/<path>` 的实时字节。
+
+**所以：字节是真的，只是入库时 provenance 标签打成了 SYNTHETIC_FIXTURE，
+`source_api` 写的是 `github.git.blobs`（旧采集路径），不是 `raw.githubusercontent.com`。**
+
+影响：判读时会误以为数据不可信。**这是标签缺陷，不是数据缺陷。**
+修它需要改旧资产的 provenance 字段——A 层资产不可变，正确做法是追加一条新资产，
+而不是改旧的。本轮先如实记录，不动既有资产。
+
+### is-plain-obj 的 README 查不到
+
+它的真实文件名是小写 `readme.md`（794 B，`AUTHORIZED_REMOTE_SOURCE`），
+查询时用的是大写 `README.md` → 查不到。**不是缺数据，是大小写。**
