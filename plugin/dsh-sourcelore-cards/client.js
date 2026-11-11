@@ -517,7 +517,9 @@ window.__ModuleLoader__.load({
           component: function () { return react.createElement(SourcelorePanel); },
         });
         done = true;
+        try { window.__sourcelorePanel__ = { id: PANEL_ID, via: viaLabel, build: BUILD }; } catch (e) {}
         try { ctx.logger && ctx.logger.info("[sourcelore] 面板已注册 via " + viaLabel + " BUILD=" + BUILD); } catch (e) {}
+        try { document.title = "SL-OK-" + viaLabel; } catch (e) {}
         return true;
       } catch (e) {
         try { ctx.logger && ctx.logger.warn("[sourcelore] register 失败(" + viaLabel + "): " + (e && e.message)); } catch (e2) {}
