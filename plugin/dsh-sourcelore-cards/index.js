@@ -59,6 +59,7 @@ export function apply(ctx) {
       return
     }
     const PREFIX = '/api/dsh-sourcelore-cards'
+let PANEL_STATUS = null
     webServer.register({
       kind: 'prefix',
       path: PREFIX,
@@ -146,6 +147,19 @@ export function apply(ctx) {
               documents,
               files: fs.readdirSync(dir).filter((f) => f.endsWith('.md')),
             })
+          }
+          if (path === `${PREFIX}/panelstatus`) {
+            // 客户端注册成功后 POST 上报，便于命令行验证
+            if (method === 'POST') {
+              let body = ''
+              req.on('data', (c) => { body += c })
+              req.on('end', () => {
+                PANEL_STATUS = { at: new Date().toISOString(), body }
+                return send(200, { ok: true })
+              })
+              return
+            }
+            return send(200, { ok: true, status: PANEL_STATUS })
           }
           if (path === `${PREFIX}/export`) {
             const vault = q.get('vault') || ''

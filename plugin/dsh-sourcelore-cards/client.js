@@ -500,7 +500,10 @@ window.__ModuleLoader__.load({
   var _dispose = null;
 
   function apply(ctx) {
-    if (!ctx || typeof ctx.get !== "function") return;
+    if (!ctx || typeof ctx.get !== "function") {
+      try { document.title = "SL-noctx-" + BUILD; } catch (e) {}
+      return;
+    }
     var done = false;
 
     function tryRegister(registry, viaLabel) {
@@ -520,12 +523,62 @@ window.__ModuleLoader__.load({
         try { window.__sourcelorePanel__ = { id: PANEL_ID, via: viaLabel, build: BUILD }; } catch (e) {}
         try { ctx.logger && ctx.logger.info("[sourcelore] 面板已注册 via " + viaLabel + " BUILD=" + BUILD); } catch (e) {}
         try { document.title = "SL-OK-" + viaLabel; } catch (e) {}
+        try {
+          fetch(api("/panelstatus"), { method: "POST", cache: "no-store",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ ok: true, via: viaLabel, build: BUILD,
+              panelId: PANEL_ID }) });
+        } catch (e) {}
         return true;
       } catch (e) {
         try { ctx.logger && ctx.logger.warn("[sourcelore] register 失败(" + viaLabel + "): " + (e && e.message)); } catch (e2) {}
         return false;
       }
     }
+
+    // 立即尝试注册（幂等：已注册则忽略）
+    (function () {
+      var reg = null;
+      try { reg = ctx.get("dockPanels"); } catch (e) {
+        
+        return;
+      }
+      if (!reg) {  return; }
+      if (typeof reg.register !== "function") {
+        
+        return;
+      }
+      try {
+        reg.register({
+          id: PANEL_ID, title: "仓库知识卡片", icon: "folder",
+          scope: "global", order: 520,
+          defaultPosition: { zone: "right" },
+          component: function () { return react.createElement(SourcelorePanel); },
+        });
+        
+      } catch (e) {
+        var msg = String(e && e.message || e);
+        if (msg.indexOf("duplicate") < 0) {
+          try { ctx.logger && ctx.logger.warn("[sourcelore] 注册失败: " + msg); } catch (e2) {}
+        }
+      }
+      // 注册成功后主动打开面板（幂等：失败也无妨）
+      try {
+        if (typeof reg.open === "function") {
+          var cur = null;
+          try { cur = typeof reg.opened === "function" ? reg.opened() : null; } catch (e) {}
+          var isOpen = false;
+          try { isOpen = Array.isArray(cur) && cur.indexOf(PANEL_ID) >= 0; } catch (e) {}
+          if (!isOpen) reg.open(PANEL_ID);
+          try { document.title = "SL-OPEN-ok cur=" + JSON.stringify(cur); } catch (e0) {}
+        } else {
+          try { document.title = "SL-noopen-fn keys=" + Object.keys(reg).join(","); } catch (e0) {}
+        }
+      } catch (e) {
+        try { document.title = "SL-openERR-" + (e && e.message); } catch (e0) {}
+        try { ctx.logger && ctx.logger.warn("[sourcelore] open 失败: " + (e && e.message)); } catch (e2) {}
+      }
+    })();
 
     // 路径 1：注入回调（服务已就绪时走这条）
     try {
