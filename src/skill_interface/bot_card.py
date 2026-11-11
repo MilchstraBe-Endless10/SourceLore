@@ -79,6 +79,12 @@ def render_bot_block(*, query_result, repo_name=None):
         }.get(state, f"状态 {state}")
         lines.append(f"△ {why}")
         lines.append("")
+        # ★ 源码结构未分析 ≠ 没有知识。claims/裁决是另一条独立资产，
+        #   已在库里就直接给出，不要因为结构分析缺失就报"回答不了"。
+        fallback = _render_claims_summary(q.get("repository_id"), q.get("claims"))
+        if fallback:
+            lines.append(fallback)
+            return "\n".join(lines)
         lines.append("· 未产出一事一议的结论 —— 知识库回答不了这个问题。")
         return "\n".join(lines)
 
@@ -146,3 +152,20 @@ def lookup_repo_name(store, repository_id):
     except Exception:
         return None
     return None
+
+
+def _render_claims_summary(repository_id, claims):
+    """把 claims 渲染成简明列表；没有 claims 时返回空串。
+
+    ★ 纯函数。claims 由调用方传入（通常来自 query --type claims）。
+    """
+    items = claims or []
+    if not items:
+        return ""
+    lines = ["**已有 %d 条裁决**（与源码结构分析无关）" % len(items), ""]
+    for c in items:
+        cid = c.get("claim_id") or c.get("finding_id") or ""
+        verdict = c.get("verdict_status") or c.get("review_status") or "-"
+        ev = len(c.get("evidence_refs") or [])
+        lines.append("- `%s` · %s · 证据 %d 条" % (str(cid)[-8:], verdict, ev))
+    return "\n".join(lines)

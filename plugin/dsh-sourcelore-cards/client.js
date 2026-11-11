@@ -25,6 +25,8 @@ window.__ModuleLoader__.load({
 
   // ★ 目标：Bot 模式内的停靠面板。用官方 dockPanels 服务（见 progress/PLAN-DOCKPANEL.md）
   var ID = "dsh-sourcelore-cards";
+  // ★ 每次改渲染逻辑就改这个值，用来强制 React 重建组件实例。
+  var BUILD = "2026-11-10-1030";
 
   var STATE = {
     SUPPORTED_SOURCE_CLAIM:    { zh: "已验证",  c: "#3ddc84", ring: "rgba(61,220,132,.32)" },
@@ -39,8 +41,12 @@ window.__ModuleLoader__.load({
   }
 
   function getJson(url) {
-    return fetch(url, { headers: { accept: "application/json" } })
-      .then(function (r) { return r.json(); });
+    // ★ no-store：实测浏览器会缓存住一次空响应，导致后续刷新永远 0 个仓库。
+    return fetch(url, { cache: "no-store", headers: { accept: "application/json" } })
+      .then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      });
   }
 
   var S = {
@@ -88,43 +94,182 @@ window.__ModuleLoader__.load({
       background: "rgba(127,127,127,.1)", color: "inherit",
     },
     empty: { opacity: ".6", padding: "28px 0", textAlign: "center" },
+    // ── 仓库知识卡片 ──
+    rcard: {
+      border: "1px solid rgba(128,128,128,.22)", borderRadius: "10px",
+      padding: "12px 14px", marginBottom: "10px",
+    },
+    rhead: { display: "flex", alignItems: "baseline", gap: "10px", flexWrap: "wrap" },
+    rtitle: { fontSize: "14.5px", fontWeight: "650", wordBreak: "break-all" },
+    rcommit: { fontSize: "10.5px", opacity: ".55", marginLeft: "auto" },
+    rscope: { fontSize: "10.5px", opacity: ".55", marginTop: "3px" },
+    rbadges: { display: "flex", gap: "6px", flexWrap: "wrap", marginTop: "8px" },
+    rtabs: { display: "flex", gap: "2px", marginTop: "10px",
+             borderBottom: "1px solid rgba(128,128,128,.18)" },
+    rtab: { padding: "4px 10px", fontSize: "11.5px", cursor: "pointer",
+            opacity: ".6", borderBottom: "2px solid transparent" },
+    rtabOn: { opacity: "1", fontWeight: "600", borderBottomColor: "#4b6fd6" },
+    rpane: { marginTop: "10px", maxHeight: "260px", overflowY: "auto" },
+    tree: { fontSize: "11.5px", fontFamily: "ui-monospace,Menlo,Consolas,monospace" },
+    sz: { opacity: ".45", fontSize: "10px" },
+    crow: { display: "flex", alignItems: "center", gap: "8px",
+            padding: "4px 0", fontSize: "11.5px",
+            borderBottom: "1px solid rgba(128,128,128,.1)" },
+    srow: { display: "flex", gap: "10px", padding: "3px 0", fontSize: "11.5px" },
+    sk: { opacity: ".55", minWidth: "76px", flex: "none" },
+    lim: { fontSize: "11.5px", padding: "6px 9px", marginBottom: "6px",
+           borderLeft: "3px solid #d97706", background: "rgba(217,119,6,.08)",
+           borderRadius: "0 5px 5px 0" },
   };
 
-  function StatusCard(props) {
+  // ══ 仓库知识卡片 ══════════════════════════════════════════════
+  //   数据来自宿主 /repocard → SourceLore_Data/派生视图/<repo>/<commit>/
+  //   的 card-data.json + code-graph.json，与项目文档同源。
+  var VERDICT = {
+    supported: { zh: "支持", c: "#16a34a" },
+    refuted: { zh: "反驳", c: "#dc2626" },
+    insufficient_evidence: { zh: "证据不足", c: "#d97706" },
+    unknown: { zh: "未裁决", c: "#9ca3af" },
+  };
+
+  function loadRepos(set) {
+    set({ status: "loading" });
+    getJson(api("/repositories")).then(function (r) {
+      var repos = (r && r.repositories) || [];
+      if (!repos.length) {
+        set({ status: "ok", cards: [], tabs: {},
+              diag: "repos=0 raw=" + JSON.stringify(r).slice(0, 160) });
+        return;
+      }
+      var done = [], remaining = repos.length, errs = [];
+      repos.forEach(function (rp) {
+        getJson(api("/repocard?repository_id=" + encodeURIComponent(rp.repository_id)))
+          .then(function (d) {
+            if (d && d.ok && d.card) done.push(d);
+            else errs.push(String(rp.repository_id) + ":" + String((d && d.error) || "NO_CARD"));
+          })
+          .catch(function (e) { errs.push(String(rp.repository_id) + ":" + String(e && e.message || e)); })
+          .then(function () {
+            remaining -= 1;
+            if (remaining === 0) {
+              done.sort(function (a, b) {
+                return String((a.card || {}).title || "")
+                  .localeCompare(String((b.card || {}).title || ""));
+              });
+              set({ status: "ok", cards: done, tabs: {}, errs: errs });
+            }
+          });
+      });
+    }).catch(function (e) {
+      set({ status: "failed", message: String(e.message || e) });
+    });
+  }
+
+  function Badge(h, k, n) {
+    var v = VERDICT[k] || VERDICT.unknown;
+    return h("span", {
+      key: k,
+      style: Object.assign({}, S.badge, {
+        color: v.c, border: "1px solid " + v.c,
+        background: "transparent", marginLeft: 0,
+      }),
+    }, v.zh + " " + n);
+  }
+
+  function TreePane(h, graph) {
+    var rows = ((graph && graph.nodes) || []).filter(function (n) {
+      return n.node_type === "file" || n.node_type === "directory";
+    }).sort(function (a, b) {
+      return String("/" + a.path).localeCompare(String("/" + b.path));
+    });
+    if (!rows.length) return h("div", { style: S.sub }, "无条目");
+    return h("div", { style: S.tree }, rows.map(function (n) {
+      var isDir = n.node_type === "directory";
+      var name = String(n.path || "").split("/").pop();
+      var depth = String(n.path || "").split("/").length - 1;
+      return h("div", {
+        key: n.id,
+        style: { paddingLeft: depth * 14 + "px",
+                 color: isDir ? "#4b6fd6" : "inherit",
+                 fontWeight: isDir ? 600 : 400 },
+      }, (isDir ? "▸ " : "· ") + name,
+        (!isDir && n.size != null) ? h("span", { style: S.sz }, " " + n.size + " B") : null);
+    }));
+  }
+
+  function ClaimsPane(h, card) {
+    var cs = (card && card.claims) || [];
+    if (!cs.length) return h("div", { style: S.sub }, "本仓库暂无已登记命题。");
+    return h("div", null, cs.map(function (c) {
+      var v = VERDICT[c.verdict] || VERDICT.unknown;
+      return h("div", { key: c.claim_id, style: S.crow },
+        h("span", { style: Object.assign({}, S.dot, { background: v.c }) }),
+        h("span", { style: { flex: "1", wordBreak: "break-all" } },
+          String(c.claim_type || "-") + " · " + String(c.path || "-")),
+        h("span", { style: { color: "#6b7280", flex: "none" } }, v.zh),
+        h("span", { style: { color: "#9ca3af", flex: "none", marginLeft: "8px" } },
+          "证据 " + (c.fact_count || 0)));
+    }));
+  }
+
+  function StatPane(h, card) {
+    var g = (card && card.graph) || {};
+    var nt = g.node_types || {}, et = g.edge_types || {};
+    function row(k, v) {
+      return h("div", { key: k, style: S.srow },
+        h("span", { style: S.sk }, k),
+        h("span", { style: { wordBreak: "break-all" } }, v));
+    }
+    function fmt(o) {
+      var ks = Object.keys(o).sort();
+      return ks.length ? ks.map(function (k) { return k + " " + o[k]; }).join(" · ") : "-";
+    }
+    return h("div", null,
+      row("节点", String(g.node_count || 0)),
+      row("边", String(g.edge_count || 0)),
+      row("节点构成", fmt(nt)),
+      row("边构成", fmt(et)),
+      row("树完整度", String((card.completeness || {}).tree_status_label || "-")),
+      row("图谱摘要", String(g.graph_digest || "").slice(0, 24)));
+  }
+
+  function RepoCard(props) {
     var h = props.h;
-    var item = props.item;
-    var st = STATE[item.state] || STATE.NOT_ANALYZED;
-    var open = props.open;
-    var hover = props.hover;
-    var style = Object.assign({}, S.card, hover ? S.cardHover : null);
-    var left = {
-      position: "absolute", left: 0, top: 0, bottom: 0, width: "3px",
-      borderRadius: "11px 0 0 11px", background: st.c,
-    };
-    return h("div", {
-      style: style,
-      onClick: props.onToggle,
-      onMouseEnter: props.onHover,
-      onMouseLeave: props.onLeave,
-      title: item.name,
-    },
-      h("div", { style: left }),
-      h("div", { style: S.name }, item.name),
-      h("div", { style: S.meta },
-        h("span", { style: Object.assign({}, S.dot, { background: st.c }) }),
-        h("span", null, item.kind || ""),
-        h("span", null, item.line ? "L" + item.line : ""),
-        h("span", {
-          style: Object.assign({}, S.badge, {
-            color: st.c, background: st.ring, border: "1px solid " + st.c,
-          }),
-        }, st.zh)),
-      open ? h("div", { style: Object.assign({}, S.links, { display: "block" }) },
-        h("div", null, "↗ 仓库 ", props.repo),
-        h("div", null, "↗ 文件 " + (props.file || "-")),
-        h("div", null, "↗ claim ..." + String(item.claim_id || "").slice(-8))
-      ) : null
-    );
+    // ★ Tab 状态放在卡片自己身上：父层 setState 一旦被当作整体替换，
+    //   会把 cards 一起清掉（实测：点一次 tab 变 0 个仓库）。卡片自治最稳。
+    var ts = react.useState("tree");
+    var tab = ts[0], setTab = ts[1];
+    var d = props.data || {};
+    var c = d.card || {};
+    var g = d.graph || {};
+    var vs = c.verdict_summary || {};
+    var tabs = [["tree", "文件结构"], ["claims", "知识主张"],
+                ["stat", "图谱统计"], ["limit", "限制"]];
+    var lims = c.limitations || [];
+
+    return h("div", { style: S.rcard },
+      h("div", { style: S.rhead },
+        h("span", { style: S.rtitle }, String(c.title || d.repository_id || "-")),
+        h("span", { style: S.rcommit }, String(d.commit_sha || "").slice(0, 10))),
+      h("div", { style: S.rscope }, "固定 Commit · 不代表仓库当前最新状态"),
+      h("div", { style: S.rbadges },
+        Object.keys(vs).map(function (k) { return Badge(h, k, vs[k]); })),
+      h("div", { style: S.rtabs }, tabs.map(function (t) {
+        return h("span", {
+          key: t[0],
+          style: Object.assign({}, S.rtab, tab === t[0] ? S.rtabOn : null),
+          onClick: function () { setTab(t[0]); },
+        }, t[1]);
+      })),
+      h("div", { style: S.rpane },
+        tab === "tree" ? TreePane(h, g)
+          : tab === "claims" ? ClaimsPane(h, c)
+          : tab === "stat" ? StatPane(h, c)
+          : (lims.length
+              ? h("div", null, lims.map(function (x, i) {
+                  return h("div", { key: String(i), style: S.lim }, String(x));
+                }))
+              : h("div", { style: S.sub }, "无已知限制。"))));
   }
 
   function Panel(props) {
@@ -133,99 +278,40 @@ window.__ModuleLoader__.load({
     var set = props.set;
 
     if (st.status === "loading") {
-      return h("div", { style: S.wrap }, h("div", { style: S.sub }, "正在读取 SourceLore 知识库…"));
+      return h("div", { style: S.wrap },
+        h("div", { style: S.sub }, "正在读取 SourceLore 知识库…"));
     }
     if (st.status === "failed") {
       return h("div", { style: S.wrap },
-        h("div", { style: S.title }, "知识卡片"),
+        h("div", { style: S.title }, "仓库知识卡片"),
         h("div", { style: S.sub }, "读取失败：" + st.message));
     }
 
-    var items = st.items || [];
+    var cards = st.cards || [];
     return h("div", { style: S.wrap },
       h("div", { style: S.head },
-        h("span", { style: S.title }, "源码知识卡片"),
-        h("span", { style: S.repo }, st.repo || "-"),
-        h("span", { style: S.sub }, items.length + " 张")),
-      h("div", { style: S.sub },
-        st.commit ? "commit " + String(st.commit).slice(0, 10) : "",
-        st.file ? " · " + st.file : ""),
-
-      items.length === 0
-        ? h("div", { style: S.empty }, "这个文件还没有可展示的裁决")
-        : h("div", { style: S.wall }, items.map(function (it, i) {
-            return h(StatusCard, {
-              key: String(i), h: h, item: it, repo: st.repo, file: st.file,
-              open: st.openIdx === i, hover: st.hoverIdx === i,
-              onToggle: function () { set({ openIdx: st.openIdx === i ? -1 : i }); },
-              onHover: function () { set({ hoverIdx: i }); },
-              onLeave: function () { set({ hoverIdx: -1 }); },
-            });
+        h("span", { style: S.title }, "仓库知识卡片"),
+        h("span", { style: S.sub }, cards.length + " 个仓库")),
+      cards.length === 0
+        ? h("div", { style: S.empty },
+            "知识库里还没有已生成的仓库卡片",)
+        : h("div", null, cards.map(function (d, i) {
+            return h(RepoCard, { key: String(i), h: h, data: d });
           })),
-
+      st.diag ? h("div", { style: S.sub }, "DIAG: " + st.diag) : null,
+      (st.errs && st.errs.length)
+        ? h("div", { style: S.sub }, "诊断：" + st.errs.join(" · "))
+        : null,
       h("div", { style: S.foot },
-        h("button", {
-          style: S.btn,
-          onClick: function () {
-            var vault = window.prompt("Obsidian vault 目录：");
-            if (!vault) return;
-            getJson(api("/export?repository_id=" + encodeURIComponent(st.rid)
-              + (st.commit ? "&commit=" + st.commit : "")
-              + (st.file ? "&path=" + encodeURIComponent(st.file) : "")
-              + "&vault=" + encodeURIComponent(vault)))
-              .then(function (o) {
-                var r = o.obsidian || {};
-                set({ note: "已导出 " + (r.notes_written || 0) + " 篇笔记到 " + vault });
-              });
-          },
-        }, "导出到 Obsidian"),
-        h("button", {
-          style: S.btn,
-          onClick: function () {
-            set({ status: "loading" });
-            loadFirst(set);
-          },
-        }, "刷新"),
-        st.note ? h("span", { style: S.sub }, st.note) : null)
-    );
+        h("button", { style: S.btn, onClick: function () { loadRepos(set); } }, "刷新"),
+        h("span", { style: S.sub }, "与项目文档同源 · 派生视图")));
   }
-
-  function loadFirst(set) {
-    getJson(api("/repositories")).then(function (r) {
-      var first = (r.repositories || [])[0];
-      if (!first) { set({ status: "ok", items: [], repo: "-" }); return; }
-      getJson(api("/card?repository_id=" + encodeURIComponent(first.repository_id)))
-        .then(function (c) {
-          var items = (c.claims || []).map(function (x) {
-            var s = x.subject || {};
-            return {
-              name: s.qualified_name || s.exported_name || s.module_name || "?",
-              kind: x.kind, state: x.display_level,
-              line: x.start_line, claim_id: x.claim_id,
-            };
-          });
-          set({
-            status: "ok", items: items, openIdx: -1, hoverIdx: -1,
-            repo: c.repository || first.repository || String(first.repository_id),
-            rid: first.repository_id, commit: c.commit_sha, file: c.file_path,
-          });
-        })
-        .catch(function (e) { set({ status: "failed", message: String(e.message || e) }); });
-    }).catch(function (e) { set({ status: "failed", message: String(e.message || e) }); });
-  }
-
-  // ── Bot 模式停靠面板 ──────────────────────────────────────────────
-  // 用 @botharness/ui 公开导出的 ./panels 契约：
-  //   DockPanelRegistry.register(panel: DockPanel): () => void
-  // Bot 运行时 ctx.provide("dockPanels", dockPanels) → 插件可 ctx.inject(['dockPanels'])
-  // 渲染确认：dockPanelList = registeredDockPanels ?? dockEntryPanels
-  // 这条路**完全不改 @botharness/ui 源码**，升级包不会丢补丁，也不影响 Bot 原有界面。
 
   function SourcelorePanel() {
     var h = react.createElement;
-    var st = react.useState({ status: "loading", items: [], openIdx: -1, hoverIdx: -1 });
+    var st = react.useState({ status: "loading", cards: [], tabs: {} });
     var s = st[0], set = st[1];
-    react.useEffect(function () { loadFirst(set); }, []);
+    react.useEffect(function () { loadRepos(set); }, []);
     return h(Panel, { h: h, state: s, set: set });
   }
 
@@ -242,8 +328,19 @@ window.__ModuleLoader__.load({
   function apply() {
     var list = slotList();
     if (!list) return;
-    if (list.some(function (x) { return x && x.id === ID; })) return;
-    list.push({ id: ID, component: SourcelorePanel });
+    // ★ 先删掉本插件留下的**所有**旧条目（含旧版本号），再 push 新条目。
+    //   两个实测教训：
+    //   1) id 不变 → BhHomeSlot 用 "bh-home-"+id 作 React key，React 复用旧实例；
+    //   2) 只按 ID 匹配替换 → 旧条目 id 是 ID、新条目是 ID:vBUILD，两者不相等，
+    //      结果新旧并存，界面上看的是旧的那个（改了代码却毫无反应）。
+    var entryId = ID + ":v" + BUILD;
+    for (var i = list.length - 1; i >= 0; i--) {
+      var it = list[i];
+      if (it && typeof it.id === "string" && it.id.indexOf(ID) === 0) {
+        list.splice(i, 1);
+      }
+    }
+    list.push({ id: entryId, component: SourcelorePanel });
     try { window.dispatchEvent(new window.Event("bh-home-slot")); } catch (e) {}
   }
 

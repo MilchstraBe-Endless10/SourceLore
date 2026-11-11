@@ -339,9 +339,27 @@ def _dispatch(cmd, args):
                     _ks.close()
                 except Exception:
                     _nm = None
+                # ★ 源码结构未分析时，claims 仍然可查 —— 一并喂给渲染器做回退。
+                _claims = []
+                try:
+                    import query as _QY
+                    _cr = _QY.run_query(
+                        repository_id=args.repository_id,
+                        commit_sha=getattr(args, "commit", None),
+                        qtype="claims",
+                        max_results=200, data_root=root or _DDR)
+                    _claims = _cr.get("findings") or _cr.get("claims") or []
+                except Exception:
+                    _claims = []
+                _qr = dict(q) if isinstance(q, dict) else q
+                try:
+                    _qr["claims"] = _claims
+                except Exception:
+                    pass
                 _out = {"format": "bot_block", "repository": _nm,
-                        "text": BCARD.render_bot_block(query_result=q,
+                        "text": BCARD.render_bot_block(query_result=_qr,
                                                        repo_name=_nm),
+                        "claims_count": len(_claims),
                         "network_requests": 0}
                 # ★ 可选：同步写进 Obsidian 库（双向链接笔记）
                 _vault = getattr(args, "vault", None)

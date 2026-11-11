@@ -73,6 +73,40 @@ export function apply(ctx) {
             const r = await runCli(args)
             return send(200, r.ok ? r.data : { ok: false, error: r.error })
           }
+          // ★ 仓库知识卡片：直接读派生视图（与项目文档同一批数据）
+          if (path === `${PREFIX}/repocard`) {
+            const rid = q.get('repository_id') || ''
+            if (!rid) return send(400, { ok: false, error: 'REPOSITORY_ID_REQUIRED' })
+            const fs = await import('node:fs')
+            const root = process.env.SOURCELORE_DATA_ROOT
+              || '/mnt/Server_Data_Center/Team_Flie(团队文件)/GitHub_Knowledge_Base(Gihub知识库)/SourceLore_Data'
+            const base = `${root}/派生视图/${rid}`
+            if (!fs.existsSync(base)) {
+              return send(200, { ok: false, error: 'NO_DERIVED_VIEW', repository_id: rid })
+            }
+            // 取最新 commit 目录（有 card-data.json 的）
+            const commits = fs.readdirSync(base).filter((d) => {
+              try { return fs.statSync(`${base}/${d}`).isDirectory() } catch { return false }
+            })
+            let picked = null
+            for (const c of commits.sort().reverse()) {
+              if (fs.existsSync(`${base}/${c}/card-data.json`)) { picked = c; break }
+            }
+            if (!picked) return send(200, { ok: false, error: 'NO_CARD_DATA', repository_id: rid })
+            const dir = `${base}/${picked}`
+            const read = (n) => {
+              try { return JSON.parse(fs.readFileSync(`${dir}/${n}`, 'utf8')) }
+              catch { return null }
+            }
+            return send(200, {
+              ok: true,
+              repository_id: rid,
+              commit_sha: picked,
+              card: read('card-data.json'),
+              graph: read('code-graph.json'),
+              files: fs.readdirSync(dir).filter((f) => f.endsWith('.md')),
+            })
+          }
           if (path === `${PREFIX}/export`) {
             const vault = q.get('vault') || ''
             if (!vault) return send(400, { ok: false, error: 'VAULT_REQUIRED' })
