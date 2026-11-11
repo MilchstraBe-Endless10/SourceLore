@@ -501,7 +501,6 @@ window.__ModuleLoader__.load({
 
   function apply(ctx) {
     if (!ctx || typeof ctx.get !== "function") {
-      try { document.title = "SL-noctx-" + BUILD; } catch (e) {}
       return;
     }
     var done = false;
@@ -522,7 +521,6 @@ window.__ModuleLoader__.load({
         done = true;
         try { window.__sourcelorePanel__ = { id: PANEL_ID, via: viaLabel, build: BUILD }; } catch (e) {}
         try { ctx.logger && ctx.logger.info("[sourcelore] 面板已注册 via " + viaLabel + " BUILD=" + BUILD); } catch (e) {}
-        try { document.title = "SL-OK-" + viaLabel; } catch (e) {}
         try {
           fetch(api("/panelstatus"), { method: "POST", cache: "no-store",
             headers: { "content-type": "application/json" },
@@ -570,12 +568,9 @@ window.__ModuleLoader__.load({
           var isOpen = false;
           try { isOpen = Array.isArray(cur) && cur.indexOf(PANEL_ID) >= 0; } catch (e) {}
           if (!isOpen) reg.open(PANEL_ID);
-          try { document.title = "SL-OPEN-ok cur=" + JSON.stringify(cur); } catch (e0) {}
         } else {
-          try { document.title = "SL-noopen-fn keys=" + Object.keys(reg).join(","); } catch (e0) {}
         }
       } catch (e) {
-        try { document.title = "SL-openERR-" + (e && e.message); } catch (e0) {}
         try { ctx.logger && ctx.logger.warn("[sourcelore] open 失败: " + (e && e.message)); } catch (e2) {}
       }
     })();
