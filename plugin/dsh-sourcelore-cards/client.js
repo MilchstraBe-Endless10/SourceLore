@@ -425,6 +425,19 @@ window.__ModuleLoader__.load({
               : h("div", { style: S.sub }, "无已知限制。"))));
   }
 
+  // ★ 错误边界：本卡片任何异常都不得冒泡到 Bot 主面板（否则整个 Welcome 白屏）
+  // ★ 极简安全壳：不依赖 react hooks、不依赖任何 S（样式表）以外的对象，
+  //   确保即使内部逻辑全崩，Bot 主面板也不会跟着白屏。
+  function SafePanel(props) {
+    try {
+      return Panel(props);
+    } catch (e) {
+      return react.createElement("div", {
+        style: { padding: "16px", fontSize: "12px", color: "#c0392b" },
+      }, "SourceLore 渲染异常：" + String(e && e.message || e));
+    }
+  }
+
   function Panel(props) {
     var h = props.h;
     var st = props.state;
@@ -493,7 +506,7 @@ window.__ModuleLoader__.load({
         list.splice(i, 1);
       }
     }
-    list.push({ id: entryId, component: SourcelorePanel });
+    list.push({ id: entryId, component: SafePanel });
     try { window.dispatchEvent(new window.Event("bh-home-slot")); } catch (e) {}
   }
 
