@@ -98,12 +98,41 @@ export function apply(ctx) {
               try { return JSON.parse(fs.readFileSync(`${dir}/${n}`, 'utf8')) }
               catch { return null }
             }
+            const cardData = read('card-data.json')
+            // ★ 文档正文由 card-data.documents 携带（derive 时由 repo_miner 生成）。
+            //   若旧数据没有 documents，退回读取 .md 文件并按 ## 切章，保证不空手。
+            let documents = (cardData && cardData.documents) || []
+            if (!documents.length) {
+              const mdFiles = fs.readdirSync(dir).filter((f) => f.endsWith('.md'))
+              documents = mdFiles.map((f) => {
+                let raw = ''
+                try { raw = fs.readFileSync(`${dir}/${f}`, 'utf8') } catch { raw = '' }
+                const secs = []
+                let cur = { section_id: 'head', heading: f, body: [] }
+                for (const ln of raw.split('\n')) {
+                  const m = ln.match(/^##\s+(.*)$/)
+                  if (m) {
+                    if (cur.body.length || cur.heading !== f) secs.push({
+                      section_id: cur.section_id, heading: cur.heading,
+                      body: cur.body.join('\n').trim(), refs: [],
+                    })
+                    cur = { section_id: 's' + secs.length, heading: m[1], body: [] }
+                  } else cur.body.push(ln)
+                }
+                if (cur.body.length) secs.push({
+                  section_id: cur.section_id, heading: cur.heading,
+                  body: cur.body.join('\n').trim(), refs: [],
+                })
+                return { document_id: f.replace(/\.md$/, ''), title: f, sections: secs }
+              })
+            }
             return send(200, {
               ok: true,
               repository_id: rid,
               commit_sha: picked,
-              card: read('card-data.json'),
+              card: cardData,
               graph: read('code-graph.json'),
+              documents,
               files: fs.readdirSync(dir).filter((f) => f.endsWith('.md')),
             })
           }

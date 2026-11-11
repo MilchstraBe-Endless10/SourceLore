@@ -117,6 +117,35 @@ window.__ModuleLoader__.load({
             borderBottom: "1px solid rgba(128,128,128,.1)" },
     srow: { display: "flex", gap: "10px", padding: "3px 0", fontSize: "11.5px" },
     sk: { opacity: ".55", minWidth: "76px", flex: "none" },
+    // ── 项目文档 ──
+    docbar: { display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "10px" },
+    docchip: { padding: "3px 10px", fontSize: "11.5px", cursor: "pointer",
+               border: "1px solid rgba(128,128,128,.28)", borderRadius: "999px",
+               opacity: ".72" },
+    docchipOn: { opacity: "1", fontWeight: "600", borderColor: "#4b6fd6",
+                 color: "#4b6fd6" },
+    seclist: { display: "flex", gap: "4px", flexWrap: "wrap", marginBottom: "8px",
+               paddingBottom: "8px", borderBottom: "1px solid rgba(128,128,128,.14)" },
+    secitem: { padding: "2px 8px", fontSize: "11px", cursor: "pointer",
+               borderRadius: "5px", opacity: ".62" },
+    secitemOn: { opacity: "1", background: "rgba(75,111,214,.14)", fontWeight: "600" },
+    docbody: { maxHeight: "420px", overflowY: "auto", paddingRight: "6px" },
+    docH: { fontSize: "13px", fontWeight: "650", margin: "10px 0 6px" },
+    docP: { fontSize: "12.5px", lineHeight: "1.65", margin: "6px 0",
+            wordBreak: "break-word" },
+    docCode: { fontSize: "11.5px", lineHeight: "1.5", padding: "8px 10px",
+               background: "rgba(128,128,128,.1)", borderRadius: "6px",
+               overflowX: "auto", margin: "8px 0",
+               fontFamily: "ui-monospace,Menlo,Consolas,monospace" },
+    docTable: { width: "100%", borderCollapse: "collapse", fontSize: "11.5px",
+                margin: "8px 0" },
+    docCell: { padding: "4px 8px", borderBottom: "1px solid rgba(128,128,128,.16)",
+               textAlign: "left", wordBreak: "break-all" },
+    docList: { fontSize: "12.5px", lineHeight: "1.6", margin: "6px 0",
+               paddingLeft: "20px" },
+    docQuote: { fontSize: "12px", padding: "6px 10px", margin: "8px 0",
+                borderLeft: "3px solid #4b6fd6",
+                background: "rgba(75,111,214,.07)", borderRadius: "0 5px 5px 0" },
     lim: { fontSize: "11.5px", padding: "6px 9px", marginBottom: "6px",
            borderLeft: "3px solid #d97706", background: "rgba(217,119,6,.08)",
            borderRadius: "0 5px 5px 0" },
@@ -233,18 +262,141 @@ window.__ModuleLoader__.load({
       row("图谱摘要", String(g.graph_digest || "").slice(0, 24)));
   }
 
+  // ★ 项目知识文档面板：真正渲染正文，不是文件名清单
+  function DocPane(h, docs, st, setSelDoc) {
+    if (!docs || !docs.length) {
+      return h("div", { style: S.sub }, "本仓库暂无已生成的项目文档。");
+    }
+    var cur = docs[st.selDocIdx || 0] || docs[0];
+    var secs = cur.sections || [];
+    return h("div", null,
+      // 文档选择条
+      h("div", { style: S.docbar },
+        docs.map(function (d, i) {
+          var on = (st.selDocIdx || 0) === i;
+          return h("span", {
+            key: d.document_id || String(i),
+            style: Object.assign({}, S.docchip, on ? S.docchipOn : null),
+            onClick: function () { setSelDoc(i); },
+          }, String(d.title || d.document_id || "-"));
+        })),
+      // 章节导航
+      secs.length > 1
+        ? h("div", { style: S.seclist },
+            secs.map(function (sec, i) {
+              var on = (st.selSecIdx || 0) === i;
+              return h("div", {
+                key: sec.section_id || String(i),
+                style: Object.assign({}, S.secitem, on ? S.secitemOn : null),
+                onClick: function () { setSelDoc(st.selDocIdx || 0, i); },
+              }, String(sec.heading || ""));
+            }))
+        : null,
+      // 正文
+      h("div", { style: S.docbody },
+        secs.length
+          ? renderSections(h, secs, st.selSecIdx || 0)
+          : h("div", { style: S.sub }, "该文档暂无章节内容。")));
+  }
+
+  // 极简 Markdown 渲染：标题/表格/列表/代码块/引用
+  function renderSections(h, secs, only) {
+    var picked = (only >= 0 && only < secs.length) ? [secs[only]] : secs;
+    var out = [];
+    picked.forEach(function (sec, si) {
+      out.push(h("div", { key: "h" + si, style: S.docH }, String(sec.heading || "")));
+      var lines = String(sec.body || "").split("\n");
+      var i = 0, buf = [];
+      function flushPara() {
+        if (!buf.length) return;
+        out.push(h("div", { key: "p" + si + "-" + out.length, style: S.docP },
+          buf.join(" ")));
+        buf = [];
+      }
+      while (i < lines.length) {
+        var ln = lines[i];
+        if (/^```/.test(ln)) {
+          flushPara();
+          var code = [];
+          i++;
+          while (i < lines.length && !/^```/.test(lines[i])) { code.push(lines[i]); i++; }
+          out.push(h("pre", { key: "c" + si + "-" + out.length, style: S.docCode },
+            code.join("\n")));
+          i++;
+          continue;
+        }
+        if (/^\|.*\|\s*$/.test(ln)) {
+          flushPara();
+          var rows = [];
+          while (i < lines.length && /^\|.*\|\s*$/.test(lines[i])) {
+            var cells = lines[i].split("|").slice(1, -1)
+              .map(function (x) { return x.trim(); });
+            if (!/^[-: ]+$/.test(cells.join(""))) rows.push(cells);
+            i++;
+          }
+          out.push(h("table", { key: "t" + si + "-" + out.length, style: S.docTable },
+            h("tbody", null, rows.map(function (r, ri) {
+              return h("tr", { key: String(ri) }, r.map(function (c2, ci) {
+                return h(ri === 0 ? "th" : "td",
+                  { key: String(ci), style: S.docCell }, String(c2));
+              }));
+            }))));
+          continue;
+        }
+        if (/^\s*[-*]\s+/.test(ln) || /^\s*\d+\.\s+/.test(ln)) {
+          flushPara();
+          var items = [];
+          while (i < lines.length &&
+                 (/^\s*[-*]\s+/.test(lines[i]) || /^\s*\d+\.\s+/.test(lines[i]))) {
+            items.push(lines[i].replace(/^\s*([-*]|\d+\.)\s+/, ""));
+            i++;
+          }
+          out.push(h("ul", { key: "u" + si + "-" + out.length, style: S.docList },
+            items.map(function (it, ii) {
+              return h("li", { key: String(ii) }, String(it));
+            })));
+          continue;
+        }
+        if (/^>\s?/.test(ln)) {
+          flushPara();
+          out.push(h("div", { key: "q" + si + "-" + out.length, style: S.docQuote },
+            ln.replace(/^>\s?/, "")));
+          i++;
+          continue;
+        }
+        if (!ln.trim()) { flushPara(); i++; continue; }
+        buf.push(ln.trim());
+        i++;
+      }
+      flushPara();
+    });
+    return out;
+  }
+
   function RepoCard(props) {
     var h = props.h;
     // ★ Tab 状态放在卡片自己身上：父层 setState 一旦被当作整体替换，
     //   会把 cards 一起清掉（实测：点一次 tab 变 0 个仓库）。卡片自治最稳。
-    var ts = react.useState("tree");
+    var docs = d.documents || [];
+    var ts = react.useState(docs.length ? "docs" : "tree");
     var tab = ts[0], setTab = ts[1];
+    // ★ 文档/Tab 状态放在卡片自身，父层不参与（避免父 setState 覆写 cards）
+    var ds = react.useState({ selDocIdx: 0, selSecIdx: 0 });
+    var dst = ds[0], dset = ds[1];
+    function setSelDoc(di, si) {
+      dset({
+        selDocIdx: di,
+        selSecIdx: (si === undefined) ? 0 : si,
+      });
+    }
     var d = props.data || {};
     var c = d.card || {};
     var g = d.graph || {};
     var vs = c.verdict_summary || {};
-    var tabs = [["tree", "文件结构"], ["claims", "知识主张"],
-                ["stat", "图谱统计"], ["limit", "限制"]];
+    var tabs = [];
+    if (docs.length) tabs.push(["docs", "项目文档"]);
+    tabs.push(["tree", "文件结构"], ["claims", "知识主张"],
+              ["stat", "图谱统计"], ["limit", "限制"]);
     var lims = c.limitations || [];
 
     return h("div", { style: S.rcard },
@@ -262,7 +414,8 @@ window.__ModuleLoader__.load({
         }, t[1]);
       })),
       h("div", { style: S.rpane },
-        tab === "tree" ? TreePane(h, g)
+        tab === "docs" ? DocPane(h, docs, dst, setSelDoc)
+          : tab === "tree" ? TreePane(h, g)
           : tab === "claims" ? ClaimsPane(h, c)
           : tab === "stat" ? StatPane(h, c)
           : (lims.length
