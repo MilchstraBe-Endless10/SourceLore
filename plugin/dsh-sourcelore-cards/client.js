@@ -26,7 +26,7 @@ window.__ModuleLoader__.load({
   // ★ 目标：Bot 模式内的停靠面板。用官方 dockPanels 服务（见 progress/PLAN-DOCKPANEL.md）
   var ID = "dsh-sourcelore-cards";
   // ★ 每次改渲染逻辑就改这个值，用来强制 React 重建组件实例。
-  var BUILD = "2026-11-12-0305";
+  var BUILD = "2026-11-12-1139";
 
   var STATE = {
     SUPPORTED_SOURCE_CLAIM:    { zh: "已验证",  c: "#3ddc84", ring: "rgba(61,220,132,.32)" },
@@ -487,6 +487,21 @@ window.__ModuleLoader__.load({
     return window[SLOT_KEY];
   }
 
+  function registerHomeSlot() {
+    var list = slotList();
+    if (!list) return false;
+    for (var i = 0; i < list.length; i++) {
+      if (list[i] && list[i].id === PANEL_ID) return true;
+    }
+    list.push({
+      id: PANEL_ID,
+      component: function () { return react.createElement(SourcelorePanel); },
+    });
+    try { window.dispatchEvent(new window.Event("bh-home-slot")); } catch (e) {}
+    try { console.log("[sourcelore] home slot registered, total=" + list.length); } catch (e) {}
+    return true;
+  }
+
   // ★ 官方扩展点（2026-11-11 从 @botharness/ui 1.6.1 源码实证）：
   //   Tobs 自己用 ctx.provide("dockPanels") 暴露注册表，内置的「活动中心」「插件市场」
   //   都通过 dockPanels.register(panel) 注册。第三方插件走同一个口子即可——
@@ -563,35 +578,72 @@ window.__ModuleLoader__.load({
       // ★ 主动打开：registry.open(id) 内部是 `layout?.open(id)`，
       //   而 layout 只在 Bot 面板挂载时由 attach() 注入（registry.available()）。
       //   Bot 模式未挂载时调用会被静默丢弃 —— 必须轮询到 available() 为真再开。
-      openWhenReady();
+      registerHomeSlot();
+      keepPanelOpen();
 
     })();
 
-    // ★ 等 dock 布局真正挂载后再开面板（最多约 60 秒）
-    function openWhenReady() {
-      var n = 0;
-      function tick() {
-        n++;
+    // ★ 主路径：写入 Bot 主界面的 home slot（@botharness/ui 的 Welcome 里已打 BhHomeSlot 补丁）。
+    //   为什么不用 dockPanels：register() 会把 panel.entry 强制置为 undefined，
+    //   而渲染侧只认 entry !== undefined；且任何注册都会用 registeredDockPanels
+    //   顶掉原生右侧面板。详见 progress/DOCKPANEL-DEADEND.md。
+    // ★ 保持面板常开。
+    //   实测 registry.open(id) 内部是 `layout?.open(id)`，layout 只在 Bot 面板
+    //   挂载时由 attach() 注入；未挂载时调用被静默丢弃（返回 undefined，不抛错）。
+    //   而且 Bot 模式切换（工作区/频道变化）后 layout 会重新 attach，面板随之关闭。
+    //   所以不能"开一次就完"，必须持续订阅 + 定期校正。
+    var _keepTimer = null;
+    function keepPanelOpen() {
+      var want = null;   // 上次已知的期望状态
+      function reconcile() {
         var r = null;
-        try { r = ctx.get("dockPanels"); } catch (e) {}
-        if (r && typeof r.open === "function") {
-          var ready = false;
-          try { ready = typeof r.available === "function" ? r.available() : true; } catch (e) { ready = false; }
-          var isOpen = false;
-          try { isOpen = typeof r.isOpen === "function" ? r.isOpen(PANEL_ID) : false; } catch (e) {}
-          if (ready && !isOpen) {
-            try { r.open(PANEL_ID); } catch (e) {}
-            try { ctx.logger && ctx.logger.info("[sourcelore] panel opened after " + n + " ticks"); } catch (e) {}
-            // 再确认一次
-            setTimeout(function () {
-              try { if (typeof r.isOpen === "function" && !r.isOpen(PANEL_ID)) r.open(PANEL_ID); } catch (e) {}
-            }, 800);
-            return;
+        try { r = ctx.get("dockPanels"); } catch (e) { return; }
+        if (!r || typeof r.open !== "function") return;
+        var available = true;
+        try { available = typeof r.available === "function" ? r.available() : true; } catch (e) { return; }
+        if (!available) return;   // 布局还没挂载，等下一轮
+        var isOpen = false;
+        try { isOpen = typeof r.isOpen === "function" ? r.isOpen(PANEL_ID) : false; } catch (e) {}
+        if (!isOpen) {
+          try { r.open(PANEL_ID); } catch (e) {}
+          if (want !== true) {
+            want = true;
+            try { ctx.logger && ctx.logger.info("[sourcelore] panel opened (reconcile)"); } catch (e) {}
           }
+        } else {
+          want = true;
         }
-        if (n < 240) setTimeout(tick, 250);
       }
-      setTimeout(tick, 300);
+
+      // ① 订阅：面板被关 / 布局重挂时立刻校正
+      try {
+        if (typeof r_dockSubscribe === "function") r_dockSubscribe();
+      } catch (e) {}
+
+      // ② 低频兜底：应对 layout 重新 attach 没有通知到我们的情况
+      if (_keepTimer === null) {
+        _keepTimer = setInterval(reconcile, 1500);
+      }
+      // ③ 立即来一次
+      reconcile();
+      setTimeout(reconcile, 700);
+      setTimeout(reconcile, 2000);
+    }
+
+    function r_dockSubscribe() {
+      var r = null;
+      try { r = ctx.get("dockPanels"); } catch (e) { return; }
+      if (!r || typeof r.subscribe !== "function") return;
+      try {
+        r.subscribe(function () {
+          // 任何 layout 变化后校正一次
+          try {
+            var avail = typeof r.available === "function" ? r.available() : true;
+            var open = typeof r.isOpen === "function" ? r.isOpen(PANEL_ID) : false;
+            if (avail && !open) r.open(PANEL_ID);
+          } catch (e) {}
+        });
+      } catch (e) {}
     }
 
     // 路径 1：注入回调（服务已就绪时走这条）
