@@ -26,7 +26,7 @@ window.__ModuleLoader__.load({
   // ★ 目标：Bot 模式内的停靠面板。用官方 dockPanels 服务（见 progress/PLAN-DOCKPANEL.md）
   var ID = "dsh-sourcelore-cards";
   // ★ 每次改渲染逻辑就改这个值，用来强制 React 重建组件实例。
-  var BUILD = "2026-11-12-1518";
+  var BUILD = "2026-11-14-2102";
 
   var STATE = {
     SUPPORTED_SOURCE_CLAIM:    { zh: "已验证",  c: "#3ddc84", ring: "rgba(61,220,132,.32)" },
@@ -549,6 +549,13 @@ window.__ModuleLoader__.load({
       }
     }
 
+    // ★ home slot 必须无条件注册 —— 它不依赖 dockPanels。
+    //   之前它被放在 dockPanels 的 early-return 之后，dockPanels 不可用时永远不执行，
+    //   导致 window.__bhHomeSlots__ 从未建立、Bot 主界面没有卡片。
+    try { registerHomeSlot(); } catch (e) {
+      try { ctx.logger && ctx.logger.warn("[sourcelore] registerHomeSlot 失败: " + (e && e.message)); } catch (e2) {}
+    }
+
     // 立即尝试注册（幂等：已注册则忽略）
     (function () {
       var reg = null;
@@ -578,7 +585,6 @@ window.__ModuleLoader__.load({
       // ★ 主动打开：registry.open(id) 内部是 `layout?.open(id)`，
       //   而 layout 只在 Bot 面板挂载时由 attach() 注入（registry.available()）。
       //   Bot 模式未挂载时调用会被静默丢弃 —— 必须轮询到 available() 为真再开。
-      registerHomeSlot();
       keepPanelOpen();
 
     })();
