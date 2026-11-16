@@ -26,7 +26,7 @@ window.__ModuleLoader__.load({
   // ★ 目标：Bot 模式内的停靠面板。用官方 dockPanels 服务（见 progress/PLAN-DOCKPANEL.md）
   var ID = "dsh-sourcelore-cards";
   // ★ 每次改渲染逻辑就改这个值，用来强制 React 重建组件实例。
-  var BUILD = "2026-11-14-2102";
+  var BUILD = "2026-11-16-2141";
 
   var STATE = {
     SUPPORTED_SOURCE_CLAIM:    { zh: "已验证",  c: "#3ddc84", ring: "rgba(61,220,132,.32)" },
@@ -549,9 +549,39 @@ window.__ModuleLoader__.load({
       }
     }
 
+    // ★ 主路径：官方 channelSidebar 入口（Tobs 自己用它注册内建条目）。
+    //   与 dockPanels.register() 不同，channelSidebar.register() 是活的：
+    //   条目会出现在 Bot 侧栏；scope:"both" 同时覆盖 channel 与 personabot。
+    var _cbDispose = null;
+    function registerChannelSidebar() {
+      var cb = null;
+      try { cb = ctx.get("channelSidebar"); } catch (e) {}
+      if (!cb || typeof cb.register !== "function") return false;
+      try {
+        if (_cbDispose) { try { _cbDispose(); } catch (e) {} }
+        _cbDispose = cb.register({
+          id: "sourcelore:cards-entry",
+          scope: "both",
+          title: "仓库知识卡片",
+          icon: "folder",
+          order: 520,
+          component: function (props) { return react.createElement(SourcelorePanel); },
+        });
+        try { window.__sourceloreEntry__ = { id: "sourcelore:cards-entry", via: "channelSidebar", build: BUILD }; } catch (e) {}
+        try { ctx.logger && ctx.logger.info("[sourcelore] channelSidebar entry registered"); } catch (e) {}
+        return true;
+      } catch (e) {
+        try { ctx.logger && ctx.logger.warn("[sourcelore] channelSidebar.register 失败: " + (e && e.message)); } catch (e2) {}
+        return false;
+      }
+    }
+
     // ★ home slot 必须无条件注册 —— 它不依赖 dockPanels。
     //   之前它被放在 dockPanels 的 early-return 之后，dockPanels 不可用时永远不执行，
     //   导致 window.__bhHomeSlots__ 从未建立、Bot 主界面没有卡片。
+    try { registerChannelSidebar(); } catch (e) {
+      try { ctx.logger && ctx.logger.warn("[sourcelore] registerChannelSidebar 失败: " + (e && e.message)); } catch (e2) {}
+    }
     try { registerHomeSlot(); } catch (e) {
       try { ctx.logger && ctx.logger.warn("[sourcelore] registerHomeSlot 失败: " + (e && e.message)); } catch (e2) {}
     }

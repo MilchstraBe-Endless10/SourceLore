@@ -162,3 +162,56 @@ cb.register({
 4. 点 button:has-text("Bot 模式")
 5. localStorage['botharness.bot-mode-layout-mode'].mode = 'full'，重载
 ```
+
+---
+
+## 21:57 最终确认：卡片在 Bot 模式内渲染成功，但卡在 loading
+
+### 已实测通过的证据链
+
+```
+1) 卡片出现在 Bot 模式的「频道列表 / 消息」层：
+   频道列表
+   消息
+   托布 11/1 你：继续
+   正在读取 SourceLore 知识库…        ←★★ 我的组件真的渲染在这里
+   从左侧选择一个 Bot 或频道开始
+
+2) 后端 API 完全正常（curl 实测）：
+   GET /api/dsh-sourcelore-cards/repositories  →  HTTP 200
+   {"count":3,"ok":true,"repositories":[
+     {"repository":"jonschlinkert/is-number","repository_id":"24313173",
+      "claim_count":8,"fact_count":55,"knowledge_state":"HAS_KNOWLEDGE",
+      "snapshot_count":1,"commits":["98e8ff1d..."]}, ...]}
+
+3) 插件活着：
+   GET /api/dsh-sourcelore-cards/panelstatus  →  HTTP 200
+   {"ok":true,"status":{"body":"{\"ok\":true,\"via\":\"inject\",
+     \"build\":\"2026-11-16-2141\",\"panelId\":\"sourcelore:repo-cards\"}"}}
+```
+
+### 为什么停在「正在读取」
+
+组件挂载 → 发起 fetch → **立刻被卸载** → setState 丢失。
+证据：`slotDom` 在 1 和 0 之间反复横跳（`Welcome` 只在空态渲染，
+一旦有选中频道就卸载）。
+
+### 修法（下一步）
+
+把数据请求从组件生命周期里提出来，做成**模块级缓存**：
+```js
+var CACHE = { repos: null, at: 0, inflight: null };
+function loadReposOnce() {
+  if (CACHE.repos) return Promise.resolve(CACHE.repos);
+  if (CACHE.inflight) return CACHE.inflight;
+  CACHE.inflight = getJson(api("/repositories")).then(function (r) {
+    CACHE.repos = r; CACHE.at = Date.now(); CACHE.inflight = null; return r;
+  }).catch(function (e) { CACHE.inflight = null; throw e; });
+  return CACHE.inflight;
+}
+```
+这样组件每次挂载都能立刻拿到数据，不受卸载影响。
+
+## ⚠ 工具状态
+Playwright MCP 会话已被其他 Session 占用（`browser tool belongs to another Session`），
+本会话无法继续用浏览器验证。需要重启该 MCP 连接或换用其他会话。
