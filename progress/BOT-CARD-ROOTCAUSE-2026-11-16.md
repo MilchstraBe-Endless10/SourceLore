@@ -57,3 +57,49 @@ if (!workspace && state.selection === void 0) return jsx(Welcome, {state, t});
 ## 工具脚本
 - `~/.dsh-web/main-cookie.json` —— 主实例 cookie（600 权限）
 - `~/.dsh-web/get-web-url.sh` —— 独立实例版
+
+---
+
+## 21:35 补充：渲染入口的真实条件
+
+`Welcome` 只在「空态」渲染（源码 ui/lib/client.js:194272 / 194466）：
+```js
+const chatPane = state.selection === void 0 ? jsx(Welcome, {state, t}) : ...other views
+if (!workspace && state.selection === void 0) return jsx(Welcome, {state, t});
+```
+
+当前实测 `botharness/bot-mode-layout-mode`：
+```json
+{"mode":"simple","sideColumn":"bh:channels","channelsWidth":0.22,...}
+```
+`mode: "simple"` 时 `railModeControls` 把 `CHANNEL_BODY_PANEL` 放进 `hidden`：
+```js
+function railModeControls(mode, order) {
+  return mode === "simple"
+    ? { order: [WORKSPACE_CHANNELS, ...order.filter(id => id !== WORKSPACE_CHANNELS)],
+        hidden: [CHANNEL_BODY_PANEL] }
+    : { order, hidden: [] };
+}
+```
+**这就是 Bot 主体（channel body）不显示的原因** —— simple 模式下它被显式隐藏了。
+
+## channelSidebar 是官方可用接口（不是死路）
+
+```js
+ctx.provide("channelSidebar")
+// 契约：
+{ register(entry), registerTab(tab), entries(scope), tabs(scope), subscribe(listener) }
+// scope: "channel" | "personabot"
+// entry.scope: "channel" | "personabot" | "both"
+// entry.surface: "settings" 时只进设置页，否则会同时 dockPanels.registerEntry()
+```
+这给了一条**不用改 @botharness/ui、不用 Welcome** 的官方入口：
+注册一个 `scope:"both"` 的 channelSidebar entry，它就会出现在 Bot 侧栏里。
+（`dockPanels.registerEntry` 与本包之前的 `dockPanels.register` 是**不同方法**——
+前者是给 channelSidebar 内部用的，后者才是死路。）
+
+## 下一步优先级
+
+1. **把 bot-mode-layout-mode 从 simple 改成完整模式** → 让 CHANNEL_BODY_PANEL 显示
+2. 或用 `channelSidebar.register({scope:"both"})` 走官方侧栏入口
+3. Welcome + BhHomeSlot 只在「空态」有效，不是主路径
