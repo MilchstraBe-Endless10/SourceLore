@@ -103,3 +103,62 @@ ctx.provide("channelSidebar")
 1. **把 bot-mode-layout-mode 从 simple 改成完整模式** → 让 CHANNEL_BODY_PANEL 显示
 2. 或用 `channelSidebar.register({scope:"both"})` 走官方侧栏入口
 3. Welcome + BhHomeSlot 只在「空态」有效，不是主路径
+
+---
+
+## 21:37 决定性突破：卡片真的渲染出来了
+
+改 `localStorage['botharness.bot-mode-layout-mode'].mode` 从 `"simple"` → `"full"`
+（重载后被自动归一化为 `"advanced"`），结果：
+
+```json
+{"mode":"advanced","hasChannel":true,"slotDom":1}
+```
+```text
+频道列表
+消息
+bh:workspace-rail opened
+正在读取 SourceLore 知识库…          ← ★ 我的卡片组件，真的在渲染
+
+从左侧选择一个 Bot 或频道开始
+```
+
+**这证明整条链路完全通了**：插件 → slot → UI 补丁 → BhHomeSlot → 我的组件 → 渲染。
+
+## 但它是瞬时/条件性的
+
+重载后 `slotDom` 又从 1 变回 0，body 变成「从左侧选择一个 Bot 或频道开始」。
+原因仍是 `Welcome` 只在**未选中频道**时渲染；一旦有选中就切走。
+
+## 真正的解法（下一步）
+
+`Welcome` 是空态组件，不该作为主挂载点。正确做法是用官方 `channelSidebar`：
+
+```js
+const cb = ctx.get("channelSidebar")
+cb.register({
+  id: "sourcelore:cards",
+  scope: "both",          // "channel" | "personabot" | "both"
+  title: "仓库知识卡片",
+  icon: "folder",
+  component: () => react.createElement(SourcelorePanel),
+  // surface 不写 "settings" 时，会同时 dockPanels.registerEntry() 挂到右侧栏
+})
+```
+内置条目由 `createChannelSidebarBuiltins(...).map(e => channelSidebar.register(e))` 注册
+（ui/lib/client.js:205303）。
+
+**注意区分两个同名不同物的东西**：
+- `dockPanels.register(panel)` —— 死路（见 DOCKPANEL-DEADEND.md）
+- `dockPanels.registerEntry(entry, ...)` —— channelSidebar 内部用，是活的
+
+## 已确认可复用的操作配方
+
+```
+1. sqlite3 读 ~/.config/open-deepseek-harness-desktop/session-data/Cookies
+   → host=127.0.0.1 的 name/value 就是 Web 认证 cookie
+2. Playwright addCookies 注入 → goto http://127.0.0.1:<port>/ → 200
+3. page.setViewportSize({width:1600,height:1000})   ← 必须 ≥961，否则 Bot 按钮不渲染
+4. 点 button:has-text("Bot 模式")
+5. localStorage['botharness.bot-mode-layout-mode'].mode = 'full'，重载
+```
