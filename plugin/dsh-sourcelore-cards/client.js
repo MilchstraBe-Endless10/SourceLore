@@ -26,7 +26,7 @@ window.__ModuleLoader__.load({
   // ★ 目标：Bot 模式内的停靠面板。用官方 dockPanels 服务（见 progress/PLAN-DOCKPANEL.md）
   var ID = "dsh-sourcelore-cards";
   // ★ 每次改渲染逻辑就改这个值，用来强制 React 重建组件实例。
-  var BUILD = "2026-11-16-2141";
+  var BUILD = "2026-11-16-2216";
 
   var STATE = {
     SUPPORTED_SOURCE_CLAIM:    { zh: "已验证",  c: "#3ddc84", ring: "rgba(61,220,132,.32)" },
@@ -161,7 +161,64 @@ window.__ModuleLoader__.load({
     unknown: { zh: "未裁决", c: "#9ca3af" },
   };
 
-  function loadRepos(set) {
+  // ★ 模块级缓存：Bot 模式里组件会被反复挂载/卸载（Welcome 只在空态渲染），
+  //   每次挂载都重新 fetch 会导致「一直显示正在读取」。缓存一次结果，切回来立即有数据。
+  var REPO_CACHE = { data: null, at: 0, inflight: null };
+  var CACHE_TTL_MS = 30000;
+
+  function fetchAllCards() {
+    var now = Date.now();
+    if (REPO_CACHE.data && (now - REPO_CACHE.at) < CACHE_TTL_MS) {
+      return Promise.resolve(REPO_CACHE.data);
+    }
+    if (REPO_CACHE.inflight) return REPO_CACHE.inflight;
+    var p = getJson(api("/repositories")).then(function (r) {
+      var repos = (r && r.repositories) || [];
+      if (!repos.length) {
+        var empty = { cards: [], tabs: {}, diag: "repos=0 raw=" + JSON.stringify(r).slice(0, 160) };
+        REPO_CACHE.data = empty; REPO_CACHE.at = Date.now(); REPO_CACHE.inflight = null;
+        return empty;
+      }
+      return Promise.all(repos.map(function (rp) {
+        return getJson(api("/repocard?repository_id=" + encodeURIComponent(rp.repository_id)))
+          .then(function (d) { return { ok: d && d.ok && !!d.card, d: d, id: rp.repository_id }; })
+          .catch(function (e) { return { ok: false, id: rp.repository_id, err: String(e && e.message || e) }; });
+      })).then(function (results) {
+        var done = [], errs = [];
+        results.forEach(function (x) {
+          if (x.ok) done.push(x.d);
+          else errs.push(String(x.id) + ":" + String(x.err || (x.d && x.d.error) || "NO_CARD"));
+        });
+        done.sort(function (a, b) {
+          return String((a.card || {}).title || "").localeCompare(String((b.card || {}).title || ""));
+        });
+        var payload = { cards: done, tabs: {}, diag: errs.length ? ("errors=" + errs.join(",")) : "" };
+        REPO_CACHE.data = payload; REPO_CACHE.at = Date.now(); REPO_CACHE.inflight = null;
+        return payload;
+      });
+    }).catch(function (e) {
+      REPO_CACHE.inflight = null;
+      throw e;
+    });
+    REPO_CACHE.inflight = p;
+    return p;
+  }
+
+  function loadRepos(set, force) {
+    if (force) { REPO_CACHE.data = null; REPO_CACHE.at = 0; }
+    if (REPO_CACHE.data) {
+      set({ status: "ok", cards: REPO_CACHE.data.cards, tabs: REPO_CACHE.data.tabs, diag: REPO_CACHE.data.diag });
+    } else {
+      set({ status: "loading" });
+    }
+    fetchAllCards().then(function (payload) {
+      set({ status: "ok", cards: payload.cards, tabs: payload.tabs, diag: payload.diag });
+    }).catch(function (e) {
+      set({ status: "error", error: String(e && e.message || e) });
+    });
+  }
+
+  function loadReposLegacy(set) {
     set({ status: "loading" });
     getJson(api("/repositories")).then(function (r) {
       var repos = (r && r.repositories) || [];
@@ -568,18 +625,53 @@ window.__ModuleLoader__.load({
           component: function (props) { return react.createElement(SourcelorePanel); },
         });
         try { window.__sourceloreEntry__ = { id: "sourcelore:cards-entry", via: "channelSidebar", build: BUILD }; } catch (e) {}
-        try { ctx.logger && ctx.logger.info("[sourcelore] channelSidebar entry registered"); } catch (e) {}
+        try { console.log("[sourcelore] channelSidebar entry registered"); } catch (e) {}
         return true;
       } catch (e) {
-        try { ctx.logger && ctx.logger.warn("[sourcelore] channelSidebar.register 失败: " + (e && e.message)); } catch (e2) {}
+        try { window.__sourceloreErr__ = String((e && (e.message || e.stack)) || e); } catch (e2) {}
+        try { console.warn("[sourcelore] channelSidebar.register 失败:", e); } catch (e2) {}
         return false;
       }
+    }
+
+    // channelSidebar 可能晚于 apply provide：注入回调 + 轮询两条路都试
+    function registerChannelSidebarWhenReady() {
+      if (registerChannelSidebar()) return;
+      try {
+        ctx.inject(["channelSidebar"], function (c) {
+          try {
+            var cb = c && (c.channelSidebar || c);
+            if (!cb || typeof cb.register !== "function") return;
+            if (_cbDispose) return;
+            _cbDispose = cb.register({
+              id: "sourcelore:cards-entry",
+              scope: "both",
+              title: "仓库知识卡片",
+              icon: "folder",
+              order: 520,
+              component: function (props) { return react.createElement(SourcelorePanel); },
+            });
+            window.__sourceloreEntry__ = { id: "sourcelore:cards-entry", via: "inject", build: BUILD };
+            console.log("[sourcelore] channelSidebar entry registered via inject");
+          } catch (e) {
+            window.__sourceloreErr__ = String((e && (e.message || e.stack)) || e);
+            console.warn("[sourcelore] inject channelSidebar.register 失败:", e);
+          }
+        });
+      } catch (e) {}
+      var n = 0;
+      (function poll() {
+        n++;
+        if (window.__sourceloreEntry__ || n > 40) return;
+        if (registerChannelSidebar()) return;
+        setTimeout(poll, 250);
+      })();
     }
 
     // ★ home slot 必须无条件注册 —— 它不依赖 dockPanels。
     //   之前它被放在 dockPanels 的 early-return 之后，dockPanels 不可用时永远不执行，
     //   导致 window.__bhHomeSlots__ 从未建立、Bot 主界面没有卡片。
-    try { registerChannelSidebar(); } catch (e) {
+    try { registerChannelSidebarWhenReady(); } catch (e) {
       try { ctx.logger && ctx.logger.warn("[sourcelore] registerChannelSidebar 失败: " + (e && e.message)); } catch (e2) {}
     }
     try { registerHomeSlot(); } catch (e) {

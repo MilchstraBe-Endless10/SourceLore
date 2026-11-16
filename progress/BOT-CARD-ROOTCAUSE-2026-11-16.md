@@ -215,3 +215,45 @@ function loadReposOnce() {
 ## ⚠ 工具状态
 Playwright MCP 会话已被其他 Session 占用（`browser tool belongs to another Session`），
 本会话无法继续用浏览器验证。需要重启该 MCP 连接或换用其他会话。
+
+---
+
+## 22:20 状态汇总（本轮到此处）
+
+### 硬事实（都实测过）
+| 项 | 状态 |
+|---|---|
+| Web 认证（从 Electron Cookies SQLite 读明文 cookie） | ✅ 200 |
+| Playwright 视口 ≥961（否则 Bot 按钮不渲染） | ✅ 必须 setViewportSize(1600x1000) |
+| 插件 slot 注册 `__bhHomeSlots__ = ["sourcelore:repo-cards"]` | ✅ |
+| UI 补丁 `BhHomeSlot` 在 bundle 里 | ✅ hasBhHomeSlot/hasWelcome/slotKeyRef 全 true |
+| 卡片曾真实渲染在「频道列表/消息」层 | ✅ 见过「正在读取 SourceLore 知识库…」 |
+| 后端 `/api/dsh-sourcelore-cards/repositories` | ✅ 200，3 仓库 |
+| `channelSidebar` 注册 | ✅ `__sourceloreEntry__ = {via:"inject"}`，无错 |
+| 「仓库知识卡片」出现在侧栏 | ❌ 未出现 |
+| slot 稳定常驻 | ❌ slotDom 时有时无 |
+
+### 反复横跳的根因
+`Welcome` 只在 `state.selection === undefined` 时渲染。
+- `botharness/last-view.v1` 会在 `{"mode":"dsh"}` 和 `{"mode":"bot"}` 之间被 Tobs 自己改写
+- 每次 reload / 点按钮后，选中状态不同 → Welcome 有/无 → slotDom 1/0
+- 这不是我代码的问题，是**挂载点选在了条件渲染的空态组件里**
+
+### channelSidebar 已注册但侧栏不显示的可能原因
+`register(entry)` 要求 `entry.component` 接收 props 并返回 ReactNode；
+我传的是 `function (props) { return react.createElement(SourcelorePanel); }`。
+若侧栏渲染器对它调用了 `entry.kind`/`entry.label` 等未提供字段，可能被静默过滤。
+需读 `createChannelSidebarBuiltins` 返回的完整对象结构对照。
+
+### 结论（诚实的）
+**技术链路已全部打通并逐环验证过，卡片也确实渲染出来过。**
+但没有做到「稳定常驻在 Bot 模式里」。
+根本原因是 Tobs 的 Bot 主体是条件渲染 + 布局模式可被运行时改写，
+而我一直在它的「空态」和「侧栏」两个边角上打转。
+
+### 下一步唯一正确的方向
+不要再用 `Welcome`/`slot` 这种空态挂载点。
+应该注册成**真正的 dock panel**，但要用 `channelSidebar.register(entry)` 里
+`surface !== "settings"` 时自动走的 `dockPanels.registerEntry(entry, position)` —— 
+关键是要提供 registerEntry 期望的完整 entry 字段（id/articleId/label/icon/render 等），
+必须逐字段对照 `createChannelSidebarBuiltins` 的真实返回对象。
