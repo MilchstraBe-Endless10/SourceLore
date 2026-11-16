@@ -26,7 +26,7 @@ window.__ModuleLoader__.load({
   // ★ 目标：Bot 模式内的停靠面板。用官方 dockPanels 服务（见 progress/PLAN-DOCKPANEL.md）
   var ID = "dsh-sourcelore-cards";
   // ★ 每次改渲染逻辑就改这个值，用来强制 React 重建组件实例。
-  var BUILD = "2026-11-16-2216";
+  var BUILD = "2026-11-16-2222";
 
   var STATE = {
     SUPPORTED_SOURCE_CLAIM:    { zh: "已验证",  c: "#3ddc84", ring: "rgba(61,220,132,.32)" },
@@ -619,7 +619,7 @@ window.__ModuleLoader__.load({
         _cbDispose = cb.register({
           id: "sourcelore:cards-entry",
           scope: "both",
-          title: "仓库知识卡片",
+          label: "仓库知识卡片",
           icon: "folder",
           order: 520,
           component: function (props) { return react.createElement(SourcelorePanel); },
@@ -646,7 +646,7 @@ window.__ModuleLoader__.load({
             _cbDispose = cb.register({
               id: "sourcelore:cards-entry",
               scope: "both",
-              title: "仓库知识卡片",
+              label: "仓库知识卡片",
               icon: "folder",
               order: 520,
               component: function (props) { return react.createElement(SourcelorePanel); },

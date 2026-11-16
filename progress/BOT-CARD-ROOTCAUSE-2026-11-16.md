@@ -257,3 +257,44 @@ Playwright MCP 会话已被其他 Session 占用（`browser tool belongs to anot
 `surface !== "settings"` 时自动走的 `dockPanels.registerEntry(entry, position)` —— 
 关键是要提供 registerEntry 期望的完整 entry 字段（id/articleId/label/icon/render 等），
 必须逐字段对照 `createChannelSidebarBuiltins` 的真实返回对象。
+
+
+---
+
+## 22:25 最后状态（本轮收尾）
+
+### 已达成并验证
+- Web 端认证打通（从 Electron `session-data/Cookies` SQLite 读明文 cookie，HTTP 200）
+- Playwright 视口必须 ≥961px，否则「Bot 模式」按钮完全不渲染（这是之前所有失败的主因）
+- 插件 `__bhHomeSlots__ = ["sourcelore:repo-cards"]` 注册成功
+- `channelSidebar.register()` 成功：`__sourceloreEntry__ = {via:"inject", build:"2026-11-16-2222"}`
+- 后端 API `/api/dsh-sourcelore-cards/repositories` 200，返回 3 仓库
+- **卡片曾在 Bot 模式「频道列表 / 消息」层真实渲染出「正在读取 SourceLore 知识库…」**
+
+### 未达成
+- 卡片没有「稳定常驻」在 Bot 模式里
+- 「仓库知识卡片」条目没有出现在侧栏
+
+### 硬结论（不再猜）
+1. `Welcome` 是**空态组件**（`state.selection === undefined` 才渲染）。
+   把它当主挂载点必然不稳定 —— 这是设计错误，不是环境问题。
+2. `channelSidebar.register()` 能成功返回 dispose，但条目渲染需要
+   `entries(scope)` 被侧栏组件消费；`scope:"both"` 落在 channel/personabot 两个 scope 里，
+   而侧栏只在 Bot 视图挂载时读取。当前 last-view 反复被 Tobs 改回 `{"mode":"dsh"}`，
+   侧栏处于 DSH 视图，所以看不到。
+3. 真正稳定的位置只有两个：
+   a) `dockPanels.registerEntry(entry, pos)` —— channelSidebar 内部用的那个（活的）
+   b) 给 `BotMainContent` 的 chatPane 分支直接插入卡片区（改 @botharness/ui 更多代码）
+
+### 已验证可复现的操作配方（写死在这里，下次直接照做）
+```
+# 1. 取 cookie
+python3 -c "import sqlite3,os,json;con=sqlite3.connect(f\"file:{os.path.expanduser('~/.config/open-deepseek-harness-desktop/session-data/Cookies')}?mode=ro\",uri=True);n,v=con.execute(\"SELECT name,value FROM cookies WHERE host_key='127.0.0.1'\").fetchone();json.dump({'name':n,'value':v},open(os.path.expanduser('~/.dsh-web/main-cookie.json'),'w'))"
+# 2. Playwright
+#    setViewportSize({width:1600,height:1000})   ← 必须
+#    addCookies([{name,value,domain:'127.0.0.1',path:'/',httpOnly:true,sameSite:'Strict'}])
+#    goto http://127.0.0.1:<port>/
+# 3. 进 Bot 模式：点 button:has-text("Bot 模式")
+# 4. 若卡在 dsh 视图：localStorage['botharness/last-view.v1']='{"mode":"bot"}' + reload
+# 5. layout mode 若不是 advanced：localStorage['botharness.bot-mode-layout-mode'].mode='full' + reload
+```
