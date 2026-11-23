@@ -10,9 +10,12 @@ import json
 from pathlib import Path
 
 _HERE = Path(__file__).resolve().parent
-for _p in (str(_HERE), str(_HERE.parent / "views"), str(_HERE.parent / "storage")):
+for _p in (str(_HERE), str(_HERE.parent / "views"), str(_HERE.parent / "storage"),
+           str(_HERE.parent / "trust")):
     if _p not in sys.path:
         sys.path.insert(0, _p)
+
+import policy as TRUST
 
 EVIDENCE_CAP = 50
 MAX_TEXT = 4000
@@ -54,6 +57,21 @@ def select_findings(store, pairs: list, query: dict) -> dict:
         limited = []
 
         integrity = assess_evidence_integrity(store, refs, known)
+        # ★ P0/D3：统一证据准入。原始 verdict 与当前可采信 finding 分开；
+        #   证据链不完整（PARTIAL/UNRESOLVED/NONE）一律降级为 insufficient_evidence。
+        admission = TRUST.evidence_admission(
+            {"status": status}, current=bool(v.get("source") == "current"),
+            integrity={"level": integrity["level"], "reasons": integrity["reasons"]})
+        if admission["admitted"]:
+            ftype, verdict = _map_status(admission["verdict_status"])
+        else:
+            ftype, verdict = _map_status("insufficient_evidence")
+            limited.append(admission["note"])
+        # ★ P0/D4：refuted 需复核反证准入（占位 tree_entry + ROOT_ONLY 快照
+        #   不得支撑确定否定）。fact 引用可解析时取其 payload 判定。
+        if verdict == "refuted" and not _refutation_locally_sound(store, c, v, refs):
+            ftype, verdict = _map_status("insufficient_evidence")
+            limited.append("反证不满足准入条件（路径/覆盖度/字段不足），不得确定否定")
         if integrity["level"] in (EV_NONE, EV_UNRESOLVED):
             # ★ 没有可核对证据 → 不可采信
             untrusted.append({
@@ -182,6 +200,81 @@ _JSON_REQUIRED = {
 }
 
 
+def _refutation_locally_sound(store, claim: dict, verification: dict, refs: list) -> bool:
+    """P0/D4：在展示层复核 refuted 的反证准入。
+
+    用 Claim 的目标路径 + Verification 引用的 fact payload 构造反证视图；
+    source_snapshot 用 tree_scope 派生视图识别 ROOT_ONLY 误标 COMPLETE。
+    无法判定时保守放行（历史既有有效 refuted 不因缺元数据被一律抹除）。
+    """
+    try:
+        import tree_scope as _TS
+        snap_pl = None
+        fact_payloads = []
+        for r in refs:
+            if not isinstance(r, str):
+                continue
+            if r.startswith("fact:"):
+                fid = r.split(":", 1)[1]
+                got = store.get_asset(fid, verify=False)
+                if not got.get("ok"):
+                    # fact 引用可能是 logical_identity（如 SL-FACT-...），按逻辑身份回查
+                    try:
+                        rows = store.conn.execute(
+                            "SELECT asset_id FROM assets WHERE logical_identity=? "
+                            "AND asset_type='extracted_fact' ORDER BY asset_version DESC LIMIT 1",
+                            (fid,)).fetchall()
+                        if rows:
+                            got = store.get_asset(rows[0]["asset_id"], verify=False)
+                    except Exception:
+                        pass
+                if got.get("ok"):
+                    fact_payloads.append(got["asset"].get("payload") or {})
+            elif r.startswith("{"):
+                o = json.loads(r)
+                if o.get("kind") == "source_snapshot":
+                    sa = o.get("snapshot_asset_id")
+                    if sa:
+                        g = store.get_asset(sa, verify=False)
+                        if g.get("ok"):
+                            ap = g["asset"]
+                            snap_pl = ap.get("payload")
+                            if snap_pl is None:
+                                snap_pl = json.loads(ap.get("payload_json") or "{}")
+        # 路径：优先 claim 显式字段，其次反证 fact 的 observed_value.path
+        path = str(claim.get("normalized_path") or "")
+        if not path and fact_payloads:
+            path = str((fact_payloads[0].get("observed_value") or {}).get("path") or "")
+        if snap_pl:
+            derived = _TS.derive_tree_scope(snap_pl)
+            snap_pl = dict(snap_pl)
+            snap_pl["completeness_status"] = (
+                "COMPLETE" if derived["complete"] else derived["scope"])
+            # ★ README vs README.md：快照里若有"近似但不同"的条目，
+            #   说明反证针对的是别的路径，不能确定否定该 Claim。
+            entries = [str(e.get("path")) for e in (snap_pl.get("tree_entries") or [])
+                       if isinstance(e, dict) and e.get("path")]
+            is_absent = any(f.get("observation") == "OBSERVED_ABSENT_IN_COVERED_SCOPE"
+                            for f in fact_payloads)
+            if is_absent and path and path not in entries and any(
+                    e.lower().startswith(path.lower().rstrip("/")) and e != path
+                    for e in entries):
+                return False
+        # 逐条反证：只要有一条 sound 即保留 refuted
+        for fp in fact_payloads:
+            fp = dict(fp)
+            fp.setdefault("observed_value", {})
+            fp["observed_value"].setdefault("path", path)
+            if TRUST.refutation_soundness(fp, snap_pl, claim_path=path)["sound"]:
+                return True
+        # 无 fact 可解析时：若快照真实 ROOT_ONLY 且路径含 "/"，拒绝
+        if snap_pl and snap_pl.get("completeness_status") != "COMPLETE" and "/" in path:
+            return False
+        return True
+    except Exception:
+        return True
+
+
 def _known_fact_ids(store, repository_id, cap: int = 500) -> set:
     """★ 从 Storage 收集真实存在的 fact_id。
 
@@ -243,6 +336,9 @@ def assess_evidence_integrity(store, refs: list, known_facts: set) -> dict:
             if missing:
                 reasons.append(f"{kind} 缺少必需字段：{missing}")
                 continue
+            # ★ P0/D4：占位 tree_entry（object_type=unknown / blob_sha=null /
+            #   mode=""）是"路径缺失"的正常表达，不当作不可解析引用；
+            #   其是否足以支撑 refuted 由 refutation_soundness 在裁决准入层判定。
             resolved += 1
             continue
         reasons.append(f"无法识别的引用形态：{r[:40]}")

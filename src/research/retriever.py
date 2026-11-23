@@ -12,11 +12,12 @@ from pathlib import Path
 
 _HERE = Path(__file__).resolve().parent
 for _p in (str(_HERE), str(_HERE.parent / "views"), str(_HERE.parent / "storage"),
-           str(_HERE.parent / "lifecycle")):
+           str(_HERE.parent / "lifecycle"), str(_HERE.parent / "trust")):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
 import query_models as QM
+import policy as TRUST
 
 CLAIM_TYPE = "claim_candidate"
 VERIF_TYPE = "claim_verification"
@@ -147,43 +148,46 @@ def _rank(kept: list, query: dict) -> list:
 
 
 def retrieve_verifications(store, claims: list, query: dict) -> dict:
-    """为已选 Claim 取 Verification（按 claim_id 关联）。"""
+    """为已选 Claim 取 Verification。
+
+    ★ P0/D3：默认只读 B 层 current_view 采纳的裁决；历史版本不得混入当前 findings。
+      当前视图没有裁决时明确排除（RETRIEVAL_EXCLUDED_NOT_CURRENT），不回退旧版本。
+      历史裁决请走 policy.list_historical_verifications 的显式历史通道。
+    """
     out, excluded = [], []
+    current_verifs = TRUST.current_asset_ids(store, repository_id=query["repository_id"],
+                                             asset_type=VERIF_TYPE)
+    current_by_claim = {}
+    for _lid, aid in current_verifs.items():
+        p = _read_payload(store, aid)
+        if not p["ok"]:
+            continue
+        cid = str(p["payload"].get("claim_id") or "")
+        if cid:
+            current_by_claim.setdefault(cid, (aid, p["payload"]))
     for c in claims:
-        sql = ("SELECT asset_id FROM index_rows WHERE asset_type=? "
-               "AND repository_id=? ORDER BY asset_version DESC, asset_id ASC")
-        got = _rows(store, sql, (VERIF_TYPE, query["repository_id"]))
-        if not got["ok"]:
-            return {"ok": False, "status": RETRIEVAL_ERROR,
-                    "error": got["error"], "detail": got["detail"]}
-        found = None
-        for r in got["rows"]:
-            p = _read_payload(store, r["asset_id"])
-            if not p["ok"]:
-                excluded.append({"asset_id": r["asset_id"],
-                                 "reason": p["error"], "detail": p["detail"]})
-                continue
-            if p["payload"].get("claim_id") == c["claim_id"]:
-                found = {"asset_id": r["asset_id"],
-                         "verification_id": p["payload"].get("verification_id"),
-                         "status": p["payload"].get("status"),
-                         "reason_code": p["payload"].get("reason_code"),
-                         "fact_ids": [f for f in (p["payload"].get("fact_ids") or []) if f],
-                         "evidence_refs": list(p["payload"].get("evidence_refs") or []),
-                         "local_coverage_only": bool(
-                             p["payload"].get("local_coverage_only")),
-                         "evidence_refs_raw": list(
-                             p["payload"].get("evidence_refs") or []),
-                         "conflict_detected": bool(p["payload"].get("conflict_detected")),
-                         "rule_version": p["payload"].get("rule_version"),
-                         "content_hash": p["content_hash"],
-                         "payload": p["payload"]}
-                break
-        if found:
-            out.append({"claim": c, "verification": found})
-        else:
-            excluded.append({"claim_id": c["claim_id"],
-                             "reason": "VERIFICATION_NOT_FOUND"})
+        cid = str(c["claim_id"])
+        hit = current_by_claim.get(cid)
+        if hit is None:
+            excluded.append({"claim_id": cid,
+                             "reason": "RETRIEVAL_EXCLUDED_NOT_CURRENT",
+                             "detail": "当前视图中没有该 Claim 的 Verification；历史裁决不作为当前结论"})
+            continue
+        aid, pl = hit
+        found = {"asset_id": aid,
+                 "verification_id": pl.get("verification_id"),
+                 "status": pl.get("status"),
+                 "reason_code": pl.get("reason_code"),
+                 "fact_ids": [f for f in (pl.get("fact_ids") or []) if f],
+                 "evidence_refs": list(pl.get("evidence_refs") or []),
+                 "local_coverage_only": bool(pl.get("local_coverage_only")),
+                 "evidence_refs_raw": list(pl.get("evidence_refs") or []),
+                 "conflict_detected": bool(pl.get("conflict_detected")),
+                 "rule_version": pl.get("rule_version"),
+                 "content_hash": pl.get("content_hash"),
+                 "source": "current",
+                 "payload": pl}
+        out.append({"claim": c, "verification": found})
     return {"ok": True, "status": OK, "pairs": out, "excluded": excluded}
 
 

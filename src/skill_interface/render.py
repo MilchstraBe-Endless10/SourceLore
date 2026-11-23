@@ -10,23 +10,16 @@ from knowledge import open_store
 
 ensure_import_path()
 
+# P0/D3：按 claim_id 反查 Verification 统一走 B 层，历史裁决不混入。
+import policy as TRUST
+
 PREVIEW_SUBDIR = "preview"
 
 
 def _find_verification_for_claim(store, claim_id, repository_id):
-    """★ KVA 只接受 verification_id；按 claim_id 反查是 CLI 层的职责。"""
-    rows = store.conn.execute(
-        "SELECT asset_id FROM index_rows WHERE asset_type='claim_verification' "
-        "AND repository_id=? ORDER BY asset_version DESC, asset_id",
-        (repository_id,)).fetchall()
-    for r in rows:
-        got = store.get_asset(r["asset_id"], verify=True)
-        if not got.get("ok"):
-            continue
-        pl = (got["asset"] or {}).get("payload") or {}
-        if pl.get("claim_id") == claim_id:
-            return pl.get("verification_id")
-    return None
+    """★ KVA 只接受 verification_id；按 claim_id 反查统一走 trust policy（B 层）。"""
+    r = TRUST.resolve_verification_for_claim(store, claim_id, repository_id)
+    return r.get("verification_id") if r.get("ok") else None
 
 
 def _view_of(store, *, claim_id=None, verification_id=None, repository_id=None):

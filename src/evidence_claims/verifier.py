@@ -18,13 +18,15 @@ from pathlib import Path
 from typing import Optional
 
 _HERE = Path(__file__).resolve().parent
-for _p in (str(_HERE), str(_HERE.parent / "storage"), str(_HERE.parent / "facts")):
+for _p in (str(_HERE), str(_HERE.parent / "storage"), str(_HERE.parent / "facts"),
+           str(_HERE.parent / "trust")):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
 import ec_models as M
 from evidence_resolver import resolve_all
 from facts_models_proxy import fact_content_hash_of
+import policy as TRUST
 
 VERIFIER_RULE_VERSION = "path-exists-verifier/v1"
 
@@ -38,8 +40,13 @@ STATUS_COMPLETE = "COMPLETE"
 
 def verify_path_claim(store, claim, fact_ids,
                       rule_version: str = VERIFIER_RULE_VERSION,
-                      verified_at: str = "") -> M.Verification:
-    """对 repository_path_exists 命题做确定性评估。"""
+                      verified_at: str = "",
+                      snapshot_payload: Optional[dict] = None) -> M.Verification:
+    """对 repository_path_exists 命题做确定性评估。
+
+    ★ P0/D4：counter 判 refuted 前必须过反证准入（object_type/sha/mode/observed_at
+      与快照真实覆盖度）。缺可靠反证时降级 insufficient，不产生确定否定。
+    """
     if claim.claim_type != M.CLAIM_PATH_EXISTS:
         return _insufficient(
             claim=claim, fact_ids=[], hashes=[], status_reason=M.R_UNSUPPORTED_TYPE,
@@ -151,6 +158,56 @@ def verify_path_claim(store, claim, fact_ids,
             detail=("局部覆盖限制下的支持" if local_only else "完整覆盖下的支持"))
 
     if counter:
+        # ★ P0/D4：逐条反证过准入；任一反证不可靠即不得产生确定 refuted。
+        bad_reasons = []
+        for f in counter:
+            cfp = (getattr(f, "payload", None) or {})
+            if not cfp:
+                cfp = {"observation": getattr(f, "observation", None),
+                       "completeness_status": getattr(f, "completeness_status", None),
+                       "observed_value": {"path": getattr(f, "normalized_path", None)},
+                       "observed_at": getattr(f, "observed_at", ""),
+                       "evidence_refs": getattr(f, "evidence_refs", [])}
+            # ★ 从反证 fact 的 source_snapshot 引用取真实快照覆盖度，
+            #   用派生视图识别 ROOT_ONLY 误标 COMPLETE（审计 D4+D5）。
+            snap_pl = snapshot_payload
+            if snap_pl is None:
+                try:
+                    import json as _j
+                    for ref in (cfp.get("evidence_refs") or []):
+                        if isinstance(ref, dict) and ref.get("kind") == "source_snapshot":
+                            sa = ref.get("snapshot_asset_id")
+                            if sa:
+                                g = store.get_asset(sa, verify=False)
+                                if g.get("ok"):
+                                    ap = g["asset"]
+                                    snap_pl = ap.get("payload")
+                                    if snap_pl is None:
+                                        snap_pl = _j.loads(ap.get("payload_json") or "{}")
+                            break
+                except Exception:
+                    snap_pl = None
+            # 用派生覆盖度替换历史误标的 COMPLETE
+            if snap_pl:
+                try:
+                    import tree_scope as _TS
+                    derived = _TS.derive_tree_scope(snap_pl)
+                    if not derived["complete"]:
+                        snap_pl = dict(snap_pl)
+                        snap_pl["completeness_status"] = derived["scope"]
+                except Exception:
+                    pass
+            sound = TRUST.refutation_soundness(
+                cfp, snap_pl, claim_path=getattr(claim, "normalized_path", None))
+            if not sound["sound"]:
+                bad_reasons.append((f, sound["reason_code"]))
+        if bad_reasons:
+            f, reason = bad_reasons[0]
+            return _insufficient(
+                claim=claim, fact_ids=fids, hashes=hashes,
+                status_reason=reason or M.R_PARTIAL_CANNOT_REFUTE,
+                rule_version=rule_version, verified_at=verified_at,
+                detail="反证不满足准入条件，不得产生确定否定")
         return _verified(
             claim=claim, status=M.REFUTED, fact_ids=fids, hashes=hashes,
             rule_version=rule_version, verified_at=verified_at,

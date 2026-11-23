@@ -86,7 +86,11 @@ class TreeCollector:
                 return self._result(PARTIAL, reason="TREE_ENTRY_LIMIT_EXCEEDED")
             self.entries.append(self._norm_entry(e, depth=0))
 
-        return self._result(COMPLETE)
+        # ★ P0/D5：此处第一次调用是 recursive=True；未截断且未触及条目上限，
+        #   即整棵树（含所有子目录内容）已完整枚举 → COMPLETE。
+        #   历史快照被误标 COMPLETE 的问题由 tree_scope 派生视图校正，
+        #   不在这里把合法的递归结果错降为 PARTIAL。
+        return self._result(COMPLETE, reason="FULL_TREE_ENUMERATED")
 
     def _deep_walk(self, root_tree_sha: str) -> dict:
         """逐层遍历（受深度/条目/请求数上限）。逐层结果本身也不保证完整。"""

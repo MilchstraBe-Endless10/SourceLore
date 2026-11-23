@@ -21,6 +21,13 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from knowledge_store import KnowledgeStore
 
+# P0/D1+D2+D7：统一身份准入，重建 C 层时阻断跨仓库/占位污染。
+_HERE = Path(__file__).resolve().parent
+for _p in (str(_HERE.parent / "trust"),):
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
+import policy as TRUST
+
 INDEX_MISSING = "INDEX_MISSING"
 
 
@@ -83,11 +90,41 @@ def rebuild_index(store: KnowledgeStore) -> dict:
             cs = _resolve_commit_from_payload(r["payload_json"])
             if cid and cs:
                 claim_commit[(str(cid), str(r["repository_id"]))] = cs
+        # ★ P0/D1：先算每个仓库**可信快照**的 commit 集合。
+        #   只有 repository_snapshot 资产的 commit 才算已绑定仓库的真实版本；
+        #   Claim/Fact payload 里挂的 commit（可能是跨仓库或 aaaa… 占位）不算。
+        trusted_commits = {}
         for r in rows:
-            # ★ D-69：assets.commit_sha 实测**整列为 NULL**（各入库路径从不填它），
+            if r["asset_type"] != "repository_snapshot":
+                continue
+            cs = _resolve_commit_from_payload(r["payload_json"])
+            if cs:
+                trusted_commits.setdefault(str(r["repository_id"]), set()).add(cs)
+
+        quarantined = []
+        for r in rows:
+            # ★ P0/D1+D2：身份一致性准入。污染/占位资产不进 C 层，
+            #   但 A 层原封不动（只重建索引，不改权威资产）。
+            pl = None
+            try:
+                pl = _j.loads(r["payload_json"] or "{}")
+            except Exception:
+                pass
+            repo = str(r["repository_id"])
+            if isinstance(pl, dict) and r["asset_type"] != "repository_snapshot":
+                # repository_snapshot 自身是 commit 来源，不要求其 commit 落在 trusted 集合
+                check = TRUST.identity_check(
+                    pl, repository_id=repo,
+                    snapshot_commits=trusted_commits.get(repo, set()))
+                if not check["ok"]:
+                    quarantined.append({"asset_id": r["asset_id"],
+                                        "asset_type": r["asset_type"],
+                                        "reasons": check["reasons"]})
+                    continue
+            # D-69：assets.commit_sha 实测整列为 NULL（各入库路径从不填它），
             #   而 index_rows 的 commit 是写入时通过 _resolve_index_commit_sha
             #   从 payload 回退解析出来的。直接照抄 assets.commit_sha 会把原本
-            #   正确的索引**全部清成 NULL** —— 这不是重建，是毁索引。
+            #   正确的索引全部清成 NULL —— 这不是重建，是毁索引。
             #   此处复用同一套回退：source_snapshot → payload.commit_sha →
             #   payload.source_snapshot.*。payload 不可解析时保持 NULL 并计数。
             _csha = _resolve_commit_from_payload(r["payload_json"])
@@ -118,7 +155,10 @@ def rebuild_index(store: KnowledgeStore) -> dict:
         return {"ok": False, "error": "CHECKPOINT_CORRUPT", "detail": str(e)[:200]}
 
     a_after = _ab_fingerprint(store)
-    return {"ok": True, "indexed": len(rows),
+    return {"ok": True, "indexed": len(rows) - len(quarantined),
+            "source_assets": len(rows),
+            "quarantined_count": len(quarantined),
+            "quarantined": quarantined[:50],
             "a_b_unchanged": a_before == a_after,
             "fts5": store.fts5_available,
             "fingerprint": a_after}
@@ -155,8 +195,8 @@ def _decorate(store: KnowledgeStore, rows) -> list[dict]:
     out = []
     for r in rows:
         ptr = store.conn.execute(
-            "SELECT current_asset_id FROM current_view WHERE logical_identity=?",
-            (r["logical_identity"],)).fetchone()
+            "SELECT current_asset_id FROM current_view WHERE logical_identity=? "
+            "AND repository_id=?", (r["logical_identity"], r["repository_id"])).fetchone()
         is_current = bool(ptr and ptr["current_asset_id"] == r["asset_id"])
         out.append({"asset_id": r["asset_id"], "asset_type": r["asset_type"],
                     "logical_identity": r["logical_identity"],

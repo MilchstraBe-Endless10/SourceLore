@@ -5,13 +5,20 @@ from pathlib import Path
 
 SKILL = Path.home() / ".agents" / "skills" / "sourcelore" / "scripts" / "sourcelore.py"
 ROOT = Path(__file__).resolve().parents[2]
-DATA = "/tmp/p6b_real"
-COMMIT = "98e8ff1da1a89f93d1397a24d7413ed15421c139"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import installed_cli_fixture as FX
+
+COMMIT = FX.COMMIT
+# ★ 测试隔离：不再使用易失的 /tmp/p6b_real（早期人工验收残留，清理后无 kb.db）。
+#   每个测试类在自己的 tempfile data_root 里用原创夹具建最小知识库。
+DATA = None  # 由 setUpClass 赋值
 
 
-def run(*args, root=DATA):
+def run(*args, root=None):
     env = dict(os.environ)
-    env["SOURCELORE_DATA_ROOT"] = root
+    env["SOURCELORE_DATA_ROOT"] = str(root or DATA)
+    # 子进程不能继承宿主可能设置的工程根/数据根覆盖，否则夹具隔离失效
+    env.pop("SOURCELORE_PROJECT_ROOT", None)
     r = subprocess.run([sys.executable, str(SKILL), *args],
                        capture_output=True, text=True, env=env, timeout=120)
     try:
@@ -22,6 +29,17 @@ def run(*args, root=DATA):
 
 
 class TestInstalled(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        # 每个测试类独占一个 tempfile data_root，原创夹具建库；绝不复用真实库
+        cls._fixture = FX.FixtureRoot()
+        global DATA
+        DATA = cls._fixture.__enter__()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls._fixture.__exit__(None, None, None)
+
     def test_skill_exists(self):
         self.assertTrue(SKILL.exists(), "必须从安装目录运行，不能用内部函数")
 
