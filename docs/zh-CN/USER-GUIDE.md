@@ -1,5 +1,8 @@
 # SourceLore 使用手册
 
+新用户可先按照[快速入门](QUICKSTART.md)完成 CLI 和安装态 Skill 的工程根绑定，再使用本文详细命令。
+
+
 本文说明如何使用 SourceLore 分析 GitHub 仓库、查询知识库、生成知识卡片与用自然语言问答。所有命令均来自真实 CLI 的 `--help` 输出，未列在此处的参数不存在。若与本文有出入，以 `python3 <技能目录>/scripts/sourcelore.py <子命令> --help` 为准。
 
 前提：已按[安装指南](INSTALLATION.md)安装并验证。下文用 `sourcelore` 指代入口 `python3 <技能目录>/scripts/sourcelore.py`。

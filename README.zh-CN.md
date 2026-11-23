@@ -80,9 +80,13 @@ flowchart LR
 python3 <skill-dir>/scripts/sourcelore.py <子命令> [选项]
 ```
 
-知识库根目录默认 `~/.sourcelore/`，可用 `--data-root` 或 `SOURCELORE_DATA_ROOT` 覆盖。数据库文件 `kb.db` 永不写入源码仓库。
+知识库数据根按 `--data-root` → `SOURCELORE_DATA_ROOT` → `~/.config/sourcelore/config.json` 的 `data_root` → `~/.sourcelore/` 解析。数据库文件 `kb.db` 永不写入源码仓库。
 
 见 [安装指南](docs/zh-CN/INSTALLATION.md)。
+
+## 五分钟快速安装与使用
+
+请先阅读[中文快速入门](docs/zh-CN/QUICKSTART.md) / [English Quick Start](docs/en/QUICKSTART.md)。**下面的 `sourcelore` 是 CLI 的简写，并不是克隆仓库后自动可用的系统命令。** 需要先完成 Skill 安装并定义 shell 函数，或直接运行 `python3 ~/.agents/skills/sourcelore/scripts/sourcelore.py`。已安装 Skill 必须能通过安装标记或 `SOURCELORE_PROJECT_ROOT` 找回工程根。
 
 ## 基础用法
 
@@ -90,7 +94,7 @@ python3 <skill-dir>/scripts/sourcelore.py <子命令> [选项]
 # 列出已登记仓库
 sourcelore repositories
 
-# 以固定 Commit 分析公开仓库（本地已有则离线复用）
+# 只在本地已有相应 Commit 快照时才能离线复用；首次采集请先运行 --plan 再按授权联网采集
 sourcelore analyze https://github.com/<owner>/<repo> --commit <sha> --offline
 
 # 查看仓库已登记知识

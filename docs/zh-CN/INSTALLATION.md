@@ -51,9 +51,9 @@ CLI 入口脚本会**自行定位 SourceLore 工程根**（也可用环境变量
 在把 Skill 安装到智能体之前，先确认脚本本身可执行：
 
 ```sh
-python3 <技能目录>/scripts/sourcelore.py --version
-python3 <技能目录>/scripts/sourcelore.py --help
-python3 <技能目录>/scripts/sourcelore.py help
+python3 "<工程根>/skill/sourcelore/scripts/sourcelore.py" --version
+python3 "<工程根>/skill/sourcelore/scripts/sourcelore.py" --help
+python3 "<工程根>/skill/sourcelore/scripts/sourcelore.py" help
 ```
 
 `--version` 返回 JSON，形如：
@@ -85,13 +85,16 @@ export SOURCELORE_PROJECT_ROOT="<工程根>"
 Skill 由平台的文件系统发现机制加载。把 `<工程根>/skill/sourcelore/` **整个目录**复制到智能体的 Skill 发现目录，例如：
 
 ```sh
-cp -r <工程根>/skill/sourcelore ~/.agents/skills/sourcelore
+# 已安装 Skill 不应再复制一层 sourcelore/sourcelore；请先检查目标目录
+mkdir -p "$HOME/.agents/skills"
+# 首次安装时：cp -a "<工程根>/skill/sourcelore" "$HOME/.agents/skills/sourcelore"
+# 完整可执行安装（含工程根标记）请见 docs/zh-CN/QUICKSTART.md
 ```
 
 要点：
 
 - 入口 `SKILL.md` 必须有 `name` 与 `description` 两个 frontmatter 字段；`description` 中要包含明确的触发语，平台才能据文件系统发现机制热加载。
-- 文件系统发现是**热加载**的，无需重启智能体。
+- 部分宿主支持热加载，另一些需要开启新会话或刷新 Skill 索引；不要仅凭文件存在就认定该会话已调用成功。
 - 发现机制通常只扫描 `<发现根>/<名称>/SKILL.md` 这样的直属 bundle，安装层级必须严格，不能多套一层目录。
 
 ### 4.1 用户级与项目级发现根
@@ -125,6 +128,8 @@ md5sum <工程根>/skill/sourcelore/SKILL.md \
 三行的哈希值应当相同。
 
 ---
+
+**特别重要：**复制到 `~/.agents/skills/sourcelore/` 的 launcher 不再位于工程源码树内。必须设置 `SOURCELORE_PROJECT_ROOT`，或在安装态 Skill 根目录创建 `.sourcelore-skill.json`（格式 `{"project_root":"/绝对路径/SourceLore"}`），否则可能报“找不到工程根”。完整且安全的写入方法见[快速入门](QUICKSTART.md)。
 
 ## 5. 配置知识库数据根
 

@@ -51,9 +51,9 @@ Clone or copy the SourceLore project into a fixed local directory. Below, `<proj
 Before installing the Skill into an agent, confirm the script itself is runnable:
 
 ```sh
-python3 <skill-dir>/scripts/sourcelore.py --version
-python3 <skill-dir>/scripts/sourcelore.py --help
-python3 <skill-dir>/scripts/sourcelore.py help
+python3 "<project-root>/skill/sourcelore/scripts/sourcelore.py" --version
+python3 "<project-root>/skill/sourcelore/scripts/sourcelore.py" --help
+python3 "<project-root>/skill/sourcelore/scripts/sourcelore.py" help
 ```
 
 `--version` returns JSON such as:
@@ -85,13 +85,16 @@ export SOURCELORE_PROJECT_ROOT="<project-root>"
 The Skill is loaded by the platform's filesystem discovery mechanism. Copy the **entire** `<project-root>/skill/sourcelore/` directory into the agent's Skill discovery directory, for example:
 
 ```sh
-cp -r <project-root>/skill/sourcelore ~/.agents/skills/sourcelore
+# Do not accidentally create sourcelore/sourcelore in an existing destination
+mkdir -p "$HOME/.agents/skills"
+# First install: cp -a "<project-root>/skill/sourcelore" "$HOME/.agents/skills/sourcelore"
+# For complete commands and root-marker creation see docs/en/QUICKSTART.md
 ```
 
 Key points:
 
 - The entry point `SKILL.md` must carry both `name` and `description` frontmatter fields; the `description` should contain explicit trigger phrases so the filesystem discovery mechanism can hot-load it.
-- Filesystem discovery is **hot-loaded**; restarting the agent is not required.
+- Discovery depends on the host; some hot-load while others require a new conversation or an index refresh. Verify the actual Skill tool trace rather than assuming success.
 - Discovery usually scans only direct bundles of the form `<discovery-root>/<name>/SKILL.md`, so the installation depth must be exact — do not add an extra nesting level.
 
 ### 4.1 User-level and project-level discovery roots
@@ -125,6 +128,8 @@ md5sum <project-root>/skill/sourcelore/SKILL.md \
 All three lines should show the same hash.
 
 ---
+
+**Important:** the launcher copied under `~/.agents/skills/sourcelore/` is no longer inside the source checkout. It must have `SOURCELORE_PROJECT_ROOT` or an installed `.sourcelore-skill.json` marker containing `{"project_root":"/absolute/path/to/SourceLore"}`. Otherwise it may fail to locate the project root. Use the validated [Quick Start](QUICKSTART.md) for safe marker creation.
 
 ## 5. Configure the knowledge-base data root
 

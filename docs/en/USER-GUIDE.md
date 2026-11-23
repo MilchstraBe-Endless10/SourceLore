@@ -1,5 +1,8 @@
 # SourceLore User Guide
 
+New users should first follow the [Quick Start](QUICKSTART.md) to install the Skill with a valid source-root binding before using this detailed command reference.
+
+
 This guide explains how to use SourceLore to analyze GitHub repositories, query the knowledge base, generate knowledge cards and ask questions in natural language. Every command here comes from the real CLI `--help` output; options not listed here do not exist. If there is any discrepancy, the authoritative source is `python3 <skill-dir>/scripts/sourcelore.py <subcommand> --help`.
 
 Prerequisite: installed and verified as described in the [Installation Guide](INSTALLATION.md). Below, `sourcelore` denotes the entry point `python3 <skill-dir>/scripts/sourcelore.py`.

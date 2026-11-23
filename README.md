@@ -80,9 +80,13 @@ Copy the `skill/sourcelore/` directory into the agent's skill directory (e.g. `~
 python3 <skill-dir>/scripts/sourcelore.py <subcommand> [options]
 ```
 
-The knowledge database root defaults to `~/.sourcelore/` and can be overridden with `--data-root` or `SOURCELORE_DATA_ROOT`. The database file `kb.db` is never written into the source repository.
+The data root is resolved in order: `--data-root` → `SOURCELORE_DATA_ROOT` → `~/.config/sourcelore/config.json` (`data_root`) → `~/.sourcelore/`. The database file `kb.db` is never written into the source repository.
 
 See [docs/en/INSTALLATION.md](docs/en/INSTALLATION.md).
+
+## Five-minute setup
+
+Start with the [English Quick Start](docs/en/QUICKSTART.md) / [中文快速入门](docs/zh-CN/QUICKSTART.md). **The `sourcelore` examples below are CLI shorthand, not a system binary installed by cloning this repository.** Install the Skill and create the shell function, or invoke `python3 ~/.agents/skills/sourcelore/scripts/sourcelore.py` directly. The installed launcher needs a root marker or `SOURCELORE_PROJECT_ROOT` to locate the source checkout.
 
 ## Basic usage
 
@@ -90,7 +94,7 @@ See [docs/en/INSTALLATION.md](docs/en/INSTALLATION.md).
 # What repositories are registered
 sourcelore repositories
 
-# Analyze a public repository at a fixed commit (offline if already cached)
+# Offline reuse requires a matching cached snapshot; first use --plan and then authorized online capture
 sourcelore analyze https://github.com/<owner>/<repo> --commit <sha> --offline
 
 # Inspect a repository's registered knowledge
