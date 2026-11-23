@@ -31,6 +31,7 @@ SourceLore 是一个**本地知识库工具**，不是模型服务。它做的�
 | 只用本地知识，禁止联网 | `analyze <url> --offline` |
 | 强制重新获取远程版本 | `analyze <url> --refresh` |
 | 有哪些已建的仓库 | `repositories` |
+| 介绍/使用/架构等自然语言问答（内容优先，只读） | `answer <repository_id> "<问题>"` |
 | 看看这个仓库的知识 | `inspect <repository_id>` |
 | 这个 Commit 里 X 存在吗 | `query <repo_id> --commit <sha> --type path --path X` |
 | 有哪些已登记命题 | `query <repo_id> --commit <sha> --type claims` |

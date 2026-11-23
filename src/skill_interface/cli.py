@@ -92,6 +92,11 @@ def build_parser():
     d = sub.add_parser("derive", help="生成仓库派生视图与项目知识文档（离线，不联网）")
     d.add_argument("repository_id", nargs="?", help="仓库 ID；省略则处理全部仓库")
 
+    k = sub.add_parser("answer", help="面向用户的知识问答（内容优先，只读零网络）")
+    k.add_argument("repository_id")
+    k.add_argument("question", help="自然语言问题，如「介绍这个项目」「怎么使用」")
+    k.add_argument("--commit", default=None, help="固定 Commit；默认取最新已登记快照")
+
     c = sub.add_parser("card", help="查看知识（默认输出 Bot 内呈现文本块）")
     c.add_argument("--repository-id", required=True)
     c.add_argument("--claim-id", default=None)
@@ -327,6 +332,12 @@ def _dispatch(cmd, args):
             return emit_ok(_one)
         _all = DR.derive_all(data_root=_root)
         return emit_ok({"ok": all(x.get("ok") for x in _all), "results": _all})
+
+    if cmd == "answer":
+        import knowledge_answer as KA
+        return emit_ok(KA.answer(
+            repository_id=args.repository_id, question=args.question,
+            data_root=root, commit_sha=getattr(args, "commit", None)))
 
     if cmd == "card":
         has_content = any(getattr(args, k, None) for k in

@@ -183,6 +183,10 @@ _JS_FUNC = re.compile(
     r"^\s*(?:async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(", re.M)
 _PY_DEF = re.compile(r"^\s*def\s+([A-Za-z_]\w*)\s*\(", re.M)
 _PY_CLASS = re.compile(r"^\s*class\s+([A-Za-z_]\w*)", re.M)
+# CommonJS 匿名默认导出（is-number 用 module.exports = function(num){...}）
+_JS_CJS_ANON = re.compile(
+    r"^\s*module\.exports\s*=\s*(?:async\s+)?function\s*\(\s*([A-Za-z_$][\w$]*)\s*\)",
+    re.M)
 
 
 def extract_symbols_from_source(path, text):
@@ -217,6 +221,15 @@ def extract_symbols_from_source(path, text):
             out.append({"name": "*", "kind": "re_export",
                         "export_kind": "star", "target": m.group(1),
                         "line": line, "path": path})
+        for m in _JS_CJS_ANON.finditer(text):
+            # ★ 匿名函数不编造名字：用一个显式的 anonymous 标记，
+            #   并把参数名作为可陈述的字面观察，不推断函数用途。
+            line = text[:m.start()].count("\n") + 1
+            out.append({
+                "name": "(anonymous function)", "kind": "js_function",
+                "export_kind": "commonjs_default", "param": m.group(1),
+                "line": line, "path": path,
+            })
     elif low.endswith(".py"):
         for m in _PY_DEF.finditer(text):
             out.append({"name": m.group(1), "kind": "function",
@@ -239,7 +252,7 @@ def extract_symbols_from_source(path, text):
 
 def build_overview(*, repo_name, commit_sha, tree_entries, readme_path,
                    readme_sections, manifest, manifest_path, code_rows,
-                   claims, coverage_note, source_symbols=None):
+                   claims, coverage_note, source_symbols=None, texts=None):
     secs = []
 
     # 1) 项目用途：直接引 README 首段（有证据）
@@ -345,6 +358,45 @@ def build_overview(*, repo_name, commit_sha, tree_entries, readme_path,
                      "也未采集到可解析的源文件正文；"
                      "这不代表项目没有导出。"),
             "refs": [],
+        })
+
+    # 3b) 核心实现观察（逐字引用已捕获源码，不推断运行行为）
+    # ★ 验收项：能解释至少一个真实核心函数及其源码来源。
+    #   只对「源文件正文已采集」且能定位函数体的情形给出；否则留白，不编造。
+    impl_obs = []
+    for x in (source_symbols or []):
+        if x.get("kind") not in ("js_function", "function") or not x.get("path"):
+            continue
+        txt = (texts or {}).get(x["path"])
+        # 直接从已采文本按行取函数体（最多 12 行），逐字引用，不改写成结论
+        body_text = None
+        if txt:
+            lines = txt.splitlines()
+            start = int(x.get("line") or 1) - 1
+            chunk = lines[start:start + 12]
+            body_text = "\n".join(chunk).strip()
+        if body_text:
+            impl_obs.append({
+                "name": x.get("name"), "path": x.get("path"),
+                "line": x.get("line"), "digest": x.get("digest"),
+                "snippet": body_text,
+            })
+    if impl_obs:
+        lines = ["以下为**直接从已采集源文件逐字摘录**的核心函数片段，"
+                 "只陈述字面代码，不推断运行结果：", ""]
+        refs = []
+        for o in impl_obs[:3]:
+            lines.append(f"**`{o['path']}`:{o['line']}** `{o['name']}`：")
+            lines.append("```js")
+            lines.append(o["snippet"])
+            lines.append("```")
+            lines.append("")
+            if o.get("digest"):
+                refs.append({"kind": "blob", "digest": o["digest"],
+                             "path": o["path"], "line": o["line"]})
+        secs.append({
+            "section_id": "core_impl", "heading": "核心实现（源码逐字摘录）",
+            "body": "\n".join(lines), "refs": refs,
         })
 
     # 4) 知识覆盖范围与限制
@@ -602,7 +654,7 @@ def mine_project_knowledge(*, store, repository_id, commit_sha, tree_entries,
                        readme_sections=readme_sections, manifest=manifest,
                        manifest_path=manifest_path, code_rows=code_rows,
                        claims=claims, coverage_note=coverage_note,
-                       source_symbols=source_symbols),
+                       source_symbols=source_symbols, texts=texts),
         build_readme_doc(repo_name=repo_name, commit_sha=commit_sha,
                          readme_path=readme_path,
                          readme_sections=readme_sections),
