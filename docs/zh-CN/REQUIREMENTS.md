@@ -11,7 +11,9 @@
 
 本文档定义 SourceLore 的功能需求与非功能需求，作为实现、验收与审计的共同基线。SourceLore 是一个**本地 GitHub 知识库工具**：它对公开仓库的**固定 Commit** 进行只读采集，把"某路径是否存在""某文件是否声明了某符号"这类**可验证的路径观察命题**登记为 Fact，用既有裁决规则给出 `supported` / `refuted` / `insufficient_evidence` 结论，并保留全部证据引用与限制，供 OpenBot / DSH / Hermes 通过 Skill + CLI 调用。
 
-明确不在范围内：运行时行为分析、完整函数调用图、依赖是否已安装、测试是否通过、代码质量评价、功能是否实现、对外公开发布，以及任何第三方代码的执行。
+明确不在范围内：运行时行为分析、完整函数调用图、依赖是否已安装、测试是否通过、代码质量评价、功能是否实现、对外再分发第三方知识产物，以及任何第三方代码的执行。
+
+所有者希望将 **SourceLore 第一方源码仓库公开**；该事项独立登记在[公开发布准备](PUBLIC-RELEASE.md)，不代表允许对外分发采集的第三方内容。
 
 本文档不编造历史决策；凡涉及设计取舍，仅陈述当前代码中可验证的机制。
 
@@ -469,7 +471,7 @@ flowchart LR
 | 递归子目录采集 | `BLOCKED`（GitHub API 配额） | 当前范围 `ROOT_ONLY`，`src/trust/tree_scope.py` |
 | 完整函数调用图 | `PLANNED` / `NOT_VERIFIED` | 明确不做；`README.md` 与 Skill 文档 |
 | 运行时行为分析 | `PLANNED` / `NOT_VERIFIED` | 不执行仓库代码；SL-NFR-001 |
-| 对外公开发布 | `BLOCKED` | B-1/B-2/B-3 未闭环，`distribution_allowed=false` |
+| 对外分发第三方知识产物 | `BLOCKED` | B-1/B-2/B-3 未闭环，`distribution_allowed=false`；与第一方仓库可见性分开判断 |
 | 功能实现 / 测试覆盖 / 代码质量结论 | 不提供 | 超出路径观察范围 |
 | 全量 Blob 内容分析 | 不提供 | 内容抽取仅限有限解析器与预算 |
 

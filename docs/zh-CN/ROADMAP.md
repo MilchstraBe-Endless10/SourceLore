@@ -1,5 +1,7 @@
 # SourceLore 路线图
 
+> **发布边界：** 公开 SourceLore 第一方源码仓库，与对外分发第三方采集知识，是两种不同决策。前者仍需 Git 历史隐私和许可证核查；后者受运行时门禁阻断。见[公开发布准备](PUBLIC-RELEASE.md)。
+
 本文说明 SourceLore 已完成、部分完成、未实现与未来扩展的状态。状态严格采用需求文档词汇：`IMPLEMENTED`（已实现）、`PARTIAL`（部分完成）、`PLANNED`（规划中）、`BLOCKED`（受阻）、`NOT_VERIFIED`（未验证）。英文版见 [docs/en/ROADMAP.md](../en/ROADMAP.md)，事实、接口与状态与本文完全一致。
 
 ## 1. 状态总览
@@ -14,7 +16,7 @@
 | P1 内容问答层（`answer`） | IMPLEMENTED |
 | 递归子目录采集 | PARTIAL（`recursive` 参数已实现，受 GitHub API 配额阻断） |
 | 深层内容覆盖 | PARTIAL（三仓库仅采 3/4/9 文件） |
-| 源码 `imports` 关系 | PARTIAL（`imports=0`，仅抓少量源文件） |
+| 源码 `imports` 关系 | PARTIAL（此前 Preact 快照已登记 43 条 import 事实、40 条静态模块关系；仅覆盖已采集源码，尚非完整图谱） |
 | README 语义解析 | PARTIAL（偏结构观察） |
 | `answer` 接入 AST Facts / LLM | PLANNED |
 | 完整调用图 / 运行时分析 | PLANNED（当前明确不做） |

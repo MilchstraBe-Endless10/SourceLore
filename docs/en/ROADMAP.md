@@ -1,5 +1,7 @@
 # SourceLore Roadmap
 
+> **Publication distinction:** making SourceLore's own source repository public is a separate release activity from distributing third-party captured knowledge. The former requires a historical privacy and license audit; the latter remains blocked by the runtime gates. See [Public release readiness](PUBLIC-RELEASE.md).
+
 This document describes what SourceLore has completed, partially completed, not yet implemented, and plans to extend. Statuses strictly follow the requirements-document vocabulary: `IMPLEMENTED`, `PARTIAL`, `PLANNED`, `BLOCKED`, and `NOT_VERIFIED`. The Chinese version is [docs/zh-CN/ROADMAP.md](../zh-CN/ROADMAP.md); facts, interfaces, and statuses are identical in both languages.
 
 ## 1. Status overview
@@ -14,7 +16,7 @@ This document describes what SourceLore has completed, partially completed, not 
 | P1 content Q&A layer (`answer`) | IMPLEMENTED |
 | Recursive subtree capture | PARTIAL (`recursive` parameter implemented, blocked by GitHub API quota) |
 | Deep content coverage | PARTIAL (only 3/4/9 files captured across three repositories) |
-| Source `imports` relations | PARTIAL (`imports=0`; only a few source files captured) |
+| Source `imports` relations | PARTIAL (previous Preact snapshot reported 43 import facts and 40 static module relations; coverage is limited to captured source, not a full graph) |
 | README semantic parsing | PARTIAL (skewed toward structural observation) |
 | `answer` wired to AST Facts / LLM | PLANNED |
 | Full call graph / runtime analysis | PLANNED (explicitly out of scope for now) |

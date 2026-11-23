@@ -11,7 +11,9 @@
 
 This document defines the functional and non-functional requirements of SourceLore as a shared baseline for implementation, acceptance, and audit. SourceLore is a **local GitHub knowledge-base tool**: it performs read-only collection of a public repository at a **fixed commit**, registers verifiable path-observation propositions ("does this path exist?", "does this file declare this symbol?") as Facts, applies existing adjudication rules to yield `supported` / `refuted` / `insufficient_evidence`, and retains all evidence references and limitations for consumption by OpenBot / DSH / Hermes through a Skill + CLI.
 
-Explicitly out of scope: runtime behavior analysis, a complete function call graph, whether dependencies are installed, whether tests pass, code-quality assessment, whether features are implemented, public distribution, and execution of any third-party code.
+Explicitly out of scope: runtime behavior analysis, a complete function call graph, whether dependencies are installed, whether tests pass, code-quality assessment, whether features are implemented, distribution of third-party knowledge outputs, and execution of any third-party code.
+
+The owner's goal of making the **first-party SourceLore source repository public** is tracked separately in [Public release readiness](PUBLIC-RELEASE.md); it does not authorize redistribution of captured third-party material.
 
 This document does not invent historical decisions. Where design trade-offs are discussed, only mechanisms verifiable in the current code are stated.
 
@@ -469,7 +471,7 @@ The following must never be described as complete in any output:
 | Recursive subdirectory collection | `BLOCKED` (GitHub API quota) | Current scope `ROOT_ONLY`, `src/trust/tree_scope.py` |
 | Complete function call graph | `PLANNED` / `NOT_VERIFIED` | Explicitly out of scope; `README.md` and Skill documentation |
 | Runtime behavior analysis | `PLANNED` / `NOT_VERIFIED` | Repository code is never executed; SL-NFR-001 |
-| Public distribution | `BLOCKED` | B-1/B-2/B-3 unresolved, `distribution_allowed=false` |
+| External distribution of third-party knowledge outputs | `BLOCKED` | B-1/B-2/B-3 unresolved, `distribution_allowed=false`; separate from first-party repository visibility |
 | Feature-implementation / test-coverage / code-quality conclusions | Not provided | Beyond path-observation scope |
 | Full Blob content analysis | Not provided | Extraction limited to the finite parser set and budgets |
 

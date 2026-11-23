@@ -88,7 +88,7 @@ The knowledge-base data root defaults to `~/.sourcelore/` and can be overridden 
 ### 3.4 Areas not hardened (recorded honestly)
 
 - The database file is created with the default `0644` permissions and directories with `0755`; **no additional permission hardening is applied**. On a multi-user host this is an item for the operator to evaluate; the tool makes no claim of isolation.
-- The project **has not chosen an open-source license** and is currently for internal use only; there is no authorization for public release.
+- The project **has not chosen a first-party open-source license**. Its source repository remains private pending historical privacy and licensing review; the owner has requested eventual public visibility. This decision is separate from blocked redistribution of third-party knowledge. See [Public release readiness](PUBLIC-RELEASE.md).
 
 ## 4. Privacy
 
@@ -111,7 +111,7 @@ The knowledge-base data root defaults to `~/.sourcelore/` and can be overridden 
 
 ## 7. Distribution restrictions
 
-All output (knowledge cards, reports, project documents) is **internal preview only**: `distribution_allowed=false`, `copy_permitted=false`, and distribution gates B-1/B-2/B-3 remain open. Any external distribution must first resolve these three gates and the licensing questions and complete human P-3 / P-4 approval; no compliant public distribution path exists at present.
+All third-party-derived knowledge output (knowledge cards, reports, repository-derived documents) is **internal preview only**: `distribution_allowed=false`, `copy_permitted=false`, and distribution gates B-1/B-2/B-3 remain open. Any external distribution must first resolve these three gates and the licensing questions and complete human P-3 / P-4 approval; no compliant public distribution path exists at present.
 
 ## 8. Trust rules (evidence-related)
 
