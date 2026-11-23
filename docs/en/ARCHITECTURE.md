@@ -1,5 +1,9 @@
 # SourceLore System Architecture
 
+![SourceLore diagram](../assets/sourcelore-architecture.svg)
+
+> Schematic illustration, not a runtime test or a claim of complete feature coverage.
+
 > This document describes the **current implementation**, evidenced from `src/` source code, `tests/`, and the design records under `docs/implementation/` and `docs/fusion/`. Every architectural conclusion is traceable to a source path or design record; historical planning is kept separate from current behavior, with no speculation. Commands, status codes, and enum values are kept verbatim from the source.
 
 ## 5.1 Overall Architecture

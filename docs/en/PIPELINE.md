@@ -1,5 +1,9 @@
 # SourceLore Pipeline
 
+![SourceLore diagram](../assets/sourcelore-pipeline.svg)
+
+> Schematic illustration, not a runtime test or a claim of complete feature coverage.
+
 > This document describes the real path a repository takes from "public GitHub repository" to "queryable, citable project knowledge", together with the CLI commands, status codes and recovery at each step. Commands come from the real CLI `--help` and source code (`src/skill_interface/cli.py`, `src/collector/`, `src/runtime/`); where this document differs, the actual `--help` output wins. For design trade-offs see [Design rationale](DESIGN-RATIONALE.md); for structure see [Architecture](ARCHITECTURE.md).
 
 ---

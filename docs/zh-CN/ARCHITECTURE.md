@@ -1,5 +1,9 @@
 # SourceLore 系统架构
 
+![SourceLore diagram](../assets/sourcelore-architecture.svg)
+
+> 概念示意图，不等于完整功能或运行验收；具体能力与限制以本文为准。
+
 > 本文描述**当前实现**，依据 `src/` 源码、`tests/` 与 `docs/implementation/`、`docs/fusion/` 设计记录取证。每条结论都标注了可核对的源码路径或设计记录；历史规划与当前实现分开陈述，不做推测。命令、状态码、枚举值一律保持源码原文。
 
 ## 5.1 总体架构

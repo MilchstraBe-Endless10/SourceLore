@@ -1,5 +1,9 @@
 # SourceLore 处理流水线
 
+![SourceLore diagram](../assets/sourcelore-pipeline.svg)
+
+> 概念示意图，不等于完整功能或运行验收；具体能力与限制以本文为准。
+
 > 本文描述一条仓库知识从「公开 GitHub 仓库」到「可查询、可引用的项目知识」的真实处理路径，以及每步的 CLI 命令、状态码与恢复方式。命令来自真实 CLI 的 `--help` 与源码（`src/skill_interface/cli.py`、`src/collector/`、`src/runtime/`）；若与本文有出入，以实际 `--help` 输出为准。设计取舍见 [设计思路](DESIGN-RATIONALE.md)，结构见 [系统架构](ARCHITECTURE.md)。
 
 ---

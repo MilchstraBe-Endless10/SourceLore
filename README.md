@@ -1,5 +1,8 @@
 # SourceLore
 
+![SourceLore knowledge architecture](docs/assets/sourcelore-hero.svg)
+
+
 [简体中文](README.zh-CN.md) · English
 
 > A local, evidence-grounded GitHub knowledge base for AI agents — versioned by fixed commit, queryable offline, and designed to be auditable rather than plausible.
@@ -37,6 +40,9 @@ One-shot LLM summaries of a repository are not reproducible, cannot be re-querie
 Statuses follow the vocabulary `IMPLEMENTED` / `PARTIAL` / `PLANNED` / `BLOCKED` / `NOT_VERIFIED` used in the requirements document. See [docs/en/REQUIREMENTS.md](docs/en/REQUIREMENTS.md) for the per-feature matrix with source references.
 
 ## Architecture at a glance
+
+![SourceLore architecture](docs/assets/sourcelore-architecture.svg)
+
 
 ```mermaid
 flowchart LR
@@ -113,6 +119,9 @@ Run `sourcelore help` or `sourcelore <subcommand> --help` for the authoritative 
 
 ## Evidence and trust
 
+![SourceLore trust and evidence model](docs/assets/sourcelore-trust.svg)
+
+
 SourceLore separates three counts that must not be conflated: the number of immutable verification **assets**, the number of **current** adjudications adopted by the current view, and the number of **trustworthy findings** after evidence-integrity gating (with untrustworthy claims excluded). A `supported` verdict always carries a `review_status` (`pending_review` means a CLI adjudication, not human confirmation).
 
 Key rules (enforced by `src/trust/policy.py`):
@@ -124,6 +133,10 @@ Key rules (enforced by `src/trust/policy.py`):
 - `ROOT_ONLY` means only the repository root was enumerated; it is never presented as full `COMPLETE` coverage. Missing content is "not analyzed", not "does not exist".
 
 See [docs/en/SECURITY.md](docs/en/SECURITY.md) and [docs/zh-CN/DESIGN-RATIONALE.md](docs/zh-CN/DESIGN-RATIONALE.md).
+
+## Public release readiness
+
+The maintainer intends to make SourceLore's first-party code public. This GitHub repository remains **private** pending an audit of historical local paths and an explicit first-party license decision. **Repository visibility and the `distribution_allowed=false` policy for third-party knowledge output are separate decisions.** See [public release readiness](docs/en/PUBLIC-RELEASE.md) / [简体中文](docs/zh-CN/PUBLIC-RELEASE.md).
 
 ## Limitations
 

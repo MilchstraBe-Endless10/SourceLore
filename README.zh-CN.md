@@ -1,5 +1,8 @@
 # SourceLore
 
+![SourceLore knowledge architecture](docs/assets/sourcelore-hero.svg)
+
+
 简体中文 · [English](README.md)
 
 > 面向 AI Agent 的本地、证据可核查的 GitHub 知识库：以固定 Commit 为版本基础，可离线查询，设计目标是"可审计"而非"说得像"。
@@ -37,6 +40,9 @@ SourceLore 把一个公开 GitHub 仓库变成**版本化、可查询的知识�
 状态采用需求文档中的 `IMPLEMENTED` / `PARTIAL` / `PLANNED` / `BLOCKED` / `NOT_VERIFIED` 词汇。逐项状态与源码依据见 [需求规格](docs/zh-CN/REQUIREMENTS.md)。
 
 ## 架构概览
+
+![SourceLore architecture](docs/assets/sourcelore-architecture.svg)
+
 
 ```mermaid
 flowchart LR
@@ -113,6 +119,9 @@ sourcelore card --repository-id <repository_id> --claim-id <claim_id>
 
 ## 证据与可信性
 
+![SourceLore trust and evidence model](docs/assets/sourcelore-trust.svg)
+
+
 SourceLore 严格区分三个不可混为一谈的计数：不可变 verification **资产数**、当前视图采纳的**当前裁决数**、证据完整性门禁后的**可采信 findings 数**（不可信 Claim 被排除）。任何 `supported` 都带 `review_status`：`pending_review` 表示 CLI 裁决，非人工确认。
 
 关键规则（由 `src/trust/policy.py` 强制执行）：
@@ -124,6 +133,10 @@ SourceLore 严格区分三个不可混为一谈的计数：不可变 verificatio
 - `ROOT_ONLY` 表示只枚举了仓库根目录，绝不表述为完整 `COMPLETE` 覆盖；缺少内容属于"未分析"，不是"不存在"。
 
 见 [安全与授权](docs/zh-CN/SECURITY.md) 与 [设计思路](docs/zh-CN/DESIGN-RATIONALE.md)。
+
+## 公开发布准备
+
+维护者已要求将 SourceLore 第一方工程代码公开。目前 GitHub 仓库仍为 Private，尚需处理 Git 历史中的本机路径与第一方许可证决定。**仓库可见性与第三方知识数据的 `distribution_allowed=false` 是两项不同的决策。** 见[公开发布核查](docs/zh-CN/PUBLIC-RELEASE.md) / [English](docs/en/PUBLIC-RELEASE.md)。
 
 ## 限制
 

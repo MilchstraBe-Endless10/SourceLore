@@ -1,5 +1,9 @@
 # SourceLore 安全与授权
 
+![SourceLore diagram](../assets/sourcelore-trust.svg)
+
+> 概念示意图，不等于完整功能或运行验收；具体能力与限制以本文为准。
+
 本文说明 SourceLore 的安全边界、授权模型、数据处理规则与已知未加强项。文中每一项事实都对应源码或既有验收产物；凡未加强、未验证或已知风险，均如实标注，不作夸大陈述。英文版见 [docs/en/SECURITY.md](../en/SECURITY.md)，事实、接口与状态与本文完全一致。
 
 ## 1. 适用范围与威胁模型

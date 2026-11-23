@@ -1,5 +1,9 @@
 # SourceLore Security and Authorization
 
+![SourceLore diagram](../assets/sourcelore-trust.svg)
+
+> Schematic illustration, not a runtime test or a claim of complete feature coverage.
+
 This document describes SourceLore's security boundaries, authorization model, data-handling rules, and known areas that have not been hardened. Every factual statement here is grounded in source code or existing acceptance artifacts; anything unhardened, unverified, or a known risk is labeled as such rather than overstated. The Chinese version is [docs/zh-CN/SECURITY.md](../zh-CN/SECURITY.md); facts, interfaces, and statuses are identical in both languages.
 
 ## 1. Scope and threat model
