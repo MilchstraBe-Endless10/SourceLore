@@ -426,3 +426,10 @@ query <rid> --commit <sha> --type relation [--path P] [--module SPEC]
 11. **清单声明依赖 ≠ 依赖已安装；缺少声明 ≠ 项目未使用。**
 12. **存在 test 脚本 ≠ 测试已通过。**
 13. 内容事实只覆盖已抽取范围；**未抽取路径不得推断为不存在**。
+14. **证据完整性必须单独报告**：`FULLY_LOCATABLE` 才说证据可逐条核对；`PARTIALLY_LOCATABLE`（含 `github:blobs` 等无法解析引用）只能说证据链不完整；`untrusted_findings[]` 里的 Claim 已被排除，不得当结论。
+15. **报告 `supported` 时同时给出 `review_status`**：`pending_review` 表示 CLI 裁决、尚未人工复核，不可说"已确认"。
+16. **核对 Claim 的 `commit_sha` 是否属于该仓库已登记 Commit**：出现占位 Commit 或其他仓库的 Commit 属数据异常，只报"已登记、无验证"，不得据此下结论。
+17. **退出码 0 / `ok:true` 不等于知识可信**：审计类请求必须以原始资产复核为准，不得用退出码代替可信性验收。
+18. **报告 `supported`/`refuted` 前先按 `current_view` 当前指针过滤**：query 可能返回未被当前指针采纳的历史 Verification，只可作诊断不可作结论。
+19. **A 层不可变**（触发器拦截更新/删除）；任何修复走新增版本 + 隔离视图 + 重新派生，不得建议直接覆盖权威资产。审计结束即停止、等待批准。
+20. **介绍/使用/架构类问题用 `answer`，不要直接回 query 的 Fact/Claim 统计报告**：普通用户要的是用途、安装、示例、模块职责；审计字段（Fact/Verification/覆盖统计）只在用户明确问"为什么可信 / 检查完整性"时给。见 `references/content-qa.md`。

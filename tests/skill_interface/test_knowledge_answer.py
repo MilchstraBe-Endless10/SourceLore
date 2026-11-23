@@ -112,6 +112,19 @@ class TestAnswerContent(unittest.TestCase):
         self.assertTrue(isinstance(ev.get("audit"), dict))
         self.assertIn("verdict_distribution", ev["audit"])
 
+    def test_audit_uses_current_view_only(self):
+        """审计统计必须只含当前视图采纳的 verification（P0 规则18）。"""
+        for name, rid in RIDS.items():
+            with self.subTest(repo=name):
+                rc, d = _run_answer(rid, "为什么这个结论可信")
+                self.assertEqual(rc, 0, d)
+                a = d["audit"]
+                self.assertIn("current_verification_count", a)
+                self.assertLessEqual(a["current_verification_count"],
+                                     a["verification_count"])
+                self.assertEqual(a["current_verification_count"],
+                                 sum(a["verdict_distribution"].values()))
+
     def test_all_three_repos_answer(self):
         for name, rid in RIDS.items():
             with self.subTest(repo=name):

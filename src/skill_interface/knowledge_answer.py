@@ -221,15 +221,37 @@ def answer(*, repository_id, question, data_root, store=None, commit_sha=None):
         audit = None
         if intent in ("evidence", "completeness"):
             from collections import Counter
+            import sys as _sys
+            from pathlib import Path as _Path
+            _trust_dir = str(_Path(__file__).resolve().parents[1] / "trust")
+            if _trust_dir not in _sys.path:
+                _sys.path.insert(0, _trust_dir)
+            import policy as TRUST
+
+            # ★ P0 规则：verification 必须按 current_view 当前指针过滤，
+            #   未被当前指针采纳的历史 Verification 不得混入审计统计。
+            current_ids = set(TRUST.current_asset_ids(
+                store, repository_id=str(repository_id),
+                asset_type="claim_verification").values())
             verdict = Counter()
-            # 用当前视图采纳的 verification（P0 规则：不入历史裁决）
             for v in verifs:
-                status = v.get("status")
-                if status:
-                    verdict[status] += 1
+                # 从 A 层 payload 反查该 verification 的 asset_id，
+                # 只统计被当前指针采纳的那些
+                vid = (v.get("verification_id") or
+                       v.get("logical_identity"))
+                if not vid:
+                    continue
+                row = store.conn.execute(
+                    "SELECT asset_id FROM assets WHERE asset_type='claim_verification' "
+                    "AND repository_id=? AND logical_identity=? "
+                    "ORDER BY CAST(asset_version AS INTEGER) DESC LIMIT 1",
+                    (str(repository_id), vid)).fetchone()
+                if row and row["asset_id"] in current_ids and v.get("status"):
+                    verdict[v["status"]] += 1
             audit = {
                 "claim_count": len(claims or []),
                 "verification_count": len(verifs or []),
+                "current_verification_count": sum(verdict.values()),
                 "verdict_distribution": dict(verdict),
                 "coverage_note": project.get("coverage_note"),
                 "blobs_read": project.get("blobs_read"),
