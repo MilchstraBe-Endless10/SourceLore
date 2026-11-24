@@ -106,6 +106,29 @@ def analyze(*, url, ref=None, data_root=None, max_requests=40,
                     "reasons": cache.get("reasons"),
                     "hint": "去掉 --offline 或先联网采集一次"})
 
+    # ── B3/D5：全流程单一请求预算 ────────────────────────────
+    # 仓库身份 / Commit / Tree / Blob 各阶段共用同一 GitHubRequestBudget，
+    # 不再各阶段分别获得 max_requests 额度。max_requests 是本任务硬上限。
+    import request_budget as RB
+    budget = RB.GitHubRequestBudget(
+        repository_id="pending", commit_sha=str(fixed_commit or ""),
+        execution_id="analyze-%s" % str(fixed_commit or want_ref)[:12],
+        request_limit=int(max_requests), reserve_requests=0)
+    budget.add_plan_item(endpoint="repo", intended_object="repository",
+                         purpose="identity")
+    budget.add_plan_item(endpoint="commit", intended_object="commit",
+                         purpose="fixed_commit")
+    budget.add_plan_item(endpoint="tree", intended_object="tree",
+                         purpose="recursive_tree")
+
+    def _spend(stage):
+        # 编排阶段：首个身份请求前无权威头，只查本地硬上限+限流态；
+        # 拿到响应头后 can_spend 自动按其真实剩余判定。
+        ok, why = budget.can_spend(1, require_authoritative=False)
+        if not ok:
+            raise SkillError(f"请求预算阻断（{stage}）：{why}",
+                             code=why, detail=budget.to_dict())
+
     # ★ Collector 默认允许 retry_after 截到 120s 并重试 4 次（约 8 分钟）。
     # Skill 场景必须限流即快失败，故收紧 max_retry_after / max_retries。
     # 不改 Collector 本身：那是 P1C 的既有契约，这里只调实例上限。
@@ -113,24 +136,32 @@ def analyze(*, url, ref=None, data_root=None, max_requests=40,
     #   这里不新建 Client、不打印 token。use_token=False 时强制无认证。
     _tok = os.environ.get("GITHUB_TOKEN") if use_token else None
     client = GitHubClient(token=_tok or None, limits={
-        "max_requests": max_requests,
+        "max_requests": int(max_requests),
         # ★ 不重试：限流的 retry_after 通常以千秒计，重试只会多烧一次配额
         #    并让用户干等。限流信息由上层如实回报，由用户决定何时重试。
         "max_retries": 0,
         "max_retry_after": 0,
         "request_timeout": min(20, int(budget_seconds)),
     })
-    repo_resp = client.repo(owner, name)
-    if not getattr(repo_resp, "ok", False):
-        err = getattr(repo_resp, "error", None)
+
+    def _rate_detail(resp):
+        err = getattr(resp, "error", None)
         code = getattr(err, "error_code", "UNKNOWN")
-        detail = {"error_code": code,
-                  "status": getattr(repo_resp, "status", 0),
-                  "retry_after": getattr(err, "retry_after", None)}
+        d = {"error_code": code, "status": getattr(resp, "status", 0),
+             "retry_after": getattr(err, "retry_after", None)}
         if code in ("RATE_LIMITED", "SECONDARY_RATE_LIMITED"):
-            detail["hint"] = ("GitHub 已限流（未认证配额 60/h）。"
-                              "本 Skill 不会绕过限流，也不会长时间等待；"
-                              "请稍后重试或提供 GITHUB_TOKEN 环境变量。")
+            d["hint"] = ("GitHub 已限流（未认证配额 60/h）。"
+                         "本 Skill 不会绕过限流，也不会长时间等待；"
+                         "请稍后重试或提供 GITHUB_TOKEN 环境变量。")
+        return code, d
+
+    _spend("repo")
+    repo_resp = client.repo(owner, name)
+    budget.consume(headers=getattr(repo_resp, "headers", None) or {},
+                   status=getattr(repo_resp, "status", 0))
+    if not getattr(repo_resp, "ok", False):
+        code, detail = _rate_detail(repo_resp)
+        if code in ("RATE_LIMITED", "SECONDARY_RATE_LIMITED"):
             raise SkillError(
                 f"GitHub 限流：{code}，重试等待 {detail['retry_after']} 秒",
                 code=code, detail=detail)
@@ -141,26 +172,54 @@ def analyze(*, url, ref=None, data_root=None, max_requests=40,
     repo_id = str(repo_payload.get("id") or "")
     if not repo_id:
         raise SkillError("GitHub 未返回仓库 id", code="MISSING_REPOSITORY_ID")
+    budget.repository_id = repo_id
 
-    commit_resp = client.commit_for_ref(owner, name, want_ref)
+    # ── B3/D4：固定 Commit 契约 ───────────────────────────────
+    # 用户显式 --commit 时，必须采集该 Commit；若解析结果不一致立即终止，
+    # 绝不把其他 Commit 内容登记到目标版本下。
+    _spend("commit")
+    resolve_ref = fixed_commit or want_ref
+    commit_resp = client.commit_for_ref(owner, name, resolve_ref)
+    budget.consume(headers=getattr(commit_resp, "headers", None) or {},
+                   status=getattr(commit_resp, "status", 0))
     if not getattr(commit_resp, "ok", False):
+        code, detail = _rate_detail(commit_resp)
         raise SkillError("无法解析该 ref 的 Commit",
-                         code="COMMIT_RESOLVE_FAILED",
-                         detail={"error": getattr(getattr(commit_resp, "error", None), "code", None)})
-    commit_sha = (getattr(commit_resp, "data", None) or {}).get("sha") or ""
-    root_tree = ((getattr(commit_resp, "data", None) or {}).get("commit") or {}).get("tree", {}).get("sha") or ""
+                         code="COMMIT_RESOLVE_FAILED", detail=detail)
+    cdata = getattr(commit_resp, "data", None) or {}
+    commit_sha = str(cdata.get("sha") or "")
+    root_tree = str(((cdata.get("commit") or {}).get("tree") or {}).get("sha") or "")
     if not (commit_sha and root_tree):
         raise SkillError("Commit/Tree 字段缺失", code="COMMIT_RESOLVE_FAILED")
+    if fixed_commit and commit_sha.lower() != str(fixed_commit).lower():
+        raise SkillError(
+            f"固定 Commit 不一致：请求 {fixed_commit}，返回 {commit_sha}",
+            code="COMMIT_MISMATCH",
+            detail={"requested": str(fixed_commit), "returned": commit_sha})
+    budget.commit_sha = commit_sha
 
-    tree_resp = client.tree(owner, name, root_tree)
-    if not getattr(tree_resp, "ok", False):
-        raise SkillError("Tree 获取失败", code="TREE_FAILED")
-    tp = getattr(tree_resp, "data", None) or {}
-    entries = tp.get("tree") or []
-    truncated = bool(tp.get("truncated"))
-
-    # ★ 截断即 PARTIAL —— 绝不标 COMPLETE
-    completeness = "PARTIAL" if truncated else "COMPLETE"
+    # ── B3/D1：复用既有递归 TreeCollector（不建第二套采集器）──
+    from tree_collector import TreeCollector
+    tc = TreeCollector(client=client, owner=owner, repo=name,
+                       repository_id=repo_id, commit_sha=commit_sha)
+    _spend("tree")
+    tree_result = tc.collect(root_tree)
+    # ★ B3/D5：TreeCollector 把每次 tree 查询记入 tree_query_refs，
+    #   全部计入同一全局预算（含首次 recursive 与可能的逐层补请求）。
+    n_tree_q = len(tree_result.get("tree_query_refs") or [])
+    for _ in range(n_tree_q):
+        budget.consume()
+    if not tree_result.get("ok") and not tree_result.get("entries"):
+        raise SkillError("Tree 获取失败",
+                         code="TREE_FAILED", detail=tree_result)
+    entries = tree_result.get("entries") or []
+    truncated = bool(tree_result.get("truncated_seen"))
+    # ★ 未展开子树只能标 ROOT_ONLY/PARTIAL，绝不冒充 COMPLETE
+    completeness = tree_result.get("completeness_status") or "PARTIAL"
+    deep_walk_used = bool(tree_result.get("deep_walk_used"))
+    tree_scope = "COMPLETE" if completeness == "COMPLETE" else (
+        "ROOT_ONLY" if not truncated and not deep_walk_used and
+        any(e.get("type") == "tree" for e in entries) else completeness)
 
     store = KnowledgeStore(str(p))
     try:
@@ -171,6 +230,7 @@ def analyze(*, url, ref=None, data_root=None, max_requests=40,
             requested_ref=want_ref, commit_sha=commit_sha,
             root_tree_sha=root_tree, tree_query_ref=root_tree,
             completeness_status=completeness, tree_entries=entries,
+            truncated_seen=truncated, deep_walk_used=deep_walk_used,
             collected_at=_now_iso(), evidence_refs=[
                 f"github:repos/{owner}/{name}@{commit_sha}"])
         ing = ingest_snapshot(store, snap)
@@ -214,11 +274,20 @@ def analyze(*, url, ref=None, data_root=None, max_requests=40,
         "facts": facts, "claims": claims, "verifications": verifs,
         "reused": bool(existing),
         "tree_summary": _tree_summary(entries, completeness),
+        # ★ B3/D1/D5：真实树覆盖与全流程请求预算对外可核查
+        "coverage": {"scope": tree_scope, "claimed": completeness,
+                     "deep_walk_used": deep_walk_used, "truncated": truncated,
+                     "max_depth": max((str(e.get("path") or "").count("/")
+                                       for e in entries), default=0)},
+        "request_budget": budget.to_dict(),
+        "network_requests": budget.consumed_requests,
+        # ★ B3/D5：返回同一个预算对象，供 CLI 内容采集继续共用（额度不分拆）。
+        "_shared_budget": budget,
         "limitations": ([
             "Tree 被 GitHub 截断，覆盖不完整；未覆盖部分不得判为不存在"] if truncated else []) + [
             "本知识库只记录路径观察事实，不含功能实现或测试结论",
             "commit 为本次固定采集的 Commit，非仓库当前最新状态",
-        ],
+        ] + (["树仅根层，存在未展开子树；需用递归采集补齐"] if tree_scope == "ROOT_ONLY" else []),
     }
 
 

@@ -61,7 +61,7 @@ python3 "<project-root>/skill/sourcelore/scripts/sourcelore.py" help
 ```json
 {
   "ok": true,
-  "skill_version": "0.1.0-beta.2"
+  "skill_version": "0.1.0-beta.3"
 }
 ```
 

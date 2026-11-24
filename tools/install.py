@@ -27,7 +27,7 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 
-VERSION_FALLBACK = "0.1.0-beta.2"
+VERSION_FALLBACK = "0.1.0-beta.3"
 MARKER = ".sourcelore-install.json"          # owner marker written at install root
 LEGACY_MARKER = ".sourcelore-skill.json"     # legacy marker from f2p5a_install.py
 REQUIRED_SKILL_FILES = ["SKILL.md", "scripts/sourcelore.py"]

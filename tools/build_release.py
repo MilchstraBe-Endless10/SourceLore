@@ -60,6 +60,12 @@ def build(out_dir: Path) -> dict:
         if not installer.is_file():
             raise RuntimeError("tools/install.py missing; cannot build standalone ZIP")
         (stage / "install.py").write_bytes(installer.read_bytes())
+        # Legal documents required in every standalone release (MIT license + notices).
+        for legal in ("LICENSE", "THIRD_PARTY_NOTICES.md"):
+            p = ROOT / legal
+            if not p.is_file():
+                raise RuntimeError(f"{legal} missing; cannot build compliant release ZIP")
+            (stage / legal).write_bytes(p.read_bytes())
         # Self-contained program source (all of src/)
         bundle = stage / "_sourcelore_src" / "src"
         bundle.parent.mkdir(parents=True, exist_ok=True)

@@ -51,8 +51,17 @@ def lookup(store, *, repository_id, commit_sha=None, requested_ref=None):
             continue
         pl = (got["asset"] or {}).get("payload") or {}
         csha = pl.get("commit_sha") or r["commit_sha"]
+        # ★ B3/D1：COMPLETE 标签不等于完整采集。历史快照把根层（有子树未展开）
+        #   误标 COMPLETE；用既有 trust.tree_scope 派生真实覆盖，避免缓存提前返回。
+        derived_scope = None
+        try:
+            import tree_scope as _TS
+            derived_scope = _TS.derive_tree_scope(pl).get("scope")
+        except Exception:
+            pass
         candidates.append({"asset_id": aid, "commit_sha": csha,
                            "completeness": pl.get("completeness_status") or "UNKNOWN",
+                           "derived_scope": derived_scope,
                            "retrieval_scope": pl.get("retrieval_scope"),
                            "tree_entries": len(pl.get("tree_entries") or []),
                            "digest": got.get("content_hash")})
@@ -78,8 +87,14 @@ def lookup(store, *, repository_id, commit_sha=None, requested_ref=None):
     # ★ 取最新一个可校验的
     best = matched[0]
     comp = (best["completeness"] or "").upper()
-    if comp == "COMPLETE":
+    scope = best.get("derived_scope")
+    if comp == "COMPLETE" and scope in (None, "COMPLETE"):
         decision = CACHE_HIT_COMPLETE
+    elif comp == "COMPLETE" and scope == "ROOT_ONLY":
+        # ★ B3/D1：声称 COMPLETE 但仅根层且有未展开子树 → 不得当完整缓存复用
+        decision = CACHE_HIT_PARTIAL
+        reasons.append("缓存虽标 COMPLETE，但树仅根层（有未展开子树），"
+                       "按 ROOT_ONLY 部分覆盖处理，需重新递归采集")
     elif comp == "PARTIAL":
         decision = CACHE_HIT_PARTIAL
         reasons.append("缓存仅 PARTIAL，复用只覆盖已观察范围，不得冒充 COMPLETE")

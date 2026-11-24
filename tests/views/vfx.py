@@ -31,12 +31,12 @@ def fresh(tmpdir):
 
 
 def make_source(ks, *, commit=A, path="README", exists=True, partial=False,
-                provenance_real=True):
+                provenance_real=True, entries=None):
     """A 上的源 Claim + Verification。"""
     snap = EFX.make_snapshot(
         ks, commit=commit,
         completeness="PARTIAL" if partial else "COMPLETE",
-        truncated=bool(partial))
+        truncated=bool(partial), entries=entries)
     fact = EFX.make_fact(ks, snap["asset_id"], path)
     claim = EM.build_path_claim(repository_id=REPO, commit_sha=commit,
                                 target_path=path, expected_exists=exists)
@@ -103,7 +103,8 @@ def adapter(*, entries=None, truncated=False, **kw):
 def run_full(ks, *, path="README", exists=True, partial=False,
              entries=None, truncated=False, commit=B, adapter_kw=None):
     """一条完整的 A→B 链路，返回 (source, cand, result, adapter)。"""
-    src = make_source(ks, path=path, exists=exists, partial=partial)
+    src = make_source(ks, path=path, exists=exists, partial=partial,
+                      entries=entries)
     r, watch, assessment = make_candidate(ks, claim_id=src["claim_id"])
     cand = RQ.read_candidate(ks, candidate_id=r["candidate_id"],
                              repository_id=REPO)["payload"]

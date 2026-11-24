@@ -1,5 +1,9 @@
 # 公开发布核查 — 发行版 `v0.1.0-beta.1`
 
+## 修订：`v0.1.0-beta.3`
+
+Beta.3 修复 GitHub 在线采集链路：正式 `analyze` 复用递归 `TreeCollector` 并如实报告覆盖范围；内容采集预算对象 bug 已移除；显式 `--commit` 成为硬契约；全流程 GitHub 请求共用单一 `max_requests` 预算；跨来源身份采用非破坏性内容锚点绑定。见 [CHANGELOG.md](../../CHANGELOG.md) 与 [RELEASE-ARTIFACTS.md](RELEASE-ARTIFACTS.md)。`v0.1.0-beta.1`、`v0.1.0-beta.2` 的 Tag 与 Release **未移动**；beta.3 是新的 Tag、Pre-release 与 ZIP。ZIP 内含 MIT `LICENSE` 与 `THIRD_PARTY_NOTICES.md`。
+
 > 仓库随后已改为 Public。本文记录首个开源 beta `v0.1.0-beta.1` 的逐项核验结果与证据，作为历史证据保留。beta.1 的 Tag 与 Release 未改动。
 
 ## 修订：`v0.1.0-beta.2`

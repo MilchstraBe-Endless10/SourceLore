@@ -39,7 +39,11 @@ class TestCompleteness(unittest.TestCase):
     def test_truncated_is_partial(self):
         """★ 截断绝不能标 COMPLETE。"""
         src = (ROOT/"src"/"skill_interface"/"analyze.py").read_text(encoding="utf-8")
-        self.assertIn('"PARTIAL" if truncated else "COMPLETE"', src)
+        # ★ B3/D1：截断判定改由 TreeCollector 的 completeness_status 提供，
+        #   不再用内联三元表达式；断言新实现不变量而非旧字面量。
+        self.assertIn('completeness_status', src)
+        self.assertIn('truncated_seen=truncated', src)
+        self.assertIn('TreeCollector', src)
 
     def test_limitation_emitted_when_truncated(self):
         src = (ROOT/"src"/"skill_interface"/"analyze.py").read_text(encoding="utf-8")

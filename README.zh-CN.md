@@ -170,4 +170,4 @@ SourceLore 的**第一方代码**以 [MIT 许可证](LICENSE) 发布，你可在
 
 ## 开发与贡献
 
-按文件逐个运行独立测试脚本（在测试目录内 `python3 <测试文件>`，并设 `PYTHONPATH=src`），与 CI 中的做法一致——多个文件在模块级调用 `sys.exit`，不兼容 `unittest discover`。发布安装器与 ZIP 自举由 `tests/release_installer/` 覆盖。当前发行版为 `v0.1.0-beta.2`；独立 ZIP 内含自己的 `install.py`，仅下载 ZIP 的用户无须 Clone 仓库即可安装。不要把知识数据库、已捕获字节、第三方快照或本地配置提交进 Git。源码改动与 Skill 安装副本要保持同步。
+按文件逐个运行独立测试脚本（在测试目录内 `python3 <测试文件>`，并设 `PYTHONPATH=src`），与 CI 中的做法一致——多个文件在模块级调用 `sys.exit`，不兼容 `unittest discover`。发布安装器与 ZIP 自举由 `tests/release_installer/` 覆盖。当前发行版为 `v0.1.0-beta.3`；独立 ZIP 内含自己的 `install.py`，仅下载 ZIP 的用户无须 Clone 仓库即可安装。不要把知识数据库、已捕获字节、第三方快照或本地配置提交进 Git。源码改动与 Skill 安装副本要保持同步。

@@ -167,14 +167,19 @@ class GitHubRequestBudget:
             return int(self.observed_remaining)
         return None
 
-    def can_spend(self, cost=1):
+    def can_spend(self, cost=1, *, require_authoritative=True):
         """能否再花 cost 次主配额。
 
         ★ 三重闸门：
           1) 本次执行没超本地上限
           2) 真实剩余 ≥ cost + reserve
           3) 未处于限流态
-        没有权威响应头时 → 视为不足（宁可不发）。
+
+        `require_authoritative=True`（默认，内容采集用）：没有权威响应头时
+        → 视为不足（宁可不发）。
+        `require_authoritative=False`（analyze 编排用）：首个身份请求前还没有
+        响应头，此时只检查本地硬上限与限流态；一旦拿到响应头仍按其真实剩余判定。
+        ★ 本地 request_limit 在哪条分支都是硬上限，绝不放宽。
         """
         if self.rate_limit_kind in (PRIMARY, SECONDARY):
             return False, BUDGET_RATE_LIMITED
@@ -182,7 +187,8 @@ class GitHubRequestBudget:
             return False, BUDGET_EXHAUSTED
         real = self.effective_remaining()
         if real is None:
-            return False, BUDGET_INSUFFICIENT
+            return ((False, BUDGET_INSUFFICIENT) if require_authoritative
+                    else (True, BUDGET_OK))
         if real < cost + self.reserve_requests:
             return False, BUDGET_INSUFFICIENT
         return True, BUDGET_OK

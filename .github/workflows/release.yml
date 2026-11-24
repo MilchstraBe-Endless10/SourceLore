@@ -67,6 +67,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
+          # 所有 beta/rc/alpha Tag 一律发布为 Pre-release，避免误标为正式版。
+          prerelease: ${{ contains(github.ref_name, '-beta.') || contains(github.ref_name, '-rc.') || contains(github.ref_name, '-alpha.') }}
           files: |
             dist/*.zip
             dist/SHA256SUMS.txt

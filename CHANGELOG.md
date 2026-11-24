@@ -14,6 +14,48 @@ Planned but not yet implemented: deeper repository content coverage beyond
 ROOT_ONLY, full call-graph analysis, native card UI, first-party model/model
 provider integration.
 
+## [0.1.0-beta.3] - 2026-11-24
+
+Focused repair of the online GitHub capture pipeline, plus release-compliance
+fixes. The `v0.1.0-beta.1` and `v0.1.0-beta.2` tags and releases are untouched.
+
+### Fixed
+- (D1) The formal `analyze` entry point now reuses the recursive `TreeCollector`
+  (`recursive=True`) instead of issuing a single non-recursive `client.tree()`
+  call. Nested directory entries are persisted in the snapshot and the real
+  coverage is reported via `coverage.scope`. A truncated or depth-limited walk
+  is marked `PARTIAL`/`ROOT_ONLY`, never `COMPLETE`. Cache hits are derived
+  from real recursive coverage, so a historical root-only snapshot is no
+  longer mistaken for a complete tree.
+- (D2) `content_capture.capture` no longer overwrites the caller's
+  `GitHubRequestBudget` with an internal dict. Internal byte-batch accounting
+  uses a separate `byte_budget`; the external budget keeps `can_spend` /
+  `consume`. This removes the `AttributeError: 'dict' object has no attribute
+  'can_spend'` failure on online `--include-content` captures.
+- (D4) An explicit `--commit` is now a hard contract: the resolved commit is
+  checked against it and a mismatch aborts with `COMMIT_MISMATCH` before any
+  tree/blob request. Ref resolution uses the fixed commit, not the branch ref.
+- (D5) Identity, commit, tree and content capture now share one
+  `GitHubRequestBudget` under a single `max_requests` hard cap. Tree queries
+  are charged to the same budget; `request_budget` and `network_requests` are
+  reported in analyze output. The first identity request is allowed without
+  authoritative rate-limit headers while still respecting the local cap.
+- (D3) Added non-destructive cross-source binding via content-address anchors
+  (`commit_sha` + `root_tree_sha`) in `src/trust/source_binding.py`. Two
+  independent snapshots of the same content (GitHub skeleton and local Git
+  mirror) can be related with an evidence-backed `repo_bindings` entry;
+  repository identities are never merged and A-layer assets are never changed.
+  Verified on an isolated database copy.
+- (D7) Raw stdout/stderr of `inspect local:` was captured byte-for-byte:
+  valid UTF-8, no stray logs/ANSI, standard `json.loads()` succeeds. The
+  earlier parse failure was host tool-output truncation, not a program defect;
+  no output-layer change was made.
+- Release ZIP now bundles `LICENSE` (MIT) and `THIRD_PARTY_NOTICES.md`.
+- Release workflow marks beta/rc/alpha tags as Pre-release automatically.
+- Standalone installer, doctor and CLI report version `0.1.0-beta.3`; marker
+  points to the final install directory and the knowledge data root is
+  isolated.
+
 ## [0.1.0-beta.2] - 2026-11-24
 
 Fix release installation defects found after the first public beta. The

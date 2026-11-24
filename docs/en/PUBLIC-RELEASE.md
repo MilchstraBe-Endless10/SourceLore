@@ -1,5 +1,17 @@
 # Public release readiness — release `v0.1.0-beta.1`
 
+## Amendment: `v0.1.0-beta.3`
+
+Beta.3 repairs the online GitHub capture pipeline: the formal `analyze` entry
+now uses the recursive `TreeCollector` with real coverage reporting; the
+content-capture budget object bug is removed; explicit `--commit` is enforced;
+all GitHub requests share one global `max_requests` budget; and cross-source
+identity binding uses non-destructive content-address anchors. See
+[CHANGELOG.md](../../CHANGELOG.md) and [RELEASE-ARTIFACTS.md](RELEASE-ARTIFACTS.md).
+The `v0.1.0-beta.1` and `v0.1.0-beta.2` tags/releases were **not** moved; beta.3
+is a new tag, Pre-release and ZIP. The release ZIP bundles the MIT `LICENSE`
+and `THIRD_PARTY_NOTICES.md`.
+
 > The repository was subsequently made Public. This document records the
 > verification of the first open-source beta, `v0.1.0-beta.1`, and is retained
 > as historical evidence. The beta.1 tag and release are unchanged.

@@ -191,7 +191,11 @@ if CLI.exists():
     p = subprocess.run([sys.executable, str(CLI), "repositories"], capture_output=True, text=True)
     try:
         d = json.loads(p.stdout)
-        check("25 installed skill read-only query", p.returncode == 0 and d.get("ok") and d.get("count") == 3)
+        # ★ 仓库数量会随合法新增采集增长（如 arch-grower），不再硬编码 3；
+        #   断言要点是"安装态 CLI 可用、只读查询成功、返回非空仓库列表"。
+        repos = d.get("repositories") or []
+        check("25 installed skill read-only query",
+              p.returncode == 0 and d.get("ok") and len(repos) >= 3)
     except Exception:
         check("25 installed skill read-only query", False, "bad json")
 else:

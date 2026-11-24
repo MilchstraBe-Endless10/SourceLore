@@ -12,7 +12,7 @@
 from __future__ import annotations
 
 # 对外语义版本（预发布）。正式稳定发行前保持 beta 后缀。
-RELEASE_VERSION = "0.1.0-beta.2"
+RELEASE_VERSION = "0.1.0-beta.3"
 
 # 对外 Tag / Release 标题使用的带 v 前缀形式。
 RELEASE_TAG = "v" + RELEASE_VERSION

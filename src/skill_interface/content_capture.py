@@ -80,7 +80,9 @@ def capture(*, repository_id, commit_sha, data_root=None, paths=None,
             report["note"] = "离线模式：未发起任何网络请求"
             return report
 
-        budget = {"used": 0, "paths": 0}
+        # ★ D2/FIX-B3：批次字节/文件计数与外部 GitHubRequestBudget 严格分离。
+        #   此前本行用 budget 覆盖外部预算对象，随后的 can_spend/consume 触发 INTERNAL_ERROR。
+        byte_budget = {"used_bytes": 0, "paths": 0}
         client = None
         if not dry_run:
             _tok = __import__("os").environ.get("GITHUB_TOKEN") if use_token else None
@@ -92,11 +94,11 @@ def capture(*, repository_id, commit_sha, data_root=None, paths=None,
             fp = item["file_path"]
             entry = item["entry"]
 
-            if budget["paths"] >= MAX_PATHS:
+            if byte_budget["paths"] >= MAX_PATHS:
                 report["results"].append({"file_path": fp,
                                           "status": "BATCH_PATH_LIMIT"})
                 continue
-            budget["paths"] += 1
+            byte_budget["paths"] += 1
 
             # ★ D-52：已有完整本地资产 → 直接复用，绝不重新下载。
             #   （此前会无条件发请求，撞限流后把已存好的内容标记为失败。）
@@ -158,7 +160,7 @@ def capture(*, repository_id, commit_sha, data_root=None, paths=None,
                                           "note": "前置预算拒绝，未发请求"})
                 report["skipped_blobs"] += 1
                 continue
-            if budget["used"] + int(size) > MAX_BATCH_BYTES:
+            if byte_budget["used_bytes"] + int(size) > MAX_BATCH_BYTES:
                 report["results"].append({"file_path": fp,
                                           "status": "BATCH_BYTE_LIMIT"})
                 report["skipped_blobs"] += 1
@@ -206,7 +208,7 @@ def capture(*, repository_id, commit_sha, data_root=None, paths=None,
 
             report["fetched_blobs"] += 1
             report["verified_blobs"] += 1
-            budget["used"] += got["byte_length"]
+            byte_budget["used_bytes"] += got["byte_length"]
 
             ing = CIC.ingest_captured_blob(
                 store, data_root=data_root or DEFAULT_DATA_ROOT,
@@ -240,7 +242,7 @@ def capture(*, repository_id, commit_sha, data_root=None, paths=None,
                 "acquisition_policy": st})
 
         report["provenance"] = "SYNTHETIC_FIXTURE"
-        report["budget"] = {"used_bytes": budget["used"], "paths": budget["paths"],
+        report["budget"] = {"used_bytes": byte_budget["used_bytes"], "paths": byte_budget["paths"],
                             "max_blob": MAX_BLOB_BYTES, "max_batch": MAX_BATCH_BYTES}
         return report
     finally:

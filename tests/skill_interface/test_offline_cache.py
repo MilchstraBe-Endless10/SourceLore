@@ -27,9 +27,22 @@ class TestCachePolicy(unittest.TestCase):
         shutil.rmtree(self.tmp, ignore_errors=True)
 
     def test_hit_complete(self):
-        got = CP.lookup(self.ks, repository_id=vfx.REPO, commit_sha=vfx.A)
+        # ★ B3/D1：完整命中必须是"真正递归完整"的快照。默认 fixture 带未展开
+        #   docs/tree，会按 ROOT_ONLY 正确降为 PARTIAL；这里显式给 blob-only 清单。
+        complete_entries = [{
+            "path": "README", "type": "blob", "sha": "a" * 40,
+            "mode": "100644", "size": 10, "depth": 0}]
+        full_commit = "c" * 40
+        vfx.make_source(self.ks, commit=full_commit, entries=complete_entries)
+        got = CP.lookup(self.ks, repository_id=vfx.REPO, commit_sha=full_commit)
         self.assertEqual(got["decision"], CP.CACHE_HIT_COMPLETE)
         self.assertIsNotNone(got["snapshot"])
+
+    def test_root_only_complete_label_is_partial(self):
+        """★ B3/D1：声称 COMPLETE 但仅根层（未展开子树）不得当完整缓存。"""
+        got = CP.lookup(self.ks, repository_id=vfx.REPO, commit_sha=vfx.A)
+        self.assertEqual(got["decision"], CP.CACHE_HIT_PARTIAL)
+        self.assertTrue(any("根层" in r for r in got.get("reasons", [])))
 
     def test_miss_other_commit(self):
         got = CP.lookup(self.ks, repository_id=vfx.REPO, commit_sha="d"*40)

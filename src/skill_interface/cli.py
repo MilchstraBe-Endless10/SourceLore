@@ -213,6 +213,8 @@ def _dispatch(cmd, args):
                         offline=getattr(args, "offline", False),
                         refresh=getattr(args, "refresh", False),
                         use_token=not getattr(args, "no_token", False))
+        # ★ B3/D5：取出 analyze 已消耗的同一预算对象；不让它进入 JSON 输出。
+        _shared_budget = out.pop("_shared_budget", None)
         S.record_operation("analyze", out)
         if (getattr(args, "include_content", False)
                 or getattr(args, "content_status", False)):
@@ -233,7 +235,8 @@ def _dispatch(cmd, args):
                 request_limit=getattr(args, "request_limit", None),
                 reserve=getattr(args, "reserve_requests", None),
                 offline=bool(getattr(args, "offline", False)) or status_only,
-                dry_run=status_only)
+                dry_run=status_only,
+                existing_budget=_shared_budget)
             out["budget_preflight"] = _budget["preflight"]
             if not _budget["preflight"].get("can_begin") and not status_only:
                 # 预检不过 → 不采集，但已完成资产仍可查询
@@ -250,6 +253,12 @@ def _dispatch(cmd, args):
                     offline=bool(getattr(args, "offline", False)) or status_only,
                     dry_run=status_only,
                     budget=_budget["budget"])
+            # ★ B3/D5：把全流程同一预算的最终消耗暴露出来供验收
+            if isinstance(out.get("content"), dict):
+                out["content"]["shared_budget_consumed"] = (
+                    _budget["budget"].consumed_requests)
+                out["content"]["shared_budget_limit"] = (
+                    _budget["budget"].request_limit)
         # ★ D-51：GitHub 路径原本只捕获字节、不抽取知识。
         #   把已捕获字节交给同一条抽取链路（不新增解析器、不联网）。
         # status_only 只在 include-content 分支内定义；此处用安全取值
@@ -417,7 +426,8 @@ if __name__ == "__main__":
 
 
 def _preflight_budget(*, root, repository_id, commit_sha, content_paths,
-                      request_limit, reserve, offline, dry_run):
+                      request_limit, reserve, offline, dry_run,
+                      existing_budget=None):
     """★ F2-P6F：统一预算预检。
 
     正式 CLI 的远程采集必须经过这里：
@@ -429,7 +439,9 @@ def _preflight_budget(*, root, repository_id, commit_sha, content_paths,
     limit = int(request_limit or ARP.DEFAULT_LOCAL_MAX)
     reserve_val = int(reserve if reserve is not None else ARP.DEFAULT_RESERVE)
 
-    budget = RB.GitHubRequestBudget(
+    # ★ B3/D5：优先复用 analyze 已用的同一预算对象，保证全流程单一额度；
+    #   没有（独立调用路径）时才新建，保持向后兼容。
+    budget = existing_budget or RB.GitHubRequestBudget(
         repository_id=str(repository_id), commit_sha=str(commit_sha),
         execution_id="cli-%s" % str(commit_sha)[:8],
         request_limit=limit, reserve_requests=reserve_val)
@@ -480,10 +492,16 @@ def _preflight_budget(*, root, repository_id, commit_sha, content_paths,
                             rate_limit_status=budget.rate_limit_kind,
                             bootstrap_used=True)
         pre["reused_paths"] = list(have)
+        # ★ B3/D5：预检展示的上限必须是实际共用预算的上限（默认 8 仅用于
+        #   独立内容调用路径；analyze+content 全流程时应为 --max-requests）。
+        pre["execution_budget"] = budget.request_limit
+        pre["local_max_requests"] = budget.request_limit
         return {"budget": budget, "preflight": pre}
     except Exception as e:
         pre = ARP.preflight(plan=plan, observed_remaining=None, bootstrap_used=True)
         pre["error"] = "%s: %s" % (type(e).__name__, e)
+        pre["execution_budget"] = budget.request_limit
+        pre["local_max_requests"] = budget.request_limit
         return {"budget": budget, "preflight": pre}
 
 
