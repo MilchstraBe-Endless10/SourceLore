@@ -138,9 +138,9 @@ SourceLore 严格区分三个不可混为一谈的计数：不可变 verificatio
 
 见 [安全与授权](docs/zh-CN/SECURITY.md) 与 [设计思路](docs/zh-CN/DESIGN-RATIONALE.md)。
 
-## 公开发布准备
+## 许可证与公开发布
 
-维护者已要求将 SourceLore 第一方工程代码公开。目前 GitHub 仓库仍为 Private，尚需处理 Git 历史中的本机路径与第一方许可证决定。**仓库可见性与第三方知识数据的 `distribution_allowed=false` 是两项不同的决策。** 见[公开发布核查](docs/zh-CN/PUBLIC-RELEASE.md) / [English](docs/en/PUBLIC-RELEASE.md)。
+SourceLore 的**第一方代码**以 [MIT 许可证](LICENSE) 发布，你可在许可证条款下使用、复制、修改、合并、发布、分发、再授权和销售。这与另外两项决定相互独立：**仓库可见性**（改为 Public 需所有者最终批准）和针对已采集**第三方知识输出**的运行时 `distribution_allowed=false` 策略（保持关闭）。见[公开发布核查](docs/zh-CN/PUBLIC-RELEASE.md) / [English](docs/en/PUBLIC-RELEASE.md) 及[安全与授权](docs/zh-CN/SECURITY.md)中的许可边界。
 
 ## 限制
 
@@ -166,7 +166,7 @@ SourceLore 严格区分三个不可混为一谈的计数：不可变 verificatio
 | [测试](docs/zh-CN/TESTING.md) | [Testing](docs/en/TESTING.md) |
 | [路线图](docs/zh-CN/ROADMAP.md) | [Roadmap](docs/en/ROADMAP.md) |
 
-第三方来源与许可说明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。本项目尚未选择开源许可证，目前仅供内部使用。
+第三方来源与许可说明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。第一方代码采用 MIT 许可证；已采集的第三方知识输出与你的数据库不在该许可证范围内，仍受运行时 `distribution_allowed=false` 策略约束。
 
 ## 开发与贡献
 

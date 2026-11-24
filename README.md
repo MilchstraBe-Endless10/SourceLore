@@ -138,9 +138,17 @@ Key rules (enforced by `src/trust/policy.py`):
 
 See [docs/en/SECURITY.md](docs/en/SECURITY.md) and [docs/zh-CN/DESIGN-RATIONALE.md](docs/zh-CN/DESIGN-RATIONALE.md).
 
-## Public release readiness
+## License and public release
 
-The maintainer intends to make SourceLore's first-party code public. This GitHub repository remains **private** pending an audit of historical local paths and an explicit first-party license decision. **Repository visibility and the `distribution_allowed=false` policy for third-party knowledge output are separate decisions.** See [public release readiness](docs/en/PUBLIC-RELEASE.md) / [简体中文](docs/zh-CN/PUBLIC-RELEASE.md).
+SourceLore's **first-party code** is released under the [MIT License](LICENSE).
+You may use, copy, modify, merge, publish, distribute, sublicense and sell it,
+subject to the license terms. This is separate from two other decisions:
+**repository visibility** (the visibility change requires the owner's final
+approval) and the runtime `distribution_allowed=false` policy for captured
+**third-party knowledge output**, which remains closed. See
+[public release readiness](docs/en/PUBLIC-RELEASE.md) /
+[简体中文](docs/zh-CN/PUBLIC-RELEASE.md) and the license boundary in
+[SECURITY.md](docs/en/SECURITY.md).
 
 ## Limitations
 
@@ -165,8 +173,14 @@ The maintainer intends to make SourceLore's first-party code public. This GitHub
 | [Security](docs/en/SECURITY.md) | [安全与授权](docs/zh-CN/SECURITY.md) |
 | [Testing](docs/en/TESTING.md) | [测试](docs/zh-CN/TESTING.md) |
 | [Roadmap](docs/en/ROADMAP.md) | [路线图](docs/zh-CN/ROADMAP.md) |
+| [Versioning](docs/en/VERSIONING.md) | [版本管理](docs/zh-CN/VERSIONING.md) |
+| [Upgrading](docs/en/UPGRADING.md) | [升级与卸载](docs/zh-CN/UPGRADING.md) |
+| [Changelog](CHANGELOG.md) | [更新日志](CHANGELOG.md) |
+| [Contributing](CONTRIBUTING.md) | [贡献指南](CONTRIBUTING.zh-CN.md) |
+| [Release artifacts](docs/en/RELEASE-ARTIFACTS.md) | [发行产物](docs/zh-CN/RELEASE-ARTIFACTS.md) |
+| [Public release readiness](docs/en/PUBLIC-RELEASE.md) | [公开发布核查](docs/zh-CN/PUBLIC-RELEASE.md) |
 
-Third-party sources and licensing notes are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). This project has not selected an open-source license; it is currently for internal use.
+Third-party sources and licensing notes are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). First-party code is MIT-licensed; captured third-party knowledge output and the user's database are not covered by that license and remain under the runtime `distribution_allowed=false` policy.
 
 ## Development and contribution
 
