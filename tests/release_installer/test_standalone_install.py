@@ -136,6 +136,16 @@ class TestStandaloneZipBootstrap(unittest.TestCase):
                  "--skill-dir", str(skill)], env=env)
         self.assertEqual(u.returncode, 0, u.stderr + u.stdout)
         self.assertEqual(sentinel.read_text(encoding="utf-8"), "keep-me")
+        # ★ B3/MARKER：update 后 marker.project_root 必须指向最终安装目录内，
+        #   不能残留 staging 临时绝对路径；干净环境 launcher 必须能启动。
+        marker = json.loads((skill / ".sourcelore-install.json").read_text(encoding="utf-8"))
+        pr = Path(marker["project_root"])
+        self.assertTrue(str(pr).startswith(str(skill)), marker)
+        self.assertTrue((pr / "src" / "skill_interface" / "cli.py").is_file(), marker)
+        clean_env = {"HOME": str(base), "PATH": "/usr/bin:/bin"}
+        v = run([PY, str(skill / "scripts" / "sourcelore.py"), "--version"], env=clean_env)
+        self.assertEqual(v.returncode, 0, v.stderr + v.stdout)
+        self.assertIn(release_version(), v.stdout)
 
         d = run([PY, str(INSTALLER), "uninstall", "--skill-dir", str(skill)], env=env)
         self.assertEqual(d.returncode, 0, d.stderr + d.stdout)

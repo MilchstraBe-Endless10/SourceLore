@@ -387,6 +387,20 @@ def cmd_update(args) -> int:
                 shutil.move(str(backup), str(dest))
             return emit({"ok": False, "error": "switch failed, rolled back", "detail": str(e)})
 
+        # ★ B3/MARKER：staging 阶段写入的 project_root 是临时目录绝对路径，
+        #   move 到最终位置后必须改写为 <dest>/_sourcelore_src，否则临时目录
+        #   清理后 launcher 找不到工程根。两个 marker 都要同步。
+        final_root = str(dest / "_sourcelore_src")
+        for mname in (MARKER, LEGACY_MARKER):
+            mp = dest / mname
+            try:
+                md = json.loads(mp.read_text(encoding="utf-8"))
+                md["project_root"] = final_root
+                mp.write_text(json.dumps(md, ensure_ascii=False, indent=2) + "\n",
+                              encoding="utf-8")
+            except Exception:
+                pass
+
         return emit({"ok": True, "updated": str(dest), "version": new_ver,
                      "previous_backup": str(backup) if backup else None,
                      "data_root_touched": False})
