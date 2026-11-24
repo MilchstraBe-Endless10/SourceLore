@@ -61,7 +61,7 @@ python3 "<project-root>/skill/sourcelore/scripts/sourcelore.py" help
 ```json
 {
   "ok": true,
-  "skill_version": "0.1.0-beta.1"
+  "skill_version": "0.1.0-beta.2"
 }
 ```
 
@@ -92,18 +92,41 @@ official installer instead of copying files by hand:
 python3 tools/install.py install
 python3 tools/install.py doctor
 
-# From a standalone release ZIP (no clone needed):
+# From a standalone release ZIP, using the installer in your checkout:
 python3 tools/install.py install --zip /path/to/sourcelore-skill-vX.Y.Z.zip
+
+# ZIP-only bootstrap (no clone and no checkout installer at all):
+# download the ZIP, extract it, then run the install.py INSIDE the ZIP:
+python3 /path/to/extracted/sourcelore/install.py install
 
 # Later: update (safe staged + rollback), uninstall (keeps your data):
 python3 tools/install.py update --zip /path/to/sourcelore-skill-vNEWER.zip
 python3 tools/install.py uninstall
 ```
 
-The installer installs a **self-contained** Skill (program source bundled), so
-the original checkout/ZIP can be deleted afterwards. It never writes to the
+The standalone ZIP is **self-bootstrapping**: it contains its own `install.py`
+and bundled program source, so downloading only the ZIP artifacts is enough —
+no access to the source repository is required. The embedded `RELEASE_INFO.json`
+records the installer's SHA-256 so you can verify it before running. The
+installer installs a **self-contained** Skill, so the original checkout/ZIP and
+the extraction directory can be deleted afterwards. It never writes to the
 knowledge-base data root, refuses to overwrite a Skill directory it does not
 own, and needs no root privileges. See [UPGRADING.md](UPGRADING.md).
+
+`doctor` is read-only and reports an explicit `status`:
+
+| `status` | Meaning | `ok`/exit code |
+|---|---|---|
+| `ok` | Installed, owned, launcher runs, version matches | `true` / 0 |
+| `not_installed` | Skill directory does not exist | `false` / 1 |
+| `unowned` | Directory exists but has no SourceLore marker | `false` / 1 |
+| `incomplete` | Install directory is missing required files | `false` / 1 |
+| `launcher_failed` | Launcher exists but fails to run | `false` / 1 |
+| `version_mismatch` | Launcher version differs from expected/marker | `false` / 1 |
+
+A missing or empty knowledge database is **not** an install failure: it is
+reported as `data_root_status=not_created`/`empty` while a healthy install still
+reports `status=ok`. Use `--expect-version` to pin the expected launcher version.
 
 The manual copy procedure below is retained for reference and for hosts that
 require a specific discovery layout.

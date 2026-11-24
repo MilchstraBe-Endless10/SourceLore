@@ -14,6 +14,31 @@ Planned but not yet implemented: deeper repository content coverage beyond
 ROOT_ONLY, full call-graph analysis, native card UI, first-party model/model
 provider integration.
 
+## [0.1.0-beta.2] - 2026-11-24
+
+Fix release installation defects found after the first public beta. The
+`v0.1.0-beta.1` tag and release are left untouched.
+
+### Fixed
+- The standalone release ZIP now embeds its own installer (`install.py`) and
+  records that installer's SHA-256 in the embedded `RELEASE_INFO.json`. A user
+  who only downloads ZIP artifacts can bootstrap SourceLore without cloning
+  the source repository: extract the ZIP and run `python3 install.py install`
+  from the extracted directory (no `--source` or `--zip` needed). This fixes
+  the gap where docs told ZIP-only users to run `tools/install.py`, a file
+  that was not inside the ZIP.
+- `doctor` now has an explicit status contract (`ok`, `not_installed`,
+  `unowned`, `incomplete`, `launcher_failed`, `version_mismatch`). Damaged or
+  missing installs report `ok=false` / `healthy=false` and exit code 1; they
+  can no longer be reported healthy. An uninitialized or empty knowledge
+  data root (`data_root_status=not_created`/`empty`) is reported separately
+  and never counts as a Skill install failure. `--expect-version` pins the
+  expected launcher version.
+- Added an offline acceptance test file (`tests/release_installer/`) covering
+  ZIP self-bootstrap, deletion of the ZIP and extraction directory, all six
+  `doctor` states, data-root isolation, and update/uninstall/reinstall; wired
+  into both CI and the release workflow.
+
 ## [0.1.0-beta.1] - 2026-11-24
 
 First public beta. Core read-only knowledge-base pipeline is functional;
@@ -54,5 +79,6 @@ several coverage and distribution limits remain (see SECURITY.md, ROADMAP.md).
 - OpenBot / DSH / Hermes Skill discovery is host-dependent and verified only
   on the hosts documented in INSTALLATION.md.
 
-[Unreleased]: https://github.com/MilchstraBe-Endless10/SourceLore/compare/v0.1.0-beta.1...HEAD
+[Unreleased]: https://github.com/MilchstraBe-Endless10/SourceLore/compare/v0.1.0-beta.2...HEAD
+[0.1.0-beta.2]: https://github.com/MilchstraBe-Endless10/SourceLore/releases/tag/v0.1.0-beta.2
 [0.1.0-beta.1]: https://github.com/MilchstraBe-Endless10/SourceLore/releases/tag/v0.1.0-beta.1

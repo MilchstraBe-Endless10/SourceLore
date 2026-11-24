@@ -1,6 +1,10 @@
 # 公开发布核查 — 发行版 `v0.1.0-beta.1`
 
-> 状态：**发行工程已在分支 `release/v0.1.0-beta.1` 上完成；把仓库可见性改为 Public 仍需所有者最终批准。** 本文记录首个开源 beta 逐项实际核验的结果与证据。
+> 仓库随后已改为 Public。本文记录首个开源 beta `v0.1.0-beta.1` 的逐项核验结果与证据，作为历史证据保留。beta.1 的 Tag 与 Release 未改动。
+
+## 修订：`v0.1.0-beta.2`
+
+后续补丁版修复了 beta.1 之后发现的两个安装缺陷：独立 Release ZIP 现在内含自己的 `install.py`（仅下载 ZIP 的用户无须 Git Clone 即可自举安装），`doctor` 改用明确的状态契约——损坏/缺失的安装不再被误报为健康，而未建立知识库仍视为正常。见 [CHANGELOG.md](../../CHANGELOG.md)、[RELEASE-ARTIFACTS.md](RELEASE-ARTIFACTS.md) 与 [INSTALLATION.md](INSTALLATION.md)。`v0.1.0-beta.1` 的 Tag 和 GitHub Release **未移动**；beta.2 是全新的 Tag 与 Release。宿主集成（OpenBot / DSH / Hermes）仍未实测——CLI 成功不代表宿主验收通过。
 
 ## 1. 两项独立决定
 

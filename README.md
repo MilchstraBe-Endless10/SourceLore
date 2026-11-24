@@ -184,4 +184,12 @@ Third-party sources and licensing notes are in [THIRD_PARTY_NOTICES.md](THIRD_PA
 
 ## Development and contribution
 
-Run the test suite per directory with `unittest discover` (packages with `__init__.py` use `-t .`; plain test directories are run without `-t` — mixing them causes name clashes, not logic regressions). Do not commit the knowledge database, captured bytes, third-party snapshots or local configuration. Keep source changes and Skill-installation copies in sync.
+Run the standalone test scripts file-by-file (`python3 <test_file>` from the
+test directory, with `PYTHONPATH=src`), as encoded in CI — several files use
+module-level `sys.exit` and are not compatible with `unittest discover`. The
+release installer and ZIP self-bootstrap are covered by
+`tests/release_installer/`. The current release is `v0.1.0-beta.2`; the
+standalone ZIP embeds its own `install.py`, so ZIP-only users can install
+without cloning the repository. Do not commit the knowledge database, captured
+bytes, third-party snapshots or local configuration. Keep source changes and
+Skill-installation copies in sync.

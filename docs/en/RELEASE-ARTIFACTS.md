@@ -16,13 +16,18 @@ sourcelore/
 ├── SKILL.md                       # Skill entry + frontmatter
 ├── references/                    # commands, safety, schema, content-qa
 ├── scripts/sourcelore.py          # launcher (self-locating)
+├── install.py                     # self-contained installer (bootstrap entry)
 ├── _sourcelore_src/src/           # bundled first-party program source
-└── RELEASE_INFO.json              # embedded version metadata
+└── RELEASE_INFO.json              # embedded version metadata + installer sha256
 ```
 
-The ZIP is **self-contained**: after installation you may delete the ZIP and
-its extraction directory; the Skill keeps working because the program source
-is bundled inside the installed Skill folder.
+The ZIP is **self-contained and self-bootstrapping**: it ships its own
+`install.py`, so a user who downloads only the ZIP can install without a Git
+clone — extract it and run `python3 install.py install` from the extracted
+`sourcelore/` directory. `RELEASE_INFO.json` records that installer's SHA-256.
+After installation you may delete the ZIP and its extraction directory; the
+Skill keeps working because the program source is bundled inside the installed
+Skill folder.
 
 The ZIP does **not** contain: `kb.db` or any knowledge database, captured
 third-party bytes, `upstreams/` snapshots, API tokens, local config, install
@@ -44,9 +49,11 @@ full test suite passes.
 ## Install from a release
 
 ```sh
-# Download the ZIP and checksum, verify, then:
-python3 tools/install.py install --zip sourcelore-skill-vX.Y.Z.zip
-python3 tools/install.py doctor
+# Download the ZIP and checksum, verify, then either:
+# (a) ZIP-only bootstrap — run the installer FROM INSIDE the extracted ZIP:
+python3 /path/to/extracted/sourcelore/install.py install
+# (b) from a checkout: python3 tools/install.py install --zip sourcelore-skill-vX.Y.Z.zip
+python3 tools/install.py doctor --expect-version X.Y.Z
 ```
 
 See [INSTALLATION.md](INSTALLATION.md) / [UPGRADING.md](UPGRADING.md) for the

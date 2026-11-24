@@ -16,11 +16,12 @@ sourcelore/
 ├── SKILL.md                       # Skill 入口 + frontmatter
 ├── references/                    # commands、safety、schema、content-qa
 ├── scripts/sourcelore.py          # launcher（自定位）
+├── install.py                     # 自包含安装器（自举入口）
 ├── _sourcelore_src/src/           # 内置第一方程序源码
-└── RELEASE_INFO.json              # 内嵌版本元数据
+└── RELEASE_INFO.json              # 内嵌版本元数据 + 安装器 sha256
 ```
 
-ZIP **自包含**：安装后可删除 ZIP 与解压目录；技能仍可运行，因为程序源码已内置于安装目录。
+ZIP **自包含且可自举**：内含自己的 `install.py`，只下载 ZIP 的用户无须 Git Clone 即可安装——解压后在 `sourcelore/` 目录运行 `python3 install.py install`。`RELEASE_INFO.json` 记录了安装器的 SHA-256。安装后可删除 ZIP 与解压目录；技能仍可运行，因为程序源码已内置于安装目录。
 
 ZIP **不含**：`kb.db` 或任何知识数据库、已捕获的第三方字节、`upstreams/` 快照、API Token、本地配置、安装 marker、`.venv/`，以及任何开发者本机路径。
 
@@ -38,9 +39,11 @@ Git Tag vX.Y.Z
 ## 从发行版安装
 
 ```sh
-# 下载 ZIP 与校验和，校验后：
-python3 tools/install.py install --zip sourcelore-skill-vX.Y.Z.zip
-python3 tools/install.py doctor
+# 下载 ZIP 与校验和，校验后，二选一：
+# (a) 仅 ZIP 自举——运行解压出的 ZIP 内部安装器：
+python3 /path/to/extracted/sourcelore/install.py install
+# (b) 从工程检出：python3 tools/install.py install --zip sourcelore-skill-vX.Y.Z.zip
+python3 tools/install.py doctor --expect-version X.Y.Z
 ```
 
 完整命令见[安装指南](INSTALLATION.md) / [升级与卸载](UPGRADING.md)。

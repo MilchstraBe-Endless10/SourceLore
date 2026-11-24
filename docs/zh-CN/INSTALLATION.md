@@ -61,7 +61,7 @@ python3 "<工程根>/skill/sourcelore/scripts/sourcelore.py" help
 ```json
 {
   "ok": true,
-  "skill_version": "0.1.0-beta.1"
+  "skill_version": "0.1.0-beta.2"
 }
 ```
 
@@ -91,15 +91,32 @@ export SOURCELORE_PROJECT_ROOT="<工程根>"
 python3 tools/install.py install
 python3 tools/install.py doctor
 
-# 从独立 Release ZIP（无需 clone）：
+# 从独立 Release ZIP，且你已有工程检出时：
 python3 tools/install.py install --zip /path/to/sourcelore-skill-vX.Y.Z.zip
+
+# 仅有 ZIP 的自举安装（无 clone、也没有工程里的安装器）：
+# 下载 ZIP、解压，然后运行 ZIP 自带的 install.py：
+python3 /path/to/extracted/sourcelore/install.py install
 
 # 之后：更新（安全暂存 + 回滚）、卸载（保留你的数据）：
 python3 tools/install.py update --zip /path/to/sourcelore-skill-vNEWER.zip
 python3 tools/install.py uninstall
 ```
 
-安装器安装的是**自包含** Skill（内置程序源码），因此事后可删除原检出/ZIP。它从不写知识库数据根，拒绝覆盖不属于它的 Skill 目录，且无需 root 权限。见[升级与卸载](UPGRADING.md)。
+独立 ZIP 是**可自举**的：它内含自己的 `install.py` 和内置程序源码，因此只下载 ZIP 附件即可安装，无须访问源码仓库。ZIP 内的 `RELEASE_INFO.json` 记录了该安装器的 SHA-256，运行前可校验。安装器安装的是**自包含** Skill，因此事后可删除原检出/ZIP 及解压目录。它从不写知识库数据根，拒绝覆盖不属于它的 Skill 目录，且无需 root 权限。见[升级与卸载](UPGRADING.md)。
+
+`doctor` 只读，并给出明确的 `status`：
+
+| `status` | 含义 | `ok`/退出码 |
+|---|---|---|
+| `ok` | 已安装、归属正确、launcher 可执行、版本匹配 | `true` / 0 |
+| `not_installed` | Skill 目录不存在 | `false` / 1 |
+| `unowned` | 目录存在但没有 SourceLore marker | `false` / 1 |
+| `incomplete` | 安装目录缺失必需文件 | `false` / 1 |
+| `launcher_failed` | launcher 存在但运行失败 | `false` / 1 |
+| `version_mismatch` | launcher 版本与预期/marker 不符 | `false` / 1 |
+
+知识库未建立或为空**不算安装失败**：会单独报告 `data_root_status=not_created`/`empty`，健康的安装仍为 `status=ok`。用 `--expect-version` 可锁定预期 launcher 版本。
 
 下面的手工复制流程仅作参考，供需要特定发现目录布局的宿主使用。
 

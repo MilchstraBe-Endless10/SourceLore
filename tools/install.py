@@ -27,7 +27,7 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 
-VERSION_FALLBACK = "0.1.0-beta.1"
+VERSION_FALLBACK = "0.1.0-beta.2"
 MARKER = ".sourcelore-install.json"          # owner marker written at install root
 LEGACY_MARKER = ".sourcelore-skill.json"     # legacy marker from f2p5a_install.py
 REQUIRED_SKILL_FILES = ["SKILL.md", "scripts/sourcelore.py"]
@@ -144,39 +144,91 @@ def _project_root_from_marker(dest: Path) -> Path | None:
     return None
 
 
+def _data_root_status(path: Path) -> str:
+    if not path.exists():
+        return "not_created"
+    try:
+        if any(path.rglob("*.db")):
+            return "initialized"
+    except Exception:
+        pass
+    return "empty"
+
+
 def cmd_doctor(args) -> int:
+    """Read-only health check with an explicit, machine-readable status contract.
+
+    status is one of: ok, not_installed, unowned, incomplete, launcher_failed,
+    version_mismatch. Only status=ok sets ok/healthy=true and exit code 0.
+    An empty/uninitialized data root is reported separately and never fails the
+    install check.
+    """
     dest = Path(args.skill_dir).expanduser() if args.skill_dir else default_skill_dest()
-    exists = dest.is_dir()
-    owned = is_owned(dest) if exists else False
-    marker = None
+    data_root = Path(os.environ.get("SOURCELORE_DATA_ROOT", "~/.sourcelore")).expanduser()
+    result = {
+        "ok": False,
+        "status": "unknown",
+        "healthy": False,
+        "issue": None,
+        "skill_dir": str(dest),
+        "installed": dest.is_dir(),
+        "owned_by_sourcelore": False,
+        "marker": None,
+        "launcher_ok": False,
+        "launcher_version": None,
+        "launcher_version_or_error": "not installed",
+        "expected_version": getattr(args, "expect_version", None),
+        "data_root": str(data_root),
+        "data_root_status": _data_root_status(data_root),
+        "note": "doctor is read-only; no files were modified",
+    }
+
+    if not dest.is_dir():
+        result.update(status="not_installed", issue="Skill directory does not exist")
+        return emit(result)
+
+    result["owned_by_sourcelore"] = is_owned(dest)
     for m in (MARKER, LEGACY_MARKER):
-        if exists and (dest / m).is_file():
+        if (dest / m).is_file():
             try:
-                marker = json.loads((dest / m).read_text(encoding="utf-8"))
+                result["marker"] = json.loads((dest / m).read_text(encoding="utf-8"))
             except Exception:
                 pass
             break
-    launcher_ok, launcher_info = check_launcher(dest) if exists else (False, "not installed")
-    info = {
-        "ok": True,
-        "skill_dir": str(dest),
-        "installed": exists,
-        "owned_by_sourcelore": owned,
-        "marker": marker,
-        "launcher_ok": launcher_ok,
-        "launcher_version_or_error": launcher_info,
-        "data_root": str(Path(os.environ.get("SOURCELORE_DATA_ROOT", "~/.sourcelore")).expanduser()),
-        "note": "doctor is read-only; no files were modified",
-    }
-    if args.json:
-        print(json.dumps(info, ensure_ascii=False, indent=2))
-    else:
-        print("SourceLore doctor")
-        for k, v in info.items():
-            if k == "ok":
-                continue
-            print(f"  {k}: {v}")
-    return 0
+
+    if not result["owned_by_sourcelore"]:
+        result.update(status="unowned",
+                      issue="directory exists but has no SourceLore install marker")
+        return emit(result)
+
+    proj_root = _project_root_from_marker(dest) or dest
+    missing = [p for p in REQUIRED_SKILL_FILES if not (dest / p).is_file()]
+    missing += [p for p in REQUIRED_PROJECT_FILES if not (proj_root / p).is_file()]
+    if missing:
+        result.update(status="incomplete", issue="missing files: " + ", ".join(missing))
+        return emit(result)
+
+    launcher_ok, launcher_info = check_launcher(dest)
+    result["launcher_ok"] = launcher_ok
+    result["launcher_version_or_error"] = launcher_info
+    if not launcher_ok:
+        result.update(status="launcher_failed", issue="launcher failed: " + str(launcher_info))
+        return emit(result)
+
+    result["launcher_version"] = launcher_info
+    expect = getattr(args, "expect_version", None)
+    marker_version = (result["marker"] or {}).get("version")
+    if expect and launcher_info != expect:
+        result.update(status="version_mismatch",
+                      issue=f"launcher version {launcher_info} != expected {expect}")
+        return emit(result)
+    if marker_version and launcher_info != marker_version:
+        result.update(status="version_mismatch",
+                      issue=f"launcher version {launcher_info} != marker version {marker_version}")
+        return emit(result)
+
+    result.update(ok=True, healthy=True, status="ok", issue=None)
+    return emit(result)
 
 
 def _copy_source_into(source_root: Path, dest: Path) -> None:
@@ -243,11 +295,23 @@ def cmd_install(args) -> int:
                  "data_root_preserved": True})
 
 
+def _self_source_dir() -> Path:
+    """Directory of this installer. Inside a release ZIP this is the ZIP root."""
+    return Path(__file__).resolve().parent
+
+
 def _resolve_source(args) -> Path | None:
     if getattr(args, "zip", None):
         return _unzip_safely(Path(args.zip).expanduser())
-    root = Path(args.source).expanduser() if getattr(args, "source", None) else Path.cwd()
-    return root if (root / "src" / "skill_interface" / "cli.py").is_file() else None
+    if getattr(args, "source", None):
+        root = Path(args.source).expanduser()
+        return root if _layout(root) else None
+    # No explicit source: prefer the current directory (a repo checkout), then
+    # fall back to this installer's own directory (self-contained release ZIP).
+    for root in (Path.cwd(), _self_source_dir()):
+        if _layout(root):
+            return root
+    return None
 
 
 def _unzip_safely(zp: Path) -> Path | None:
@@ -364,6 +428,8 @@ def build_parser() -> argparse.ArgumentParser:
     sd = sub.add_parser("doctor", help="read-only install diagnostics")
     common(sd)
     sd.add_argument("--json", action="store_true")
+    sd.add_argument("--expect-version", default=None,
+                    help="fail with version_mismatch if launcher reports a different version")
 
     su = sub.add_parser("update", help="safe staged update")
     common(su)
@@ -380,7 +446,8 @@ def main(argv=None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     if args.version:
-        return emit({"ok": True, "installer_version": VERSION_FALLBACK})
+        detected = read_version_from_checkout(_self_source_dir()) or VERSION_FALLBACK
+        return emit({"ok": True, "installer_version": detected})
     if args.cmd == "install":
         return cmd_install(args)
     if args.cmd == "doctor":

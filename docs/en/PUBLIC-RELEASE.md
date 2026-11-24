@@ -1,9 +1,20 @@
 # Public release readiness — release `v0.1.0-beta.1`
 
-> Status: **release engineering complete on branch `release/v0.1.0-beta.1`;
-> changing repository visibility to Public requires the owner's final
-> approval.** This document records what was actually verified, with real
-> evidence, for the first open-source beta.
+> The repository was subsequently made Public. This document records the
+> verification of the first open-source beta, `v0.1.0-beta.1`, and is retained
+> as historical evidence. The beta.1 tag and release are unchanged.
+
+## Amendment: `v0.1.0-beta.2`
+
+A follow-up patch release fixes two installation defects found after beta.1:
+the standalone release ZIP now embeds its own `install.py` (so ZIP-only users
+can bootstrap without a Git clone), and `doctor` now uses an explicit status
+contract that never reports a damaged/missing install as healthy while still
+treating an uninitialized knowledge database as normal. See [CHANGELOG.md](../../CHANGELOG.md),
+[RELEASE-ARTIFACTS.md](RELEASE-ARTIFACTS.md) and [INSTALLATION.md](INSTALLATION.md).
+The `v0.1.0-beta.1` tag and GitHub Release were **not** moved; beta.2 is a new
+tag and a new Release. Host integration (OpenBot / DSH / Hermes) remains
+unverified — CLI success is not claimed as host acceptance.
 
 ## 1. Two independent decisions
 

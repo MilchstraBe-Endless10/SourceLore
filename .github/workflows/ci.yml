@@ -104,6 +104,30 @@ jobs:
             python3 "$S/scripts/sourcelore.py" --version
           python3 tools/install.py doctor --skill-dir "$S" --json
 
+      - name: Standalone ZIP self-bootstrap (no repo checkout, no --source)
+        env:
+          TMPD: ${{ runner.temp }}
+        run: |
+          set -e
+          B="$TMPD/bootstrap"; mkdir -p "$B"
+          # Extract the ZIP and run the installer that ships INSIDE it.
+          python3 - "$TMPD" <<'PY'
+          import glob, os, sys, zipfile
+          z = glob.glob(os.path.join(sys.argv[1], "dist", "*.zip"))[0]
+          zipfile.ZipFile(z).extractall(os.path.join(sys.argv[1], "bootstrap", "x"))
+          PY
+          BOOT="$B/x/sourcelore/install.py"
+          test -f "$BOOT"
+          HOME="$B/home" SOURCELORE_DATA_ROOT="$B/data" \
+            python3 "$BOOT" install
+          # An uninitialized data root must NOT be reported as an install failure.
+          HOME="$B/home" SOURCELORE_DATA_ROOT="$B/data" \
+            python3 "$BOOT" doctor --json
+          # Deleting the ZIP and extraction dir must not break the installed Skill.
+          rm -rf "$TMPD/dist" "$B/x"
+          HOME="$B/home" SOURCELORE_DATA_ROOT="$B/data" \
+            python3 "$B/home/.agents/skills/sourcelore/scripts/sourcelore.py" --version
+
       - name: License and notice checks
         run: |
           test -f LICENSE

@@ -55,6 +55,11 @@ def build(out_dir: Path) -> dict:
                         dst.write_bytes(f.read_bytes())
             elif item.is_file():
                 (stage / item.name).write_bytes(item.read_bytes())
+        # Self-contained installer: a ZIP-only user can bootstrap without a clone.
+        installer = ROOT / "tools" / "install.py"
+        if not installer.is_file():
+            raise RuntimeError("tools/install.py missing; cannot build standalone ZIP")
+        (stage / "install.py").write_bytes(installer.read_bytes())
         # Self-contained program source (all of src/)
         bundle = stage / "_sourcelore_src" / "src"
         bundle.parent.mkdir(parents=True, exist_ok=True)
@@ -71,6 +76,8 @@ def build(out_dir: Path) -> dict:
             "tag": "v" + version,
             "install_mode": "self_contained",
             "project_root": "_sourcelore_src",
+            "installer": "install.py",
+            "installer_sha256": hashlib.sha256(installer.read_bytes()).hexdigest(),
             "contains_user_data": False,
         }
         (stage / "RELEASE_INFO.json").write_text(
