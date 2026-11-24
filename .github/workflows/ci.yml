@@ -110,11 +110,13 @@ jobs:
         run: |
           set -e
           B="$TMPD/bootstrap"; mkdir -p "$B"
+          # Build a fresh ZIP here: an earlier step may have removed dist/.
+          python3 tools/build_release.py --out "$B/dist"
           # Extract the ZIP and run the installer that ships INSIDE it.
-          python3 - "$TMPD" <<'PY'
+          python3 - "$B" <<'PY'
           import glob, os, sys, zipfile
           z = glob.glob(os.path.join(sys.argv[1], "dist", "*.zip"))[0]
-          zipfile.ZipFile(z).extractall(os.path.join(sys.argv[1], "bootstrap", "x"))
+          zipfile.ZipFile(z).extractall(os.path.join(sys.argv[1], "x"))
           PY
           BOOT="$B/x/sourcelore/install.py"
           test -f "$BOOT"
@@ -124,7 +126,7 @@ jobs:
           HOME="$B/home" SOURCELORE_DATA_ROOT="$B/data" \
             python3 "$BOOT" doctor --json
           # Deleting the ZIP and extraction dir must not break the installed Skill.
-          rm -rf "$TMPD/dist" "$B/x"
+          rm -rf "$B/dist" "$B/x"
           HOME="$B/home" SOURCELORE_DATA_ROOT="$B/data" \
             python3 "$B/home/.agents/skills/sourcelore/scripts/sourcelore.py" --version
 
