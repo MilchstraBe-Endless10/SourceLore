@@ -61,7 +61,7 @@ python3 "<project-root>/skill/sourcelore/scripts/sourcelore.py" help
 ```json
 {
   "ok": true,
-  "skill_version": "f2p5a/1.0"
+  "skill_version": "0.1.0-beta.1"
 }
 ```
 
@@ -81,6 +81,32 @@ export SOURCELORE_PROJECT_ROOT="<project-root>"
 ---
 
 ## 4. Install the Skill
+
+### 4.0 Official installer (recommended)
+
+From a Git checkout, or from a downloaded standalone release ZIP, use the
+official installer instead of copying files by hand:
+
+```sh
+# From a Git checkout:
+python3 tools/install.py install
+python3 tools/install.py doctor
+
+# From a standalone release ZIP (no clone needed):
+python3 tools/install.py install --zip /path/to/sourcelore-skill-vX.Y.Z.zip
+
+# Later: update (safe staged + rollback), uninstall (keeps your data):
+python3 tools/install.py update --zip /path/to/sourcelore-skill-vNEWER.zip
+python3 tools/install.py uninstall
+```
+
+The installer installs a **self-contained** Skill (program source bundled), so
+the original checkout/ZIP can be deleted afterwards. It never writes to the
+knowledge-base data root, refuses to overwrite a Skill directory it does not
+own, and needs no root privileges. See [UPGRADING.md](UPGRADING.md).
+
+The manual copy procedure below is retained for reference and for hosts that
+require a specific discovery layout.
 
 The Skill is loaded by the platform's filesystem discovery mechanism. Copy the **entire** `<project-root>/skill/sourcelore/` directory into the agent's Skill discovery directory, for example:
 
@@ -284,7 +310,7 @@ A local snapshot proves only "a version observed in the past"; it cannot prove t
 ## 11. Limitation semantics (understand these clearly)
 
 - **`ROOT_ONLY`** means only the repository root was enumerated. It is **never** equivalent to full `COMPLETE` coverage; missing content is "not analyzed", not "does not exist". A `tree_status=ROOT_ONLY` from `derive` is the genuine coverage state — do not "correct" it to COMPLETE.
-- **`distribution_allowed=false`**: all cards and reports are internal previews, not formal releases; distribution gates B-1/B-2/B-3 remain open. This project has not selected an open-source license and is for internal use only.
+- **`distribution_allowed=false`**: all cards and reports are internal previews; distribution gates B-1/B-2/B-3 remain open. This applies to **captured third-party knowledge output only**, not to SourceLore first-party code, which is MIT-licensed (see `LICENSE`).
 - **`review_status=pending_review`**: every `supported` verdict carries this field, meaning it is a CLI adjudication not yet human-reviewed; it must not be described as "confirmed".
 - **`completeness_status: PARTIAL`**: when the tree is truncated, uncovered parts must not be judged as "non-existent".
 - **`insufficient_evidence`**: say only "insufficient evidence", never "the proposition is false".

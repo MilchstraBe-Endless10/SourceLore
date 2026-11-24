@@ -61,7 +61,7 @@ python3 "<工程根>/skill/sourcelore/scripts/sourcelore.py" help
 ```json
 {
   "ok": true,
-  "skill_version": "f2p5a/1.0"
+  "skill_version": "0.1.0-beta.1"
 }
 ```
 
@@ -81,6 +81,27 @@ export SOURCELORE_PROJECT_ROOT="<工程根>"
 ---
 
 ## 4. 安装 Skill
+
+### 4.0 官方安装器（推荐）
+
+从 Git 检出或下载的独立 Release ZIP，使用官方安装器，而非手工复制文件：
+
+```sh
+# 从 Git 检出：
+python3 tools/install.py install
+python3 tools/install.py doctor
+
+# 从独立 Release ZIP（无需 clone）：
+python3 tools/install.py install --zip /path/to/sourcelore-skill-vX.Y.Z.zip
+
+# 之后：更新（安全暂存 + 回滚）、卸载（保留你的数据）：
+python3 tools/install.py update --zip /path/to/sourcelore-skill-vNEWER.zip
+python3 tools/install.py uninstall
+```
+
+安装器安装的是**自包含** Skill（内置程序源码），因此事后可删除原检出/ZIP。它从不写知识库数据根，拒绝覆盖不属于它的 Skill 目录，且无需 root 权限。见[升级与卸载](UPGRADING.md)。
+
+下面的手工复制流程仅作参考，供需要特定发现目录布局的宿主使用。
 
 Skill 由平台的文件系统发现机制加载。把 `<工程根>/skill/sourcelore/` **整个目录**复制到智能体的 Skill 发现目录，例如：
 
@@ -284,7 +305,7 @@ sourcelore repositories
 ## 11. 限制语义（务必理解）
 
 - **`ROOT_ONLY`**：表示只枚举了仓库根目录。它**绝不**等同于完整的 `COMPLETE` 覆盖；缺少内容属于"未分析"，不是"不存在"。`derive` 输出 `tree_status=ROOT_ONLY` 是真实覆盖状态，不要"修正"成 COMPLETE。
-- **`distribution_allowed=false`**：所有卡片与报告都是内部预览，不是正式发布；分发门禁 B-1/B-2/B-3 仍开放。本项目尚未选择开源许可证，仅供内部使用。
+- **`distribution_allowed=false`**：卡片与报告仍是内部预览，分发门禁 B-1/B-2/B-3 仍开放。该门禁**仅针对已采集的第三方知识输出**，不针对 SourceLore 第一方代码——后者采用 MIT 许可证（见 `LICENSE`）。
 - **`review_status=pending_review`**：任何 `supported` 裁决都带此字段，表示这是 CLI 裁决、尚未人工复核，不可说成"已确认"。
 - **`completeness_status: PARTIAL`**：Tree 被截断时，未覆盖部分不得判为"不存在"。
 - **`insufficient_evidence`**：只能说"证据不足"，不得说"该命题错误"。

@@ -43,7 +43,9 @@ DEFAULT_DATA_ROOT = (
     else (_configured_data_root() or (Path.home() / ".sourcelore"))
 )
 
-SKILL_VERSION = "f2p5a/1.0"
+# 版本统一由 version.py 提供（对外语义版本 + 内部研发代号分离）。
+# SKILL_VERSION 保留为向后兼容别名；不要再在此硬编码版本字符串。
+from version import SKILL_VERSION, RELEASE_VERSION, RELEASE_TAG, DEV_CODENAME  # noqa: E402,F401
 
 
 def ensure_import_path() -> None:
