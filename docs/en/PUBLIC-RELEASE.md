@@ -1,58 +1,74 @@
-# Public release readiness — SourceLore
+# Public release readiness — release `v0.1.0-beta.1`
 
-> **Status: RELEASE BLOCKED, pending history/privacy and first-party licensing review.**
-> Baseline inspected: private `main`, commit `8661ebc26f94a83166dc1fa13a7ce8015d96158d`. The owner has requested a **public** GitHub repository; this document records the checks required to make the existing repository public safely.
+> Status: **release engineering complete on branch `release/v0.1.0-beta.1`;
+> changing repository visibility to Public requires the owner's final
+> approval.** This document records what was actually verified, with real
+> evidence, for the first open-source beta.
 
-## 1. Distinguish the two distribution decisions
+## 1. Two independent decisions
 
-**First-party repository visibility:** Making SourceLore's own implementation and documentation public allows anonymous browsing of every reachable commit. A Public repository is **not automatically open source**: the repository currently has no root `LICENSE` file. The owner must choose an appropriate first-party license or explicitly publish with no reuse license.
+- **First-party code visibility/license**: SourceLore's own code is released
+  under the [MIT License](../../LICENSE) (`Copyright (c) 2026
+  MilchstraBe-Endless10 (Cosmos)`). Making the GitHub repository Public is a
+  separate owner decision and has not been performed in this engineering round.
+- **Third-party knowledge output**: the runtime `distribution_allowed=false`
+  gate (B-1/B-2/B-3) remains closed. MIT covers first-party code only, not
+  captured repository bytes, derived knowledge data or the user's database.
 
-**Third-party knowledge output:** SourceLore's `DISTRIBUTE` gate remains blocked (`distribution_allowed=false`, B-1/B-2/B-3 open). That policy controls captured upstream content, derived outputs and knowledge cards; publishing first-party code must not disable it.
+## 2. Privacy / secret audit (actually executed)
 
-These decisions are independent. See [Security](SECURITY.md), [Requirements](REQUIREMENTS.md) and [Third-party notices](../../THIRD_PARTY_NOTICES.md).
+A full scan of the working tree and all reachable Git objects was performed:
 
-## 2. Confirmed public-release risks
+- 193 reachable commits; 1,553 text blobs scanned (full `git cat-file --batch`
+  stream, not truncated).
+- Secret patterns scanned: GitHub tokens (`ghp_/gho_/github_pat_`), AWS keys,
+  private-key blocks, `api_key/secret/token/password` assignments, Slack tokens.
+- Result: **no real secret found**. The single `api_key_kv` hit is a synthetic
+  string in a test fixture (`tests/content/test_content_e2e.py`), not a
+  credential.
+- Private local paths: ~340 hits across historical docs (`progress/`,
+  `docs/environment-audit.md`, `docs/implementation/*`), i.e. the developer's
+  username and mount paths. These are **not secrets** but do disclose local
+  directory structure once the repository is Public. Historical commits still
+  contain them; deleting them from the current tree alone does not remove them
+  from history.
 
-| Finding | Current evidence | Release action |
-|---|---|---|
-| Private local file paths | Existing security documentation acknowledges paths in historic `progress/` records | Scan current files **and all Git history** |
-| History exposure | Previous commits remain accessible after changing a repository to Public | Sanitize reachable objects if sensitive content is found |
-| Licensing | No first-party `LICENSE` present | Record an owner-approved license decision |
-| Third-party provenance | Six upstream references; one has no license | Independently review attribution and no-copy claims |
-| Knowledge data | Raw blobs, snapshots, caches and database must not ship with source | Verify current tree **and prior commits** |
-| Secrets | Unknown until exhaustive history scan | Scan, revoke any discovered credentials, and prevent reintroduction |
+**Owner decision pending**: whether to scrub private paths from Git history
+(requires history rewrite + force push, an explicitly gated irreversible
+operation) or accept them as-is when making the repository Public. No rewrite
+was performed.
 
-A normal deletion commit does **not** erase old paths from Git history. Updating `.gitignore` alone is insufficient.
+## 3. Third-party rights
 
-## 3. Reproducible local audit
+See [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md): six upstreams
+reviewed; all were read-only research, zero code/prompt/rule/template copying.
+UPSTREAM-06 has no license and was treated most conservatively (zero copy).
+No third-party snapshots are tracked (`.gitignore` excludes `upstreams/`).
 
-Run in a full clone, not in a shallow checkout:
+## 4. Release artifacts actually built and verified
 
-```sh
-git remote -v
-git status --short --branch
-git rev-list --objects --all
-git log --all --oneline --decorate
-git ls-files
-```
+- Version from single source `src/skill_interface/version.py`:
+  `0.1.0-beta.1` (tag `v0.1.0-beta.1`).
+- `python3 tools/build_release.py --out dist` produced
+  `sourcelore-skill-v0.1.0-beta.1.zip` (self-contained: Skill files + bundled
+  `src/` + `RELEASE_INFO.json`), with `SHA256SUMS.txt` verified by
+  `sha256sum -c`.
+- ZIP contains no `kb.db`, captured bytes, tokens, markers or local config.
+- Clean-environment install verified for both Git-checkout and standalone ZIP
+  modes; launcher works with no `SOURCELORE_PROJECT_ROOT` and after deleting
+  the ZIP; works in paths with spaces, parentheses and Chinese characters.
 
-Review all tracked `progress/` logs, `docs/`, scripts and test fixtures. Search every reachable Git blob for machine usernames, absolute paths, credentials, third-party raw material and data exports. A secret scanner helps, but does not replace manual review. Avoid copying detected secret values into reports.
+## 5. Remaining owner gates
 
-If historical sanitization is needed: back up the repository and refs; prepare a dedicated rewrite plan with a before/after object inventory; obtain explicit owner approval for commit-ID changes and any force update. **Do not rewrite history as part of routine documentation editing.**
+- [ ] Approve making the repository Public (irreversible visibility change).
+- [ ] Decide on Git-history private-path scrubbing (history rewrite + force push).
+- [ ] Confirm the copyright holder string in LICENSE.
+- [ ] After going Public: anonymous-browser check of README, LICENSE, docs,
+      tag and Release, and ZIP download.
 
-## 4. Publication acceptance checklist
+## 6. Not claimed in this round
 
-- [ ] First-party licensing decision recorded in both READMEs.
-- [ ] Third-party references and B-1/B-2/B-3 obligations reviewed.
-- [ ] All reachable branches, tags and commits scanned.
-- [ ] Historic usernames, local paths and secrets removed from the history that will be made public.
-- [ ] No knowledge databases, content captures or private configuration in Git history.
-- [ ] Bilingual requirements, architecture, security and installation docs reviewed against actual CLI.
-- [ ] SVG/Mermaid diagrams reviewed as **schematics**, not runtime tests.
-- [ ] Coverage truthfully reported (`ROOT_ONLY` does not imply full-tree capture).
-- [ ] Independent release review signed off.
-- [ ] **After** visibility change, verify anonymous access to README, docs and branch history.
-
-## 5. Deferred actions
-
-This documentation update makes **no** visibility change, chooses **no** license, performs **no** history rewrite and does **not** relax SourceLore runtime distribution gates. These remain explicit release decisions rather than hidden side effects.
+Making the repo Public, rewriting history, creating the GitHub Release, or
+opening distribution gates B-1/B-2/B-3. See
+[VERSIONING.md](VERSIONING.md), [UPGRADING.md](UPGRADING.md) and
+[CHANGELOG.md](../../CHANGELOG.md).

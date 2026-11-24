@@ -1,58 +1,41 @@
-# SourceLore 公开发布准备与核查
+# 公开发布核查 — 发行版 `v0.1.0-beta.1`
 
-> **当前状态：发布门禁尚未关闭，暂不可直接把现有仓库设为 Public。**
-> 核查基准：私有 `main`，提交 `8661ebc26f94a83166dc1fa13a7ce8015d96158d`。所有者已明确要求**公开 GitHub 仓库**；本文列明安全公开现有仓库需要完成的检查。
+> 状态：**发行工程已在分支 `release/v0.1.0-beta.1` 上完成；把仓库可见性改为 Public 仍需所有者最终批准。** 本文记录首个开源 beta 逐项实际核验的结果与证据。
 
-## 一、区分两种公开和分发
+## 1. 两项独立决定
 
-**第一方源码仓库的可见性：** 将 SourceLore 本身的代码、测试和文档设为 Public，意味着所有人可以访问当前文件以及可到达的 Git 历史。仓库公开不等于自动成为开源软件：当前根目录没有 `LICENSE` 文件。需要由所有者选择第一方许可证，或明确暂时不授予复用许可。
+- **第一方代码可见性/许可证**：SourceLore 自身代码以 [MIT 许可证](../../LICENSE) 发布（`Copyright (c) 2026 MilchstraBe-Endless10 (Cosmos)`）。把 GitHub 仓库改为 Public 是另一项由所有者决定的操作，本轮工程**未执行**。
+- **第三方知识输出**：运行时 `distribution_allowed=false` 门禁（B-1/B-2/B-3）保持关闭。MIT 只覆盖第一方代码，不覆盖已采集的仓库字节、派生知识数据或用户数据库。
 
-**第三方知识内容的分发：** SourceLore 运行时的 `DISTRIBUTE` 门禁仍阻断（`distribution_allowed=false`，B-1/B-2/B-3 未关闭）。它约束的是已采集的外部内容、派生知识输出和卡片，公开第一方源码不能默认解除这些门禁。
+## 2. 隐私 / 密钥审计（已实际执行）
 
-这两个决定必须独立核查。参见[安全与授权](SECURITY.md)、[需求规格](REQUIREMENTS.md)和[第三方声明](../../THIRD_PARTY_NOTICES.md)。
+对工作树及全部可达 Git 对象做了完整扫描：
 
-## 二、已确认的公开发布风险
+- 193 个可达提交；扫描 1,553 个文本 Blob（用完整 `git cat-file --batch` 流，未截断）。
+- 扫描的密钥模式：GitHub token（`ghp_/gho_/github_pat_`）、AWS 密钥、私钥块、`api_key/secret/token/password` 赋值、Slack token。
+- 结果：**未发现真实密钥**。唯一 `api_key_kv` 命中是测试夹具中的合成字符串（`tests/content/test_content_e2e.py`），不是凭据。
+- 本机私有路径约 340 处，集中在历史文档（`progress/`、`docs/environment-audit.md`、`docs/implementation/*`），即开发者用户名与挂载路径。它们**不是密钥**，但仓库公开后会暴露本机目录结构。历史提交仍包含它们；仅在当前树删除不能从历史中移除。
 
-| 风险 | 目前证据 | 所需动作 |
-|---|---|---|
-| 本机路径披露 | 现有安全文档已承认 `progress/` 历史记录含本机绝对路径 | 检查当前文件**及所有 Git 历史** |
-| 旧提交暴露 | 改成 Public 后，历史 Commit 仍可被访问 | 必要时清理可达历史对象 |
-| 第一方许可证 | 当前没有 `LICENSE` | 由所有者确认发布许可证政策 |
-| 第三方来源 | 已登记六个上游参考源，其中一个无许可证 | 独立复核署名及零复制声明 |
-| 知识库数据 | 数据库、捕获 Blob、快照与缓存不应随源码公开 | 当前树与历史提交都要核查 |
-| 凭据 | 只有完整历史扫描后才能定论 | 扫描并轮换任何泄漏密钥 |
+**待所有者决定**：是否在公开前清理 Git 历史中的私有路径（需重写历史 + force push，属于明确门禁的不可逆操作），或按现状接受。本轮未做任何历史重写。
 
-**只在新提交中删除私有路径，并不会删除历史提交中的同一内容。** 更新 `.gitignore` 也不能替代历史清理。
+## 3. 第三方权利
 
-## 三、可复现的仓库检查
+见 [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md)：六个上游均为只读研究，零代码/提示词/规则/模板复制。UPSTREAM-06 无许可证，按最保守方式处理（零复制）。无第三方快照入库（`.gitignore` 排除 `upstreams/`）。
 
-在完整克隆（非浅克隆）中执行：
+## 4. 已实际构建并验证的发行产物
 
-```sh
-git remote -v
-git status --short --branch
-git rev-list --objects --all
-git log --all --oneline --decorate
-git ls-files
-```
+- 单一版本源 `src/skill_interface/version.py`：`0.1.0-beta.1`（Tag `v0.1.0-beta.1`）。
+- `python3 tools/build_release.py --out dist` 生成 `sourcelore-skill-v0.1.0-beta.1.zip`（自包含：Skill 文件 + 内置 `src/` + `RELEASE_INFO.json`），`SHA256SUMS.txt` 经 `sha256sum -c` 校验通过。
+- ZIP 不含 `kb.db`、已捕获字节、Token、marker 或本地配置。
+- 干净环境安装验证覆盖 Git 检出与独立 ZIP 两种模式；在无 `SOURCELORE_PROJECT_ROOT`、删除 ZIP 后 launcher 仍可用；在含空格、括号、中文的路径下可用。
 
-逐项检查 `progress/`、`docs/`、脚本、测试样例及所有可达 Git Blob，识别本机用户名、私有路径、凭据、第三方原文和意外导出的数据库。可以使用成熟的密钥扫描工具，但必须保留人工复核，且不得将扫描出的真实密钥复制进报告。
+## 5. 剩余的所有者门禁
 
-如果需要重写历史：先备份所有引用与文件，制作单独的改写方案、对象差异清单和恢复预案，并取得所有者对 Commit ID 变化与强制更新的**明确授权**。不能在普通文档更新时擅自 force push。
+- [ ] 批准把仓库改为 Public（不可逆的可见性变更）。
+- [ ] 决定 Git 历史私有路径是否清理（重写历史 + force push）。
+- [ ] 确认 LICENSE 中的版权持有人字符串。
+- [ ] 公开后用匿名浏览器检查 README、LICENSE、文档、Tag、Release 与 ZIP 下载。
 
-## 四、发布验收清单
+## 6. 本轮不声称完成
 
-- [ ] 第一方许可政策由所有者确认，中英文 README 一致。
-- [ ] 第三方声明及 B-1/B-2/B-3 门禁复核完成。
-- [ ] 所有可达分支、标签和历史提交都已扫描。
-- [ ] 即将公开的 Git 历史中本机路径与敏感内容已经清理。
-- [ ] 任何历史提交均不包含知识数据库、捕获字节或私人配置。
-- [ ] 中英文需求、架构、安装与安全文档已与真实 CLI 核对。
-- [ ] SVG/Mermaid 架构图已标注为**示意**，不当作运行实测结果。
-- [ ] 正确区分 ROOT_ONLY 与完整仓库覆盖度。
-- [ ] 完成一次独立发布复核。
-- [ ] 修改可见性后，用未登录浏览器检查 README、文档及分支历史。
-
-## 五、尚未执行的操作
-
-本次文档更新**不改变仓库可见性、不决定许可证、不重写历史，也不放宽 SourceLore 的运行时分发门禁**。这些问题须作为独立发布决策处理，而不能隐含在图片或 README 美化任务里。
+仓库公开、历史重写、创建 GitHub Release、打开 B-1/B-2/B-3 分发门禁。见[版本管理](VERSIONING.md)、[升级与卸载](UPGRADING.md)与[更新日志](../../CHANGELOG.md)。
