@@ -1,0 +1,109 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "release/**"]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Verify single-source version consistency
+        run: |
+          python3 - <<'PY'
+          import re, pathlib
+          v = pathlib.Path("src/skill_interface/version.py").read_text()
+          m = re.search(r'RELEASE_VERSION\s*=\s*["\']([^"\']+)', v)
+          assert m, "RELEASE_VERSION missing"
+          print("version:", m.group(1))
+          assert re.match(r'^\d+\.\d+\.\d+', m.group(1)), "not semver-like"
+          PY
+
+      - name: Skill entry and metadata checks
+        run: |
+          test -f skill/sourcelore/SKILL.md
+          test -f skill/sourcelore/scripts/sourcelore.py
+          python3 - <<'PY'
+          from pathlib import Path
+          text = Path("skill/sourcelore/SKILL.md").read_text(encoding="utf-8")
+          assert "name:" in text and "description:" in text, "frontmatter missing"
+          print("SKILL.md frontmatter ok")
+          PY
+
+      - name: CLI smoke (standard library only)
+        env:
+          SOURCELORE_PROJECT_ROOT: ${{ github.workspace }}
+          SOURCELORE_DATA_ROOT: ${{ runner.temp }}/sl-data
+        run: |
+          python3 skill/sourcelore/scripts/sourcelore.py --version
+          python3 skill/sourcelore/scripts/sourcelore.py --help
+          python3 skill/sourcelore/scripts/sourcelore.py status
+
+      - name: Run test suite (standalone scripts, per-file)
+        env:
+          PYTHONPATH: src
+          SOURCELORE_DATA_ROOT: ${{ runner.temp }}/sl-data
+        run: |
+          fail=0
+          while IFS= read -r f; do
+            d=$(dirname "$f"); b=$(basename "$f")
+            (cd "$d" && python3 "$b") || fail=1
+          done < <(find tests -name 'test_*.py' -type f | sort)
+          exit "$fail"
+
+      - name: Build release ZIP and verify manifest
+        run: |
+          python3 tools/build_release.py --out dist
+          cd dist && sha256sum -c SHA256SUMS.txt
+          test -f RELEASE_INFO.json
+
+      - name: Standalone ZIP install test (data root isolation)
+        env:
+          TMPD: ${{ runner.temp }}
+        run: |
+          set -e
+          S="$TMPD/skilldir"; D="$TMPD/sldata"
+          python3 tools/install.py install --zip dist/*.zip --skill-dir "$S"
+          env -u SOURCELORE_PROJECT_ROOT SOURCELORE_DATA_ROOT="$D" \
+            python3 "$S/scripts/sourcelore.py" --version
+          # Deleting build artifacts must not break the installed Skill.
+          rm -rf dist
+          env -u SOURCELORE_PROJECT_ROOT SOURCELORE_DATA_ROOT="$D" \
+            python3 "$S/scripts/sourcelore.py" --version
+          python3 tools/install.py doctor --skill-dir "$S" --json
+
+      - name: License and notice checks
+        run: |
+          test -f LICENSE
+          grep -q "MIT License" LICENSE
+          test -f THIRD_PARTY_NOTICES.md
+
+      - name: Documentation link sanity
+        run: |
+          python3 - <<'PY'
+          import pathlib, re
+          missing = []
+          for md in list(pathlib.Path("docs").rglob("*.md")) + [pathlib.Path("README.md"), pathlib.Path("README.zh-CN.md")]:
+              text = md.read_text(encoding="utf-8", errors="ignore")
+              for link in re.findall(r'\]\(([^)]+)\)', text):
+                  if link.startswith(("http://", "https://", "#", "mailto:")):
+                      continue
+                  target = (md.parent / link.split("#")[0]).resolve()
+                  if not target.exists():
+                      missing.append((str(md), link))
+          if missing:
+              for m, l in missing[:20]:
+                  print("BROKEN", m, "->", l)
+              raise SystemExit(1)
+          print("all doc links resolve")
+          PY
