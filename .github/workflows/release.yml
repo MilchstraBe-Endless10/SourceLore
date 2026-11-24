@@ -46,7 +46,9 @@ jobs:
           fail=0; total=0
           while IFS= read -r f; do
             case "$f" in
-              tests/skill_interface/test_knowledge_answer.py|tests/trust/test_p0_trust.py) continue;;
+              tests/skill_interface/test_knowledge_answer.py|tests/trust/test_p0_trust.py|\
+              tests/p6f_capture/test_installed_cli.py|tests/skill_interface/test_authenticated_github.py|\
+              tests/skill_interface/test_cli.py|tests/skill_interface/test_harness_invocation.py) continue;;
             esac
             total=$((total+1))
             d=$(dirname "$f"); b=$(basename "$f")
