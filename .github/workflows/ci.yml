@@ -120,6 +120,9 @@ jobs:
               for link in re.findall(r'\]\(([^)]+)\)', text):
                   if link.startswith(("http://", "https://", "#", "mailto:")):
                       continue
+                  # Skip prose placeholders, not real file links.
+                  if link.strip().upper() in {"URL", "TODO", "TBD", "N/A", "PATH", "XXX"}:
+                      continue
                   target = (md.parent / link.split("#")[0]).resolve()
                   if not target.exists():
                       missing.append((str(md), link))
