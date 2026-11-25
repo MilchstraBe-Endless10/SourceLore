@@ -440,3 +440,7 @@ query <rid> --commit <sha> --type relation [--path P] [--module SPEC]
 25. **GitHub 在线内容采集存在预算类型 bug**：`content_capture.capture` 开头把传入的 `budget` 覆盖为 `{"used":0,"paths":0}`，随后又调 `budget.can_spend(1)`，导致带 `--include-content` 的在线采集必报 `AttributeError: 'dict' object has no attribute 'can_spend'`（`INTERNAL_ERROR`）。不是参数问题，不要反复试 `--license-known`/`--request-limit`；禁止改源码时改用规则 24 的本地 Git 入口。
 26. **区分两个身份**：GitHub 骨架库（`1459544036` 等数字 id，仅根层）与本地完整库（`local:` id，递归+内容）是两条独立资产。技术介绍用 `local:` 库的 `answer`/`derive`；报告时说明 GitHub API 路径受上述缺陷限制，不得把 `local:` 完整结果冒充为 GitHub 在线采集结果。
 27. **beta.3 已修复规则 24/25 描述的源码缺陷，旧规避法仍有效但不再是唯一途径**：正式 `analyze` 已复用递归 `TreeCollector`（`recursive=True`，整树枚举标 `COMPLETE`，截断/逐层标 `PARTIAL`），结果含 `coverage.scope` 与 `request_budget`；`content_capture` 已把内部字节批次计数改为 `byte_budget`，不再覆盖外部 `GitHubRequestBudget`；`--commit` 与解析结果不一致时直接 `COMMIT_MISMATCH` 终止；全流程（身份/Commit/Tree/内容）共用单一 `max_requests` 硬预算。规则 24/25 保留作为历史诊断与离线兜底；在已安装 beta.3 的会话中，GitHub 在线采集可正常进行，但仍须如实报告 `coverage` 与预算消耗，不得把 `local:` 完整结果冒充在线采集结果。
+
+28. **做 SourceLore 发行/升级时读 `references/release-and-finalization.md`**：ff main 与本地改动的冲突处理、`set -e` 掩盖管道退出码、新 Tag 修正而不动历史 Tag、flaky 测试用 `gh run rerun` 重试、匿名复核绕过 CDN 缓存、安装器 marker 在 staged update 后必须改写、以及三处 SKILL.md 一致性核对，都在那里按步骤给出。
+
+29. **做已安装版本的产品使用验收（UAT）读 `references/product-acceptance.md`**：先确认真正调用的是安装态 CLI（`env -u SOURCELORE_PROJECT_ROOT` + marker `project_root` 必须指向最终安装目录）；逐门给通过/失败/部分与证据，发布成功不等于功能全通过；所谓"统一检索"必须查真实库 `repo_bindings` 并只用 GitHub 身份 `answer` 检验，不得手动切到 `local:` 冒充；默认复用已有采集记录、只读零网络零知识库写入，发现缺口只报证据、不改程序或 Skill 绕过。
