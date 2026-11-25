@@ -227,8 +227,9 @@ P2-C 全量回归改用 `SOURCELORE_PROJECT_ROOT` 显式指向 worktree 源码
 
 ## 12. 当前 main Commit / CI / 安装态校验
 
-- 当前 main Commit：`87ca4079b552f6dd4014ae323140a8039e8ee4a5`
-  （短 `87ca407`，分支 `dev/p2c-deep-answer` fast-forward 合并后推送）。
+- 功能代码 main Commit：`87ca4079b552f6dd4014ae323140a8039e8ee4a5`
+  （短 `87ca407`，分支 `dev/p2c-deep-answer` fast-forward 合并后推送）；
+  验收文档回填为后续提交 `f6a8520`（无功能代码改动）。
 - 用户自有两处改动（`plugin/dsh-sourcelore-cards/client.js`、
   `progress/BOT-CARD-SOLVED-2026-11-20.md`）在 stash → 合并 → push → pop 后
   原样保留，未提交、未删除。
