@@ -76,7 +76,7 @@ class TestInstallSync(unittest.TestCase):
         """★ 安装版本必须与仓库源一致。"""
         diffs = []
         for f in self.SRC.rglob("*"):
-            if f.is_file():
+            if f.is_file() and "__pycache__" not in f.parts and f.suffix != ".pyc":
                 rel = f.relative_to(self.SRC)
                 target = self.INST/rel
                 if not target.exists():
