@@ -155,10 +155,13 @@ def build_symbol_and_import_graph(claim_rows, *, repository_id, commit_sha=None,
         if not path:
             continue
 
-        name = (subj.get("qualified_name") or subj.get("exported_name")
-                or subj.get("imported_name") or subj.get("name"))
+        name = (subj.get("qualified_name") or subj.get("symbol_name")
+                or subj.get("name") or subj.get("exported_name")
+                or subj.get("imported_name"))
         ref = subj.get("source_reference")
-        kind = c.get("kind") or subj.get("symbol_kind")
+        # ★ P2-C：c["kind"] 是分类(symbol/import/export)，不是符号类型(function/class)；
+        #   展示用 symbol_kind 只取 subject.symbol_kind。
+        kind = subj.get("symbol_kind") or subj.get("export_kind")
         scope = subj.get("scope") or subj.get("qualname_prefix") or ""
         provenance = subj.get("provenance_level") or c.get("provenance_level") or "OBSERVED"
 
@@ -178,7 +181,15 @@ def build_symbol_and_import_graph(claim_rows, *, repository_id, commit_sha=None,
                 "extraction_status": subj.get("extraction_status") or c.get("extraction_status"),
             }
 
-        if name and kind and not ref:
+        # ★ P2-C §2：按统一契约的 kind 精确分派，不再用 "name+kind+not ref"
+        #   模糊判断（那会把 Python from_import 误判成符号声明）。
+        s_kind = c.get("kind") or subj.get("kind") or ""
+        # ★ P2-C：兼容历史/夹具里用 function/class 等表示符号的 kind；
+        #   统一契约输出的是 "symbol"。二者都归到符号分支。
+        if s_kind in ("function", "js_function", "class", "method",
+                      "variable", "const", "interface", "type", "enum"):
+            s_kind = "symbol"
+        if s_kind == "symbol" and name:
             key = (path, name, scope)
             if key in symbols:
                 continue
@@ -217,8 +228,10 @@ def build_symbol_and_import_graph(claim_rows, *, repository_id, commit_sha=None,
                 "source_ref": evidence(),
             })
 
-        if ref:
-            key = (path, ref, name)
+        if s_kind in ("import", "export") and ref:
+            # ★ P2-C §2：IMPORT 与 EXPORT(re_export) 分别成边，不混为一类
+            edge_type = "IMPORTS" if s_kind == "import" else "RE_EXPORTS"
+            key = (path, ref, name, s_kind)
             if key in imports:
                 continue
             imports[key] = 1
@@ -230,37 +243,57 @@ def build_symbol_and_import_graph(claim_rows, *, repository_id, commit_sha=None,
                         if r.get("resolution_state") == "LOCAL_MODULE_RESOLVED"
                         and r.get("status") == "RESOLVED"
                         and r.get("resolved_target_path")]
+            # ★ P2-C §2：多候选/多配置上下文不得无条件取 verified[0]。
+            #   按 resolved_target_path + fact_id + resolution_id 确定性排序；
+            #   多候选时只落一条主边，但把所有候选/歧义如实写进节点，
+            #   不凭第一条冒充唯一解析。
+            def _rel_key(r):
+                return (str(r.get("resolved_target_path") or ""),
+                        str(r.get("fact_id") or ""),
+                        str(r.get("resolution_id") or ""))
+            verified = sorted(verified, key=_rel_key)
+            primary = verified[0] if verified else None
+            cand_targets = sorted({str(r.get("resolved_target_path"))
+                                   for r in verified if r.get("resolved_target_path")})
+            ambiguous = len(cand_targets) > 1
             node = {
                 "id": mid,
                 "node_type": "module_ref",
                 "label": ref,
+                # ★ P2-C §2：IMPORT/EXPORT 按真实 rule_id 分别标注，不合并身份
+                "fact_kind": s_kind,
                 "module_specifier": ref,
                 "importing_file_path": path,
-                "resolution_state": (verified[0]["resolution_state"] if verified
+                "resolution_state": (primary["resolution_state"] if primary
                                      else (rels[0].get("resolution_state")
                                            if rels else "SPECIFIER_OBSERVED")),
                 "import_fact_id": c.get("fact_id"),
                 "relation_fact_ids": [r.get("fact_id") for r in rels if r.get("fact_id")],
                 "relation_ids": [r.get("resolution_id") for r in rels if r.get("resolution_id")],
-                "candidate_paths": verified[0].get("candidate_paths") if verified else [],
-                "matched_config_rule": (verified[0].get("matched_config_rule")
-                                        if verified else None),
-                "matched_config_field": (verified[0].get("matched_config_field")
-                                         if verified else None),
-                "config_blob_oids": (verified[0].get("config_blob_oids")
-                                     if verified else []),
-                "resolver_version": (verified[0].get("resolver_version")
-                                     if verified else None),
-                "evidence_refs": (verified[0].get("evidence_refs")
-                                  if verified else []),
-                "source_identity": verified[0].get("repository_id") if verified else None,
+                "candidate_paths": sorted({json.dumps(p, sort_keys=True, ensure_ascii=False)
+                                           if isinstance(p, (dict, list)) else str(p)
+                                           for r in verified
+                                           for p in (r.get("candidate_paths") or [])}),
+                "candidate_target_paths": cand_targets,
+                "ambiguous_resolution": ambiguous,
+                "matched_config_rule": (primary.get("matched_config_rule")
+                                        if primary else None),
+                "matched_config_field": (primary.get("matched_config_field")
+                                         if primary else None),
+                "config_blob_oids": (primary.get("config_blob_oids")
+                                     if primary else []),
+                "resolver_version": (primary.get("resolver_version")
+                                     if primary else None),
+                "evidence_refs": [r for rel in verified
+                                  for r in (rel.get("evidence_refs") or [])],
+                "source_identity": primary.get("repository_id") if primary else None,
                 "source_ref": evidence(),
             }
             nodes.append(node)
             edges.append({
-                "id": _stable_id("edge:imports:", repository_id, commit_sha,
-                                 path, ref, name),
-                "edge_type": "IMPORTS",
+                "id": _stable_id("edge:imports:", edge_type, repository_id,
+                                 commit_sha, path, ref, name),
+                "edge_type": edge_type,
                 "from": file_nid(path),
                 "to": mid,
                 "imported_name": name,
@@ -271,15 +304,17 @@ def build_symbol_and_import_graph(claim_rows, *, repository_id, commit_sha=None,
                 "source_ref": evidence(),
             })
             # 仅已验证解析建 RESOLVES_TO，目标必须实际存在于树，避免悬空边
-            if verified:
-                target = _norm_path(verified[0]["resolved_target_path"])
+            # ★ P2-C §2：多候选目标时按确定性顺序取主目标建边，歧义写入边，
+            #   并在节点 candidate_target_paths 保留全部候选；不冒充唯一解析。
+            if primary:
+                target = _norm_path(primary["resolved_target_path"])
                 if target:
                     rel_src = {
                         "kind": "module_relation_fact",
-                        "fact_id": verified[0].get("fact_id"),
-                        "resolution_id": verified[0].get("resolution_id"),
-                        "repository_id": verified[0].get("repository_id"),
-                        "commit_sha": verified[0].get("commit_sha"),
+                        "fact_id": primary.get("fact_id"),
+                        "resolution_id": primary.get("resolution_id"),
+                        "repository_id": primary.get("repository_id"),
+                        "commit_sha": primary.get("commit_sha"),
                     }
                     ensure_file(target, rel_src, "VERIFIED_LOCAL_RELATION")
                     edges.append({
@@ -289,15 +324,17 @@ def build_symbol_and_import_graph(claim_rows, *, repository_id, commit_sha=None,
                         "from": mid,
                         "to": file_nid(target),
                         "resolution_state": "LOCAL_MODULE_RESOLVED",
-                        "relation_fact_id": verified[0].get("fact_id"),
-                        "resolution_policy": verified[0].get("resolution_policy"),
-                        "evidence_refs": verified[0].get("evidence_refs"),
+                        "relation_fact_id": primary.get("fact_id"),
+                        "resolution_policy": primary.get("resolution_policy"),
+                        "ambiguous_resolution": ambiguous,
+                        "candidate_target_paths": cand_targets,
+                        "evidence_refs": node["evidence_refs"],
                         "source_ref": {
                             "kind": "module_relation_fact",
-                            "fact_id": verified[0].get("fact_id"),
-                            "resolution_id": verified[0].get("resolution_id"),
-                            "repository_id": verified[0].get("repository_id"),
-                            "commit_sha": verified[0].get("commit_sha"),
+                            "fact_id": primary.get("fact_id"),
+                            "resolution_id": primary.get("resolution_id"),
+                            "repository_id": primary.get("repository_id"),
+                            "commit_sha": primary.get("commit_sha"),
                         },
                     })
                     node["resolved_target_path"] = target

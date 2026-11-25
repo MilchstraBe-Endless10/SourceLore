@@ -61,40 +61,64 @@ def _code_rows(repository_id, commit_sha, data_root, *, max_results=SOURCE_FACT_
     meta 如实记录读取上限、总数与是否被截断。
     """
     meta = {"source": "source_knowledge.query_code", "commit_sha": commit_sha,
-            "requested_limit": max_results, "truncated": False}
+            "page_size": max_results, "truncated": False, "pages": 0}
     try:
         import source_knowledge as SK
-        r = SK.query_code(repository_id=str(repository_id), commit_sha=commit_sha,
-                          data_root=data_root)
-        facts = r.get("facts") or []
+        # ★ P2-C §2：真实分页迭代，不再一次取回后切片假装分页。
+        #   每页 max_results 条，按 offset 递增直到 has_more=False 或触到有界上限。
+        facts = []
+        offset = 0
+        MAX_PAGES = 20  # 有界：单仓库最多 20*1000 条源码事实，防失控
+        last_r = {}
+        while True:
+            r = SK.query_code(repository_id=str(repository_id),
+                              commit_sha=commit_sha, data_root=data_root,
+                              max_results=max_results, offset=offset)
+            last_r = r
+            page = r.get("facts") or []
+            facts.extend(page)
+            meta["pages"] += 1
+            pg = r.get("pagination") or {}
+            if not page or not pg.get("has_more"):
+                break
+            offset += len(page)
+            if meta["pages"] >= MAX_PAGES:
+                meta["truncated"] = True
+                meta["truncate_reason"] = "MAX_PAGES_REACHED"
+                break
         meta["facts_total"] = len(facts)
-        if len(facts) > max_results:
-            facts = facts[:max_results]
-            meta["truncated"] = True
-        # 保留完整 source_fact 字段，补 kind/subject 兼容下游 old claim_rows 口径
+        # ★ P2-C §2 前置门禁：按真实 rule_id 精确分类 + 统一 specifier。
+        #   旧实现用 "IMPORT" in rule 猜 kind、且只认 source_reference/
+        #   module_specifier，Python 导入(module_name/relative_level)被误判成符号
+        #   声明或直接丢弃，导致 IMPORTS=0、DECLARES 虚高。
+        #   契约层会补 source_reference，供 graph/miner/answer 共用同一口径。
         rows = []
+        try:
+            import source_fact_contract as SFC
+        except ImportError as _ie:
+            meta["error"] = f"contract import failed: {_ie}"
+            return [], meta
         for f in facts:
             row = dict(f)
-            subj = f.get("subject") or {}
             rule = f.get("rule_id") or ""
-            # 统一符号读取契约：导入用 module_specifier，导出用 source_reference
-            ref = subj.get("source_reference") or subj.get("module_specifier")
-            if ref:
-                subj = dict(subj)
-                subj["source_reference"] = ref
-            if "IMPORT" in rule:
-                row["kind"] = "import"
-            elif "EXPORT" in rule:
-                row["kind"] = "export"
-            elif "SYMBOL" in rule:
-                row["kind"] = "symbol"
-            else:
-                row["kind"] = "symbol"
+            kind = SFC.classify(rule)
+            subj = SFC.normalize_subject(
+                rule, f.get("subject") or {},
+                file_path=f.get("file_path"), commit_sha=f.get("commit_sha"),
+                repository_id=f.get("repository_id"), fact_id=f.get("fact_id"))
+            row["kind"] = kind or "unknown"
             row["subject"] = subj
             rows.append(row)
+        meta["kind_counts"] = {}
+        for r in rows:
+            meta["kind_counts"][r["kind"]] = meta["kind_counts"].get(r["kind"], 0) + 1
+        # 无 ref 的导入/导出如实计入（不冒充符号，也不编造目标）
+        meta["imports_without_specifier"] = sum(
+            1 for r in rows if r["kind"] == "import"
+            and not (r["subject"].get("source_reference")))
         meta["facts_returned"] = len(rows)
-        meta["state"] = r.get("state")
-        meta["coverage_status"] = r.get("coverage_status")
+        meta["state"] = last_r.get("state")
+        meta["coverage_status"] = last_r.get("coverage_status")
         return rows, meta
     except Exception as e:
         meta["error"] = f"{type(e).__name__}: {e}"
@@ -102,21 +126,32 @@ def _code_rows(repository_id, commit_sha, data_root, *, max_results=SOURCE_FACT_
 
 
 def _relations_rows(repository_id, commit_sha, data_root):
-    """P2-B §5：读取 P2-A 已登记的静态模块关系（只读、零网络）。"""
+    """P2-C §2/§7：读取主来源静态关系 + D3 补充来源关系（只读、零网络）。
+
+    ★ 主来源与补充来源分开返回、各自保留 source_identity：
+      - relations：主来源（用户指定 GitHub ID）已登记关系；
+      - supplement_relations：D3 已验证本地补充源关系，按固定 Commit 读取；
+      两者不合并身份、不因内容等价扩大授权。
+    """
     meta = {"source": "source_knowledge.query_module_relations",
             "commit_sha": commit_sha}
     try:
         import source_knowledge as SK
         q = SK.query_module_relations(repository_id=str(repository_id),
                                       commit_sha=commit_sha, data_root=data_root,
-                                      include_supplements=False)
+                                      include_supplements=True)
         meta.update({"state": q.get("state"), "status": q.get("status"),
                      "status_counts": q.get("status_counts") or {},
-                     "counts": q.get("counts") or {}})
-        return q.get("relations") or [], meta
+                     "counts": q.get("counts") or {},
+                     "supplement_count": q.get("supplement_count", 0)})
+        # 主来源关系：剔除 supplement 字段后返回
+        relations = [r for r in (q.get("relations") or [])
+                     if r.get("source_role") != "verified_local_supplement"]
+        meta["primary_relation_count"] = len(relations)
+        return relations, (q.get("supplement_relations") or []), meta
     except Exception as e:
         meta["error"] = f"{type(e).__name__}: {e}"
-        return [], meta
+        return [], [], meta
 
 
 def derive_one(*, repository_id, data_root, store=None, logger=None,
@@ -162,8 +197,11 @@ def derive_one(*, repository_id, data_root, store=None, logger=None,
         # ★ 代码观察必须真的取到并喂给图谱（P2-B §4 正式入口 + 有界读取）
         code_rows, symbol_meta = _code_rows(repository_id, commit_sha, data_root)
 
-        # ★ P2-B §5：读取 P2-A 已登记静态关系（只读、零网络）
-        relations, relation_meta = _relations_rows(repository_id, commit_sha, data_root)
+        # ★ P2-C §2/§7：主来源关系入图谱；D3 补充来源关系分开放入摘要，
+        #   不并入主图谱、不合并节点身份，供统一问答联合检索时单独标注来源。
+        relations, supplement_relations, relation_meta = _relations_rows(
+            repository_id, commit_sha, data_root)
+        relation_meta["supplement_relations"] = supplement_relations
 
         graph = RG.derive_repo_graph(
             repository_id=str(repository_id), commit_sha=commit_sha,

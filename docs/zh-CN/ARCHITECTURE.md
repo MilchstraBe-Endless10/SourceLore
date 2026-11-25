@@ -272,6 +272,18 @@ python3 ~/.agents/skills/sourcelore/scripts/sourcelore.py <子命令>
 
 `main()` → `build_parser()` → `_dispatch()`。命令集：`status`、`repositories`、`inspect`、`history`、`analyze`、`query`（`--type` = `path`/`claims`/`version`/`content`/`code`/`relation`/`project`）、`derive`、`answer`、`card`。远程采集必经 `_preflight_budget()`：建请求 DAG → 盘点本地资产标 `LOCAL_REUSE` → 至多一次 bootstrap 取权威响应头 → 三条件判定；预检不过则不采集，已完成资产仍可查询。`analyze --resume` 接真实恢复盘点；`--language` / `--relation` 等「声明式空参数」已被删除（D-61），不留假能力。
 
+### P2-C 图谱深度问答（开发阶段，非发布版本）
+
+基于 P2-B 固定 Commit 图谱，新增只读、确定性、零网络的图谱查询引擎
+（`src/views/graph_query.py`）与统一问答入口（`deep_answer.py`）。源码事实按
+真实 rule_id 经共享契约精确分类，Python AST 导入字段规范化为 specifier，
+分页改为真实有界迭代（`ORDER BY asset_id` + `offset` + `has_more`），
+消除旧 200 行静默截断。`IMPORT` 与 `RE_EXPORT` 边分离；多候选解析保留
+全部候选与歧义，不再盲选第一条。问答按意图只加载相关图谱结果，
+查询状态区分「已答/未定位/歧义/图谱不可用/未找到」，不用 `ok=true`
+代替知识成功；D3 补充来源单列且身份不合并。不做函数调用图、运行时分析、
+类型推断、模型接入、跨项目方案生成、图谱可视化或 beta.4。
+
 ### 已知限制（如实标注）
 
 - `answer` / `derive` 全程只读零网络、不写库；内容已捕获时复用，不为回答重新联网。

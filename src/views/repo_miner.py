@@ -283,8 +283,32 @@ def build_overview(*, repo_name, commit_sha, tree_entries, readme_path,
         })
 
     # 3) 入口与主要导出：优先 AST 观察，回退从已采原文直接读出的声明
+    # ★ P2-C §2：AST 符号声明确实进入项目文档正文（不只是统计字段）。
+    ast_symbols = [c for c in (code_rows or [])
+                   if c.get("kind") == "symbol"
+                   and (c.get("subject") or {}).get("qualified_name")]
+    if ast_symbols:
+        lines = ["以下符号声明来自源码 AST 结构分析（只陈述声明存在，"
+                 "不推断运行行为）：", "",
+                 "| 限定名 | 类型 | 文件 | 行号 |"]
+        lines.append("|---|---|---|---|")
+        for c in ast_symbols[:60]:
+            s = c.get("subject") or {}
+            qn = s.get("qualified_name") or s.get("name") or "-"
+            sk = s.get("symbol_kind") or "-"
+            fp = c.get("file_path") or s.get("file_path") or "-"
+            ln = c.get("start_line")
+            lines.append(f"| `{qn}` | {sk} | `{fp}` | "
+                         f"{ln if ln is not None else '-'} |")
+        secs.append({
+            "section_id": "ast_symbols", "heading": "AST 符号声明",
+            "body": "\n".join(lines),
+            "refs": [{"kind": "source_fact", "fact_id": c.get("fact_id")}
+                     for c in ast_symbols[:60]],
+        })
+
     exports = [c for c in (code_rows or [])
-               if (c.get("kind") in ("export", "import")) ]
+               if (c.get("kind") in ("export", "import"))]
     if not exports and source_symbols:
         lines = ["以下符号声明**直接从已采集的源文件正文读出**"
                  "（本 Commit 未做 AST 结构分析，故按字面匹配）：", "",
@@ -332,8 +356,37 @@ def build_overview(*, repo_name, commit_sha, tree_entries, readme_path,
     # ★ 验收项：能解释至少一个真实核心函数及其源码来源。
     #   只对「源文件正文已采集」且能定位函数体的情形给出；否则留白，不编造。
     impl_obs = []
+    # ★ P2-C §2：AST 已分析文件的符号也进入核心实现摘录（此前 AST 覆盖文件
+    #   被 miner 跳过，导致有 47 个符号却无一处逐字源码摘录）。
+    for c in (code_rows or []):
+        if c.get("kind") != "symbol":
+            continue
+        s = c.get("subject") or {}
+        sk = s.get("symbol_kind") or ""
+        # ★ 兼容 AST 的细化符号类型：js_function_expression / class_expression /
+        #   method_definition 等变体同样是可逐字摘录的实现体，不能因后缀漏掉。
+        if not str(sk).startswith(("function", "js_function", "class", "method")):
+            continue
+        fp = c.get("file_path") or s.get("file_path")
+        if not fp:
+            continue
+        txt = (texts or {}).get(fp) or (texts or {}).get(str(fp).lstrip("./"))
+        start = c.get("start_line") or s.get("start_line")
+        if not txt or not start:
+            continue
+        chunk = "\n".join(txt.splitlines()[int(start) - 1:int(start) + 11]).strip()
+        if chunk:
+            impl_obs.append({
+                "name": s.get("qualified_name") or s.get("name"),
+                "path": fp, "line": start,
+                "digest": s.get("git_blob_oid") or c.get("git_blob_oid"),
+                "snippet": chunk, "origin": "AST_SOURCE",
+            })
     for x in (source_symbols or []):
         if x.get("kind") not in ("js_function", "function") or not x.get("path"):
+            continue
+        # AST 已给过的文件不重复字面摘录
+        if any(o["path"] == x["path"] for o in impl_obs):
             continue
         txt = (texts or {}).get(x["path"])
         # 直接从已采文本按行取函数体（最多 12 行），逐字引用，不改写成结论

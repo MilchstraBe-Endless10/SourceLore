@@ -272,6 +272,22 @@ Priority (single authority): `--data-root` argument → `SOURCELORE_DATA_ROOT` e
 
 `main()` → `build_parser()` → `_dispatch()`. Commands: `status`, `repositories`, `inspect`, `history`, `analyze`, `query` (`--type` = `path`/`claims`/`version`/`content`/`code`/`relation`/`project`), `derive`, `answer`, `card`. Remote capture always goes through `_preflight_budget()`: build the request DAG → inventory local assets marked `LOCAL_REUSE` → at most one bootstrap to obtain authoritative headers → three-condition decision; if the preflight fails, no capture occurs but already-completed assets remain queryable. `analyze --resume` connects to real resume inventory; "declarative empty parameters" such as `--language` / `--relation` were removed (D-61) rather than left as fake capabilities.
 
+### P2-C graph-driven deep answer (development stage, not a released version)
+
+Built on the P2-B fixed-commit graph: a read-only, deterministic, zero-network
+graph query engine (`src/views/graph_query.py`) and a unified entry point
+(`deep_answer.py`). Source facts are classified by real `rule_id` through a
+shared contract; Python AST import fields are normalized to a specifier;
+pagination is now real bounded iteration (`ORDER BY asset_id` + `offset` +
+`has_more`), removing the old silent 200-row truncation. `IMPORT` and
+`RE_EXPORT` edges are separated; multi-candidate resolutions keep all candidates
+and ambiguity instead of blindly picking the first. Answers load only relevant
+graph results per intent; query status distinguishes answered / not-located /
+ambiguous / graph-unavailable / not-found rather than a bare `ok=true`. D3
+supplement sources are listed separately with identity unmerged. No call graph,
+runtime analysis, type inference, model integration, cross-project synthesis,
+graph visualization, or beta.4.
+
 ### Known limitations (stated honestly)
 
 - `answer` / `derive` are read-only, zero-network, and write nothing; captured content is reused, never re-fetched just to answer.

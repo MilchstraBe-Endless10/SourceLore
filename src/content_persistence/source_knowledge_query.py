@@ -19,12 +19,17 @@ FOUND = "FOUND"
 
 def query_source_facts(*, store, repository_id, commit_sha=None,
                        file_path=None, symbol_name=None, symbol_kind=None,
-                       module_name=None, rule_id=None, limit=200):
-    """按 repo/commit/path/符号名/类型/模块 查源码事实。"""
+                       module_name=None, rule_id=None, limit=200, offset=0):
+    """按 repo/commit/path/符号名/类型/模块 查源码事实。
+
+    ★ P2-C §2：支持 offset 真实分页；limit/offset 由调用方控制，
+      不再固定 200 截断。始终按 (asset_id) 排序保证分页稳定不重不漏。
+    """
     rows = store.conn.execute(
         "SELECT asset_id FROM index_rows WHERE asset_type='extracted_fact' "
-        "AND repository_id=?", (str(repository_id),)).fetchall()
+        "AND repository_id=? ORDER BY asset_id", (str(repository_id),)).fetchall()
     out = []
+    matched = 0
     for r in rows:
         got = store.get_asset(r["asset_id"], verify=True)
         if not got.get("ok"):
@@ -48,6 +53,11 @@ def query_source_facts(*, store, repository_id, commit_sha=None,
         if module_name and subj.get("module_name") != module_name \
                 and subj.get("module_specifier") != module_name:
             continue
+        # ★ P2-C §2 真实分页：跳过前 offset 条匹配项（不是简单切片）
+        if matched < offset:
+            matched += 1
+            continue
+        matched += 1
         out.append({
             "fact_id": pl.get("fact_id"),
             "asset_id": r["asset_id"],
@@ -83,8 +93,8 @@ def query_source_facts(*, store, repository_id, commit_sha=None,
 
 def source_query(*, repository_id, commit_sha=None, file_path=None,
                  symbol_name=None, symbol_kind=None, module_name=None,
-                 rule_id=None, data_root=None, max_results=200):
-    """正式入口。九态语义区分。"""
+                 rule_id=None, data_root=None, max_results=200, offset=0):
+    """正式入口。九态语义区分。★ P2-C：支持真实分页 offset/max_results。"""
     from knowledge_store import KnowledgeStore
     from paths import db_path, DEFAULT_DATA_ROOT
     import blob_content_store as BS
@@ -109,7 +119,14 @@ def source_query(*, repository_id, commit_sha=None, file_path=None,
             store=store, repository_id=repository_id, commit_sha=commit_sha,
             file_path=file_path, symbol_name=symbol_name,
             symbol_kind=symbol_kind, module_name=module_name, rule_id=rule_id,
-            limit=max_results)
+            limit=max_results, offset=offset)
+        # ★ P2-C：has_more 用「再多取一条」判断是否还有下一页
+        probe = query_source_facts(
+            store=store, repository_id=repository_id, commit_sha=commit_sha,
+            file_path=file_path, symbol_name=symbol_name,
+            symbol_kind=symbol_kind, module_name=module_name, rule_id=rule_id,
+            limit=1, offset=offset + len(facts))
+        has_more = bool(probe)
 
         captured = _captured(store, repository_id, commit_sha, file_path)
         avail = "NOT_CAPTURED"
@@ -150,6 +167,8 @@ def source_query(*, repository_id, commit_sha=None, file_path=None,
                                       file_path, symbols, exports),
             "counts": {"facts": len(facts), "symbols": len(symbols),
                        "imports": len(imports), "exports": len(exports)},
+            "pagination": {"offset": offset, "page_size": max_results,
+                           "returned": len(facts), "has_more": has_more},
             "captured": captured,
             "coverage_status": "COVERED_BY_EXTRACTED_SOURCE",
             "provenance_level": facts[0].get("provenance_level"),

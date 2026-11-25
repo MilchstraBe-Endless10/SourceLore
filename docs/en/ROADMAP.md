@@ -18,8 +18,9 @@ This document describes what SourceLore has completed, partially completed, not 
 | Deep content coverage | PARTIAL (only 3/4/9 files captured across three repositories) |
 | Source `imports` relations | IMPLEMENTED for the shared ingest closure (P2-A; online/local/offline paths persist relations honestly); full graph coverage still PARTIAL (limited to captured source) |
 | Derived knowledge graph | IMPLEMENTED as trusted derivation (P2-B; fixed-commit isolation, AST-first, consumes verified relations, deterministic digest); coverage still PARTIAL, never a complete-architecture claim |
+| Graph-driven deep answer | IMPLEMENTED as read-only deterministic retrieval (P2-C; entity resolution, forward/reverse deps, bounded multi-hop, evidence join; no LLM); coverage still PARTIAL, no call graph/runtime analysis |
 | README semantic parsing | PARTIAL (skewed toward structural observation) |
-| `answer` wired to AST Facts / LLM | PLANNED |
+| `answer` wired to AST Facts | PARTIAL (P2-C: graph deep-answer consumes AST symbols/imports; still no LLM and no open-ended reasoning) |
 | Full call graph / runtime analysis | PLANNED (explicitly out of scope for now) |
 | Compliant distribution path | BLOCKED (requires resolving B-1/B-2/B-3 and licensing) |
 
@@ -65,9 +66,11 @@ Source knowledge includes Python AST, JS/TS tree-sitter, and tsconfig-aware modu
 
 **P2-B derived-graph trust fixes.** Fixed-commit derivation now goes through `versioned_assets.py`: snapshot, blob body, symbols, relations and claims are strictly same-version, and a missing pinned commit never falls back. AST symbols win; regex is only a labelled fallback; derive reads source facts through the formal entry with pagination. Graph ids carry repository/commit/path/scope, only evidence-verified relations create `RESOLVES_TO` edges, and `graph_digest` is deterministic. Verified fixtures: arch-grower and Preact both have zero dangling edges; Preact's root-only tree is labelled `ROOT_ONLY` and never presented as a complete architecture.
 
+**P2-C graph-driven deep answer.** Fixed the P2-B graph consumption defect: source facts are classified by real `rule_id`, Python AST import fields are normalized, pagination is real bounded iteration (removing the silent 200-row truncation), `IMPORT`/`RE_EXPORT` edges are separated, and multi-candidate resolutions keep their ambiguity. Added a read-only deterministic query engine and `deep_answer.py`: entity resolution (with ambiguity), forward/reverse static dependencies, bounded multi-hop, and evidence join; no LLM, zero network, no writes. Verified fixtures: arch-grower 553 source facts (218 symbols / 335 imports), Preact 236 (129 symbols / 43 imports / 64 exports); 30/30 technical Q&A correct, zero cross-repo/cross-version contamination. Reverse imports are not function calls; multi-hop `NO_PATH_FOUND` is not proof of no dependency; partial data is never presented as a complete implementation.
+
 ### 3.4 Knowledge sources for `answer`
 
-`answer` is deterministic retrieval and assembly: content-first, answering from verified bytes and registered assets. It is **not wired to AST Facts, not wired to an LLM, and does not perform open-ended reasoning**.
+`answer` (`knowledge_answer`) is deterministic retrieval and assembly: content-first, answering from verified bytes and registered assets. It is **not wired to AST Facts, not wired to an LLM, and does not perform open-ended reasoning**. The P2-C `deep_answer` is a separate entry point that additionally consumes AST symbols/imports and the derived graph, still with no LLM and no open-ended reasoning.
 
 ## 4. Not implemented / planned (PLANNED)
 

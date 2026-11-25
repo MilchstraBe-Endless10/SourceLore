@@ -18,8 +18,9 @@
 | 深层内容覆盖 | PARTIAL（三仓库仅采 3/4/9 文件） |
 | 源码 `imports` 关系 | 已实现共享入库闭环（P2-A；在线/本地/离线三路诚实落库）；完整图谱覆盖仍为 PARTIAL（限于已采集源码） |
 | 派生知识图谱 | 已实现可信派生（P2-B；固定 Commit 隔离、AST 优先、消费已验证关系、确定性摘要）；覆盖仍 PARTIAL，不冒充完整架构 |
+| 图谱深度问答 | 已实现只读确定性检索（P2-C；实体定位、正反向依赖、有界多跳、证据联合；无 LLM）；覆盖仍 PARTIAL，不做调用图/运行时分析 |
 | README 语义解析 | PARTIAL（偏结构观察） |
-| `answer` 接入 AST Facts / LLM | PLANNED |
+| `answer` 接入 AST Facts | PARTIAL（P2-C：图谱问答可消费 AST 符号/导入；仍不接 LLM、不做开放式推理） |
 | 完整调用图 / 运行时分析 | PLANNED（当前明确不做） |
 | 分发合规路径 | BLOCKED（需解决 B-1/B-2/B-3 与许可） |
 
@@ -65,9 +66,11 @@
 
 **P2-B 派生图谱可信性修复**：固定 Commit 派生统一走 `versioned_assets.py`，Snapshot / 正文 / 符号 / 关系 / Claim 严格同版本，缺失不回退；AST 符号优先、正则仅明确标注回退；derive 通过正式源码入口分页读取，图谱 ID 含仓库/Commit/路径/作用域，只有证据验证关系建 `RESOLVES_TO`，`graph_digest` 确定。样本实测：arch-grower 与 Preact 均零悬空边，Preact 树仅根层如实标注 `ROOT_ONLY`，不冒充完整架构。
 
+**P2-C 图谱深度问答**：修复 P2-B 图谱消费异常——源码事实按真实 rule_id 精确分类、Python AST 导入字段规范化、分页改为真实有界迭代（消除 200 行静默截断）、IMPORT/RE_EXPORT 分离、多候选解析保留歧义。新增只读确定性查询引擎与 `deep_answer.py`：实体定位（含歧义）、正反向静态依赖、有界多跳、证据联合；无 LLM、零网络、不写库。样本实测：arch-grower 553 源码事实（218 符号/335 导入）、Preact 236（129 符号/43 导入/64 导出）；30 题问答正确 30/30，跨仓库/跨版本污染 0。反向导入不等于函数调用；多跳 `NO_PATH_FOUND` 不等于证实无依赖；不把局部数据描述为完整实现。
+
 ### 3.4 `answer` 的知识来源
 
-`answer` 是确定性检索与组装：内容优先，基于已验证的字节与已登记资产回答，**不接 AST Facts，不接 LLM，不做开放式推理**。
+`answer`（`knowledge_answer`）是确定性检索与组装：内容优先，基于已验证的字节与已登记资产回答，**不接 AST Facts，不接 LLM，不做开放式推理**。P2-C 新增的 `deep_answer` 是独立入口，额外消费 AST 符号/导入与派生图谱，但仍不接 LLM、不做开放式推理。
 
 ## 4. 未实现 / 规划（PLANNED）
 

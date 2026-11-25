@@ -232,5 +232,8 @@ sourcelore analyze <url> --include-content --request-limit 8 --reserve-requests 
 | 预算状态 | `REQUEST_BUDGET_INSUFFICIENT` / `BUDGET_RATE_LIMITED` / `BLOB_TOO_LARGE` / `BATCH_BYTE_LIMIT` / `BATCH_PATH_LIMIT` |
 | 指针状态 | `ok` / `dangling_pointer` / `NOT_FOUND` |
 | Commit 状态 | `COMMIT_FORMAT_VALID` / `COMMIT_BOUND_TO_REPOSITORY` / `COMMIT_SNAPSHOT_VERIFIED` / `COMMIT_UNKNOWN` / `COMMIT_IDENTITY_CONFLICT` |
+| 图谱查询状态 | `ANSWERED_WITH_GRAPH` / `ANSWERED_WITH_GRAPH_PATHS` / `ANSWERED_TEXT_ONLY` / `ENTITY_NOT_LOCATED` / `ENTITY_AMBIGUOUS` / `GRAPH_NOT_AVAILABLE` / `VERSION_NOT_FOUND` / `QUERY_ERROR` |
+| 实体定位状态 | `RESOLVED` / `AMBIGUOUS` / `NOT_FOUND_IN_GRAPH` / `NOT_FOUND` |
 
 > 退出码 0 / `ok:true` 不等于知识可信；审计类请求必须以原始资产复核为准。
+> 多跳 `NO_PATH_FOUND` 不等于已证实无依赖；触顶截断不等于完整图谱。

@@ -10,6 +10,37 @@ codename `f2p5a` is kept separately and is no longer used as a public version.
 
 ## [Unreleased]
 
+### P2-C graph-driven deep answer (development branch, not a released version)
+
+This is an **unreleased development change** on branch `dev/p2c-deep-answer`,
+based on the P2-B commit `fb56e18`. It does not change `RELEASE_VERSION` (still
+`0.1.0-beta.3`), creates or moves no release tag, and must not be presented as a
+published version.
+
+- Fixed the P2-B graph consumption defect: source facts are now classified by
+  real `rule_id` through a shared contract (`source_fact_contract.py`), Python
+  AST import fields (`module_name` / `relative_level` / `imported_name`) are
+  normalized to a specifier, and unknown rules are never disguised as symbols.
+  Specifier-less from-imports no longer masquerade as declarations; `IMPORT`
+  and `RE_EXPORT` edges are kept distinct.
+- Replaced silent 200-row truncation with real bounded pagination
+  (`ORDER BY asset_id` + `offset` + `has_more` probe). Sample A actually has
+  553 source facts (218 symbols + 335 imports), not the old truncated 200;
+  sample B has 236 (129 symbols + 43 imports + 64 exports).
+- Added a read-only, deterministic graph query engine (`graph_query.py`):
+  entity resolution with ambiguity, single-node queries, forward/reverse
+  static dependencies, and bounded multi-hop paths with cycle detection,
+  truncation state and honest `NO_PATH_FOUND`.
+- Added `deep_answer.py`: deterministic, no-LLM, zero-network, zero-write
+  unified retrieval that overlays graph results on the existing `answer()`
+  contract. Query status distinguishes answered / not-located / ambiguous /
+  unavailable / not-found from a bare `ok=true`.
+- D3 supplement sources and relations are consumed with their identity kept
+  distinct from the primary GitHub source; same-name nodes are never merged and
+  content equivalence never expands authorization. AST declarations now reach
+  project documents, and multi-candidate resolutions no longer blindly pick
+  `verified[0]`.
+
 ### P2-B knowledge graph trust fixes (development branch, not a released version)
 
 This is an **unreleased development change** on branch `dev/p2b-knowledge-graph`,

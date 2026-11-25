@@ -168,6 +168,11 @@ def answer(*, repository_id, question, data_root, store=None, commit_sha=None):
         # ★ P2-B §2：严格按指定 Commit 加载，历史 Commit 缺失不回退到新版本。
         ex = DR._load_assets_ex(store, str(repository_id), commit_sha)
         if not ex.get("ok"):
+            # ★ 兼容 P1 契约：仓库完全未注册（NO_SNAPSHOT）沿用原错误码；
+            #   已注册但指定 Commit 不存在等非注册原因才用 VERSION_NOT_FOUND。
+            #   不把"有仓库但版本缺失"伪装成"仓库不存在"，两者语义不同。
+            if ex.get("reason") == "NO_SNAPSHOT":
+                return _not_found(repository_id)
             return {
                 "ok": False,
                 "state": "VERSION_NOT_FOUND",

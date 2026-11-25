@@ -17,14 +17,15 @@ for _p in ("content_persistence", "renderer", "source_analysis"):
 
 def query_code(*, repository_id, commit_sha=None, file_path=None,
                symbol_name=None, symbol_kind=None, module_name=None,
-               data_root=None):
+               data_root=None, max_results=200, offset=0):
     import source_knowledge_query as Q
     from paths import DEFAULT_DATA_ROOT
     return Q.source_query(
         repository_id=repository_id, commit_sha=commit_sha,
         file_path=file_path, symbol_name=symbol_name,
         symbol_kind=symbol_kind, module_name=module_name,
-        data_root=data_root or DEFAULT_DATA_ROOT)
+        data_root=data_root or DEFAULT_DATA_ROOT,
+        max_results=max_results, offset=offset)
 
 
 def _d3_supplement_relations(store, repository_id, commit_sha, *,

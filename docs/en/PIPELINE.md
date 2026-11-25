@@ -232,5 +232,8 @@ Judgement is based only on persisted records (`operation_log.result_hash` and `c
 | Budget status | `REQUEST_BUDGET_INSUFFICIENT` / `BUDGET_RATE_LIMITED` / `BLOB_TOO_LARGE` / `BATCH_BYTE_LIMIT` / `BATCH_PATH_LIMIT` |
 | Pointer status | `ok` / `dangling_pointer` / `NOT_FOUND` |
 | Commit status | `COMMIT_FORMAT_VALID` / `COMMIT_BOUND_TO_REPOSITORY` / `COMMIT_SNAPSHOT_VERIFIED` / `COMMIT_UNKNOWN` / `COMMIT_IDENTITY_CONFLICT` |
+| Graph query status | `ANSWERED_WITH_GRAPH` / `ANSWERED_WITH_GRAPH_PATHS` / `ANSWERED_TEXT_ONLY` / `ENTITY_NOT_LOCATED` / `ENTITY_AMBIGUOUS` / `GRAPH_NOT_AVAILABLE` / `VERSION_NOT_FOUND` / `QUERY_ERROR` |
+| Entity resolution status | `RESOLVED` / `AMBIGUOUS` / `NOT_FOUND_IN_GRAPH` / `NOT_FOUND` |
 
 > Exit code 0 / `ok:true` does not mean the knowledge is trustworthy; audit-type requests must be checked back against raw assets.
+> Multi-hop `NO_PATH_FOUND` is not proof of no dependency; a truncated result is not a complete graph.
