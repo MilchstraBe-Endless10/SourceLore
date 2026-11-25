@@ -227,4 +227,22 @@ P2-C 全量回归改用 `SOURCELORE_PROJECT_ROOT` 显式指向 worktree 源码
 
 ## 12. 当前 main Commit / CI / 安装态校验
 
-_待提交与推送后回填_
+- 当前 main Commit：`87ca4079b552f6dd4014ae323140a8039e8ee4a5`
+  （短 `87ca407`，分支 `dev/p2c-deep-answer` fast-forward 合并后推送）。
+- 用户自有两处改动（`plugin/dsh-sourcelore-cards/client.js`、
+  `progress/BOT-CARD-SOLVED-2026-11-20.md`）在 stash → 合并 → push → pop 后
+  原样保留，未提交、未删除。
+- CI：run `45670128298`，commit `87ca407`，`success`，耗时 1m19s（仅作背景，
+  不作为功能判级依据）。
+- 安装态：备份旧 `_sourcelore_src` 后，将 worktree `src/` 逐字节复制为安装态
+  `src/`（`diff -rq` 无差异），清除陈旧 `__pycache__`；两个 marker 的
+  `dev_commit` 统一更新为 `87ca407`、`dev_branch=dev/p2c-deep-answer`，
+  标注 `NOT a released version`、`RELEASE_VERSION` 仍为 `0.1.0-beta.3`、
+  无新 tag、无 beta.4。
+- 安装态实跑：`--version` 返回 `0.1.0-beta.3`；`status` 指向正确
+  `project_root`、5 个仓库可用；`graph_query` / `deep_answer` /
+  `source_fact_contract` 均可从安装态路径导入；
+  `answer 24313173 "介绍这个项目"` 返回"核心实现（源码逐字摘录）"且
+  状态 `FOUND`，证明 §1.4 修复在安装态生效。
+- A 层资产保护：real / preserve / isolated 三库指纹一致
+  `1089 / ddb2072e65fad724`，未修改任何历史资产。
