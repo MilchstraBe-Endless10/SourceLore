@@ -142,6 +142,54 @@ def main(argv=None) -> int:
             detail={"traceback_tail": tb.strip().splitlines()[-3:]}))
 
 
+def _query_with_supplement(main_result, *, repository_id, commit_sha, data_root,
+                           qtype, path=None, invoke):
+    """GitHub ID 主查询无覆盖时，改用经严格验证的本地补充源重查。
+
+    ★ 只在主结果 state 表示"无覆盖/未捕获"时回退；保留原始证据身份，
+      补充结果标注 supplement_of / source_repository_id，不冒充在线采集。
+    """
+    try:
+        rid = str(repository_id)
+        if not rid.isdigit() or not isinstance(main_result, dict):
+            return main_result
+        state = str(main_result.get("state") or "")
+        status = str(main_result.get("coverage_status") or "")
+        has_rows = bool(main_result.get("symbols") or main_result.get("facts")
+                        or main_result.get("captured") or main_result.get("results"))
+        if has_rows or state in ("FOUND", "CAPTURED_VERIFIED") or status == "COVERED_BY_EXTRACTED_SOURCE":
+            return main_result
+        from paths import DEFAULT_DATA_ROOT as _DDR
+        import sys as _sys
+        from pathlib import Path as _P
+        _td = str(_P(__file__).resolve().parents[1] / "trust")
+        if _td not in _sys.path:
+            _sys.path.insert(0, _td)
+        import source_provenance as SP
+        from knowledge_store import KnowledgeStore
+        from paths import db_path as _db
+        st = KnowledgeStore(str(_db(data_root or _DDR)), create=False)
+        try:
+            resolved = SP.resolve_supplement(st, rid, commit_sha)
+        finally:
+            st.close()
+        for sup in resolved.get("supplements", []):
+            alt = invoke(sup["repository_id"], sup.get("commit_sha") or commit_sha)
+            if not isinstance(alt, dict):
+                continue
+            if (alt.get("symbols") or alt.get("facts") or alt.get("captured")
+                    or alt.get("results") or str(alt.get("state")) == "FOUND"):
+                alt = dict(alt)
+                alt["supplement_of"] = rid
+                alt["supplement_evidence_ref"] = sup.get("evidence_ref")
+                alt["source_repository_id"] = sup["repository_id"]
+                alt["source_role"] = "verified_local_supplement"
+                return alt
+    except Exception:
+        pass
+    return main_result
+
+
 def _dispatch(cmd, args):
     root = args.data_root
 
@@ -285,6 +333,7 @@ def _dispatch(cmd, args):
                     "ok": False, "error": "%s: %s" % (type(e).__name__, e)}
         return emit_ok(out)
 
+
     if cmd == "query":
         if getattr(args, "type", None) == "project":
             import ts_project_knowledge as TK
@@ -306,22 +355,29 @@ def _dispatch(cmd, args):
                 module_specifier=getattr(args, "module", None), data_root=root))
         if getattr(args, "type", None) == "code":
             import source_knowledge as SK
-            return emit_ok(SK.query_code(
-                repository_id=args.repository_id, commit_sha=args.commit,
-                file_path=args.path,
-                symbol_name=getattr(args, "symbol", None),
-                symbol_kind=getattr(args, "symbol_kind", None),
-                module_name=getattr(args, "module", None),
-                data_root=root))
+            def _code(rid, cid):
+                return SK.query_code(
+                    repository_id=rid, commit_sha=cid, file_path=args.path,
+                    symbol_name=getattr(args, "symbol", None),
+                    symbol_kind=getattr(args, "symbol_kind", None),
+                    module_name=getattr(args, "module", None), data_root=root)
+            _main = _code(args.repository_id, args.commit)
+            return emit_ok(_query_with_supplement(
+                _main, repository_id=args.repository_id, commit_sha=args.commit,
+                data_root=root, qtype="code", path=args.path, invoke=_code))
         if getattr(args, "type", None) == "content":
             # ★ 必须用专属名：content_query 已被 P5C 的同名模块占用
             import content_knowledge_query as CQ
             if not args.commit:
                 raise SkillError("content 查询需要 --commit",
                                  code="MISSING_COMMIT", exit_code=EXIT_USAGE)
-            return emit_ok(CQ.content_query(
-                repository_id=args.repository_id, commit_sha=args.commit,
-                file_path=args.path, data_root=root))
+            def _content(rid, cid):
+                return CQ.content_query(repository_id=rid, commit_sha=cid,
+                                        file_path=args.path, data_root=root)
+            _main = _content(args.repository_id, args.commit)
+            return emit_ok(_query_with_supplement(
+                _main, repository_id=args.repository_id, commit_sha=args.commit,
+                data_root=root, qtype="content", path=args.path, invoke=_content))
         import query as Q
         import status as S
         out = Q.run_query(repository_id=args.repository_id,

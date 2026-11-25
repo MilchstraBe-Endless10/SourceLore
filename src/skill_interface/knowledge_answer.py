@@ -182,6 +182,52 @@ def answer(*, repository_id, question, data_root, store=None, commit_sha=None):
         docs = _index_documents(mined.get("documents"))
         project = mined.get("project") or {}
 
+        # ★ D3-dev：GitHub 数字 ID 可用时，解析经严格验证的本地补充来源。
+        #   只补充"未分析/证据不足"的块，且保留原始证据身份；本地来源不冒充在线采集。
+        supplement_meta = []
+        supplement_sections = []  # (doc_id, title, heading, body, refs, source_id)
+        if str(repository_id).isdigit():
+            try:
+                _trust_dir = str(__import__("pathlib").Path(__file__).resolve().parents[1] / "trust")
+                if _trust_dir not in __import__("sys").path:
+                    __import__("sys").path.insert(0, _trust_dir)
+                import source_provenance as SP
+                resolved = SP.resolve_supplement(store, str(repository_id), commit)
+                for sup in resolved.get("supplements", []):
+                    sup_id = sup["repository_id"]
+                    sup_commit = sup.get("commit_sha") or commit
+                    sup_loaded = DR._load_assets(store, str(sup_id))
+                    if not sup_loaded:
+                        continue
+                    s_snap, s_claims, s_verifs = sup_loaded
+                    s_entries = s_snap.get("tree_entries") or []
+                    s_code = DR._code_rows(sup_id, sup_commit, data_root)
+                    s_mined = RM.mine_project_knowledge(
+                        store=store, repository_id=str(sup_id), commit_sha=sup_commit,
+                        tree_entries=s_entries, code_rows=s_code,
+                        claims=s_claims, verifications=s_verifs, data_root=data_root)
+                    s_docs = _index_documents(s_mined.get("documents"))
+                    # 只取补充源里“实际有正文”的块，替换自身对应占位块
+                    for dkey, d in s_docs.items():
+                        for sec in (d.get("sections") or []):
+                            body = (sec.get("body") or "").strip()
+                            if not body or body.startswith("未分析"):
+                                continue
+                            supplement_sections.append((
+                                dkey, d.get("title") or dkey,
+                                sec.get("heading") or "", body,
+                                sec.get("refs") or [], str(sup_id)))
+                    supplement_meta.append({
+                        "repository_id": str(sup_id),
+                        "commit_sha": sup_commit,
+                        "evidence_ref": sup.get("evidence_ref"),
+                        "source_snapshot_asset_id": s_snap.get("asset_id"),
+                        "role": "verified_local_supplement",
+                    })
+            except Exception:
+                # 补充检索失败不影响自身知识返回；如实标记为空
+                supplement_meta = []
+
         intent = detect_intent(question)
         plan = _INTENT_PLAN[intent]
         blocks = []
@@ -216,6 +262,18 @@ def answer(*, repository_id, question, data_root, store=None, commit_sha=None):
                             "body": sec["body"].strip(),
                             "refs": sec.get("refs") or [],
                         })
+
+        # ★ 追加经严格验证的本地补充知识块（保留来源身份，不冒充在线采集）
+        for dkey, title, heading, body, refs, source_id in supplement_sections:
+            blocks.append({
+                "document_id": dkey,
+                "title": title,
+                "heading": heading,
+                "body": body,
+                "refs": refs,
+                "source_repository_id": source_id,
+                "source_role": "verified_local_supplement",
+            })
 
         # 审计字段仅按需附加（不淹没普通答案）
         audit = None
@@ -266,6 +324,7 @@ def answer(*, repository_id, question, data_root, store=None, commit_sha=None):
             "intent": intent,
             "blocks": blocks,
             "audit": audit,
+            "supplement_sources": supplement_meta,
             "coverage_note": project.get("coverage_note"),
             "distribution_allowed": False,
             "freeze_state": "FROZEN_INTERNAL_RESTRICTED",

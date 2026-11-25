@@ -108,12 +108,28 @@ def inspect_repository(store, repository_id: str) -> dict:
     for s in snaps:
         got = store.get_asset(s["asset_id"], verify=True)
         pl = (got.get("asset") or {}).get("payload") if got.get("ok") else {}
+        # ★ D3-dev：历史快照把 ROOT_ONLY 误标成 COMPLETE，展示时按客观字段重新派生。
+        try:
+            import sys as _sys
+            from pathlib import Path as _Path
+            _td = str(_Path(__file__).resolve().parents[1] / "trust")
+            if _td not in _sys.path:
+                _sys.path.insert(0, _td)
+            import tree_scope as _TS
+            scope = _TS.derive_tree_scope(pl or {})
+        except Exception:
+            scope = {}
+        derived_status = scope.get("scope") or (pl or {}).get("completeness_status") or "UNKNOWN"
         coverage.append({
             "snapshot_asset_id": s["asset_id"],
             "commit_sha": (pl or {}).get("commit_sha") or s["commit_sha"],
-            "completeness_status": (pl or {}).get("completeness_status") or "UNKNOWN",
+            "completeness_status": derived_status,
+            "coverage_scope": derived_status,
+            "coverage_reason": scope.get("reason"),
+            "complete": scope.get("complete"),
             "tree_entry_count": len((pl or {}).get("tree_entries") or []),
-            "local_coverage_only": (pl or {}).get("completeness_status") != "COMPLETE",
+            "local_coverage_only": derived_status != "COMPLETE",
+            "recorded_completeness_status": (pl or {}).get("completeness_status"),
         })
 
     facts = _rows(store, "SELECT asset_id, commit_sha FROM index_rows "
@@ -168,10 +184,22 @@ def history(store, repository_id: str) -> dict:
     for s in snaps:
         got = store.get_asset(s["asset_id"], verify=True)
         pl = (got.get("asset") or {}).get("payload") if got.get("ok") else {}
+        try:
+            import sys as _sys2
+            from pathlib import Path as _Path2
+            _td2 = str(_Path2(__file__).resolve().parents[1] / "trust")
+            if _td2 not in _sys2.path:
+                _sys2.path.insert(0, _td2)
+            import tree_scope as _TS2
+            _sc = _TS2.derive_tree_scope(pl or {})
+            _status = _sc.get("scope") or (pl or {}).get("completeness_status") or "UNKNOWN"
+        except Exception:
+            _status = (pl or {}).get("completeness_status") or "UNKNOWN"
         versions.append({
             "commit_sha": (pl or {}).get("commit_sha") or s["commit_sha"],
             "snapshot_asset_id": s["asset_id"],
-            "completeness_status": (pl or {}).get("completeness_status") or "UNKNOWN",
+            "completeness_status": _status,
+            "coverage_scope": _status,
         })
     return {"repository_id": repository_id, "versions": versions,
             "note": "不同 Commit 各自成立；本接口不推断先后或祖先关系"}

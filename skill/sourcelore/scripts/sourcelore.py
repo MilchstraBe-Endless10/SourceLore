@@ -45,7 +45,7 @@ def _find_project_root() -> Path:
 PROJECT_ROOT = _find_project_root()
 for name in ("runtime", "storage", "collector", "facts", "evidence_claims",
              "lifecycle", "views", "renderer", "research", "skill_interface", "content", "content_persistence",
-             "source_analysis"):
+             "source_analysis", "trust"):
     p = PROJECT_ROOT / "src" / name
     if p.is_dir() and str(p) not in sys.path:
         sys.path.insert(0, str(p))

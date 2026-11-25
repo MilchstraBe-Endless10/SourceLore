@@ -10,6 +10,32 @@ codename `f2p5a` is kept separately and is no longer used as a public version.
 
 ## [Unreleased]
 
+### D3 cross-source knowledge binding (development commit, not a released version)
+
+This is an **unreleased development change** on branch `dev/d3-source-binding`.
+It does not change `RELEASE_VERSION` (still `0.1.0-beta.3`) and does not create
+or move any release tag. It is recorded here only to keep the development
+history explicit; it must not be presented as a published version.
+
+- Strict source-provenance verification before binding: a numeric GitHub ID is
+  trusted only when an authoritative A-layer `subject_record` with an explicit
+  `resolved_repository` exists, the fixed commit and root tree match, and the
+  GitHub root-level `blob_refs` are a hash-consistent subset of the local
+  recursive blob map. Same commit + root tree alone is never treated as proof
+  of identity (guards against forks / spoofed remotes).
+- `repo_bindings` written only through the official `KnowledgeStore.bind_repo`
+  interface (B-layer relation table); A-layer immutable assets are unchanged.
+- `answer`, `query`, `inspect` now resolve verified local supplement sources
+  from a GitHub ID alone: `answer` appends supplement blocks tagged with
+  `source_repository_id`, `query` falls back to the verified supplement and
+  tags `supplement_of`, all with zero network requests and no knowledge-base
+  writes during reads.
+- Historical ROOT_ONLY snapshots no longer display as COMPLETE: `inspect`
+  derives `coverage_scope=ROOT_ONLY` from objective fields and keeps the old
+  value only as `recorded_completeness_status` for audit.
+- New standalone test fixture (`tests/trust/test_source_provenance_d3.py`)
+  builds temporary databases and contains no author-machine path hardcoding.
+
 Planned but not yet implemented: deeper repository content coverage beyond
 ROOT_ONLY, full call-graph analysis, native card UI, first-party model/model
 provider integration.
