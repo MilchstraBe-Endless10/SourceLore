@@ -30,6 +30,7 @@ One-shot LLM summaries of a repository are not reproducible, cannot be re-querie
 | Immutable A layer / current-pointer B layer / rebuildable index C layer | Implemented |
 | Content-level extraction (README, package.json, pyproject.toml) | Implemented |
 | Source knowledge (Python AST; JS/TS tree-sitter; tsconfig-aware module resolution) | Implemented |
+| Static module-relation ingest (P2-A: online/local/offline shared pipeline, honest status, idempotent backfill) | Implemented (full graph still limited to captured source) |
 | Project knowledge documents (`derive`) | Implemented |
 | Natural-language Q&A (`answer`, six intents) | Implemented |
 | Knowledge cards and Obsidian export | Implemented |
@@ -106,6 +107,9 @@ sourcelore query <repository_id> --commit <sha> --type content --path README.md
 sourcelore query <repository_id> --commit <sha> --type code
 sourcelore query <repository_id> --commit <sha> --type relation
 sourcelore query <repository_id> --commit <sha> --type project
+
+# Backfill static module relations from already-captured bytes (offline, idempotent, zero network)
+sourcelore backfill-relations <repository_id> --commit <sha>
 
 # Natural-language project Q&A (content first, read-only)
 sourcelore answer <repository_id> "介绍这个项目"

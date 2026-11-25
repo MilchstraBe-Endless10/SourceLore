@@ -10,6 +10,33 @@ codename `f2p5a` is kept separately and is no longer used as a public version.
 
 ## [Unreleased]
 
+### P2-A static module-relation ingest closure (development branch, not a released version)
+
+This is an **unreleased development change** on branch `dev/p2a-static-relation`.
+It does not change `RELEASE_VERSION` (still `0.1.0-beta.3`) and creates or moves
+no release tag. It must not be presented as a published version.
+
+- Added a shared static module-relation pipeline (`module_relation_pipeline.py`)
+  used by GitHub online capture, local Git capture and offline backfill: verified
+  bytes → existing parsers → import observations → same-commit tree → language
+  resolver → evidence check → idempotent ingest. The online path previously
+  parsed sources but never called `ingest_resolution()`, so relation queries
+  always returned `NO_RELATIONS`; it is now connected and persists relations.
+- Fixed relation evidence location: importer, config and target identities are
+  strictly separated; a config blob no longer masquerades as the importing
+  source blob, and an observation ID is no longer passed off as a persisted
+  Fact ID. The online fixture confirms the importer blob OID is used correctly.
+- Added an honest query status contract (`status` / `status_counts` / `attempts`);
+  unresolved imports are recorded as B-layer `module_resolution_attempt` audit
+  records, never authoritative A-layer facts. `NO_RELATIONS` no longer means
+  "verified no dependency". D3 verified supplement sources can optionally be
+  attached to relation queries (`include_supplements`) with their identities.
+- Added offline incremental backfill (`cli.py backfill-relations <rid> --commit
+  <sha>`): reuses already-captured bytes only, zero network, idempotent, A-layer
+  unchanged. Sample A (arch-grower copy) yields 196 relations + 139 external;
+  sample B (Preact copy) yields 33 relations + 2 config facts + 1 project fact;
+  second runs write 0 assets with identical A-layer fingerprints.
+
 ### D3 cross-source knowledge binding (development commit, not a released version)
 
 This is an **unreleased development change** on branch `dev/d3-source-binding`.

@@ -16,7 +16,7 @@ This document describes what SourceLore has completed, partially completed, not 
 | P1 content Q&A layer (`answer`) | IMPLEMENTED |
 | Recursive subtree capture | PARTIAL (`recursive` parameter implemented, blocked by GitHub API quota) |
 | Deep content coverage | PARTIAL (only 3/4/9 files captured across three repositories) |
-| Source `imports` relations | PARTIAL (previous Preact snapshot reported 43 import facts and 40 static module relations; coverage is limited to captured source, not a full graph) |
+| Source `imports` relations | IMPLEMENTED for the shared ingest closure (P2-A; online/local/offline paths persist relations honestly); full graph coverage still PARTIAL (limited to captured source) |
 | README semantic parsing | PARTIAL (skewed toward structural observation) |
 | `answer` wired to AST Facts / LLM | PLANNED |
 | Full call graph / runtime analysis | PLANNED (explicitly out of scope for now) |
@@ -60,7 +60,7 @@ The registered `captured_blob_content` assets are single-file, root-level supple
 
 ### 3.3 Source relations (`imports`)
 
-Source knowledge already includes Python AST, JS/TS tree-sitter, and tsconfig-aware module resolution, but currently `imports=0` and only a few source files were captured, so module-relation coverage is severely insufficient. Missing coverage does not mean "no dependency exists".
+Source knowledge includes Python AST, JS/TS tree-sitter, and tsconfig-aware module resolution. **P2-A closes the ingest closure**: a shared pipeline now lets online GitHub capture, local Git capture and offline backfill all persist static relations with separated importer/config/target evidence, honest status (`status` / `status_counts`), and idempotent writes. Verified fixtures: sample A (Python) 196 relations + 139 external; sample B (JS/TS) 33 relations + 2 config facts + 1 project fact. Full-graph coverage is still limited to captured source — missing coverage does not mean "no dependency exists", and static mapping does not prove runtime loading. Cross-file call graphs, type hierarchies and multi-hop inference remain out of scope.
 
 ### 3.4 Knowledge sources for `answer`
 

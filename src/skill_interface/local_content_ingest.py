@@ -44,6 +44,8 @@ def ingest_local_content(store, *, data_root, repository_id, commit_sha,
 
     targets = pick_targets(tree_paths)[:max_files]
     results = []
+    source_entries, config_entries = [], []
+    captured_meta = {}  # file_path → 完整身份（供共享关系组件使用）
     for path in targets:
         raw = blobs.get(path)
         if raw is None:
@@ -148,18 +150,78 @@ def ingest_local_content(store, *, data_root, repository_id, commit_sha,
             "struct_status": struct_status,
         })
 
-        # ★ tsconfig 走配置观察 + 项目关系链路（复用 P5I/P5J）
-        if path.rsplit("/", 1)[-1] in ("tsconfig.json", "jsconfig.json"):
-            cfg_meta = _ingest_config_and_relations(
-                store, data_root=data_root, repository_id=repository_id,
-                commit_sha=commit_sha, snapshot_asset_id=snapshot_asset_id,
-                config_path=path, raw=raw, blob_oid=sha,
-                content_asset_id=ing["content_asset_id"],
-                content_digest=ing["content_sha256"],
-                tree_paths=tree_paths, blobs=blobs,
+        # ★ 收集到统一输入：配置与源码分别登记，身份不混用。
+        identity = {
+            "git_blob_oid": sha,
+            "content_asset_id": ing["content_asset_id"],
+            "content_sha256": ing["content_sha256"],
+        }
+        captured_meta[path] = identity
+        name = path.rsplit("/", 1)[-1]
+        if name in ("tsconfig.json", "jsconfig.json"):
+            config_entries.append({
+                "config_path": path, "raw": raw,
+                "blob_oid": sha,
+                "content_asset_id": ing["content_asset_id"],
+                "content_digest": ing["content_sha256"],
+            })
+        elif struct_status == "EXTRACTED":
+            source_entries.append({
+                "file_path": path, "raw": raw,
+                "git_blob_oid": sha,
+                "content_asset_id": ing["content_asset_id"],
+                "content_sha256": ing["content_sha256"],
+            })
+
+    # ★ 本地链路接入共享关系组件（在线/本地同一契约，零网络）。
+    relation_report = {"written": 0, "reused": 0, "resolutions": 0,
+                       "status": "NOT_RUN"}
+    if source_entries or config_entries:
+        try:
+            import module_relation_pipeline as MRP
+            relation_report = MRP.process_source_relations(
+                store, repository_id=repository_id, commit_sha=commit_sha,
+                file_sources=source_entries,
+                config_sources=config_entries,
+                tree_paths=set(blobs),
+                source_snapshot_id=snapshot_asset_id,
                 provenance_level=provenance_level)
-            results[-1]["config"] = cfg_meta
+        except Exception as e:
+            relation_report = {"status": f"ERROR:{type(e).__name__}:{e}"}
+    # 附在首个真实文件结果上，避免被 analyze.py 误计为"跳过的文件"。
+    if results and relation_report.get("status") != "NOT_RUN":
+        results[0]["relation"] = relation_report
     return results
+
+
+def _ingest_config_observation(store, *, repository_id, commit_sha,
+                               config_path, raw, blob_oid, content_asset_id,
+                               content_digest, provenance_level):
+    """仅生成配置观察事实（共享关系流程会按路径复用它）。"""
+    import tsconfig_parser as TP
+    import module_config_models as CM
+    import module_relation_ingest as MRI
+    import tsconfig_expansion as EC
+
+    out = {"config_facts": 0}
+    pr = TP.parse_tsconfig(raw, config_path=config_path)
+    if not pr["ok"]:
+        out["status"] = pr["error_code"]
+        return out
+    surf = TP.extract_config_surface(pr["data"], config_dir="")
+    cfg_obs = CM.build_config_observation(
+        repository_id=repository_id, commit_sha=commit_sha,
+        config_path=config_path, config_kind=CM.CONFIG_TSCONFIG,
+        git_blob_oid=blob_oid, content_asset_id=content_asset_id,
+        content_digest=content_digest,
+        effective_config_status=CM.EFFECTIVE_CONFIG_RESOLVED,
+        declared_paths=surf["paths"], declared_base_url=surf["base_url"],
+        declared_references=surf["references"],
+        provenance_level=provenance_level)
+    cr = MRI.ingest_config_observation(store, observation=cfg_obs)
+    out["config_facts"] = len(cr.get("written") or [])
+    out["config_observation_id"] = cfg_obs["config_observation_id"]
+    return out
 
 
 def _ingest_config_and_relations(store, *, data_root, repository_id, commit_sha,

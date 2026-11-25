@@ -73,6 +73,14 @@ sourcelore derive <repository_id>
 sourcelore card --repository-id <repository_id> --claim-id <claim_id>
 ```
 
+**静态模块关系（P2-A）**：`query --type relation` 现在返回由在线、本地或离线路径落库的关系。判读时请结合 `state` 一起看 `status` / `status_counts`：`RELATIONS_FOUND` 表示存在已解析关系，而单独的 `NO_RELATIONS` **不等于**「已证实无依赖」——需查看 `status` 是 `INSUFFICIENT_TREE_COVERAGE`、`CONFIG_NOT_CAPTURED`、`AMBIGUOUS_CANDIDATES`、`EXTERNAL_OR_UNRESOLVED` 等中的哪一种。未解析导入记为审计记录，不是权威 Fact。对已采集源码的仓库，可离线补全关系，零网络、不改 A 层：
+
+```sh
+sourcelore backfill-relations <repository_id> --commit <sha> [--source-snapshot-id <id>]
+```
+
+重复补全保持幂等（已生成关系被复用）。GitHub ID 还可附加来自已验证本地补充来源的关系（API 的 `include_supplements`），不冒充在线 API 产物。
+
 ---
 
 ## 3. 了解知识库现状

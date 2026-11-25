@@ -27,17 +27,75 @@ def query_code(*, repository_id, commit_sha=None, file_path=None,
         data_root=data_root or DEFAULT_DATA_ROOT)
 
 
+def _d3_supplement_relations(store, repository_id, commit_sha, *,
+                             importing_file_path, module_specifier,
+                             data_root):
+    """D3 可信来源解析：把经严格验证的本地补充源关系证据附上。
+
+    ★ 不冒充在线采集：每条都带 source_repository_id / evidence_ref /
+      source_role=verified_local_supplement；失败时静默返回 []。
+    """
+    if not str(repository_id).isdigit():
+        return []
+    try:
+        _td = str(Path(__file__).resolve().parents[1] / "trust")
+        if _td not in sys.path:
+            sys.path.insert(0, _td)
+        import source_provenance as SP
+        resolved = SP.resolve_supplement(store, str(repository_id), commit_sha)
+    except Exception:
+        return []
+    out = []
+    import module_relation_query as MQ
+    for sup in resolved.get("supplements", []):
+        q = MQ.query_relations(
+            repository_id=sup["repository_id"],
+            commit_sha=sup.get("commit_sha") or commit_sha,
+            importing_file_path=importing_file_path,
+            module_specifier=module_specifier,
+            data_root=data_root)
+        for r in (q.get("relations") or []):
+            x = dict(r)
+            x["source_repository_id"] = sup["repository_id"]
+            x["evidence_ref"] = sup.get("evidence_ref")
+            x["source_role"] = "verified_local_supplement"
+            out.append(x)
+    return out
+
+
 def query_module_relations(*, repository_id, commit_sha=None,
                            importing_file_path=None, module_specifier=None,
-                           data_root=None):
-    """查询静态模块关系。★ 只读。"""
+                           data_root=None, include_supplements=True):
+    """查询静态模块关系。★ 只读，零网络。
+
+    include_supplements=True 时复用 D3 可信来源解析，附加本地补充源关系，
+    并保留每条证据的来源身份（不冒充在线采集）。
+    """
     import module_relation_query as MQ
     from paths import DEFAULT_DATA_ROOT
-    return MQ.query_relations(
+    from knowledge_store import KnowledgeStore
+    from paths import db_path
+    root = data_root or DEFAULT_DATA_ROOT
+    q = MQ.query_relations(
         repository_id=repository_id, commit_sha=commit_sha,
         importing_file_path=importing_file_path,
         module_specifier=module_specifier,
-        data_root=data_root or DEFAULT_DATA_ROOT)
+        data_root=root)
+    if not include_supplements:
+        return q
+    try:
+        store = KnowledgeStore(str(db_path(root)), create=False)
+        sup = _d3_supplement_relations(
+            store, repository_id, commit_sha,
+            importing_file_path=importing_file_path,
+            module_specifier=module_specifier,
+            data_root=root)
+        if sup:
+            q["supplement_relations"] = sup
+            q["supplement_count"] = len(sup)
+    except Exception:
+        pass
+    return q
 
 
 def render_relation_card(*, repository_id, commit_sha=None,

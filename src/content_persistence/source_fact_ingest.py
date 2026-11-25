@@ -33,6 +33,31 @@ def make_source_fact_id(*, observation_id, rule_id, subject):
     return "SL-FACT-" + hashlib.sha256(payload.encode("utf-8")).hexdigest()[:40]
 
 
+def build_import_subject(observation, imp):
+    """导入事实 subject 的唯一口径。
+
+    ★ source_fact_ingest 入库与 module_relation_pipeline 回查共用此函数，
+      避免两套口径算出不同的 fact id。
+    """
+    return {
+        "module_name": imp.get("module_name"),
+        "imported_name": imp.get("imported_name"),
+        "import_syntax": imp.get("import_syntax") or imp.get("import_kind"),
+        "relative_level": imp.get("relative_level", 0),
+        "module_specifier": imp.get("module_specifier"),
+        "is_type_only": bool(imp.get("is_type_only")),
+        "language": observation["language"],
+    }
+
+
+def make_import_fact_id(*, observation, imp):
+    """导入观察对应的真实已落库 Fact ID（不是观察内部 import_id）。"""
+    return make_source_fact_id(
+        observation_id=observation["observation_id"],
+        rule_id=RULE_IMPORT,
+        subject=build_import_subject(observation, imp))
+
+
 def build_source_fact(*, observation, rule_id, subject, byte_range,
                       line_range, evidence_label):
     import models as FM
@@ -162,15 +187,7 @@ def ingest_source_facts(store, *, observation, source_snapshot_id=None):
              sym["evidence_ref"])
 
     for imp in observation["observed_imports"]:
-        _put(RULE_IMPORT,
-             {"module_name": imp.get("module_name"),
-              "imported_name": imp.get("imported_name"),
-              "import_syntax": imp.get("import_syntax")
-                  or imp.get("import_kind"),
-              "relative_level": imp.get("relative_level", 0),
-              "module_specifier": imp.get("module_specifier"),
-              "is_type_only": bool(imp.get("is_type_only")),
-              "language": observation["language"]},
+        _put(RULE_IMPORT, build_import_subject(observation, imp),
              imp["evidence_ref"])
 
     # ★ JS/TS 导出事实（Python 无此结构，列表为空则跳过）

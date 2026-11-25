@@ -145,6 +145,8 @@ sourcelore analyze https://github.com/<owner>/<repo> --commit <sha> --content-st
 - **内容抽取**：README / `package.json` / `pyproject.toml` 等（`github_knowledge_extract.py`），`ContentEvidenceRef` 同时给**字节偏移**（权威）与**行号**（派生可读）；缺任一维即 `ref_complete=false`。`label` 只放结构化描述，不回显不可信原文。
 - **源码解析**：Python `ast` / JS-TS `tree-sitter` 静态观察符号、导入、导出与模块关系；解析器缺失报 `PARSER_UNAVAILABLE`，不退化为正则，不执行仓库代码、不产出调用图或运行时行为。
 
+**静态模块关系（P2-A）**：三条采集路径——GitHub 在线、本地 Git、离线补全——共用同一条管线（`module_relation_pipeline.py`）：已验证字节 → 现有解析器 → 导入观察 → 同 Commit 已登记 Tree → 语言解析器（Python `local_module_resolver`、JS `js_ts_module_resolver`、TS `config_aware_resolver`）→ 证据校验 → 幂等 `module_relation_ingest`。导入方、配置、目标三类证据身份严格分离；观察 ID 不冒充已落库 Fact ID，配置 blob 不冒充导入源码 blob。未解析导入写成 B 层 `module_resolution_attempt` 审计记录，绝不写成 A 层权威 Fact。在线采集从捕获文件元数据继承 provenance；离线 `cli.py backfill-relations <rid> --commit <sha>` 仅复用已捕获字节、零网络。查询状态（`status` / `status_counts`）诚实区分未分析、Tree 覆盖不足、配置缺失、候选歧义、动态/不支持形式与已解析关系——`NO_RELATIONS` 不再等于「已证实无依赖」。
+
 Fact 写入 A 层（不可变），每条带 `commit_sha` 与证据引用，可被机械复算。
 
 ---

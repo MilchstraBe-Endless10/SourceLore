@@ -30,6 +30,7 @@ SourceLore 把一个公开 GitHub 仓库变成**版本化、可查询的知识�
 | 不可变 A 层 / 当前指针 B 层 / 可重建索引 C 层 | 已实现 |
 | 内容级抽取（README、package.json、pyproject.toml） | 已实现 |
 | 源码知识（Python AST、JS/TS tree-sitter、tsconfig 感知的模块解析） | 已实现 |
+| 静态模块关系入库（P2-A：在线/本地/离线共享管线、诚实状态、幂等补全） | 已实现（完整图谱仍限于已采集源码） |
 | 项目知识文档（`derive`） | 已实现 |
 | 自然语言问答（`answer`，六类意图） | 已实现 |
 | 知识卡片、Obsidian 导出 | 已实现 |
@@ -106,6 +107,9 @@ sourcelore query <repository_id> --commit <sha> --type content --path README.md
 sourcelore query <repository_id> --commit <sha> --type code
 sourcelore query <repository_id> --commit <sha> --type relation
 sourcelore query <repository_id> --commit <sha> --type project
+
+# 从已捕获字节离线补全静态模块关系（幂等、零网络）
+sourcelore backfill-relations <repository_id> --commit <sha>
 
 # 自然语言项目问答（内容优先、只读）
 sourcelore answer <repository_id> "介绍这个项目"

@@ -16,7 +16,7 @@
 | P1 内容问答层（`answer`） | IMPLEMENTED |
 | 递归子目录采集 | PARTIAL（`recursive` 参数已实现，受 GitHub API 配额阻断） |
 | 深层内容覆盖 | PARTIAL（三仓库仅采 3/4/9 文件） |
-| 源码 `imports` 关系 | PARTIAL（此前 Preact 快照已登记 43 条 import 事实、40 条静态模块关系；仅覆盖已采集源码，尚非完整图谱） |
+| 源码 `imports` 关系 | 已实现共享入库闭环（P2-A；在线/本地/离线三路诚实落库）；完整图谱覆盖仍为 PARTIAL（限于已采集源码） |
 | README 语义解析 | PARTIAL（偏结构观察） |
 | `answer` 接入 AST Facts / LLM | PLANNED |
 | 完整调用图 / 运行时分析 | PLANNED（当前明确不做） |
@@ -60,7 +60,7 @@
 
 ### 3.3 源码关系（`imports`）
 
-源码知识已具备 Python AST、JS/TS tree-sitter、tsconfig 感知的模块解析，但当前 `imports=0`，只抓了少量源文件，模块关系覆盖严重不足。缺少覆盖不等于"不存在依赖"。
+源码知识已具备 Python AST、JS/TS tree-sitter、tsconfig 感知的模块解析。**P2-A 补齐入库闭环**：共享管线让 GitHub 在线、本地 Git、离线补全三条路径都能诚实落库静态关系，导入方/配置/目标证据身份分离，状态可查（`status` / `status_counts`），写入幂等。夹具实测：样本 A（Python）196 关系 + 139 外部；样本 B（JS/TS）33 关系 + 2 配置事实 + 1 项目事实。完整图谱覆盖仍限于已采集源码——缺少覆盖不等于「不存在依赖」，静态映射也不证明运行时加载。跨文件调用图、类型层级、多跳推理仍不在范围内。
 
 ### 3.4 `answer` 的知识来源
 

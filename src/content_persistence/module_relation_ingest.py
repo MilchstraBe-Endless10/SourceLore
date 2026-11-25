@@ -189,6 +189,53 @@ def ingest_config_observation(store, *, observation):
     return {"written": written, "reused": reused, "skipped": skipped}
 
 
+def ingest_unresolved_attempt(store, *, resolution, evidence_refs):
+    """记录一次「未解析」尝试为审计资产（B 层 evidence_record，非权威 Fact）。
+
+    ★ 绝不为 UNKNOWN/歧义/缺配置等状态伪造 STATIC_MODULE_RELATION 事实；
+      这里只留可回查的状态审计，供查询端诚实回答"为什么没解析"。
+    幂等：logical_identity 由 resolution_id 派生，重复入库返回 reused。
+    """
+    from asset_models import AssetDraft
+
+    state = resolution.get("resolution_state")
+    if state == "LOCAL_MODULE_RESOLVED":
+        return {"written": [], "reused": [], "status": "RESOLVED_NO_LEDGER"}
+    li = "SL-RELATT-" + str(resolution.get("resolution_id") or "")
+    payload = {
+        "ledger_type": "module_resolution_attempt",
+        "repository_id": str(resolution.get("repository_id") or ""),
+        "commit_sha": str(resolution.get("commit_sha") or ""),
+        "resolution_id": resolution.get("resolution_id"),
+        "importing_file_path": resolution.get("importing_file_path"),
+        "importing_blob_oid": resolution.get("importing_blob_oid"),
+        "importing_content_asset_id": resolution.get("importing_content_asset_id"),
+        "import_fact_id": resolution.get("import_fact_id"),
+        "module_specifier": resolution.get("module_specifier"),
+        "resolution_state": state,
+        "unresolved_reason": resolution.get("unresolved_reason"),
+        "config_observation_ids": resolution.get("config_observation_ids") or [],
+        "config_blob_oids": resolution.get("config_blob_oids") or [],
+        "matched_config_path": resolution.get("matched_config_path"),
+        "candidate_paths": resolution.get("candidate_paths") or [],
+        "evidence_refs": list(evidence_refs or []),
+        "authoritative": False,
+    }
+    draft = AssetDraft(asset_type="evidence_record", logical_identity=li,
+                       repository_id=str(resolution.get("repository_id") or ""),
+                       payload=payload, asset_version=1)
+    res = store.append_asset_and_advance(draft, expected_version=None)
+    if not res.get("ok"):
+        return {"written": [], "reused": [], "status": "ERROR",
+                "detail": res.get("error") or res.get("detail")}
+    if res.get("idempotent"):
+        return {"written": [], "reused": [{"resolution_id": resolution.get("resolution_id")}],
+                "status": "REUSED"}
+    return {"written": [{"resolution_id": resolution.get("resolution_id"),
+                         "asset_id": res.get("asset_id")}],
+            "reused": [], "status": "WRITTEN"}
+
+
 def ingest_resolution(store, *, resolution, evidence_refs,
                       source_snapshot_id=None, only_resolved=True):
     """入库静态关系事实。★ 只有确定状态才产权威事实。"""

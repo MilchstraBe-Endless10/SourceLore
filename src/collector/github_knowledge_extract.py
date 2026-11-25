@@ -20,6 +20,42 @@ for _p in ("content", "content_persistence", "source_analysis", "storage",
 SOURCE_SUFFIXES = (".js", ".jsx", ".ts", ".tsx", ".py")
 
 
+def _tree_paths_from_snapshot(store, repository_id, commit_sha):
+    """从已登记快照读取同 Commit 的完整路径集合（零网络）。
+
+    返回 (tree_paths:set, completeness:str)。没有完整清单时返回空集合 +
+    'UNKNOWN'，让 resolver 诚实降级到 INSUFFICIENT_TREE_COVERAGE。
+    """
+    rows = store.conn.execute(
+        "SELECT asset_id FROM index_rows WHERE asset_type='repository_snapshot' "
+        "AND repository_id=?", (str(repository_id),)).fetchall()
+    paths, completeness = set(), "UNKNOWN"
+    for r in rows:
+        got = store.get_asset(r["asset_id"], verify=True)
+        if not got.get("ok"):
+            continue
+        pl = (got["asset"] or {}).get("payload") or {}
+        if pl.get("commit_sha") != str(commit_sha):
+            continue
+        completeness = pl.get("completeness_status") or "UNKNOWN"
+        entries = pl.get("tree_entries")
+        if not entries:
+            for br in pl.get("blob_refs") or []:
+                p = br.get("path") if isinstance(br, dict) else br
+                if p:
+                    paths.add(p)
+            break
+        for e in entries:
+            if isinstance(e, dict):
+                p = e.get("path")
+                if p and e.get("type", "blob") != "tree":
+                    paths.add(p)
+            elif e:
+                paths.add(e)
+        break
+    return paths, completeness
+
+
 def extract_captured(*, store, data_root, repository_id, commit_sha,
                      content_report, paths=None):
     """对已捕获文件抽取知识。★ 完全离线。"""
@@ -48,6 +84,8 @@ def extract_captured(*, store, data_root, repository_id, commit_sha,
                "静态分析不等于运行时行为验证",
            ]}
 
+    source_entries, config_entries = [], []
+    rr_provenance = None
     for path in captured:
         rec = {"file_path": path, "content_extracted": False,
                "content_facts": 0, "source_facts": 0,
@@ -77,6 +115,7 @@ def extract_captured(*, store, data_root, repository_id, commit_sha,
             rec["notes"].append("PROVENANCE_UNKNOWN")
             out["files"].append(rec)
             continue
+        rr_provenance = rr_provenance or _prov
 
         # ① 内容抽取
         try:
@@ -169,10 +208,45 @@ def extract_captured(*, store, data_root, repository_id, commit_sha,
                         rec["notes"].append(
                             "UNSUPPORTED_SEMANTIC_FORM: 存在已识别但规则族未覆盖的形态 "
                             + ",".join(forms))
+                    # ★ 收集到统一输入（在线链路），配置与源码身份分离。
+                    name = path.rsplit("/", 1)[-1]
+                    if name in ("tsconfig.json", "jsconfig.json"):
+                        config_entries.append({
+                            "config_path": path, "raw": raw,
+                            "blob_oid": sha, "content_asset_id": caid,
+                            "content_digest": cdigest})
+                    else:
+                        source_entries.append({
+                            "file_path": path, "raw": raw,
+                            "git_blob_oid": sha, "content_asset_id": caid,
+                            "content_sha256": cdigest})
             except Exception as e:
                 rec["notes"].append("SOURCE_PARSE_FAILED:%s" % type(e).__name__)
 
         out["files"].append(rec)
+
+    # ★ 在线链路接入共享关系组件（与本地链路同一契约，零网络）。
+    tree_paths, tree_completeness = _tree_paths_from_snapshot(
+        store, repository_id, commit_sha)
+    out["relation"] = {"status": "NOT_RUN",
+                       "tree_completeness": tree_completeness,
+                       "tree_paths": len(tree_paths)}
+    if source_entries or config_entries:
+        try:
+            import module_relation_pipeline as MRP
+            rr = MRP.process_source_relations(
+                store, repository_id=repository_id, commit_sha=commit_sha,
+                file_sources=source_entries, config_sources=config_entries,
+                tree_paths=tree_paths,
+                source_completeness=("COMPLETE" if tree_completeness
+                                     in ("COMPLETE", "FULL") else "INCOMPLETE"),
+                provenance_level=rr_provenance or "AUTHORIZED_REMOTE_SOURCE",
+                source_snapshot_id="")
+            out["relation"] = rr
+            out["relation"]["tree_completeness"] = tree_completeness
+        except Exception as e:
+            out["relation"] = {"status": f"ERROR:{type(e).__name__}:{e}",
+                               "tree_completeness": tree_completeness}
     return out
 
 

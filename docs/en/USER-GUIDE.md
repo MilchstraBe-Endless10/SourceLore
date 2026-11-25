@@ -73,6 +73,24 @@ sourcelore derive <repository_id>
 sourcelore card --repository-id <repository_id> --claim-id <claim_id>
 ```
 
+**Static module relations (P2-A).** `query --type relation` now returns relations
+persisted by the online, local or offline path. Read the `status` /
+`status_counts` fields alongside `state`: `RELATIONS_FOUND` means resolved
+relations exist, while `NO_RELATIONS` alone does **not** mean "verified no
+dependency" — check `status` for `INSUFFICIENT_TREE_COVERAGE`,
+`CONFIG_NOT_CAPTURED`, `AMBIGUOUS_CANDIDATES`, `EXTERNAL_OR_UNRESOLVED`, etc.
+Unresolved imports are recorded as audit records, not authoritative facts. For
+a repository whose source was already captured, relations can be backfilled
+offline with zero network and no A-layer change:
+
+```sh
+sourcelore backfill-relations <repository_id> --commit <sha> [--source-snapshot-id <id>]
+```
+
+Repeated backfills are idempotent (already-generated relations are reused).
+A GitHub ID may also attach relations from verified local supplement sources
+(`include_supplements` in the API) without presenting them as online API output.
+
 ---
 
 ## 3. Understand the knowledge base

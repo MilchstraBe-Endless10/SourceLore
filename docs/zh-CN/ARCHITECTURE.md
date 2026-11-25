@@ -115,7 +115,9 @@ flowchart TD
 | `src/views/knowledge_view_assembler.py` | D 层只读投影：`assemble_from_verification()`，五状态轴分离，不合并成 `is_valid` | `view_models`、`view_integrity`、`lc_models` | 已提交资产 → KnowledgeView 或诊断码 | 证据损坏 → `EVIDENCE_CORRUPT`；无可用证据照常装配并标注 | 没有第二套裁决器；历史观测不冒充当前实时状态 |
 | `src/views/repo_derive_runner.py` | 把派生视图生成固化为可复现命令 `derive <rid>`；`_load_assets()` / `_code_rows()` | `repo_graph_derivation`、`repo_card_projection`、`repo_miner`、`query` | 仓库 ID → 派生视图 + 项目文档 | 无快照 → `NO_SNAPSHOT` | 取代一次性临时脚本，纳入源码、入口与测试 |
 | `src/lifecycle/lc_models.py` | 新鲜度模型：`VERSION_ALIGNED` / `POSSIBLY_STALE` / `UNKNOWN` / `NOT_APPLICABLE_TO_PINNED` | 无 | 观测 ref 与基线 → freshness 评估 | 非法状态/缺失可信 commit → `ValueError` | 固定 Commit 的知识是否可能过时，是独立于证据裁决的一根状态轴 |
-| `src/runtime/asset_checkpoint_coordinator.py` | 跨库对账：`RECONCILED` / `RETRY_SAFE` / `NEEDS_HUMAN` | `checkpoint_store`、`knowledge_store` | operation_id → 对账状态 | 库不可读 / checkpoint 损坏 → `NEEDS_HUMAN` | 两库无全局事务，只用持久化记录判定，不靠「我记得提交了」 |
+| `src/runtime/asset_checkpoint_coordinator.py` | 跨库对账：`RECONCILED` / `RETRY_SAFE` / `NEEDS_HUMAN` | `checkpoint_store`、`knowledge_store` | operation_id → 对账状态 | 存储不可读 / checkpoint 损坏 → `NEEDS_HUMAN` | 两库之间无全局事务；判定只依据已持久化记录，不靠"我以为提交了" |
+| `src/content_persistence/module_relation_pipeline.py` | **共享静态模块关系管线**，在线、本地、离线三路共用：已验证字节 → 解析器 → 导入观察 → 同 Commit Tree → 模块解析 → 证据校验 → 幂等入库 | `module_relation_ingest`、`module_relation_adapter`、各 resolver | 已捕获 source/config entries + Tree → 关系与诚实状态 | Tree / 配置缺失 → `INSUFFICIENT_TREE_COVERAGE` / `CONFIG_NOT_CAPTURED`；未解析状态不写成 A 层权威 Fact | 所有采集路径共用一套契约；导入方 / 配置 / 目标三类证据身份严格分离；P2-A 补齐在线入库缺口 |
+| `src/content_persistence/relation_backfill.py` | 离线增量补全：仅复用已捕获字节，零网络、幂等、A 层不变 | `captured_blob_loader`、共享管线 | repository + commit → 补全报告 | 字节缺失 → 跳过，绝不重下载 | 通过 `cli.py backfill-relations <rid> --commit <sha>` 暴露；重复运行复用而非重复生成关系 |
 
 ---
 

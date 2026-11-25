@@ -89,6 +89,12 @@ def build_parser():
     q.add_argument("--config", default=None, help="按 tsconfig 路径过滤")
     q.add_argument("--file", default=None, help="按源码文件路径过滤归属")
 
+    b = sub.add_parser("backfill-relations",
+                       help="离线增量补全静态模块关系（零网络、幂等、A层不变）")
+    b.add_argument("repository_id")
+    b.add_argument("--commit", required=True, help="固定 Commit SHA")
+    b.add_argument("--source-snapshot-id", default=None)
+
     d = sub.add_parser("derive", help="生成仓库派生视图与项目知识文档（离线，不联网）")
     d.add_argument("repository_id", nargs="?", help="仓库 ID；省略则处理全部仓库")
 
@@ -333,6 +339,13 @@ def _dispatch(cmd, args):
                     "ok": False, "error": "%s: %s" % (type(e).__name__, e)}
         return emit_ok(out)
 
+
+    if cmd == "backfill-relations":
+        import relation_backfill as RB
+        return emit_ok(RB.backfill_relations(
+            repository_id=args.repository_id, commit_sha=args.commit,
+            data_root=root,
+            source_snapshot_id=getattr(args, "source_snapshot_id", None)))
 
     if cmd == "query":
         if getattr(args, "type", None) == "project":
