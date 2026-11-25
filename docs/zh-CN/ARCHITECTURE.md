@@ -118,6 +118,8 @@ flowchart TD
 | `src/runtime/asset_checkpoint_coordinator.py` | 跨库对账：`RECONCILED` / `RETRY_SAFE` / `NEEDS_HUMAN` | `checkpoint_store`、`knowledge_store` | operation_id → 对账状态 | 存储不可读 / checkpoint 损坏 → `NEEDS_HUMAN` | 两库之间无全局事务；判定只依据已持久化记录，不靠"我以为提交了" |
 | `src/content_persistence/module_relation_pipeline.py` | **共享静态模块关系管线**，在线、本地、离线三路共用：已验证字节 → 解析器 → 导入观察 → 同 Commit Tree → 模块解析 → 证据校验 → 幂等入库 | `module_relation_ingest`、`module_relation_adapter`、各 resolver | 已捕获 source/config entries + Tree → 关系与诚实状态 | Tree / 配置缺失 → `INSUFFICIENT_TREE_COVERAGE` / `CONFIG_NOT_CAPTURED`；未解析状态不写成 A 层权威 Fact | 所有采集路径共用一套契约；导入方 / 配置 / 目标三类证据身份严格分离；P2-A 补齐在线入库缺口 |
 | `src/content_persistence/relation_backfill.py` | 离线增量补全：仅复用已捕获字节，零网络、幂等、A 层不变 | `captured_blob_loader`、共享管线 | repository + commit → 补全报告 | 字节缺失 → 跳过，绝不重下载 | 通过 `cli.py backfill-relations <rid> --commit <sha>` 暴露；重复运行复用而非重复生成关系 |
+| `src/views/versioned_assets.py` | **版本化资产统一入口**：按 repository_id + commit_sha 严格选 Snapshot / 正文 / 关系；指定 Commit 缺失不回退，默认走 `current_view`，缺指针才 `FALLBACK_LATEST` 并标注 | `trust/policy`、`knowledge_store` | 版本选择 → 同版本资产 | Commit 不存在 → `COMMIT_NOT_FOUND` | 修复固定 Commit 派生混用的唯一权威选择点；P2-B 新增 |
+| `src/views/repo_graph_derivation.py` | 派生可信图谱：节点/边 ID 含仓库、Commit、路径、作用域、导入方；消费 P2-A 关系只建已验证 `RESOLVES_TO`；记录覆盖/限制与确定性 `graph_digest` | `source_knowledge`、`module_relation_query` | 版本化源码事实 + 关系 → `code-graph.json` | 树不完整 → `in_tree=false` 补建证据节点，不冒充完整架构 | IMPORTS 永不称为 CALLS；悬空边剔除并如实计数；P2-B 新增契约 `repo-graph/2` |
 
 ---
 

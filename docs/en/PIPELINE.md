@@ -149,6 +149,8 @@ Two sources:
 
 Facts are written into immutable layer A, each carrying `commit_sha` and evidence references, and can be mechanically recomputed.
 
+**Derived knowledge graph (P2-B).** `derive <rid> --commit <sha>` selects the version strictly by repository_id + commit_sha through `versioned_assets.py`: snapshot, blob body, AST symbols, relations and claims are all from the same version. A pinned missing commit returns `COMMIT_NOT_FOUND` with no fallback to a newer version; unpinned reads use `current_view`. AST facts win per file; regex is only a labelled `LITERAL_FALLBACK` when no applicable AST observation exists. Derive reads historical source observations through the formal `source_knowledge.query_code()` entry with pagination, never a fixed cap posing as a complete graph. Node/edge ids carry repository, commit, path, scope and importer; a P2-A relation becomes a `RESOLVES_TO` edge only when evidence-verified local resolution exists, unresolved imports stay observation-only, and IMPORTS is never called CALLS. Incomplete trees get `in_tree=false` evidence nodes; coverage and limitations are recorded honestly. Output is `code-graph.json` (contract `repo-graph/2`) with a deterministic `graph_digest`, never overwriting historical artifacts.
+
 ---
 
 ## 7. Stage 5: Claim / Verification / Evidence adjudication

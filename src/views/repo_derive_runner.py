@@ -22,48 +22,117 @@ DOC_NAMES = (
     "evidence-index.md",
 )
 
+# 源码事实有界读取上限：不靠固定 500 冒充完整图谱，超限如实标注。
+SOURCE_FACT_PAGE_SIZE = 1000
 
-def _load_assets(store, repository_id):
-    """读某仓库的权威资产。"""
-    snap_row = store.conn.execute(
-        "SELECT payload_json FROM assets WHERE asset_type='repository_snapshot' "
-        "AND repository_id=? ORDER BY created_at DESC LIMIT 1",
-        (str(repository_id),)).fetchone()
-    if not snap_row:
+
+def _load_assets(store, repository_id, commit_sha=None):
+    """读某仓库**指定 Commit**的权威资产（P2-B §2 固定 Commit 隔离）。
+
+    兼容旧调用：仍返回 (snapshot, claims, verifs) 三元组；
+    版本选择/过滤结果挂在返回的第一个元素之外的旁路属性不可能（tuple），
+    因此额外提供 `_load_assets_ex()` 返回完整 meta。
+    """
+    ex = _load_assets_ex(store, repository_id, commit_sha)
+    if not ex.get("ok"):
         return None
-    snapshot = json.loads(snap_row["payload_json"])
-
-    claims = [json.loads(r["payload_json"]) for r in store.conn.execute(
-        "SELECT payload_json FROM assets WHERE asset_type='claim_candidate' "
-        "AND repository_id=?", (str(repository_id),)).fetchall()]
-
-    verifs = [json.loads(r["payload_json"]) for r in store.conn.execute(
-        "SELECT payload_json FROM assets WHERE asset_type='claim_verification' "
-        "AND repository_id=?", (str(repository_id),)).fetchall()]
-
-    return snapshot, claims, verifs
+    return ex["snapshot"], ex["claims"], ex["verifications"]
 
 
-def _code_rows(repository_id, commit_sha, data_root):
+def _load_assets_ex(store, repository_id, commit_sha=None):
+    """完整版：带版本选择/覆盖 meta，供 derive/answer 精确使用。"""
+    import versioned_assets as VA
+    ex = VA.load_versioned_assets(store, repository_id, commit_sha)
+    if ex.get("ok"):
+        ex["snapshot"]["_selection"] = ex["selection"]
+        ex["snapshot"]["_coverage"] = ex["coverage"]
+    return ex
+
+
+def _code_rows(repository_id, commit_sha, data_root, *, max_results=SOURCE_FACT_PAGE_SIZE):
     """取源码结构观察（符号声明 / import / export）。
 
-    ★ 这是 2026-11-11 审计发现的缺口：derive 时必须真的把代码观察喂给图谱，
-      否则 IMPORTS/DECLARES 边永远为空，模块文档会写成「无源码观察」——
-      而库里明明有 13 条 re-export 观察。
+    ★ P2-B §4 修复：旧实现调用 `query.run_query(qtype="code")`，而 run_query
+      的 VALID_TYPES 只有 path/claims/version —— 该调用永远抛异常被 except 吞掉，
+      code_rows 恒为空，图谱符号/导入边因此为空。改用正式源码知识入口
+      `source_knowledge.query_code()`，它读取已登记的 AST/source_facts。
+
+    返回 (rows, meta)。rows 元素带 `kind` 兼容下游 claim_rows 结构；
+    meta 如实记录读取上限、总数与是否被截断。
     """
+    meta = {"source": "source_knowledge.query_code", "commit_sha": commit_sha,
+            "requested_limit": max_results, "truncated": False}
     try:
-        import query as Q
-        r = Q.run_query(repository_id=str(repository_id), commit_sha=commit_sha,
-                        qtype="code", max_results=500, data_root=data_root)
-        return r.get("claims") or []
-    except Exception:
-        return []
+        import source_knowledge as SK
+        r = SK.query_code(repository_id=str(repository_id), commit_sha=commit_sha,
+                          data_root=data_root)
+        facts = r.get("facts") or []
+        meta["facts_total"] = len(facts)
+        if len(facts) > max_results:
+            facts = facts[:max_results]
+            meta["truncated"] = True
+        # 保留完整 source_fact 字段，补 kind/subject 兼容下游 old claim_rows 口径
+        rows = []
+        for f in facts:
+            row = dict(f)
+            subj = f.get("subject") or {}
+            rule = f.get("rule_id") or ""
+            # 统一符号读取契约：导入用 module_specifier，导出用 source_reference
+            ref = subj.get("source_reference") or subj.get("module_specifier")
+            if ref:
+                subj = dict(subj)
+                subj["source_reference"] = ref
+            if "IMPORT" in rule:
+                row["kind"] = "import"
+            elif "EXPORT" in rule:
+                row["kind"] = "export"
+            elif "SYMBOL" in rule:
+                row["kind"] = "symbol"
+            else:
+                row["kind"] = "symbol"
+            row["subject"] = subj
+            rows.append(row)
+        meta["facts_returned"] = len(rows)
+        meta["state"] = r.get("state")
+        meta["coverage_status"] = r.get("coverage_status")
+        return rows, meta
+    except Exception as e:
+        meta["error"] = f"{type(e).__name__}: {e}"
+        return [], meta
 
 
-def derive_one(*, repository_id, data_root, store=None, logger=None):
-    """为单仓库生成派生视图 + 项目文档。返回结果摘要。"""
+def _relations_rows(repository_id, commit_sha, data_root):
+    """P2-B §5：读取 P2-A 已登记的静态模块关系（只读、零网络）。"""
+    meta = {"source": "source_knowledge.query_module_relations",
+            "commit_sha": commit_sha}
+    try:
+        import source_knowledge as SK
+        q = SK.query_module_relations(repository_id=str(repository_id),
+                                      commit_sha=commit_sha, data_root=data_root,
+                                      include_supplements=False)
+        meta.update({"state": q.get("state"), "status": q.get("status"),
+                     "status_counts": q.get("status_counts") or {},
+                     "counts": q.get("counts") or {}})
+        return q.get("relations") or [], meta
+    except Exception as e:
+        meta["error"] = f"{type(e).__name__}: {e}"
+        return [], meta
+
+
+def derive_one(*, repository_id, data_root, store=None, logger=None,
+               commit_sha=None):
+    """为单仓库生成派生视图 + 项目文档。返回结果摘要。
+
+    commit_sha 给定则严格派生该固定版本（P2-B §2）；未给则走 current_view。
+    """
     from knowledge_store import KnowledgeStore
     from paths import db_path
+    import os as _os
+    # ★ 源码/关系读取入口在 src/skill_interface，运行时注入模块路径
+    for _sub in ("skill_interface", "trust"):
+        _p = _os.path.join(_os.path.dirname(_os.path.dirname(__file__)), _sub)
+        if _p not in __import__("sys").path:
+            __import__("sys").path.insert(0, _p)
     import repo_graph_derivation as RG
     import repo_card_projection as CP
     import repo_miner as RM          # 真实项目知识的挖掘层
@@ -74,12 +143,13 @@ def derive_one(*, repository_id, data_root, store=None, logger=None):
         own_store = True
 
     try:
-        loaded = _load_assets(store, repository_id)
-        if not loaded:
-            return {"ok": False, "error": "NO_SNAPSHOT",
+        ex = _load_assets_ex(store, repository_id, commit_sha)
+        if not ex.get("ok"):
+            return {"ok": False, "error": ex.get("reason", "NO_SNAPSHOT"),
+                    "selection": ex.get("selection"),
                     "repository_id": str(repository_id)}
-        snapshot, claims, verifs = loaded
-        commit_sha = snapshot.get("commit_sha")
+        snapshot, claims, verifs = ex["snapshot"], ex["claims"], ex["verifications"]
+        commit_sha = ex["commit_sha"]
 
         tree_entries = snapshot.get("tree_entries") or []
         tree_coverage = [{
@@ -89,14 +159,18 @@ def derive_one(*, repository_id, data_root, store=None, logger=None):
             "snapshot_asset_id": snapshot.get("snapshot_asset_id"),
         }]
 
-        # ★ 代码观察必须真的取到并喂给图谱
-        code_rows = _code_rows(repository_id, commit_sha, data_root)
+        # ★ 代码观察必须真的取到并喂给图谱（P2-B §4 正式入口 + 有界读取）
+        code_rows, symbol_meta = _code_rows(repository_id, commit_sha, data_root)
+
+        # ★ P2-B §5：读取 P2-A 已登记静态关系（只读、零网络）
+        relations, relation_meta = _relations_rows(repository_id, commit_sha, data_root)
 
         graph = RG.derive_repo_graph(
             repository_id=str(repository_id), commit_sha=commit_sha,
             tree_entries=tree_entries, claim_rows=claims,
             tree_coverage=tree_coverage, code_rows=code_rows,
-            verifications=verifs)
+            verifications=verifs, relations=relations,
+            symbol_meta=symbol_meta, relation_meta=relation_meta)
 
         # 项目知识挖掘（README / Manifest / 符号 → 可读文档）
         mined = RM.mine_project_knowledge(
@@ -128,10 +202,14 @@ def derive_one(*, repository_id, data_root, store=None, logger=None):
             "ok": True,
             "repository_id": str(repository_id),
             "commit_sha": commit_sha,
+            "selection": ex["selection"],
             "code_rows": len(code_rows),
+            "symbol_meta": symbol_meta,
+            "relation_meta": relation_meta,
             "documents": len(card["documents"]),
             "nodes": len(graph.get("nodes") or []),
             "edges": len(graph.get("edges") or []),
+            "graph_digest": graph.get("graph_digest"),
             "written": written,
             "tree_status": (graph.get("completeness") or {}).get("tree_status"),
         }

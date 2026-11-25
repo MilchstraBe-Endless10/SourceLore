@@ -10,6 +10,27 @@ codename `f2p5a` is kept separately and is no longer used as a public version.
 
 ## [Unreleased]
 
+### P2-B knowledge graph trust fixes (development branch, not a released version)
+
+This is an **unreleased development change** on branch `dev/p2b-knowledge-graph`,
+based on the P2-A commit `5777e75`. It does not change `RELEASE_VERSION` (still
+`0.1.0-beta.3`), creates or moves no release tag, and must not be presented as a
+published version.
+
+- Fixed fixed-commit derivation mixing: all snapshot/blob/symbol/relation reads
+  now go through one versioned-asset entry keyed by repository id + commit SHA;
+  a missing pinned commit returns a missing state instead of falling back to a
+  newer version, and unpinned reads use the single `current_view` pointer.
+- Unified source-symbol reading: AST facts win per file; regex extraction is only
+  a clearly labelled `LITERAL_FALLBACK`, never disguised as AST facts. Derive
+  now reads source facts through the formal `source_knowledge.query_code()`
+  entry with bounded pagination.
+- The derived graph consumes P2-A static relations and only turns evidence-
+  verified local resolutions into `RESOLVES_TO` edges; unresolved imports stay
+  observation-only. Node/edge ids carry repository, commit, path and scope so
+  same-name symbols never merge across versions or repos; `graph_digest` is
+  deterministic. Coverage and limitations are recorded honestly.
+
 ### P2-A static module-relation ingest closure (development branch, not a released version)
 
 This is an **unreleased development change** on branch `dev/p2a-static-relation`.

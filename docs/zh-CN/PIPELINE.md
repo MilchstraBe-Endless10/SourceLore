@@ -149,6 +149,8 @@ sourcelore analyze https://github.com/<owner>/<repo> --commit <sha> --content-st
 
 Fact 写入 A 层（不可变），每条带 `commit_sha` 与证据引用，可被机械复算。
 
+**派生知识图谱（P2-B）**：`derive <rid> --commit <sha>` 经 `versioned_assets.py` 按 repository_id + commit_sha 严格选版本，Snapshot / 正文 / AST 符号 / 关系 / Claim 全部同版本；指定 Commit 缺失返回 `COMMIT_NOT_FOUND`，不回退新版本，未指定走 `current_view`。源码符号以 AST 事实为准，正则仅在无适用 AST 观察时标为 `LITERAL_FALLBACK`；derive 通过正式 `source_knowledge.query_code()` 分页读取历史源码观察，不以固定上限冒充完整图谱。图谱节点/边 ID 含仓库、Commit、路径、作用域和导入方；P2-A 关系只有证据验证的本地解析才生成 `RESOLVES_TO`，未解析只保留观察节点，IMPORTS 不称为 CALLS。Tree 不完整时以 `in_tree=false` 补建证据节点，覆盖与限制如实记录；输出 `code-graph.json`（契约 `repo-graph/2`）带确定性 `graph_digest`，不覆盖历史产物。
+
 ---
 
 ## 7. 阶段五：Claim / Verification / Evidence 裁决

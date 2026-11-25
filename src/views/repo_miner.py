@@ -16,55 +16,23 @@ SCHEMA = "sourcelore-project-doc/1"
 
 # ── 取已采集的内容资产 ───────────────────────────────────────────
 
-def _blob_texts(store, repository_id, data_root):
-    """取已采集的文件正文。
+def _blob_texts(store, repository_id, data_root, commit_sha=None):
+    """取已采集的文件正文（P2-B §2：按固定 Commit 隔离）。
 
-    ★ 关键事实（2026-11-11 审计纠正）：
-      正文**不在** captured_blob_content 的 payload 里（那里只有元数据）；
-      真正的字节存在 `<data_root>/blobs/<sha256>.bin`，
-      由 `blob_content_store.get_bytes()` 按 content_sha256 读回并校验。
+    ★ 旧实现按 created_at/写入顺序取最新，同名文件在两个 Commit 正文不同
+      时会混入错误版本（已由多版本夹具复现）。改为统一走 versioned_assets，
+      严格按 payload.commit_sha 过滤，同路径多版本按 digest 确定性选取。
 
-    ★ 必须走正式 Storage API，不得自行拼路径、不得重新下载。
+    返回 (texts, meta)；meta 额外带 captured_blobs 覆盖信息。
     """
-    out = {}
-    meta = {}
     try:
-        import blob_content_store as BCS
-        rows = store.conn.execute(
-            "SELECT payload_json FROM assets WHERE asset_type='captured_blob_content' "
-            "AND repository_id=?", (str(repository_id),)).fetchall()
-        for r in rows:
-            pl = json.loads(r["payload_json"])
-            path = (pl.get("file_path") or pl.get("normalized_path")
-                    or pl.get("path"))
-            digest = pl.get("content_sha256")
-            if not path or not digest:
-                continue
-            got = BCS.get_bytes(data_root=data_root, content_sha256=digest,
-                                verify=True)
-            if not got.get("ok"):
-                meta[path] = {"error": got.get("error"), "digest": digest}
-                continue
-            raw = got.get("raw") or b""
-            try:
-                text = raw.decode("utf-8")
-            except UnicodeDecodeError:
-                try:
-                    text = raw.decode("utf-8", errors="replace")
-                except Exception:
-                    text = ""
-            out[path] = text
-            meta[path] = {
-                "digest": digest,
-                "byte_length": got.get("byte_length"),
-                "copy_permitted": pl.get("copy_permitted"),
-                "distribution_allowed": pl.get("distribution_allowed"),
-                "provenance_level": pl.get("provenance_level"),
-                "git_blob_oid": pl.get("git_blob_oid"),
-            }
+        import versioned_assets as VA
+        texts, meta, coverage = VA.captured_blobs(
+            store, repository_id, commit_sha, data_root)
+        meta["__coverage__"] = coverage
+        return texts, meta
     except Exception as e:
-        meta["__error__"] = f"{type(e).__name__}: {e}"
-    return out, meta
+        return {}, {"__error__": f"{type(e).__name__}: {e}"}
 
 
 def _readme_from_tree(texts, tree_entries):
@@ -617,20 +585,43 @@ def build_claims_doc(*, repo_name, commit_sha, claims, verifications):
 def mine_project_knowledge(*, store, repository_id, commit_sha, tree_entries,
                            code_rows, claims, verifications, data_root):
     """总入口：产出 documents + project 元信息。"""
-    texts, blob_meta = _blob_texts(store, repository_id, data_root)
+    texts, blob_meta = _blob_texts(store, repository_id, data_root, commit_sha)
     readme_path, readme_text = _readme_from_tree(texts, tree_entries)
     manifest_path, manifest = _manifest_from_tree(texts, tree_entries)
     readme_sections = parse_markdown(readme_text) if readme_text else []
 
-    # ★ 从已读原文抽符号（只在没有 AST 观察时作为回退证据）
+    # ★ P2-B §3 统一符号口径：AST 优先，正则仅作明确标注的合法回退。
+    #   - 该文件已有 AST/source_fact 符号观察 → 只认 AST，禁止正则包装成 AST；
+    #   - AST 已分析但合法无符号 → 不回退（NOT_APPLICABLE 而非 LITERAL_FALLBACK）；
+    #   - 文件无适用 AST 观察 → 正则回退，标注 LITERAL_FALLBACK；
+    #   - 内容未捕获 → NOT_CAPTURED。
+    ast_files = set()
+    for r in (code_rows or []):
+        subj = r.get("subject") or {}
+        p = (r.get("file_path") or subj.get("file_path")
+             or r.get("normalized_path"))
+        if p:
+            ast_files.add(str(p).lstrip("./"))
+
     source_symbols = []
+    symbol_status = {"AST_SOURCE": 0, "LITERAL_FALLBACK": 0,
+                     "UNSUPPORTED": 0, "NOT_CAPTURED": 0}
     for path, text in texts.items():
-        if not text:
-            continue
+        norm = str(path).lstrip("./")
         digest = (blob_meta.get(path) or {}).get("digest")
+        if not text:
+            symbol_status["NOT_CAPTURED"] += 1
+            continue
+        if norm in ast_files:
+            # AST 已覆盖该文件：符号来自 code_rows（图谱侧），此处不重复正则抽取
+            symbol_status["AST_SOURCE"] += 1
+            continue
         for sym in extract_symbols_from_source(path, text):
             sym["digest"] = digest
+            sym["extraction_status"] = "LITERAL_FALLBACK"
+            sym["provenance_level"] = "LITERAL_FALLBACK"
             source_symbols.append(sym)
+            symbol_status["LITERAL_FALLBACK"] += 1
 
     repo_name = None
     try:
@@ -680,6 +671,8 @@ def mine_project_knowledge(*, store, repository_id, commit_sha, tree_entries,
         "project": {
             "blobs_read": len(texts),
             "symbols_from_source": len(source_symbols),
+            "symbol_extraction_status": symbol_status,
+            "blob_coverage": blob_meta.get("__coverage__") or {},
             "blob_meta": blob_meta,
             "readme_path": readme_path,
             "readme_captured": bool(readme_text),

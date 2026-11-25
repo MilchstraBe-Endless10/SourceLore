@@ -165,15 +165,25 @@ def answer(*, repository_id, question, data_root, store=None, commit_sha=None):
         import repo_miner as RM
         import repo_derive_runner as DR
 
-        loaded = DR._load_assets(store, str(repository_id))
-        if not loaded:
-            return _not_found(repository_id)
-        snapshot, claims, verifs = loaded
-        commit = commit_sha or snapshot.get("commit_sha")
+        # ★ P2-B §2：严格按指定 Commit 加载，历史 Commit 缺失不回退到新版本。
+        ex = DR._load_assets_ex(store, str(repository_id), commit_sha)
+        if not ex.get("ok"):
+            return {
+                "ok": False,
+                "state": "VERSION_NOT_FOUND",
+                "reason": ex.get("reason"),
+                "selection": ex.get("selection"),
+                "repository_id": str(repository_id),
+                "commit_sha": commit_sha,
+            }
+        snapshot, claims, verifs = ex["snapshot"], ex["claims"], ex["verifications"]
+        commit = ex["commit_sha"]
         tree_entries = snapshot.get("tree_entries") or []
+        version_selection = ex["selection"]
+        version_coverage = ex["coverage"]
 
-        # 源码观察（与 derive 同一路径，纯本地）
-        code_rows = DR._code_rows(repository_id, commit, data_root)
+        # 源码观察（与 derive 同一路径，纯本地；P2-B 统一入口 + 有界读取）
+        code_rows, symbol_meta = DR._code_rows(repository_id, commit, data_root)
 
         mined = RM.mine_project_knowledge(
             store=store, repository_id=str(repository_id), commit_sha=commit,
@@ -196,12 +206,15 @@ def answer(*, repository_id, question, data_root, store=None, commit_sha=None):
                 for sup in resolved.get("supplements", []):
                     sup_id = sup["repository_id"]
                     sup_commit = sup.get("commit_sha") or commit
-                    sup_loaded = DR._load_assets(store, str(sup_id))
-                    if not sup_loaded:
+                    # D3 补充来源同样执行固定 Commit 检查，不混入其他版本
+                    sup_ex = DR._load_assets_ex(store, str(sup_id), sup_commit)
+                    if not sup_ex.get("ok"):
                         continue
-                    s_snap, s_claims, s_verifs = sup_loaded
+                    s_snap, s_claims, s_verifs = (
+                        sup_ex["snapshot"], sup_ex["claims"], sup_ex["verifications"])
+                    sup_commit = sup_ex["commit_sha"]
                     s_entries = s_snap.get("tree_entries") or []
-                    s_code = DR._code_rows(sup_id, sup_commit, data_root)
+                    s_code, s_symbol_meta = DR._code_rows(sup_id, sup_commit, data_root)
                     s_mined = RM.mine_project_knowledge(
                         store=store, repository_id=str(sup_id), commit_sha=sup_commit,
                         tree_entries=s_entries, code_rows=s_code,
@@ -321,6 +334,9 @@ def answer(*, repository_id, question, data_root, store=None, commit_sha=None):
             "ok": True,
             "repository_id": str(repository_id),
             "commit_sha": commit,
+            "version_selection": version_selection,
+            "version_coverage": version_coverage,
+            "symbol_meta": symbol_meta,
             "intent": intent,
             "blocks": blocks,
             "audit": audit,

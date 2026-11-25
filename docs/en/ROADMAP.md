@@ -17,6 +17,7 @@ This document describes what SourceLore has completed, partially completed, not 
 | Recursive subtree capture | PARTIAL (`recursive` parameter implemented, blocked by GitHub API quota) |
 | Deep content coverage | PARTIAL (only 3/4/9 files captured across three repositories) |
 | Source `imports` relations | IMPLEMENTED for the shared ingest closure (P2-A; online/local/offline paths persist relations honestly); full graph coverage still PARTIAL (limited to captured source) |
+| Derived knowledge graph | IMPLEMENTED as trusted derivation (P2-B; fixed-commit isolation, AST-first, consumes verified relations, deterministic digest); coverage still PARTIAL, never a complete-architecture claim |
 | README semantic parsing | PARTIAL (skewed toward structural observation) |
 | `answer` wired to AST Facts / LLM | PLANNED |
 | Full call graph / runtime analysis | PLANNED (explicitly out of scope for now) |
@@ -61,6 +62,8 @@ The registered `captured_blob_content` assets are single-file, root-level supple
 ### 3.3 Source relations (`imports`)
 
 Source knowledge includes Python AST, JS/TS tree-sitter, and tsconfig-aware module resolution. **P2-A closes the ingest closure**: a shared pipeline now lets online GitHub capture, local Git capture and offline backfill all persist static relations with separated importer/config/target evidence, honest status (`status` / `status_counts`), and idempotent writes. Verified fixtures: sample A (Python) 196 relations + 139 external; sample B (JS/TS) 33 relations + 2 config facts + 1 project fact. Full-graph coverage is still limited to captured source — missing coverage does not mean "no dependency exists", and static mapping does not prove runtime loading. Cross-file call graphs, type hierarchies and multi-hop inference remain out of scope.
+
+**P2-B derived-graph trust fixes.** Fixed-commit derivation now goes through `versioned_assets.py`: snapshot, blob body, symbols, relations and claims are strictly same-version, and a missing pinned commit never falls back. AST symbols win; regex is only a labelled fallback; derive reads source facts through the formal entry with pagination. Graph ids carry repository/commit/path/scope, only evidence-verified relations create `RESOLVES_TO` edges, and `graph_digest` is deterministic. Verified fixtures: arch-grower and Preact both have zero dangling edges; Preact's root-only tree is labelled `ROOT_ONLY` and never presented as a complete architecture.
 
 ### 3.4 Knowledge sources for `answer`
 

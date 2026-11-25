@@ -28,7 +28,8 @@ DERIVATION_VERSION = "repo-graph/1"
 # 边类型：只允许这几种，新增须同时补证据来源
 EDGE_TYPES = (
     "TREE_CONTAINS",      # 目录 → 子项（来自 tree_entries.path 的层级关系）
-    "IMPORTS",            # 文件 → 模块（来自 source_reference 观察）
+    "IMPORTS",            # 文件 → 模块（来自 source_reference 观察，绝不叫 CALLS）
+    "RESOLVES_TO",        # 模块引用 → 已验证本地目标（来自 P2-A 静态关系）
     "DECLARES",           # 文件 → 符号（来自 symbol 声明观察）
     "CLAIM_ABOUT",        # Claim → 文件/符号
     "SHARES_FACT",        # Claim ↔ Claim（共享同一 Fact）—— 注意：不是互相证明
@@ -110,13 +111,42 @@ def build_tree_nodes(tree_entries, *, repository_id, commit_sha):
 
 # ── 2. 符号与导入 ───────────────────────────────────────────────
 
-def build_symbol_and_import_graph(claim_rows, *, repository_id):
-    """从已登记 code 类 Claim 建符号节点与导入边。
+def build_symbol_and_import_graph(claim_rows, *, repository_id, commit_sha=None,
+                                  relations=None, tree_paths=None):
+    """从源码观察建符号节点、导入节点与边。
 
-    ★ 只认来源代码里确实存在的观察；`source_reference` 缺失 → 不进边。
+    ★ P2-B §3/§6 统一身份：
+      - 符号 ID 含 repository_id / commit_sha / 路径 / 限定名 / 作用域；
+      - module_ref ID 含导入方路径（同一 specifier 跨文件不再错误归并）；
+      - 节点携带完整来源身份（fact/parser/blob/content/provenance/status）；
+      - 仅在有已验证的 LOCAL_MODULE_RESOLVED 关系时建 RESOLVES_TO 边；
+        未解析关系只留观察节点，不冒充已验证目标。
     """
     nodes, edges = [], []
     symbols, imports = {}, {}
+    rel_index = {}
+    for rel in (relations or []):
+        key = (_norm_path(rel.get("importing_file_path")), rel.get("module_specifier"))
+        rel_index.setdefault(key, []).append(rel)
+    tree_path_set = set(tree_paths or [])
+    implicit_files = {}   # 源码/关系证据支撑、但不在 tree 快照中的文件节点
+
+    def file_nid(path):
+        return _stable_id("node:path:", repository_id, commit_sha, path)
+
+    def ensure_file(path, source_ref, origin):
+        if path in tree_path_set or not path:
+            return
+        if path not in implicit_files:
+            implicit_files[path] = {
+                "id": file_nid(path),
+                "node_type": "file",
+                "label": path,
+                "path": path,
+                "in_tree": False,
+                "node_origin": origin,
+                "source_ref": source_ref,
+            }
 
     for c in claim_rows or []:
         subj = c.get("subject") or {}
@@ -129,33 +159,62 @@ def build_symbol_and_import_graph(claim_rows, *, repository_id):
                 or subj.get("imported_name") or subj.get("name"))
         ref = subj.get("source_reference")
         kind = c.get("kind") or subj.get("symbol_kind")
-        start_line = c.get("start_line")
+        scope = subj.get("scope") or subj.get("qualname_prefix") or ""
+        provenance = subj.get("provenance_level") or c.get("provenance_level") or "OBSERVED"
+
+        def evidence():
+            return {
+                "kind": "source_fact",
+                "repository_id": repository_id,
+                "commit_sha": c.get("commit_sha") or commit_sha,
+                "fact_id": c.get("fact_id"),
+                "source_fact_id": c.get("fact_id") or c.get("source_fact_id"),
+                "path": path,
+                "parser_id": subj.get("parser_id") or c.get("parser_id"),
+                "parser_version": subj.get("parser_version") or c.get("parser_version"),
+                "git_blob_oid": subj.get("git_blob_oid") or c.get("git_blob_oid"),
+                "content_asset_id": subj.get("content_asset_id") or c.get("content_asset_id"),
+                "provenance_level": provenance,
+                "extraction_status": subj.get("extraction_status") or c.get("extraction_status"),
+            }
 
         if name and kind and not ref:
-            key = (path, name)
+            key = (path, name, scope)
             if key in symbols:
                 continue
             symbols[key] = 1
-            sid = _stable_id("node:symbol:", repository_id, path, name)
+            ensure_file(path, evidence(), "SOURCE_SYMBOL_FACT")
+            sid = _stable_id("node:symbol:", repository_id, commit_sha, path,
+                             name, scope)
             nodes.append({
                 "id": sid,
                 "node_type": "symbol",
                 "label": name,
+                "symbol_name": name,
+                "qualified_name": subj.get("qualified_name") or name,
+                "scope": scope,
                 "path": path,
                 "symbol_kind": kind,
-                "start_line": start_line,
-                "fact_id": c.get("fact_id"),
-                "source_ref": {"kind": "source_fact",
-                               "fact_id": c.get("fact_id"), "path": path},
+                "start_line": subj.get("start_line") or c.get("start_line"),
+                "line_range": subj.get("line_range") or c.get("line_range"),
+                "byte_range": subj.get("byte_range") or c.get("byte_range"),
+                "parser_id": subj.get("parser_id") or c.get("parser_id"),
+                "parser_version": subj.get("parser_version") or c.get("parser_version"),
+                "git_blob_oid": subj.get("git_blob_oid") or c.get("git_blob_oid"),
+                "content_asset_id": subj.get("content_asset_id") or c.get("content_asset_id"),
+                "provenance_level": provenance,
+                "extraction_status": subj.get("extraction_status") or c.get("extraction_status"),
+                "source_fact_id": c.get("fact_id") or c.get("source_fact_id"),
+                "source_ref": evidence(),
             })
             edges.append({
-                "id": _stable_id("edge:declares:", repository_id, path, name),
+                "id": _stable_id("edge:declares:", repository_id, commit_sha,
+                                 path, name, scope),
                 "edge_type": "DECLARES",
-                "from": _stable_id("node:path:", repository_id,
-                                   c.get("commit_sha"), path),
+                "from": file_nid(path),
                 "to": sid,
-                "resolution_state": "OBSERVED_IN_SOURCE",
-                "source_ref": {"kind": "source_fact", "fact_id": c.get("fact_id")},
+                "resolution_state": provenance,
+                "source_ref": evidence(),
             })
 
         if ref:
@@ -163,34 +222,95 @@ def build_symbol_and_import_graph(claim_rows, *, repository_id):
             if key in imports:
                 continue
             imports[key] = 1
-            mid = _stable_id("node:module:", repository_id, ref)
-            nodes.append({
+            ensure_file(path, evidence(), "SOURCE_IMPORT_FACT")
+            # module_ref 身份含导入方路径：同名 specifier 跨文件不归并
+            mid = _stable_id("node:module:", repository_id, commit_sha, path, ref)
+            rels = rel_index.get((path, ref), [])
+            verified = [r for r in rels
+                        if r.get("resolution_state") == "LOCAL_MODULE_RESOLVED"
+                        and r.get("status") == "RESOLVED"
+                        and r.get("resolved_target_path")]
+            node = {
                 "id": mid,
                 "node_type": "module_ref",
                 "label": ref,
                 "module_specifier": ref,
-                # ★ 模块是否真实存在由树证据决定，此处不作断言
-                "resolved_in_tree": None,
-                "source_ref": {"kind": "source_fact",
-                               "fact_id": c.get("fact_id"), "path": path},
-            })
+                "importing_file_path": path,
+                "resolution_state": (verified[0]["resolution_state"] if verified
+                                     else (rels[0].get("resolution_state")
+                                           if rels else "SPECIFIER_OBSERVED")),
+                "import_fact_id": c.get("fact_id"),
+                "relation_fact_ids": [r.get("fact_id") for r in rels if r.get("fact_id")],
+                "relation_ids": [r.get("resolution_id") for r in rels if r.get("resolution_id")],
+                "candidate_paths": verified[0].get("candidate_paths") if verified else [],
+                "matched_config_rule": (verified[0].get("matched_config_rule")
+                                        if verified else None),
+                "matched_config_field": (verified[0].get("matched_config_field")
+                                         if verified else None),
+                "config_blob_oids": (verified[0].get("config_blob_oids")
+                                     if verified else []),
+                "resolver_version": (verified[0].get("resolver_version")
+                                     if verified else None),
+                "evidence_refs": (verified[0].get("evidence_refs")
+                                  if verified else []),
+                "source_identity": verified[0].get("repository_id") if verified else None,
+                "source_ref": evidence(),
+            }
+            nodes.append(node)
             edges.append({
-                "id": _stable_id("edge:imports:", repository_id, path, ref, name),
+                "id": _stable_id("edge:imports:", repository_id, commit_sha,
+                                 path, ref, name),
                 "edge_type": "IMPORTS",
-                "from": _stable_id("node:path:", repository_id,
-                                   c.get("commit_sha"), path),
+                "from": file_nid(path),
                 "to": mid,
                 "imported_name": name,
                 "resolution_state": "SPECIFIER_OBSERVED",
-                "source_ref": {"kind": "source_fact", "fact_id": c.get("fact_id")},
+                "import_fact_id": c.get("fact_id"),
+                "relation_fact_ids": node["relation_fact_ids"],
+                "evidence_refs": node["evidence_refs"],
+                "source_ref": evidence(),
             })
+            # 仅已验证解析建 RESOLVES_TO，目标必须实际存在于树，避免悬空边
+            if verified:
+                target = _norm_path(verified[0]["resolved_target_path"])
+                if target:
+                    rel_src = {
+                        "kind": "module_relation_fact",
+                        "fact_id": verified[0].get("fact_id"),
+                        "resolution_id": verified[0].get("resolution_id"),
+                        "repository_id": verified[0].get("repository_id"),
+                        "commit_sha": verified[0].get("commit_sha"),
+                    }
+                    ensure_file(target, rel_src, "VERIFIED_LOCAL_RELATION")
+                    edges.append({
+                        "id": _stable_id("edge:resolves:", repository_id, commit_sha,
+                                         path, ref, target),
+                        "edge_type": "RESOLVES_TO",
+                        "from": mid,
+                        "to": file_nid(target),
+                        "resolution_state": "LOCAL_MODULE_RESOLVED",
+                        "relation_fact_id": verified[0].get("fact_id"),
+                        "resolution_policy": verified[0].get("resolution_policy"),
+                        "evidence_refs": verified[0].get("evidence_refs"),
+                        "source_ref": {
+                            "kind": "module_relation_fact",
+                            "fact_id": verified[0].get("fact_id"),
+                            "resolution_id": verified[0].get("resolution_id"),
+                            "repository_id": verified[0].get("repository_id"),
+                            "commit_sha": verified[0].get("commit_sha"),
+                        },
+                    })
+                    node["resolved_target_path"] = target
+                    node["target_in_tree"] = target in tree_path_set
 
+    nodes.extend(implicit_files.values())
     return nodes, edges
 
 
 # ── 3. 知识主张网络 ─────────────────────────────────────────────
 
-def build_claim_network(claim_rows, *, repository_id, verifications=None):
+def build_claim_network(claim_rows, *, repository_id, commit_sha=None,
+                        verifications=None):
     """建 Claim 节点与「共享 Fact」关联。
 
     ★ 共享 Fact ≠ 互相证明。边的语义必须写死为 SHARES_FACT，
@@ -241,7 +361,7 @@ def build_claim_network(claim_rows, *, repository_id, verifications=None):
             facts = [f for f in (c.get("evidence_refs") or [])
                      if isinstance(f, str) and f.startswith("fact:")]
         nodes.append({
-            "id": _stable_id("node:claim:", repository_id, cid),
+            "id": _stable_id("node:claim:", repository_id, commit_sha, cid),
             "node_type": "claim",
             "label": c.get("claim_type") or "claim",
             "claim_id": cid,
@@ -266,10 +386,10 @@ def build_claim_network(claim_rows, *, repository_id, verifications=None):
                 if a == b:
                     continue  # 去重后不应再出现，防御性跳过
                 edges.append({
-                    "id": _stable_id("edge:shares:", repository_id, a, b, fact_id),
+                    "id": _stable_id("edge:shares:", repository_id, commit_sha, a, b, fact_id),
                     "edge_type": "SHARES_FACT",
-                    "from": _stable_id("node:claim:", repository_id, a),
-                    "to": _stable_id("node:claim:", repository_id, b),
+                    "from": _stable_id("node:claim:", repository_id, commit_sha, a),
+                    "to": _stable_id("node:claim:", repository_id, commit_sha, b),
                     "fact_id": fact_id,
                     "resolution_state": "SHARED_EVIDENCE_ONLY",
                     "semantics": "共享同一证据来源，不构成互相证明",
@@ -283,19 +403,23 @@ def build_claim_network(claim_rows, *, repository_id, verifications=None):
 
 def derive_repo_graph(*, repository_id, commit_sha, tree_entries,
                       claim_rows, tree_coverage=None, code_rows=None,
-                      verifications=None):
+                      verifications=None, relations=None,
+                      symbol_meta=None, relation_meta=None):
     """装配一张完整的 A 层图谱。
 
     返回值是**确定性**的：同样输入必然同样输出（含 graph_digest）。
+    节点/边身份含 repository_id + commit_sha；RESOLVES_TO 仅来自已验证关系。
     """
     tree_nodes, tree_edges = build_tree_nodes(
         tree_entries, repository_id=repository_id, commit_sha=commit_sha)
+    tree_paths = [n["path"] for n in tree_nodes]
 
     sym_nodes, sym_edges = build_symbol_and_import_graph(
-        code_rows or [], repository_id=repository_id)
+        code_rows or [], repository_id=repository_id, commit_sha=commit_sha,
+        relations=relations, tree_paths=tree_paths)
 
     claim_nodes, claim_edges = build_claim_network(
-        claim_rows or [], repository_id=repository_id,
+        claim_rows or [], repository_id=repository_id, commit_sha=commit_sha,
         verifications=verifications)
 
     nodes = tree_nodes + sym_nodes + claim_nodes
@@ -315,6 +439,19 @@ def derive_repo_graph(*, repository_id, commit_sha, tree_entries,
         seen_e.add(e["id"])
         uniq_edges.append(e)
 
+    # ★ P2-B §6：丢弃悬空边（起点/终点必须实际存在），并如实记录数量。
+    #   TREE_CONTAINS 根层 from=None 是合法的（无虚拟根节点），跳过校验。
+    node_ids = {n["id"] for n in uniq_nodes}
+    dangling = []
+    kept_edges = []
+    for e in uniq_edges:
+        endpoints = [e.get("from"), e.get("to")]
+        if any(x is not None and x not in node_ids for x in endpoints):
+            dangling.append(e["id"])
+            continue
+        kept_edges.append(e)
+    uniq_edges = kept_edges
+
     limitations = []
     cov = (tree_coverage or [{}])[0] if tree_coverage else {}
     completeness = cov.get("completeness_status")
@@ -328,6 +465,17 @@ def derive_repo_graph(*, repository_id, commit_sha, tree_entries,
                 "子目录内容未采集，不得据此推断深层路径不存在。")
     if not sym_edges:
         limitations.append("无源码符号/导入观察，模块关系为空不代表没有依赖。")
+    if dangling:
+        limitations.append(
+            f"派生过程中发现 {len(dangling)} 条悬空边（端点节点不存在），已剔除。")
+    rel_meta = relation_meta or {}
+    status_counts = rel_meta.get("status_counts") or {}
+    if status_counts:
+        unresolved = sum(v for k, v in status_counts.items()
+                         if k and k != "RESOLVED")
+        if unresolved:
+            limitations.append(
+                f"P2-A 关系中有 {unresolved} 条未解析/部分解析，未建立已验证目标边。")
 
     graph = {
         "derivation_version": DERIVATION_VERSION,
@@ -340,6 +488,16 @@ def derive_repo_graph(*, repository_id, commit_sha, tree_entries,
             "symbol_count": len([n for n in uniq_nodes if n["node_type"] == "symbol"]),
             "module_ref_count": len([n for n in uniq_nodes if n["node_type"] == "module_ref"]),
             "claim_count": len([n for n in uniq_nodes if n["node_type"] == "claim"]),
+        },
+        "edge_type_counts": {
+            t: len([e for e in uniq_edges if e["edge_type"] == t])
+            for t in EDGE_TYPES
+        },
+        "coverage": {
+            "symbol": symbol_meta or {},
+            "relation": rel_meta,
+            "relation_status_counts": status_counts,
+            "dangling_edges_dropped": len(dangling),
         },
         "nodes": sorted(uniq_nodes, key=lambda x: x["id"]),
         "edges": sorted(uniq_edges, key=lambda x: x["id"]),

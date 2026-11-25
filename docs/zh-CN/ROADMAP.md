@@ -17,6 +17,7 @@
 | 递归子目录采集 | PARTIAL（`recursive` 参数已实现，受 GitHub API 配额阻断） |
 | 深层内容覆盖 | PARTIAL（三仓库仅采 3/4/9 文件） |
 | 源码 `imports` 关系 | 已实现共享入库闭环（P2-A；在线/本地/离线三路诚实落库）；完整图谱覆盖仍为 PARTIAL（限于已采集源码） |
+| 派生知识图谱 | 已实现可信派生（P2-B；固定 Commit 隔离、AST 优先、消费已验证关系、确定性摘要）；覆盖仍 PARTIAL，不冒充完整架构 |
 | README 语义解析 | PARTIAL（偏结构观察） |
 | `answer` 接入 AST Facts / LLM | PLANNED |
 | 完整调用图 / 运行时分析 | PLANNED（当前明确不做） |
@@ -61,6 +62,8 @@
 ### 3.3 源码关系（`imports`）
 
 源码知识已具备 Python AST、JS/TS tree-sitter、tsconfig 感知的模块解析。**P2-A 补齐入库闭环**：共享管线让 GitHub 在线、本地 Git、离线补全三条路径都能诚实落库静态关系，导入方/配置/目标证据身份分离，状态可查（`status` / `status_counts`），写入幂等。夹具实测：样本 A（Python）196 关系 + 139 外部；样本 B（JS/TS）33 关系 + 2 配置事实 + 1 项目事实。完整图谱覆盖仍限于已采集源码——缺少覆盖不等于「不存在依赖」，静态映射也不证明运行时加载。跨文件调用图、类型层级、多跳推理仍不在范围内。
+
+**P2-B 派生图谱可信性修复**：固定 Commit 派生统一走 `versioned_assets.py`，Snapshot / 正文 / 符号 / 关系 / Claim 严格同版本，缺失不回退；AST 符号优先、正则仅明确标注回退；derive 通过正式源码入口分页读取，图谱 ID 含仓库/Commit/路径/作用域，只有证据验证关系建 `RESOLVES_TO`，`graph_digest` 确定。样本实测：arch-grower 与 Preact 均零悬空边，Preact 树仅根层如实标注 `ROOT_ONLY`，不冒充完整架构。
 
 ### 3.4 `answer` 的知识来源
 
