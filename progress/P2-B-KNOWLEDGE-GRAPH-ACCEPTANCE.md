@@ -63,7 +63,7 @@ derive 源码输入由无效的 `query.run_query(qtype="code")` 改为正式 `so
 - module_ref ID 含导入方路径：同名 `module_specifier` 跨文件不归并；不同配置上下文关系不无条件合并。
 - claim ID 含 commit。每条边起点/终点必须为实际存在的节点；悬空边剔除并计入 `coverage.dangling_edges_dropped`。
 - 节点/边均排序后参与 `graph_digest`，输入顺序变化不造成摘要漂移。
-- 派生契约版本 `repo-graph/2`（DERIVATION_VERSION）；写入独立 `code-graph.json`，不覆盖历史图谱产物。
+- 派生契约版本 `repo-graph/1`（DERIVATION_VERSION，保持既有读者兼容）；写入独立 `code-graph.json`，不覆盖历史图谱产物。
 
 ## 6. P2-A 关系消费结果
 
@@ -140,4 +140,11 @@ graph_digest（确定性实测）：
 
 ## 12. main Commit / CI / 安装态
 
-- 提交/合并/推送与安装态同步结果在收尾步骤填入（本节待最终交付时更新）。
+- 开发提交：`8a951e21d0a1279e67273994cda7f655cbd08672`（分支 `dev/p2b-knowledge-graph`，基于 `5777e75`）。
+- main 合并：fast-forward 至 `8a951e2`；推送后 `main` / `origin/main` / 开发分支均指向 `8a951e2`，ahead/behind 为 `0/0`。
+- 用户自有工作区改动在合并前以 stash 保存并在推送后原样恢复，未丢失、未提交。
+- CI：run `45658778706`（commit `8a951e2`）`success`；仅作背景，不作为功能验收依据。
+- 安装态：本地 `_sourcelore_src/src` 已与开发分支逐字节同步，关键文件 md5 一致；`--version` 仍为 `0.1.0-beta.3`。
+- 安装态 marker 标注 `dev_commit=8a951e21d0a1279e67273994cda7f655cbd08672`、`dev_branch=dev/p2b-knowledge-graph`，并明确 `NOT a released version`。
+- 安装态 CLI 实跑：隔离库 `derive local:4034d62ed2cf` 成功生成 `code-graph.json`（`graph_digest=545a1f3e555bada84969b6817980047c2733381f6c03750f4a40fd4b681a1d3b`，221 节点 / 216 边，符号走 `source_knowledge.query_code`，`selection=CURRENT_VIEW`）；新图谱可被正常读取，读取路径验证通过。
+- 发布边界：`RELEASE_VERSION` 仍 `0.1.0-beta.3`，无 `v0.1.0-beta.4` Tag，无既有 Tag 改动；本轮为开发态同步，非正式 Release。
