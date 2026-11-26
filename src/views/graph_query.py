@@ -69,6 +69,7 @@ def build_index(graph):
     # 一条文件依赖 = file --IMPORTS/RE_EXPORTS--> module_ref --RESOLVES_TO--> file
     fwd = defaultdict(lambda: defaultdict(list))
     rev = defaultdict(lambda: defaultdict(list))
+    ambiguous_edges = []
     for imp in _edges(graph):
         if imp.get("edge_type") not in _DEP_FORWARD_EDGES:
             continue
@@ -79,6 +80,16 @@ def build_index(graph):
         for res in out_edges.get(mod.get("id"), []):
             if res.get("edge_type") != _RESOLVE_EDGE:
                 continue
+            # ★ P2-C 收尾 §2：歧义解析（多候选目标）不得用于确定性依赖和多跳路径。
+            #   候选与证据仍保留在图谱节点/边里，但不进入依赖邻接。
+            if res.get("ambiguous_resolution"):
+                ambiguous_edges.append({
+                    "resolve_edge_id": res.get("id"),
+                    "import_edge_id": imp.get("id"),
+                    "candidate_target_paths": res.get("candidate_target_paths") or [],
+                    "relation_fact_id": res.get("relation_fact_id"),
+                })
+                continue
             target = nid.get(res.get("to"))
             if not target or target.get("node_type") != "file":
                 continue
@@ -87,7 +98,7 @@ def build_index(graph):
                 "resolve_edge_id": res.get("id"),
                 "module_specifier": mod.get("module_specifier"),
                 "resolution_state": res.get("resolution_state"),
-                "ambiguous_resolution": bool(res.get("ambiguous_resolution")),
+                "ambiguous_resolution": False,
                 "import_fact_id": imp.get("import_fact_id"),
                 "relation_fact_id": res.get("relation_fact_id"),
                 "source_refs": [imp.get("source_ref"), res.get("source_ref")],
@@ -103,6 +114,7 @@ def build_index(graph):
         "in_edges": dict(in_edges),
         "forward": {k: dict(v) for k, v in fwd.items()},
         "reverse": {k: dict(v) for k, v in rev.items()},
+        "ambiguous_resolution_edges": ambiguous_edges,
     }
 
 

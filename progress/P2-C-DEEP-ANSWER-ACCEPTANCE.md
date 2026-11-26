@@ -247,3 +247,80 @@ P2-C 全量回归改用 `SOURCELORE_PROJECT_ROOT` 显式指向 worktree 源码
   状态 `FOUND`，证明 §1.4 修复在安装态生效。
 - A 层资产保护：real / preserve / isolated 三库指纹一致
   `1089 / ddb2072e65fad724`，未修改任何历史资产。
+
+
+## 13. 最终产品入口收尾（P2-C 收尾五项）
+
+本轮不是新研发阶段，不扩大 P2-C 范围；全部在隔离 worktree 与隔离数据副本完成，
+未重新采集、未改真实知识库历史资产、未改 AST/图谱引擎、未放宽门禁、未改旧 Tag、
+未发布 beta.4、未进入 P3。
+
+### 13.1 正式 CLI 深度问答入口
+
+- `src/skill_interface/cli.py` 的 `answer` 分派由 `knowledge_answer.answer` 改为
+  `deep_answer.deep_answer`；后者内部先调原 `knowledge_answer.answer()` 保留全部
+  正文字段，再叠加图谱实体/依赖/路径与证据联合，图谱不可用时自动降级为
+  `TEXT_ONLY`，正文问答向后兼容。
+- Skill 说明已含 `answer <repository_id> "<问题>"`；安装态 launcher
+  `answer --commit <sha>` 参数存在，历史 Commit 可由用户经正式 CLI 指定。
+- 验收一律通过正式 launcher 执行 `answer`，不以直接 import 结果冒充用户入口。
+
+### 13.2 歧义关系检索边界
+
+- `repo_graph_derivation`：多候选解析目标存在冲突（`candidate_target_paths` > 1）
+  时不建确定性 `RESOLVES_TO` 边；候选路径、全部 relation_fact_ids、歧义标记
+  如实保留在 module_ref 节点；确定性排序只用于展示，不冒充关系真实性。
+- `graph_query.build_index`：跳过 `ambiguous_resolution` 解析边建依赖邻接，
+  另记 `ambiguous_resolution_edges`（含候选与 fact_id）供如实报告。
+- `deep_answer`：正向/反向依赖只接受唯一 `RESOLVED` 实体；多跳起止端若歧义，
+  返回 `AMBIGUOUS_ENDPOINT` 并列出被阻断实体，不取第一个候选建路径。
+- 最小反例：`test_p2c_graph_semantics.test_multi_candidate_not_blind_first`
+  断言冲突候选 `RESOLVES_TO=0`；`test_p2c_independent_fixture.test_multi_candidate_resolution_not_blind`
+  断言两条歧义边不进正向邻接、多跳 `NOT_FOUND_IN_GRAPH`；
+  `test_p2c_fact_assertions.test_ambiguous_multihop_endpoint_does_not_pick_first`
+  断言歧义多跳 `AMBIGUOUS_ENDPOINT`、`ENTITY_AMBIGUOUS`。
+
+### 13.3 图谱可用性
+
+- `deep_answer` 增加 `graph_status_detail`：图谱缺失/解析失败为
+  `GRAPH_NOT_AVAILABLE`；图谱 `commit_sha` 或 `repository_id` 与请求不一致为
+  `GRAPH_COMMIT_MISMATCH`，均返回 `TEXT_ONLY` 且不拿错误版本冒充答案，
+  并给出 derive 提示。
+- 只读 `answer` 不写真实知识库；图谱通过显式 `derive` 或内存派生建立，
+  目标图谱落到独立数据根，历史 Commit 经 `--commit` 指定。
+- 现有真实样本图谱均带 `commit_sha`/`repository_id`/`derivation_version`，
+  一致性检查通过（事实级断言 `test_graph_status_detail_present`）。
+
+### 13.4 事实级问答验收
+
+- 保留 30 题测试（12 个测试方法承载 30 问），另增 `tests/views/test_p2c_fact_assertions.py` 8 项精确断言：
+实际符号名与行号、正确文件路径、依赖目标与 specifier、多跳节点序列与逐边连通、
+Fact ID、来源身份（repository_id/commit_sha/primary）、歧义阻断与无证据拒绝。
+不再以 intent 正确或 `graph_results` 非空判答案正确。隔离库实跑 8/8 通过。
+- 正文问答兼容：正式 answer 入口组合两层意图——顶层 `intent`/`deep_intent`
+  为图谱路由意图，`base_intent` 为正文问答意图（introduce/usage/evidence…）。
+  原 P1 正文测试改读 `base_intent`，语义对应正文问答；全量回归已复核。
+D3 补充来源真实样本 `supplement_count=0`，继续如实保留该边界。
+
+### 13.5 收尾专项证据（均来自隔离库专项命令）
+
+- `test_p2c_graph_query.py` 14/14 OK；`test_p2c_graph_semantics.py` 14/14 OK；
+  `test_p2c_deep_answer_qa.py` 30/30（QA_SUMMARY correct=30/30）；
+  `test_p2c_independent_fixture.py` 10/10 OK；
+  `test_p2c_fact_assertions.py` 8/8 OK；`test_knowledge_answer.py` 8/8 OK。
+  以上为本收尾逐项专属证据，CI 与全量回归仅作背景，不互相替代。
+
+### 13.6 两条 file-mutation verifier 警告核查
+
+此前两条警告涉及 `src/views/graph_query.py`（"Failed to read file"）与
+`tests/views/test_p2c_graph_query.py`（old_string 匹配两处）。核查最终文件存在、
+内容正确、相关专项 14/14 通过；失败 patch 已由后续正确路径/唯一匹配落地，
+不重复应用。
+
+### 13.7 提交 / 安装态 / 最终报告
+
+- 收尾 commit：（待回填）
+- main HEAD：（待回填）
+- CI：（待回填，仅作背景）
+- 安装态同步与 launcher 六类实跑结果：（待回填）
+- A 层资产保护：real / preserve / isolated 三库指纹保持一致，未改历史资产。

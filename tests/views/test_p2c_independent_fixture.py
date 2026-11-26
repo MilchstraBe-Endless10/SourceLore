@@ -118,10 +118,13 @@ class FixtureTest(unittest.TestCase):
         imp = _imp(a, m)
         g = {"nodes": [a, b, c, m], "edges": [imp, e1, e2]}
         idx = GQ.build_index(g)
-        # 两个目标都建边，但都标歧义；不因 verified[0] 丢弃另一候选
-        fwd = idx["forward"]["a.py"]
-        self.assertEqual(set(fwd.keys()), {"b.py", "c.py"})
-        self.assertTrue(all(ev[0]["ambiguous_resolution"] for ev in fwd.values()))
+        # ★ P2-C 收尾 §2：冲突候选不进确定性依赖邻接（不取第一个候选）。
+        amb = idx.get("ambiguous_resolution_edges") or []
+        self.assertEqual(len(amb), 2)  # 两条歧义解析边都被如实记录
+        # 正向依赖不得凭排序确定性把任候选当成真实目标
+        self.assertFalse(idx["forward"].get("a.py"))
+        hp = GQ.multi_hop(idx, "a.py", "b.py", max_hops=4)
+        self.assertEqual(hp.get("status"), "NOT_FOUND_IN_GRAPH")
 
     def test_invalid_evidence_dropped(self):
         a = _file("a.py")

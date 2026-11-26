@@ -412,10 +412,14 @@ def _dispatch(cmd, args):
         return emit_ok({"ok": all(x.get("ok") for x in _all), "results": _all})
 
     if cmd == "answer":
-        import knowledge_answer as KA
-        return emit_ok(KA.answer(
+        # ★ P2-C 收尾：正式 answer 入口统一走深度问答。
+        #   deep_answer 内部先调 knowledge_answer.answer() 保留正文问答兼容，
+        #   再叠加图谱实体/依赖/路径与证据联合；图谱不可用时自动降级为 TEXT_ONLY。
+        import deep_answer as DA
+        from paths import DEFAULT_DATA_ROOT as _DDR_ANS
+        return emit_ok(DA.deep_answer(
             repository_id=args.repository_id, question=args.question,
-            data_root=root, commit_sha=getattr(args, "commit", None)))
+            data_root=root or _DDR_ANS, commit_sha=getattr(args, "commit", None)))
 
     if cmd == "card":
         has_content = any(getattr(args, k, None) for k in

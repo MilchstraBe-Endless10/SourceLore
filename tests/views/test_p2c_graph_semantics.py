@@ -159,7 +159,8 @@ class GraphClassificationTests(unittest.TestCase):
                        rel("a.py", "./b", "c.py", fact="r2", res="s2",
                            candidate_paths=["b.py", "c.py"])])
         et = edge_types(g)
-        self.assertEqual(et.get("RESOLVES_TO"), 1)  # 只落一条主边
+        # ★ P2-C 收尾 §2：冲突候选不建确定性 RESOLVES_TO 主边
+        self.assertEqual(et.get("RESOLVES_TO", 0), 0)
         ref = [n for n in g["nodes"] if n["node_type"] == "module_ref"][0]
         self.assertTrue(ref["ambiguous_resolution"])
         self.assertEqual(sorted(ref["candidate_target_paths"]), ["b.py", "c.py"])

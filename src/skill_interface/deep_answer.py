@@ -99,8 +99,13 @@ def deep_answer(*, repository_id, question, data_root, commit_sha=None,
                      data_root=data_root, store=store, commit_sha=commit_sha)
     result = dict(base)  # 保留全部原有字段，向后兼容
     result["ok"] = bool(base.get("ok"))
+    # ★ P2-C 收尾：answer 入口组合两层意图。
+    #   intent = 图谱路由意图（deep_intent，P2-C 契约）；
+    #   base_intent = 正文问答意图（introduce/usage/architecture/evidence…，P1 契约）。
+    #   正文兼容测试应读 base_intent，图谱路由测试读 intent。
     result["intent"] = detect_deep_intent(question)
     result["base_intent"] = base.get("intent")
+    result["deep_intent"] = result["intent"]
     result["resolved_entities"] = []
     result["graph_results"] = {}
     result["graph_paths"] = []
@@ -123,8 +128,34 @@ def deep_answer(*, repository_id, question, data_root, commit_sha=None,
         result["query_status"] = "GRAPH_NOT_AVAILABLE"
         result["coverage"] = "TEXT_ONLY"
         result["limitations"].append("图谱未生成或读取失败: " + (err or ""))
+        result["graph_status_detail"] = {
+            "present": False, "reason": err or "MISSING", "commit_sha": commit,
+            "derive_hint": "用正式 CLI: --data-root <data> derive <rid> --commit <sha> 建立目标图谱（零网络，不写真实库）",
+        }
         result["truncation"] = {"applied": False}
         return result
+    # ★ P2-C 收尾 §3：固定版本一致性——图谱 commit 与请求 commit 不符时不冒充。
+    g_commit = graph.get("commit_sha")
+    g_repo = graph.get("repository_id")
+    if (commit and g_commit and str(g_commit) != str(commit)) or \
+       (g_repo and str(g_repo) != str(repository_id)):
+        result["query_status"] = "GRAPH_COMMIT_MISMATCH"
+        result["coverage"] = "TEXT_ONLY"
+        result["graph_status_detail"] = {
+            "present": True, "reason": "GRAPH_COMMIT_MISMATCH",
+            "graph_commit_sha": g_commit, "requested_commit_sha": commit,
+            "graph_repository_id": g_repo, "requested_repository_id": repository_id,
+            "derive_hint": "目标 Commit 图谱缺失；用正式 CLI derive 到独立数据根后再 answer",
+        }
+        result["limitations"].append(
+            "图谱 Commit/仓库身份与请求不一致，已拒绝用于问答；正文答案仍保留")
+        result["truncation"] = {"applied": False}
+        return result
+    result["graph_status_detail"] = {
+        "present": True, "reason": "OK", "commit_sha": g_commit or commit,
+        "repository_id": g_repo or repository_id,
+        "derivation_version": graph.get("derivation_version"),
+    }
 
     try:
         # graph_query 位于 views/，安装态与源码树 sys.path 不一定含该目录
@@ -154,7 +185,7 @@ def deep_answer(*, repository_id, question, data_root, commit_sha=None,
         except Exception:
             pass  # 补充关系查询失败不影响主来源答案
 
-        intent = result["intent"]
+        intent = result["deep_intent"]
         entities = _entity_from_question(question)
         resolved = []
         for e in entities:
@@ -162,6 +193,18 @@ def deep_answer(*, repository_id, question, data_root, commit_sha=None,
             if r["status"] != "NOT_FOUND_IN_GRAPH":
                 resolved.append(r)
         result["resolved_entities"] = resolved
+
+        # ★ P2-C 收尾 §2：只有唯一 RESOLVED 实体可用于确定性依赖/多跳结论。
+        #   歧义实体候选只作展示，不取第一个候选建边或路径。
+        def _unique_path(r):
+            if r.get("status") != "RESOLVED" or not r.get("unique"):
+                return None
+            cand = r.get("candidates") or []
+            return cand[0].get("path") if cand else None
+
+        blocked_ambiguous = [r.get("entity") for r in resolved
+                             if r.get("status") == "AMBIGUOUS"]
+        result["ambiguous_entities_blocked"] = blocked_ambiguous
 
         if intent == "symbol_lookup":
             for r in resolved:
@@ -171,22 +214,26 @@ def deep_answer(*, repository_id, question, data_root, commit_sha=None,
                         result["graph_results"][nid] = GQ.node_query(idx, nid)
         elif intent == "forward_dependency":
             for r in resolved:
-                for c in r["candidates"][:3]:
-                    p = c.get("path")
-                    if p:
-                        result["graph_results"][p] = GQ.forward_dependencies(idx, p)
+                p = _unique_path(r)
+                if p:
+                    result["graph_results"][p] = GQ.forward_dependencies(idx, p)
         elif intent == "reverse_dependency":
             for r in resolved:
-                for c in r["candidates"][:3]:
-                    p = c.get("path")
-                    if p:
-                        result["graph_results"][p] = GQ.reverse_dependencies(idx, p)
-        elif intent == "multi_hop" and len(resolved) >= 2:
-            src = next((c.get("path") for r in resolved
-                        for c in r["candidates"] if c.get("path")), None)
-            dst = next((c.get("path") for r in resolved[1:]
-                        for c in r["candidates"] if c.get("path")), None)
-            if src and dst and src != dst:
+                p = _unique_path(r)
+                if p:
+                    result["graph_results"][p] = GQ.reverse_dependencies(idx, p)
+        elif intent == "multi_hop":
+            # 起点/终点必须各自唯一，歧义实体不得无条件取第一个候选。
+            src = next((_unique_path(r) for r in resolved[:1]), None)
+            dst = next((_unique_path(r) for r in resolved[1:]), None)
+            if blocked_ambiguous and (src is None or dst is None):
+                result["graph_results"]["multi_hop"] = {
+                    "status": "AMBIGUOUS_ENDPOINT",
+                    "paths": [],
+                    "blocked_ambiguous": blocked_ambiguous,
+                    "note": "起止实体存在冲突候选，未选任一端点建路径；不将排序确定性当作关系真实性",
+                }
+            elif src and dst and src != dst:
                 hp = GQ.multi_hop(idx, src, dst, max_hops=max_hops,
                                   max_visited=max_visited, max_paths=max_paths)
                 result["graph_results"]["multi_hop"] = hp

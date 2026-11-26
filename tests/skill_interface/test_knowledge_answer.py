@@ -71,7 +71,7 @@ class TestAnswerContent(unittest.TestCase):
         rc, d = _run_answer(RIDS["is-number"], "介绍这个项目")
         self.assertEqual(rc, 0, d)
         self._assert_common(d)
-        self.assertEqual(d.get("intent"), "introduce")
+        self.assertEqual(d.get("base_intent"), "introduce")
         heads = [b["heading"] for b in d["blocks"]]
         self.assertIn("项目用途", heads)
         purpose = [b for b in d["blocks"] if b["heading"] == "项目用途"][0]
@@ -94,7 +94,7 @@ class TestAnswerContent(unittest.TestCase):
                 rc, d = _run_answer(RIDS[name], "怎么使用")
                 self.assertEqual(rc, 0, d)
                 self._assert_common(d)
-                self.assertEqual(d.get("intent"), "usage")
+                self.assertEqual(d.get("base_intent"), "usage")
                 heads = " ".join(b["heading"] for b in d["blocks"])
                 self.assertIn("Install", heads)
                 joined = " ".join(b["body"] for b in d["blocks"])
@@ -108,7 +108,7 @@ class TestAnswerContent(unittest.TestCase):
         self.assertIsNone(intro.get("audit"))
         rc, ev = _run_answer(RIDS["is-number"], "为什么这个结论可信")
         self.assertEqual(rc, 0, ev)
-        self.assertEqual(ev.get("intent"), "evidence")
+        self.assertEqual(ev.get("base_intent"), "evidence")
         self.assertTrue(isinstance(ev.get("audit"), dict))
         self.assertIn("verdict_distribution", ev["audit"])
 

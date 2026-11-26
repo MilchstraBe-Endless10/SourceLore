@@ -303,10 +303,11 @@ def build_symbol_and_import_graph(claim_rows, *, repository_id, commit_sha=None,
                 "evidence_refs": node["evidence_refs"],
                 "source_ref": evidence(),
             })
-            # 仅已验证解析建 RESOLVES_TO，目标必须实际存在于树，避免悬空边
-            # ★ P2-C §2：多候选目标时按确定性顺序取主目标建边，歧义写入边，
-            #   并在节点 candidate_target_paths 保留全部候选；不冒充唯一解析。
-            if primary:
+            # ★ P2-C 收尾 §2：多候选解析目标存在冲突时，不建确定性 RESOLVES_TO 边。
+            #   verified 的确定性排序只用于候选展示，不冒充"真实解析目标"。
+            #   候选路径、全部证据、ambiguous_resolution 已写入 module_ref 节点，
+            #   下游可如实报告歧义，但不会据此推出依赖/多跳结论。
+            if primary and not ambiguous:
                 target = _norm_path(primary["resolved_target_path"])
                 if target:
                     rel_src = {
