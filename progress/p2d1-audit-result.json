@@ -1,0 +1,146 @@
+{
+  "task": "P2-D1",
+  "mode": "read-only",
+  "network_requests": 0,
+  "kb_writes": 0,
+  "baseline": {
+    "git_head": "2c05f78",
+    "skill_marker": "2c05f78",
+    "version": "0.1.0-beta.3",
+    "released": false,
+    "skill_md5": {
+      "project": "241c42e6",
+      "installed": "241c42e6",
+      "hermes": "3e8c0671"
+    },
+    "a_layer_asset_count": 1219
+  },
+  "repository": {
+    "id": "1209343409",
+    "commit": "efe1c95962b33935fe9c53851566211074efe147",
+    "snapshot": "SL-A-c44d1af81660b673922345a0ad6e0846"
+  },
+  "g1": {
+    "total": 18,
+    "bytes_present": 18,
+    "bytes_readable_via_api": 18,
+    "sha256_match": 18,
+    "git_oid_match": 18,
+    "byte_length_match": 18,
+    "all_capture_status": "CAPTURED",
+    "all_provenance_level": "SYNTHETIC_FIXTURE",
+    "architecture_overview": {
+      "asset_id": "SL-A-f7f1bcb310896abcfe1cbb513f325bb4",
+      "declared_byte_length": 21131,
+      "actual_byte_length": 21131,
+      "readback_chars": 21065,
+      "sha256_match": true,
+      "git_oid_match": true
+    }
+  },
+  "g2": {
+    "policy_version": "content-authz/2",
+    "allowed_by_license_observed": [
+      "fetch",
+      "persist_bytes",
+      "derive_facts",
+      "internal_preview"
+    ],
+    "distribution_never_allowed": true,
+    "license_known_semantics": "internal_only"
+  },
+  "g3": {
+    "provenance_assignment": "src/skill_interface/content_capture.py:213-244",
+    "classification": "PROVENANCE_DEFECT",
+    "real_source_overwritten_as_fixture": true,
+    "six_repo_provenance": {
+      "1459544036": {
+        "null": 1
+      },
+      "24313173": {
+        "SYNTHETIC_FIXTURE": 3,
+        "null": 55
+      },
+      "38923193": {
+        "AUTHORIZED_REMOTE_SOURCE": 4,
+        "null": 24
+      },
+      "42283287": {
+        "OBSERVED": 9,
+        "null": 278
+      },
+      "local:4034d62ed2cf": {
+        "AUTHORIZED_LOCAL_FIXTURE": 15,
+        "null": 607
+      },
+      "1209343409": {
+        "SYNTHETIC_FIXTURE": 18,
+        "null": 100
+      }
+    },
+    "a_layer_update_forbidden": true
+  },
+  "g4": {
+    "root_cause": [
+      "DERIVATION_DEFECT",
+      "RETRIEVAL_DEFECT"
+    ],
+    "fts_only_indexes_payload_json": true,
+    "fts_tech_term_hits": 0,
+    "fixed_documents_only": [
+      "project-overview",
+      "readme",
+      "structure",
+      "deps",
+      "claims"
+    ],
+    "docs_bodies_derived": 0,
+    "answer_recalls_docs_body": false
+  },
+  "g5": {
+    "claims": 5,
+    "claims_all_pending_review": true,
+    "claims_all_path_propositions": true,
+    "verifications_in_current_view": {
+      "supported": 4,
+      "refuted": 1
+    },
+    "first_report": "4 supported + 1 insufficient",
+    "new_session": "4 supported + 1 refuted",
+    "classification": "REPORTING_ERROR"
+  },
+  "g6": {
+    "temp_files_exist": true,
+    "temp_files": [
+      "ob_batch1.json",
+      "ob_batch2.json",
+      "ob_batch3.json",
+      "ob_derive.json",
+      "ob_answers.json",
+      "obscura_content.json"
+    ],
+    "derive": {
+      "nodes": 644,
+      "edges": 639,
+      "documents": 5,
+      "code_rows": 0
+    }
+  },
+  "root_cause_matrix": [
+    "DERIVATION_DEFECT",
+    "RETRIEVAL_DEFECT",
+    "PROVENANCE_DEFECT",
+    "REPORTING_ERROR",
+    "UNSUPPORTED_LANGUAGE",
+    "HOST_INTEGRATION_DEFECT",
+    "UNVERIFIED"
+  ],
+  "not_root_cause": [
+    "STORAGE_DEFECT",
+    "CONTENT_NOT_CAPTURED",
+    "KNOWLEDGE_NOT_PERSISTED",
+    "AUTHORIZATION_RESTRICTION"
+  ],
+  "td004": "NOT_VERIFIED",
+  "core_answer": "First-session technical knowledge is largely backed by permanent CAS bytes; reuse fails due to derivation/retrieval chain not exposing doc bodies, not missing storage."
+}
