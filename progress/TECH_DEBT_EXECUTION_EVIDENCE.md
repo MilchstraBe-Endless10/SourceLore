@@ -104,9 +104,9 @@
 ## 5. 全量回归与提交证据
 
 - 全量回归（逐文件运行 `tests/` 下 `test_*.py`，脚本式测试）：`TOTAL=122 PASS=122 FAIL=0`，`EXIT=0`（含新增 TD 回归文件，比 P2-C 基线 121 多 1）；TD 阶段未引入回归。
-- 功能修复 commit：见最终提交记录（本专项所有改动在同一分支提交）。
-- CI：见下方提交后回填（仅作背景，不作功能判级）。
-- 安装态同步：本轮修复未触及用户入口行为契约，是否同步见提交后判断（如同步则 dev_commit 指向本专项 commit；版本仍 `0.1.0-beta.3`，非发布版本）。
+- 功能修复 commit：`8866677a4fece5fa08ebcb6052d386248ad1f14f`（分支 `dev/tech-debt`，已 ff-only 合入 main 并 push）。
+- CI：`45781098858` `success`（该 commit；仅作背景，不作功能判级）。
+- 安装态同步：安装态 `src` 与 worktree 排除 `__pycache__` 后 `diff -rq` 无差异；`.sourcelore-skill.json` 与 `.sourcelore-install.json` 的 `dev_commit` 同步为 `8866677`；launcher `--version` 冒烟通过，`version=0.1.0-beta.3`，非发布版本。
 
 ## 6. TD-004 — 宿主端到端自动触发（未验证）
 
