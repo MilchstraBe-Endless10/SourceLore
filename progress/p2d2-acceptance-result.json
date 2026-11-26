@@ -86,9 +86,9 @@
   "git": {
     "branch": "dev/p2d2-content-retrieval",
     "base_commit": "2c05f78",
-    "feature_commit": "067da99",
-    "fast_forward_main": "PENDING_FILL_AFTER_PUSH",
-    "install_sync": "PENDING_FILL_AFTER_SYNC",
+    "feature_commit": "HEAD of dev/p2d2-content-retrieval (git log -1; unreleased development commit)",
+    "fast_forward_main": "main fast-forwarded to dev HEAD; main/origin/main/dev at same commit",
+    "install_sync": "per release-and-finalization dev-commit closeout: backup _sourcelore_src, sync src/, write dev_commit to both markers, NOT a released version",
     "no_beta4_tag": true,
     "p2d1_audit_commit_preserved": "3e31552"
   },
