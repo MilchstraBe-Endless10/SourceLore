@@ -1,0 +1,102 @@
+{
+  "task": "P2-D2",
+  "title": "content retrieval reuse acceptance (redacted)",
+  "mode": "offline-isolated",
+  "network_requests": 0,
+  "authoritative_kb_writes": 0,
+  "cas_writes": 0,
+  "third_party_code_executed": false,
+  "released": false,
+  "version": "0.1.0-beta.3",
+  "repository": {
+    "name": "h4ckf0r0day/obscura",
+    "id": "1209343409",
+    "commit": "efe1c95962b33935fe9c53851566211074efe147"
+  },
+  "root_causes_fixed": {
+    "DERIVATION_DEFECT": ["src/views/content_section_derivation.py", "src/views/repo_miner.py"],
+    "RETRIEVAL_DEFECT": ["src/views/section_index.py", "src/views/repo_derive_runner.py", "src/skill_interface/knowledge_answer.py"],
+    "PROVENANCE_DEFECT": ["src/skill_interface/content_capture.py"],
+    "HOST_INTEGRATION_DEFECT": "not changed (user-owned SKILL.md divergence preserved; see host_integration)"
+  },
+  "derivation": {
+    "written": 208,
+    "deduplicated": 204,
+    "sections_in_index": 204,
+    "identities": 1,
+    "a_layer_fingerprint_unchanged": true
+  },
+  "retrieval": {
+    "fts_before_technical_term_hits": 0,
+    "fts_after_technical_term_hits": "all probed terms recall real body sections",
+    "questions_total": 8,
+    "questions_with_matches": 8,
+    "source_category": "documentation_self_report",
+    "blocks_content_sections_per_answer": 5
+  },
+  "byte_location_gate5": {
+    "checked": 8,
+    "verified": 8,
+    "body_prefix_in_cas_segment": 8,
+    "sha256_match": true
+  },
+  "identity_isolation_gate6": {
+    "foreign_repository_matches": 0,
+    "wrong_commit_matches": 0
+  },
+  "generality_gate8": {
+    "independent_markdown_fixture_matches": 1,
+    "mechanism": "deterministic case-insensitive substring + zh-en technical term mapping (repo-independent)"
+  },
+  "authorization_gate9": {
+    "all_obscura_sections_denied": true,
+    "sections_with_distribution_allowed": 0,
+    "distribution_gate_unchanged": true
+  },
+  "formal_query_gate7": {
+    "answer_network_requests": 0,
+    "answer_wrote_assets": 0,
+    "socket_block_triggered": false,
+    "cas_files_unchanged": 49,
+    "a_layer_fingerprint_unchanged": true
+  },
+  "provenance": {
+    "default": "AUTHORIZED_REMOTE_SOURCE",
+    "explicit_fixture_negative_case": "SYNTHETIC_FIXTURE only when explicitly declared",
+    "historical_a_layer_unchanged": true,
+    "historical_correction_plan": "new version + isolated re-adjudication under separate authorization; no batch UPDATE"
+  },
+  "tests": {
+    "specialized_section_index": {"passed": 8, "failed": 0},
+    "specialized_provenance": {"passed": 4, "failed": 0},
+    "full_regression_files": 124,
+    "full_regression_pass": 117,
+    "full_regression_fail": 7,
+    "fail_root_cause": "optional tree-sitter grammars not installed; same 7 fail on clean HEAD (pre-existing, not D2 regression)",
+    "baseline_122_note": "122 PASS/0 FAIL is tests/research single-directory baseline, not full-repo count",
+    "no_old_tests_removed": true,
+    "no_assertions_weakened": true
+  },
+  "host_integration": {
+    "skill_md5": {"project": "241c42e6", "installed": "241c42e6", "hermes": "d345a51e"},
+    "hermes_extra": ["backfill-relations command", "discipline 30-36"],
+    "decision": "user-owned divergence preserved; no overwrite; needs user decision to unify",
+    "td004": "NOT_VERIFIED / PARTIAL - await real host session"
+  },
+  "git": {
+    "branch": "dev/p2d2-content-retrieval",
+    "base_commit": "2c05f78",
+    "feature_commit": "067da99",
+    "fast_forward_main": "PENDING_FILL_AFTER_PUSH",
+    "install_sync": "PENDING_FILL_AFTER_SYNC",
+    "no_beta4_tag": true,
+    "p2d1_audit_commit_preserved": "3e31552"
+  },
+  "unresolved": [
+    "TD-004 host auto-trigger verification (await user)",
+    "SKILL.md three-way divergence (user decision)",
+    "historical A-layer SYNTHETIC_FIXTURE provenance (separate authorization)",
+    "tree-sitter optional grammars not installed (no offline wheel)",
+    "Rust source AST/call graph out of scope"
+  ]
+}

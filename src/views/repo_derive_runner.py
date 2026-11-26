@@ -236,8 +236,40 @@ def derive_one(*, repository_id, data_root, store=None, logger=None,
             commit_sha=commit_sha, card=card, graph=graph,
             documents=mined.get("documents") or [])
 
+        # ★ P2-D2 / D2-B：派生阶段把正文片段重建进 C 层独立索引。
+        #   可删除重建、只动 section_fts（不动 A/B/CAS）；按 repo+commit 身份隔离。
+        #   失败不伪造成功：如实记入结果，answer 会报 SECTION_INDEX_MISSING。
+        section_index_meta = {"ok": False, "error": "NOT_ATTEMPTED"}
+        try:
+            import section_index as SI
+            META_KEYS = (
+                "section_id", "file_path", "content_asset_id", "content_sha256",
+                "git_blob_oid", "line_start", "line_end", "byte_start",
+                "byte_end", "content_kind", "source_category",
+                "provenance_level", "copy_permitted", "distribution_allowed",
+            )
+            content_sections = []
+            for d in (mined.get("documents") or []):
+                if d.get("document_id") != "content-sections":
+                    continue
+                for s in (d.get("sections") or []):
+                    sec = dict(s)  # body 已在 section 级（原始片段正文）
+                    if s.get("refs"):
+                        ref = s["refs"][0]
+                        for k in META_KEYS:
+                            if k in ref:
+                                sec[k] = ref[k]
+                    content_sections.append(sec)
+            section_index_meta = SI.rebuild_section_index(
+                store, repository_id=str(repository_id),
+                commit_sha=commit_sha, sections=content_sections)
+        except Exception as e:
+            section_index_meta = {"ok": False,
+                                  "error": f"{type(e).__name__}: {e}"}
+
         return {
             "ok": True,
+            "section_index": section_index_meta,
             "repository_id": str(repository_id),
             "commit_sha": commit_sha,
             "selection": ex["selection"],

@@ -281,6 +281,46 @@ def answer(*, repository_id, question, data_root, store=None, commit_sha=None):
                             "refs": sec.get("refs") or [],
                         })
 
+        # ★ P2-D2 / D2-C：从 C 层正文片段索引召回匹配段落。
+        #   这是"文档正文检索"补充块，不改变原有意图计划；命中按 score 排序、
+        #   保留 byte 偏移/asset_id 证据与 source_category（Gate 4/5）。
+        #   索引缺失时报 SECTION_INDEX_MISSING，不伪造成功（Gate/I3）。
+        content_matches = []
+        content_index_meta = None
+        if str(repository_id) and commit:
+            try:
+                import sys as _sys3
+                _views3 = str(__import__("pathlib").Path(__file__).resolve().parents[1] / "views")
+                if _views3 not in _sys3.path:
+                    _sys3.path.insert(0, _views3)
+                import section_index as SI
+                qr = SI.query_sections(store, repository_id=str(repository_id),
+                                       commit_sha=commit, question=question, limit=5)
+                content_index_meta = {k: v for k, v in qr.items() if k != "matches"}
+                if qr.get("ok"):
+                    content_matches = qr.get("matches") or []
+            except Exception as e:
+                content_index_meta = {"ok": False, "error": f"{type(e).__name__}: {e}"}
+        for m in content_matches:
+            blocks.append({
+                "document_id": "content-sections",
+                "title": f"正文片段：{m['file_path']}",
+                "file_path": m.get("file_path"),
+                "heading": m.get("heading") or "",
+                "body": m.get("body") or "",
+                "refs": m.get("refs") or [],
+                "source_category": m.get("source_category"),
+                "content_kind": m.get("content_kind"),
+                "content_asset_id": m.get("content_asset_id"),
+                "content_sha256": m.get("content_sha256"),
+                "git_blob_oid": m.get("git_blob_oid"),
+                "line_start": m.get("line_start"), "line_end": m.get("line_end"),
+                "byte_start": m.get("byte_start"), "byte_end": m.get("byte_end"),
+                "copy_permitted": bool(m.get("copy_permitted")),
+                "distribution_allowed": bool(m.get("distribution_allowed")),
+                "match_score": m.get("score"),
+            })
+
         # ★ 追加经严格验证的本地补充知识块（保留来源身份，不冒充在线采集）
         for dkey, title, heading, body, refs, source_id in supplement_sections:
             blocks.append({
@@ -344,6 +384,7 @@ def answer(*, repository_id, question, data_root, store=None, commit_sha=None):
             "symbol_meta": symbol_meta,
             "intent": intent,
             "blocks": blocks,
+            "content_retrieval": content_index_meta,
             "audit": audit,
             "supplement_sources": supplement_meta,
             "coverage_note": project.get("coverage_note"),

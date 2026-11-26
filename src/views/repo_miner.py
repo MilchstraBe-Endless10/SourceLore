@@ -692,6 +692,20 @@ def mine_project_knowledge(*, store, repository_id, commit_sha, tree_entries,
     else:
         coverage_note = f"{n} 条目，最大深度 {depth}"
 
+    # ★ P2-D2 / D2-A：把已捕获的**全部**正文拆成可检索片段，挂成独立文档。
+    #   旧实现只有 README 被 parse_markdown 切分、其余 17 篇正文读进内存即丢弃。
+    #   这里复用上面已加载的 texts/blob_meta，不重复读 CAS；派生片段是读取层，
+    #   不改 A 层字节 / Facts / Claims / Verifications，也不升级为源码已验证事实。
+    content_sections = []
+    section_coverage = {}
+    try:
+        import content_section_derivation as CSD
+        content_sections, _notes, section_coverage = CSD.derive_sections_from_texts(
+            texts=texts, meta=blob_meta, repository_id=repository_id,
+            commit_sha=commit_sha)
+    except Exception as e:
+        section_coverage = {"error": f"{type(e).__name__}: {e}"}
+
     docs = [
         build_overview(repo_name=repo_name, commit_sha=commit_sha,
                        tree_entries=tree_entries, readme_path=readme_path,
@@ -712,6 +726,33 @@ def mine_project_knowledge(*, store, repository_id, commit_sha, tree_entries,
         build_claims_doc(repo_name=repo_name, commit_sha=commit_sha,
                          claims=claims, verifications=verifications),
     ]
+    if content_sections:
+        docs.append({
+            "document_id": "content-sections",
+            "title": "已捕获正文片段",
+            "sections": [{
+                "section_id": s["section_id"],
+                "heading": f"{s['file_path']} — {s['heading'] or '正文'}",
+                "body": s["body"],
+                "refs": [{
+                    "kind": "captured_blob_section",
+                    "file_path": s["file_path"],
+                    "content_asset_id": s["content_asset_id"],
+                    "content_sha256": s["content_sha256"],
+                    "git_blob_oid": s["git_blob_oid"],
+                    "line_start": s["line_start"], "line_end": s["line_end"],
+                    "byte_start": s["byte_start"], "byte_end": s["byte_end"],
+                    "heading": s["heading"], "heading_level": s["heading_level"],
+                    "content_kind": s["content_kind"],
+                    "source_category": s["source_category"],
+                    "provenance_level": s["provenance_level"],
+                    "copy_permitted": s["copy_permitted"],
+                    "distribution_allowed": s["distribution_allowed"],
+                }],
+                "source_category": s["source_category"],
+                "commit_sha": s["commit_sha"],
+            } for s in content_sections],
+        })
 
     for d in docs:
         d["schema"] = SCHEMA
@@ -726,6 +767,8 @@ def mine_project_knowledge(*, store, repository_id, commit_sha, tree_entries,
             "symbols_from_source": len(source_symbols),
             "symbol_extraction_status": symbol_status,
             "blob_coverage": blob_meta.get("__coverage__") or {},
+            "section_coverage": section_coverage,
+            "content_section_count": len(content_sections),
             "blob_meta": blob_meta,
             "readme_path": readme_path,
             "readme_captured": bool(readme_text),

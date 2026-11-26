@@ -15,13 +15,33 @@ MAX_BLOB_BYTES = 256 * 1024
 MAX_BATCH_BYTES = 2 * 1024 * 1024
 MAX_PATHS = 32
 
+# ★ P2-D2 / D2-D：真实 GitHub 采集入口的来源等级。
+#   本模块只通过 GitHubClient（BF.fetch_blob 已校验 Git OID/SHA）采集真实远程 blob，
+#   写入的是 captured_blob_content 资产层 provenance。真实远程 blob 的既定值见
+#   src/collector/github_knowledge_extract.py:110-118 —— 抽取产物继承被抽取 blob 的
+#   provenance，真实远程 blob 为 AUTHORIZED_REMOTE_SOURCE。硬编码 SYNTHETIC_FIXTURE
+#   会把真实字节谎报为合成夹具（P2-D1 PROVENANCE_DEFECT），必须纠正。
+#   注意：这与 ref_observer 的观测层三值（REAL_LIVE_API/HISTORICAL_REAL_DATA/
+#   SYNTHETIC_FIXTURE）是两套体系，不要混用；合成夹具只在显式传入时产生。
+PROVENANCE_AUTHORIZED_REMOTE = "AUTHORIZED_REMOTE_SOURCE"
+PROVENANCE_SYNTHETIC = "SYNTHETIC_FIXTURE"
+
+
+def resolve_provenance(explicit=None):
+    """决定本次采集写入资产层的来源等级。
+
+    ★ 默认真实远程采集 = AUTHORIZED_REMOTE_SOURCE；只有显式传入
+      SYNTHETIC_FIXTURE 才是合成夹具，绝不默认谎报为 fixture。
+    """
+    return explicit or PROVENANCE_AUTHORIZED_REMOTE
+
 
 def capture(*, repository_id, commit_sha, data_root=None, paths=None,
             owner=None, repo=None, license_known=False,
             repo_looks_third_party=True, max_requests=20,
             use_token=True, offline=False, dry_run=False,
             authorization_kind=None, extract_facts=False,
-            budget=None):
+            budget=None, provenance_level=None):
     """采集并入库。返回逐路径独立结果。
 
     ★ F2-P6F：`budget` 为外部（验收编排器）预检通过后的 GitHubRequestBudget。
@@ -50,6 +70,7 @@ def capture(*, repository_id, commit_sha, data_root=None, paths=None,
         entries = snap["payload"].get("tree_entries") or []
         eligible, blocked = POL.candidate_paths(entries, explicit=paths)
 
+        prov = resolve_provenance(provenance_level)
         report = {
         "authorization_basis": (POL.AUTH_LICENSE_OBSERVED if license_known
                                 and not authorization_kind
@@ -62,7 +83,7 @@ def capture(*, repository_id, commit_sha, data_root=None, paths=None,
             "reused_blobs": 0, "skipped_blobs": 0,
             "network_requests": 0, "content_bytes_stored": 0,
             "distribution_allowed": False,
-            "provenance": "SYNTHETIC_FIXTURE_TO_BE_SET",
+            "provenance": prov,
         }
 
         if not eligible and not blocked:
@@ -218,8 +239,8 @@ def capture(*, repository_id, commit_sha, data_root=None, paths=None,
                 git_object_format="sha1", raw=got["raw"],
                 source_declared_size=size,
                 acquisition_policy=st, acquisition_policy_ref=code,
-                provenance_level="SYNTHETIC_FIXTURE",
-            )
+                provenance_level=prov,
+                )
             if not ing.get("ok"):
                 report["results"].append({"file_path": fp,
                                           "status": "PERSIST_FAILED",
@@ -241,7 +262,7 @@ def capture(*, repository_id, commit_sha, data_root=None, paths=None,
                 "reused": ing.get("reused"),
                 "acquisition_policy": st})
 
-        report["provenance"] = "SYNTHETIC_FIXTURE"
+        report["provenance"] = prov
         report["budget"] = {"used_bytes": byte_budget["used_bytes"], "paths": byte_budget["paths"],
                             "max_blob": MAX_BLOB_BYTES, "max_batch": MAX_BATCH_BYTES}
         return report
