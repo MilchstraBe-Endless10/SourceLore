@@ -319,8 +319,34 @@ D3 补充来源真实样本 `supplement_count=0`，继续如实保留该边界�
 
 ### 13.7 提交 / 安装态 / 最终报告
 
-- 收尾 commit：（待回填）
-- main HEAD：（待回填）
-- CI：（待回填，仅作背景）
-- 安装态同步与 launcher 六类实跑结果：（待回填）
-- A 层资产保护：real / preserve / isolated 三库指纹保持一致，未改历史资产。
+- 收尾 commit：`e3891ff0f8ce183832ede665168ee9c1ed190193`
+  （短 `e3891ff`，分支 `dev/p2c-deep-answer` fast-forward 合并后推送 main）；
+  §13 回填为后续提交，无功能代码改动。
+- main HEAD：`e3891ff`；用户自有两处改动在 stash → ff → push → pop 后原样保留。
+- CI：run `45746144348`（commit `e3891ff`）`success`（仅作背景，不作功能判级）。
+- 全量回归：121 个测试文件 `121 PASS / 0 FAIL`（较原 120 新增事实断言文件；
+  修复了本轮 answer 入口引入的 `data_root=None` TypeError 与两层意图契约）。
+- 安装态同步：备份旧源码后逐字节复制 worktree `src`，清除缓存，
+  `diff -rq` 无差异；两个 marker `dev_commit` 均为 `e3891ff`，
+  `version` 仍为 `0.1.0-beta.3`，注明 NOT a released version，无新 tag、无 beta.4。
+- 正式安装态 CLI 实跑（`env -u SOURCELORE_PROJECT_ROOT` + marker `project_root`
+  指向最终安装目录，零网络、零资产写入 `network_requests=0` / `wrote_assets=0`）：
+  GitHub 身份 `42283287`，经 `--data-root` 指向本轮隔离派生副本（其 A 层资产指纹
+  与真实库一致，仅多出本轮派生视图；未改真实知识库）：
+  - 项目介绍：`ANSWERED_TEXT_ONLY`，正文块含项目用途/安装/示例；
+  - 符号定位：`ANSWERED_WITH_GRAPH`，命中 `node:symbol:*`，意图 `symbol_lookup`；
+  - 正向依赖 `src/component.js`：`ANSWERED_WITH_GRAPH`，目标含
+    `src/constants.js`、`src/create-element.js`、`src/diff/index.js`、`src/options.js`；
+  - 反向依赖 `src/constants.js`：`ANSWERED_WITH_GRAPH`，来源含
+    `src/component.js`、`src/create-element.js`、`src/diff/index.js`；
+  - 多跳 `src/component.js` → `src/constants.js`：
+    `ANSWERED_WITH_GRAPH_PATHS` / `PATHS_FOUND`，含精确节点序列；
+  - 无证据拒绝 `ghost.py` 运行时调用链：`ENTITY_NOT_LOCATED`，不编造。
+  - 历史 Commit 指定：`answer 42283287 ... --commit <Preact 固定 SHA>` 返回
+    同一图谱且 `graph_status_detail` 版本/身份一致；不匹配 SHA 返回
+    `VERSION_NOT_FOUND`（未登记版本，不冒充答案）。
+  - 边界说明：默认真实数据根的 Preact 派生视图为早期版本、节点覆盖不全，
+    对精确路径符号会返回 `ENTITY_NOT_LOCATED` / `ANSWERED_TEXT_ONLY`，
+    属如实降级，不拿旧图谱冒充事实级结论；本轮不重建真实库派生视图。
+- A 层资产保护：real / preserve / isolated 三库指纹保持一致
+  `1089 / ddb2072e65fad724`，未改历史资产。
