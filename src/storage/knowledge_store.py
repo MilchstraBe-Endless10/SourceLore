@@ -208,11 +208,16 @@ class KnowledgeStore:
                 tokenize='unicode61 remove_diacritics 2'
             );
             """)
-        row = self.conn.execute("SELECT v FROM meta WHERE k='schema_version'").fetchone()
+        # TD-001: 与 checkpoint_store 同源的 check-then-insert 竞态：
+        # 多进程同时首开新库会在 meta.k 上 UNIQUE 冲突。改为原子 INSERT OR IGNORE。
+        self.conn.execute(
+            "INSERT OR IGNORE INTO meta(k,v) VALUES('schema_version',?)",
+            (str(SCHEMA_VERSION),))
+        row = self.conn.execute(
+            "SELECT v FROM meta WHERE k='schema_version'").fetchone()
         if row is None:
-            self.conn.execute("INSERT INTO meta(k,v) VALUES('schema_version',?)",
-                              (str(SCHEMA_VERSION),))
-        elif int(row["v"]) != SCHEMA_VERSION:
+            raise RuntimeError("CHECKPOINT_CORRUPT: 无法注册 schema_version")
+        if int(row["v"]) != SCHEMA_VERSION:
             raise RuntimeError(f"schema_version 不匹配：库={row['v']} 代码={SCHEMA_VERSION}")
 
     def _check_integrity(self):

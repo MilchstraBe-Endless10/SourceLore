@@ -152,11 +152,20 @@ class CheckpointStore:
             committed_at    TEXT NOT NULL
         );
         """)
-        row = self.conn.execute("SELECT v FROM meta WHERE k='schema_version'").fetchone()
+        # TD-001: 原实现是 SELECT 为空再 INSERT 的 check-then-act，非原子。
+        # 多进程同时首开同一个新库时，各方都读到空、各自 INSERT，触发
+        # meta.k 的 UNIQUE 冲突（`UNIQUE constraint failed: meta.k`）。
+        # 改为单条原子 INSERT OR IGNORE：唯一键冲突时由 SQLite 直接忽略，
+        # 已存在的行不被覆盖也不报错；随后统一读回校验版本。这样既不删除
+        # 唯一约束、也不吞掉未知异常（只在 INSERT 处忽略预期的键冲突）。
+        self.conn.execute(
+            "INSERT OR IGNORE INTO meta(k,v) VALUES('schema_version',?)",
+            (str(SCHEMA_VERSION),))
+        row = self.conn.execute(
+            "SELECT v FROM meta WHERE k='schema_version'").fetchone()
         if row is None:
-            self.conn.execute("INSERT INTO meta(k,v) VALUES('schema_version',?)",
-                              (str(SCHEMA_VERSION),))
-        elif int(row["v"]) != SCHEMA_VERSION:
+            raise RuntimeError("CHECKPOINT_CORRUPT: 无法注册 schema_version")
+        if int(row["v"]) != SCHEMA_VERSION:
             raise RuntimeError(f"schema_version 不匹配：库={row['v']} 代码={SCHEMA_VERSION}")
 
     def _check_integrity(self):
