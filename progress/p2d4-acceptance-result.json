@@ -1,0 +1,92 @@
+{
+  "stage": "P2-D4-A/B",
+  "status": "COMPLETED",
+  "version": "0.1.0-beta.3",
+  "base_commit": "6a1feaf",
+  "production_source_changed": false,
+  "repositories": {
+    "obscura": {
+      "repository_id": "1209343409",
+      "commit": "efe1c95962b33935fe9c53851566211074efe147",
+      "content_sections_indexed": true,
+      "eight_questions_all_hit": true,
+      "content_blocks_per_question": 5,
+      "network_requests": 0,
+      "wrote_assets": 0,
+      "rust_source_question_honestly_degraded": true
+    },
+    "preact": {
+      "repository_id": "42283287",
+      "commit": "dbeba0d59bb59260ea4a90c5adf9f5a29d43cdab",
+      "graph_nodes": 155,
+      "graph_edges": 178,
+      "symbol_lookup": true,
+      "deps": true,
+      "reverse_deps": true,
+      "multi_hop": true,
+      "negative_case": "NOT_FOUND_IN_GRAPH"
+    }
+  },
+  "protection": {
+    "a_layer_asset_count": 1219,
+    "a_layer_fingerprint_stable": true,
+    "cas_count": 49,
+    "cas_stable": true,
+    "semantic_proposition_before": 0,
+    "semantic_proposition_after": 0,
+    "other_four_repos_untouched": true,
+    "distribution_gate_unchanged": true
+  },
+  "d4b": {
+    "cap_logic": "deterministic_classification_not_uniform_cap",
+    "seven_propositions_all_partial_insufficient_deny": true,
+    "per_proposition_exact_text_recoverable": false,
+    "per_proposition_note": "原始 subject 随 D3 scratch 清理，真实库 semantic=0，验收JSON仅汇总；按类别+封顶逻辑归因，不编造原文",
+    "mislabel_a_layer_count": 120,
+    "mislabel_obscura": 117,
+    "mislabel_repo_24313173": 3,
+    "evidence_with_synthetic_marker": 204,
+    "dedicated_ruling_table_present": false,
+    "ruling_asset_type_in_catalog": false,
+    "isolated_poc": {
+      "original_record_preserved": true,
+      "independent_ruling_appended": true,
+      "identity_bound": true,
+      "distribution_not_raised": true,
+      "view_explains_mislabel": true,
+      "used_type": "evidence_record",
+      "real_db_written": false
+    },
+    "no_a_layer_update": true
+  },
+  "d4c": {
+    "host_can_produce_without_extra_api_key": true,
+    "entrypoints": [
+      "semantic-produce",
+      "semantic-query"
+    ],
+    "client_injection": "tasks-file",
+    "evidence_indices_only": true,
+    "unconfigured_client": "HOST_MODEL_NOT_CONFIGURED",
+    "dry_run_result": "PRODUCED/PARTIALLY_SUPPORTED/network=0",
+    "gap": "no standalone evidence-packet export command",
+    "gap_minimal_fix": "add semantic-evidence subcommand using _evidence_packet, or attach evidence to dry-run output",
+    "skill_md": {
+      "engineering_source_md5": "241c42e6",
+      "installed_md5": "241c42e6",
+      "hermes_superset_md5": "0df70cf5",
+      "hermes_has_semantic_commands": true,
+      "user_superset_overwritten": false,
+      "suggested_patch": "merge two command rows + discipline 37 into source/installed SKILL.md; keep hermes superset"
+    }
+  },
+  "regression": {
+    "specialized": "13/13",
+    "full_suite": "126 PASS / 0 FAIL",
+    "note": "沿用 D3 基线；本轮未改生产源码"
+  },
+  "delivery_doc": "progress/P2-D4-REAL-LIBRARY-READINESS.md",
+  "network_requests_total": 0,
+  "real_db_authoritative_writes": 0,
+  "stop_point": "等待用户进行真实 OpenBot 语义知识生产及新会话验收；未进入 P3、未发 beta.4、未重采、未批量改历史知识"
+}
