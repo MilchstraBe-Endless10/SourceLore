@@ -375,6 +375,55 @@ def answer(*, repository_id, question, data_root, store=None, commit_sha=None):
                 "manifest_parsed": project.get("manifest_parsed"),
             }
 
+        # ★ P2-D3：语义知识优先——用户直接取得已研究的技术命题，
+        #   同时保留原文回查（content_retrieval 与证据 ref）。零网络、零写入。
+        semantic_meta = {"queried": False, "count": 0, "propositions": []}
+        try:
+            import semantic_store as _SS
+            _sem = _SS.load_propositions(
+                store, repository_id=str(repository_id),
+                commit_sha=commit)
+            _props = list(_sem.get("propositions") or [])
+            # 确定性相关性排序：ASCII 技术词 + 中文 bigram 与 subject/命题/kind 匹配计数。
+            # 只用于排序展示，不产出新事实；同分保持原顺序（sorted 稳定）。
+            import re as _re
+            def _rel(_p):
+                _text = " ".join(str(_p.get(k) or "") for k in
+                                 ("subject", "proposition", "knowledge_kind")).lower()
+                _q = str(question or "").lower()
+                _score = sum(1 for _t in _re.findall(r"[a-z0-9_]{3,}", _q) if _t in _text)
+                for _run in _re.findall(r"[\u4e00-\u9fff]+", _q):
+                    for _i in range(len(_run) - 1):
+                        if _run[_i:_i + 2] in _text:
+                            _score += 1
+                return _score
+            _props = sorted(_props, key=lambda p: -_rel(p))
+            semantic_meta = {
+                "queried": True,
+                "count": int(_sem.get("count") or 0),
+                "propositions": _props,
+            }
+            _sem_blocks = [{
+                "kind": "semantic_proposition",
+                "proposition_id": p.get("proposition_id"),
+                "subject": p.get("subject"),
+                "knowledge_kind": p.get("knowledge_kind"),
+                "proposition": p.get("proposition"),
+                "support_level": p.get("support_level"),
+                "source_category": p.get("source_category"),
+                "verification_status": p.get("verification_status"),
+                "coverage_state": p.get("coverage_state"),
+                "limitations": p.get("limitations") or [],
+                "evidence": p.get("evidence") or [],
+                "distribution_allowed": p.get("distribution_allowed", False),
+                "copy_permitted": p.get("copy_permitted", False),
+            } for p in _props[:5]]
+            blocks[0:0] = _sem_blocks
+        except Exception as _e:
+            semantic_meta = {"queried": True, "count": 0,
+                             "propositions": [],
+                             "note": "语义知识查询失败: %s" % type(_e).__name__}
+
         return {
             "ok": True,
             "repository_id": str(repository_id),
@@ -385,6 +434,7 @@ def answer(*, repository_id, question, data_root, store=None, commit_sha=None):
             "intent": intent,
             "blocks": blocks,
             "content_retrieval": content_index_meta,
+            "semantic_knowledge": semantic_meta,
             "audit": audit,
             "supplement_sources": supplement_meta,
             "coverage_note": project.get("coverage_note"),

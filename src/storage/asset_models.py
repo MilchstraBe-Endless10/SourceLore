@@ -46,6 +46,8 @@ ASSET_TYPES = frozenset({
     # F2-P3C：执行记录与完成结果（题面第 3/12 节）
     "revalidation_run",
     "revalidation_result",
+    # P2-D3：技术语义知识命题（宿主研究 + 确定性校验 + A 层持久化）
+    "semantic_proposition",
 })
 
 # 敏感字段（按名拦截，不靠调用方自觉）

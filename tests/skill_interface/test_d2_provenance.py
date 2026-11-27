@@ -23,12 +23,19 @@ class TestProvenanceContract(unittest.TestCase):
         # 生产采集入口不得再把 provenance 硬编码成 SYNTHETIC_FIXTURE
         self.assertNotIn('provenance_level="SYNTHETIC_FIXTURE",\n            )', src)
         self.assertNotIn('report["provenance"] = "SYNTHETIC_FIXTURE"', src)
-        self.assertIn("provenance_level=prov", src)
-        self.assertIn("report[\"provenance\"] = prov", src)
+        self.assertIn("provenance_level=blob_prov", src)
+        self.assertIn('report["provenance"] =', src)
 
-    def test_default_is_authorized_remote_source(self):
-        self.assertEqual(CC.resolve_provenance(None), "AUTHORIZED_REMOTE_SOURCE")
-        self.assertEqual(CC.resolve_provenance(""), "AUTHORIZED_REMOTE_SOURCE")
+    def test_default_is_unverified_until_authorized(self):
+        # ★ D3-00 根因修复：不再无条件硬编码 AUTHORIZED_REMOTE_SOURCE。
+        #   默认未验证；只有真正通过授权门禁 + 字节校验才升级（见 capture）。
+        self.assertEqual(CC.resolve_provenance(None), "UNVERIFIED_REMOTE_SOURCE")
+        self.assertEqual(CC.resolve_provenance(""), "UNVERIFIED_REMOTE_SOURCE")
+
+    def test_authorized_constant_still_exists_for_verified_writes(self):
+        self.assertEqual(CC.PROVENANCE_AUTHORIZED_REMOTE, "AUTHORIZED_REMOTE_SOURCE")
+        self.assertEqual(CC.PROVENANCE_UNVERIFIED_REMOTE, "UNVERIFIED_REMOTE_SOURCE")
+        self.assertEqual(CC.PROVENANCE_SYNTHETIC, "SYNTHETIC_FIXTURE")
 
     def test_explicit_fixture_preserved_as_negative_case(self):
         # 负例：只有显式声明 synthetic 才是合成夹具，不把真实字节降级

@@ -24,16 +24,26 @@ MAX_PATHS = 32
 #   注意：这与 ref_observer 的观测层三值（REAL_LIVE_API/HISTORICAL_REAL_DATA/
 #   SYNTHETIC_FIXTURE）是两套体系，不要混用；合成夹具只在显式传入时产生。
 PROVENANCE_AUTHORIZED_REMOTE = "AUTHORIZED_REMOTE_SOURCE"
+PROVENANCE_UNVERIFIED_REMOTE = "UNVERIFIED_REMOTE_SOURCE"
 PROVENANCE_SYNTHETIC = "SYNTHETIC_FIXTURE"
 
 
 def resolve_provenance(explicit=None):
-    """决定本次采集写入资产层的来源等级。
+    """决定本次采集写入资产层的来源等级（无证据不宣称已授权）。
 
-    ★ 默认真实远程采集 = AUTHORIZED_REMOTE_SOURCE；只有显式传入
-      SYNTHETIC_FIXTURE 才是合成夹具，绝不默认谎报为 fixture。
+    ★ 根因修复（D3-00 §1.2）：来源等级必须由实际授权判定与字节校验决定，
+      不能无条件硬编码。P2-D2 曾把硬编码 SYNTHETIC_FIXTURE 换成硬编码
+      AUTHORIZED_REMOTE_SOURCE，属于"一种默认值替换另一种"：即使全部 blob
+      被授权门禁阻断，report 仍宣称已授权，违反来源/授权独立。
+
+    规则：
+      - 显式传入（如 SYNTHETIC_FIXTURE）始终保留，不因门禁而改写；
+      - 未显式声明时默认 UNVERIFIED_REMOTE_SOURCE，不预先宣称已授权；
+      - 只有某个 blob 实际通过 FETCH/PERSIST 授权门禁且 Git OID/SHA 校验
+        成功后，才在写入时升级为 AUTHORIZED_REMOTE_SOURCE（见 capture 内
+        blob_prov）；哈希匹配本身不等于来源真实性，须叠加授权门禁。
     """
-    return explicit or PROVENANCE_AUTHORIZED_REMOTE
+    return explicit or PROVENANCE_UNVERIFIED_REMOTE
 
 
 def capture(*, repository_id, commit_sha, data_root=None, paths=None,
@@ -70,7 +80,7 @@ def capture(*, repository_id, commit_sha, data_root=None, paths=None,
         entries = snap["payload"].get("tree_entries") or []
         eligible, blocked = POL.candidate_paths(entries, explicit=paths)
 
-        prov = resolve_provenance(provenance_level)
+        base_prov = resolve_provenance(provenance_level)
         report = {
         "authorization_basis": (POL.AUTH_LICENSE_OBSERVED if license_known
                                 and not authorization_kind
@@ -83,7 +93,9 @@ def capture(*, repository_id, commit_sha, data_root=None, paths=None,
             "reused_blobs": 0, "skipped_blobs": 0,
             "network_requests": 0, "content_bytes_stored": 0,
             "distribution_allowed": False,
-            "provenance": prov,
+            "provenance": base_prov,
+            "provenance_basis": ("explicit" if provenance_level
+                                 else "derived_from_authorization_and_hash_check"),
         }
 
         if not eligible and not blocked:
@@ -172,6 +184,12 @@ def capture(*, repository_id, commit_sha, data_root=None, paths=None,
                 report["skipped_blobs"] += 1
                 continue
             st, code = dec["PERSIST_DECISION"]["decision"], "AUTHORIZED"
+            # ★ D3-00 根因修复：写入资产层的 provenance 由本 blob 的实际
+            #   授权门禁结果决定。未显式声明时，只有走过 FETCH/PERSIST ALLOW
+            #   且随后 Git OID/SHA 校验成功的 blob 才是 AUTHORIZED_REMOTE_SOURCE；
+            #   显式声明（含 SYNTHETIC_FIXTURE）始终保留，不被门禁改写。
+            blob_prov = (provenance_level if provenance_level
+                         else PROVENANCE_AUTHORIZED_REMOTE)
 
             size = entry.get("size")
             allow, why = BF.declared_size_gate(size, MAX_BLOB_BYTES)
@@ -239,7 +257,7 @@ def capture(*, repository_id, commit_sha, data_root=None, paths=None,
                 git_object_format="sha1", raw=got["raw"],
                 source_declared_size=size,
                 acquisition_policy=st, acquisition_policy_ref=code,
-                provenance_level=prov,
+                provenance_level=blob_prov,
                 )
             if not ing.get("ok"):
                 report["results"].append({"file_path": fp,
@@ -262,7 +280,14 @@ def capture(*, repository_id, commit_sha, data_root=None, paths=None,
                 "reused": ing.get("reused"),
                 "acquisition_policy": st})
 
-        report["provenance"] = prov
+        # 最终 provenance 反映实际写入：有任一 blob 经授权+校验成功落盘，
+        # 才报 AUTHORIZED_REMOTE_SOURCE；否则保持未验证，绝不靠默认值虚报。
+        if provenance_level:
+            report["provenance"] = provenance_level
+        elif report["persisted_blobs"] > 0 or report["reused_blobs"] > 0:
+            report["provenance"] = PROVENANCE_AUTHORIZED_REMOTE
+        else:
+            report["provenance"] = PROVENANCE_UNVERIFIED_REMOTE
         report["budget"] = {"used_bytes": byte_budget["used_bytes"], "paths": byte_budget["paths"],
                             "max_blob": MAX_BLOB_BYTES, "max_batch": MAX_BATCH_BYTES}
         return report

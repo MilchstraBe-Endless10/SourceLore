@@ -117,6 +117,24 @@ def build_parser():
     c.add_argument("--vault", default=None,
                    help="同时导出为 Obsidian 双向链接笔记（给定 vault 目录）")
 
+    # ── P2-D3：技术语义知识生产与跨会话复用 ──────────────
+    sp = sub.add_parser("semantic-produce",
+                        help="持久化宿主研究的技术语义命题（零网络，证据由程序鉴证）")
+    sp.add_argument("repository_id")
+    sp.add_argument("--commit", required=True, help="固定 Commit SHA")
+    sp.add_argument("--tasks-file", required=True,
+                    help="JSON 文件：研究任务 + 宿主命题候选（只读，不联网）")
+    sp.add_argument("--dry-run", action="store_true",
+                    help="只鉴证不落库（预演/验收）")
+
+    sq = sub.add_parser("semantic-query",
+                        help="只读复用已持久化的技术语义知识（零网络零写入）")
+    sq.add_argument("repository_id")
+    sq.add_argument("--commit", default=None, help="固定 Commit（隔离用）")
+    sq.add_argument("--subject", default=None, help="按主题过滤")
+    sq.add_argument("--kind", default=None, help="按知识分类过滤")
+    sq.add_argument("--id", default=None, help="按 proposition_id 精确读取")
+
     return p
 
 
@@ -420,6 +438,59 @@ def _dispatch(cmd, args):
         return emit_ok(DA.deep_answer(
             repository_id=args.repository_id, question=args.question,
             data_root=root or _DDR_ANS, commit_sha=getattr(args, "commit", None)))
+
+    if cmd == "semantic-produce":
+        # ★ P2-D3：host 模型研究结论以 JSON 文件注入；程序只做鉴证与落库。
+        import json as _json
+        from pathlib import Path as _Path
+        tf = _Path(getattr(args, "tasks_file"))
+        if not tf.is_file():
+            raise SkillError("tasks-file 不存在", code="TASKS_FILE_MISSING",
+                             exit_code=EXIT_USAGE)
+        try:
+            tasks_doc = _json.loads(tf.read_text(encoding="utf-8"))
+        except Exception as e:
+            raise SkillError("tasks-file 不是合法 JSON: %s" % e,
+                             code="TASKS_FILE_INVALID", exit_code=EXIT_USAGE)
+        tasks = tasks_doc.get("tasks") if isinstance(tasks_doc, dict) else None
+        if not isinstance(tasks, list):
+            raise SkillError("tasks-file 缺少 tasks 列表",
+                             code="TASKS_FILE_INVALID", exit_code=EXIT_USAGE)
+        # 宿主 client：按 question 匹配对应 task 的候选命题（只允许引用证据下标）
+        by_q = {}
+        for t in tasks:
+            if isinstance(t, dict) and t.get("question"):
+                by_q[str(t["question"])] = t.get("propositions") or []
+        def _client(packet):
+            return {"propositions": by_q.get(packet.get("question"), [])}
+        import semantic_pipeline as SP
+        from knowledge_store import KnowledgeStore as _KS
+        from paths import db_path as _dbp
+        st = _KS(str(_dbp(root)), create=False)
+        try:
+            return emit_ok(SP.produce(
+                st, repository_id=args.repository_id,
+                commit_sha=args.commit, questions=tasks,
+                client=_client, dry_run=bool(getattr(args, "dry_run", False))))
+        finally:
+            st.close()
+
+    if cmd == "semantic-query":
+        # ★ P2-D3：只读复用已持久化的语义命题，零网络、零写入。
+        import semantic_store as SS
+        from knowledge_store import KnowledgeStore as _KS
+        from paths import db_path as _dbp
+        st = _KS(str(_dbp(root)), create=False)
+        try:
+            if getattr(args, "id", None):
+                return emit_ok(SS.find_by_id(st, args.id))
+            return emit_ok(SS.load_propositions(
+                st, repository_id=args.repository_id,
+                commit_sha=getattr(args, "commit", None),
+                subject=getattr(args, "subject", None),
+                kind=getattr(args, "kind", None)))
+        finally:
+            st.close()
 
     if cmd == "card":
         has_content = any(getattr(args, k, None) for k in

@@ -1,0 +1,58 @@
+{
+  "stage": "P2-D3",
+  "version": "0.1.0-beta.3",
+  "released": false,
+  "release_note": "NOT a released version; no beta.4, no new Tag/Release",
+  "branch": "dev/p2d3-semantic-knowledge",
+  "base_commit": "b5b21a0",
+  "distribution_allowed": false,
+  "redacted": true,
+  "network_requests": 0,
+  "real_knowledge_base_writes": 0,
+  "semantic_asset_type": "semantic_proposition",
+  "gates": {
+    "G1_real_production": {"status": "PASS", "note": "no-client -> HOST_MODEL_NOT_CONFIGURED, zero network"},
+    "G2_evidence_support": {"status": "PASS", "note": "doc self-report capped to PARTIALLY_SUPPORTED; no-evidence -> NOT_SUPPORTED; partial -> insufficient_evidence/PARTIAL"},
+    "G3_persistence": {"status": "PASS", "note": "independent process re-queries 9 propositions from isolated root"},
+    "G4_idempotent": {"status": "PASS", "note": "repeat produce: semantic assets 9->9, all IDEMPOTENT_ALREADY_PRESENT"},
+    "G5_version_isolation": {"status": "PASS", "note": "wrong commit and wrong repo queries return 0 propositions, no cross-use"},
+    "G6_authorization": {"status": "PASS", "note": "any DENY evidence -> proposition DENY; provenance SYNTHETIC_FIXTURE inherited not laundered; no forged evidence via out-of-range indices"},
+    "G7_formal_qa": {"status": "PASS", "note": "answer prioritizes semantic propositions with relevance ordering, retains content_retrieval; zero network, zero writes"},
+    "G8_generality": {"status": "PASS", "note": "contract binds to no specific repository; arbitrary repo/commit constructible"},
+    "G9_asset_protection": {"status": "PASS", "note": "real A-layer fingerprint unchanged, 0 semantic props in real DB; isolated baseline 1219 non-semantic assets preserved, 0 added"},
+    "G10_regression": {"status": "PASS", "note": "13/13 semantic专项 + 126/126 full regression PASS/0 FAIL (tree-sitter venv)"}
+  },
+  "obscura": {
+    "repository_id": "1209343409",
+    "commit": "efe1c95962b33935fe9c53851566211074efe147",
+    "captured_bodies": 18,
+    "new_propositions": 7,
+    "legacy_propositions_preserved": 2,
+    "kinds": ["architecture", "dependency", "data_flow", "install_configuration", "api_surface"],
+    "all_partially_supported": true,
+    "all_insufficient_evidence": true,
+    "all_distribution_deny": true,
+    "all_copy_deny": true,
+    "evidence_nature": "documentation_self_report / config declaration, not runtime call graph",
+    "network_requests": 0
+  },
+  "tests": {
+    "d3_semantic_specialized": {"pass": 13, "fail": 0},
+    "d3_provenance_gate": "PASS",
+    "d2_provenance": "PASS",
+    "d2_section_index": "PASS",
+    "full_regression": {"pass": 126, "fail": 0, "environment": "sourcelore-release/.venv (tree-sitter available)", "total_files": 126},
+    "prior_7_env_failures": "resolved via existing venv, no network, no system change"
+  },
+  "real_a_layer": {
+    "fingerprint_before_after_match": true,
+    "asset_count_match": true,
+    "semantic_proposition_count": 0
+  },
+  "known_limits": [
+    "semantic propositions produced from host-injected candidates; SourceLore has no built-in auto model, refuses without client",
+    "Obscura evidence is documentation self-report, propositions capped at PARTIALLY_SUPPORTED",
+    "TD-004 host auto-trigger remains PARTIAL/NOT_VERIFIED; internal CLI not used as host acceptance"
+  ],
+  "not_in_scope": ["P3", "Rust formal parser", "beta.4 release", "real knowledge base modification", "re-collection of Obscura", "relaxed distribution/auth gates"]
+}
